@@ -6,9 +6,9 @@ import { useServerControls } from "../../../../hooks/useServerControls";
 import ServerControls from "../../../../components/server/ServerControls";
 import StatsGrid from "../../../../components/server/StatsGrid";
 import Logs from "../../../../components/server/Logs";
-import { useValheimJoinInfo } from "./hooks/useValheimJoinInfo";
+import { useValheimPlayerCount } from "./hooks/useValheimPlayerCount";
 import { useOdinEyeOnlineCount } from "./hooks/useOdinEyeOnlineCount";
-import JoinInfoCard from "./components/JoinInfoCard";
+import PlayerCountCard from "./components/PlayerCountCard";
 
 export default function ValheimDashboard() {
   const { t } = useTranslation();
@@ -16,7 +16,7 @@ export default function ValheimDashboard() {
   const { start, stop, restart, canStart, canStop } = useServerControls();
   const { status, stats, serverPath } = state;
   const odinEyeCount = useOdinEyeOnlineCount();
-  const joinInfo = useValheimJoinInfo(state.logs, odinEyeCount);
+  const playerCount = useValheimPlayerCount(state.logs, odinEyeCount);
 
   return (
     <Stack spacing={3}>
@@ -44,7 +44,7 @@ export default function ValheimDashboard() {
         </Typography>
       )}
 
-      {joinInfo && <JoinInfoCard info={joinInfo} />}
+      {status === "running" && <PlayerCountCard count={playerCount} />}
 
       <Alert
         severity="info"
