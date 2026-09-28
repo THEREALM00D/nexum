@@ -59,9 +59,19 @@ jobs:
 
       # Publiée seulement une fois tous les assets en ligne : l'auto-updater
       # ne voit jamais une release sans latest.yml.
+      # Retry : l'API GitHub renvoie parfois un 5xx passager (vécu en 0.1.1,
+      # HTTP 502 → release restée en draft alors que le build était OK).
+      # L'édition est idempotente, on peut la rejouer sans risque.
       - name: Publish release
         shell: bash
-        run: gh release edit "${{ needs.release-please.outputs.tag_name }}" --draft=false --latest
+        run: |
+          tag="${{ needs.release-please.outputs.tag_name }}"
+          for attempt in 1 2 3 4 5; do
+            if gh release edit "$tag" --draft=false --latest; then exit 0; fi
+            echo "Attempt $attempt failed, retrying in $((attempt * 15))s..."
+            sleep $((attempt * 15))
+          done
+          exit 1
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
