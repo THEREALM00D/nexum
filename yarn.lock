@@ -1264,10 +1264,10 @@
   resolved "https://registry.yarnpkg.com/@types/ms/-/ms-2.1.0.tgz#052aa67a48eccc4309d7f0191b7e41434b90bb78"
   integrity sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==
 
-"@types/node@*", "@types/node@^26.6.1":
-  version "26.6.1"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-26.6.1.tgz#059fb87569c8b47a495c75ed8a884832c73eab1d"
-  integrity sha512-VqGJBMCtdhqkBUCcBLvywI0NJ+KLuVzgNnlBUNFOQjqVxzo2lxLUNg1DSey8+u2u6ktswSAxg+s68QLzWHNOuA==
+"@types/node@*", "@types/node@^26.6.2":
+  version "26.6.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-26.6.2.tgz#11bfb8e00bafe728d2113e474a7637becc9ab279"
+  integrity sha512-X1P21scMv4zGKLYqjdGjaKa7COa0RKVYYZZN/NfvLQ1JegxFhdhpZG/Lyn8AXx6CDUavKAd11v6BvfpkDByK8g==
   dependencies:
     undici-types "~8.9.0"
 
@@ -2344,10 +2344,10 @@ electron-vite@^5.0.0:
     magic-string "^0.30.19"
     picocolors "^1.1.1"
 
-electron@44.4.2:
-  version "44.4.2"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-44.4.2.tgz#361e881b228664d084975060dca35f51f00c7981"
-  integrity sha512-872t/+8M8TyribWm2cYpRwHY2aDlyDHOn+CHnhN9kHQStVW8pAijIhFolYA/qQyDdri28Xp8Mi3HEj5kFvajCw==
+electron@44.4.5:
+  version "44.4.5"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-44.4.5.tgz#0be094f8e783febba75d591106f5c61c1e511b70"
+  integrity sha512-SjgoaeYsSWZfJzubgQU7juvuXMTvn6/e1gAHdGFA/yuMbpF+I+skYqIJ6DdXBXHeWbkbpNpmwZCTpiivtlWZSw==
   dependencies:
     "@electron-internal/extract-zip" "^1.0.1"
     "@electron/get" "^5.0.0"
@@ -3753,10 +3753,10 @@ prettier-linter-helpers@^1.0.1:
   dependencies:
     fast-diff "^1.1.2"
 
-prettier@^3.9.8:
-  version "3.9.8"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-3.9.8.tgz#54e81128584538c81d85fce9d5fd77a410c385c5"
-  integrity sha512-WRFq3Wn3WId7LLROfMLdH7xaFr2jR62wU8nLO6rQUOLOxNZUviyJQs1M0iIhLexSFy+L+w0ch66wtoO2jRjG0A==
+prettier@^3.9.9:
+  version "3.9.9"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-3.9.9.tgz#09b826918c91cd4cbc80e0cbd1d2a922ff04f233"
+  integrity sha512-Z/CJHIkdujO/OtN7nXUii0Rf3VT5SRuhjBA82Xvu2XhBUgX3nhP67T0LHceBdQLex7OOFGTox+Q5Yg8Jk2Qivg==
 
 process-nextick-args@~2.0.0:
   version "2.0.1"
@@ -3823,10 +3823,10 @@ react-dom@^19.3.0:
   dependencies:
     scheduler "^0.28.0"
 
-react-i18next@^17.0.14:
-  version "17.0.14"
-  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-17.0.14.tgz#a895ff593e461877953732c194a242fa3895ed61"
-  integrity sha512-ZpMBfJL3BiXPuYHj5QMY1GwvKJNhE1vCxOJQ8BoMBdHP5XONTfi/Qss1nuRlnFdIl72PKo2jPmw+fxuLjRFgaQ==
+react-i18next@^17.0.15:
+  version "17.0.15"
+  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-17.0.15.tgz#ca219789bf83b556fd0404df4cfbe31b05e4e253"
+  integrity sha512-7uYpx/oBkesLto7cOzOmfITlUBaXHCAcFahmgETMfWr8nbbWRRnVGvz8wsH/xpbNcyoH+NpCcnOQEqWPMO6/hw==
   dependencies:
     "@babel/runtime" "^7.29.7"
     html-parse-stringify "^4.0.1"
@@ -4281,10 +4281,10 @@ swagger-schema-official@2.0.0-bab6bed:
   resolved "https://registry.yarnpkg.com/swagger-schema-official/-/swagger-schema-official-2.0.0-bab6bed.tgz#70070468d6d2977ca5237b2e519ca7d06a2ea3fd"
   integrity sha512-rCC0NWGKr/IJhtRuPq/t37qvZHI/mH4I4sxflVM+qgVe5Z2uOCivzWaVbuioJaB61kvm5UvB7b49E+oBY0M8jA==
 
-swagger-typescript-api@^13.12.6:
-  version "13.12.6"
-  resolved "https://registry.yarnpkg.com/swagger-typescript-api/-/swagger-typescript-api-13.12.6.tgz#ca3a4957d373a18a17168cbdf8e4504b3ca9c792"
-  integrity sha512-BFnSbchubRZrxxBRKy506tHBL0//durBph8ZZohZ2RQg/BKOEGm449YMAbSM5DDTwqNpTUPhgCT59S/9d84pdQ==
+swagger-typescript-api@^13.13.0:
+  version "13.13.0"
+  resolved "https://registry.yarnpkg.com/swagger-typescript-api/-/swagger-typescript-api-13.13.0.tgz#b8ed9d939714de2456f779dd6f82a6cd834b6727"
+  integrity sha512-4CEj48R1Kk3Zvul4c8NVeLOUQ86WIRq1MgqRaB12jKI70IT/UUc4/xn+vd9pWK+I8eRALX2UnUI1ld0YQHn16A==
   dependencies:
     "@apidevtools/swagger-parser" "12.1.0"
     "@biomejs/js-api" "6.0.0"
@@ -4328,10 +4328,10 @@ synckit@^0.11.12:
   dependencies:
     "@pkgr/core" "^0.2.9"
 
-systeminformation@^5.33.11:
-  version "5.33.11"
-  resolved "https://registry.yarnpkg.com/systeminformation/-/systeminformation-5.33.11.tgz#bf53bf5e6020c0aedad2ba5fd7a9a2e49c0e411e"
-  integrity sha512-CNGk+882EQbsbPzaoxeBcYyx+nk0uTj5JzW8w0EXGSCazndNRAh9SE0V5tyMbdONGKilbIBJsyskF4WmZDk7uA==
+systeminformation@^5.33.13:
+  version "5.33.13"
+  resolved "https://registry.yarnpkg.com/systeminformation/-/systeminformation-5.33.13.tgz#6b5e8d2f3203e1e7bb5e4bb0e897c496179fc60e"
+  integrity sha512-GtyakkchTQKymM1WeAB652zi3rM1q00RKdc+jZe9KGstuc/mWUwAnQGN/RE5gVYvHIR8xYOUIUD9irVKDtA0wA==
 
 tagged-tag@^1.0.0:
   version "1.0.0"
