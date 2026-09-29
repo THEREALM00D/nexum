@@ -7,22 +7,24 @@ import { checkForUpdateOnStartup } from "./update/AutoUpdater";
 
 // Dossier de données — doit être fixé avant `ready` et avant tout accès à
 // userData.
-// - Dev : dossier séparé de l'app installée (historiquement `server-forge`).
 // - Rebrand ServerForge → Nexum : une installation existante garde son dossier
-//   (%APPDATA%\ServerForge — serveurs, historique joueurs, SteamCMD, backups
-//   par défaut). Le déplacer casserait les chemins absolus persistés (dossier
-//   de backup, etc.) : on le réutilise tel quel. `config.json` = fichier
+//   (serveurs, historique joueurs, SteamCMD, backups par défaut). Le déplacer
+//   casserait les chemins absolus persistés (dossier de backup, etc.) : on le
+//   réutilise tel quel. ⚠️ Jusqu'à la 0.2.0, Electron nommait ce dossier
+//   d'après le `name` du package.json (`server-forge`), PAS d'après le
+//   productName « ServerForge » : c'est `%APPDATA%\server-forge` qu'il faut
+//   retrouver (la 0.3.0 ne cherchait que `ServerForge` et démarrait à vide).
+//   `ServerForge` reste en repli par sécurité. `config.json` = fichier
 //   electron-store, présent dès qu'un dossier a réellement servi.
+// - Dev : même dossier que l'app installée avant le rebrand (`server-forge`).
+const LEGACY_USER_DATA_DIRS = ["server-forge", "ServerForge"];
 if (!app.isPackaged) {
   app.setPath("userData", join(app.getPath("appData"), "server-forge"));
-} else {
-  const legacyUserData = join(app.getPath("appData"), "ServerForge");
-  if (
-    !existsSync(join(app.getPath("userData"), "config.json")) &&
-    existsSync(join(legacyUserData, "config.json"))
-  ) {
-    app.setPath("userData", legacyUserData);
-  }
+} else if (!existsSync(join(app.getPath("userData"), "config.json"))) {
+  const legacy = LEGACY_USER_DATA_DIRS.map((d) =>
+    join(app.getPath("appData"), d),
+  ).find((dir) => existsSync(join(dir, "config.json")));
+  if (legacy) app.setPath("userData", legacy);
 }
 
 function createWindow(): void {
