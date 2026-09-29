@@ -53,7 +53,7 @@ Download the latest version from [Releases](https://github.com/THEREALM00D/serve
 1. Launch **ServerForge**
 2. Go to **Install**
 3. Click **Install SteamCMD** (automatic download)
-4. Choose a destination folder and install the server for your game
+4. Choose a destination folder and install the server for your game — or, if it is already installed, go to **Servers → Add server** and pick its folder
 5. Go to **Dashboard** and click **Start**
 
 See [docs/installation.md](docs/installation.md) for the full guide.
@@ -72,7 +72,7 @@ See [docs/installation.md](docs/installation.md) for the full guide.
 
 ## Tech stack
 
-- Electron 31, React 19, MUI 9, TypeScript 6, Vite 5
+- Electron 44, React 19, MUI 9, TypeScript 6, Vite 5
 
 ## License
 

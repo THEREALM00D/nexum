@@ -58,6 +58,16 @@ Avant de démarrer le serveur la première fois :
 - Cliquez sur **Démarrer**
 - Le statut passe à **En ligne** quand le serveur est prêt
 
+## Ajouter un serveur déjà installé
+
+Si un serveur dédié est déjà installé sur votre machine (à la main, avec SteamCMD ou avec un autre outil), inutile de le réinstaller :
+
+- Allez dans **Serveurs** et cliquez sur **Ajouter un serveur**
+- Cliquez sur l'icône de dossier et choisissez le dossier du serveur (celui qui contient `PalServer.exe`, `valheim_server.exe` ou `AstroServer.exe`)
+- Le jeu est détecté automatiquement, et une indication sous le chemin confirme que l'exécutable du serveur a été trouvé (ou prévient s'il est absent — vérifiez le dossier ou le jeu)
+- Palworld et Astroneer : vos réglages `.ini` existants sont relus tels quels
+- Valheim : les mondes existants sont détectés. S'il n'y en a qu'un, il est sélectionné automatiquement ; sinon choisissez-le parmi les suggestions du champ **Nom du monde** dans **Configuration** — le nom doit correspondre exactement, sinon Valheim crée un nouveau monde vide
+
 ## Mise à jour du serveur Palworld
 
 Quand une mise à jour Palworld est disponible :
