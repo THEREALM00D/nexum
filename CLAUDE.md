@@ -37,6 +37,7 @@ Un hook PostToolUse (`.claude/settings.local.json`) lance automatiquement `fix:p
 ## CI / automatisation
 
 - **`.github/workflows/ci.yml`** : `yarn typecheck` + `yarn lint:check` sur chaque PR/push vers `main` (Node 22, `windows-latest`). `main` est protégée — PR obligatoire.
+- **`.yarnrc`** : `network-timeout 600000` — le délai par défaut de yarn (30s) faisait échouer `yarn install` en CI sur les gros tarballs (`ESOCKETTIMEDOUT` sur `@mui/icons-material`, vécu sur le push de la 0.2.0). Un échec de ce genre est réseau, pas du code : relancer le job suffit.
 - **Versioning / release automatique (release-please)** — voir section « Versioning & releases » plus bas. `.github/workflows/release.yml` (push sur `main`) + `.github/workflows/pr-title.yml` (titre de PR conventional commits obligatoire).
 - **`.eslintrc.cjs`** : base `@electron-toolkit`, `explicit-function-return-type` désactivée (trop strict pour du TSX), seulement `react-hooks/rules-of-hooks` + `exhaustive-deps` (pas le ruleset v7 complet orienté React Compiler, qui suppose des patterns qu'on n'utilise pas).
 - **Dependabot** (`.github/dependabot.yml`) : PR hebdo npm (groupées minor/patch) + GitHub Actions. Un bump majeur qui casse la CI doit être corrigé **sur la branche de la PR** (pas juste mergé en espérant) — voir le pattern ESM ci-dessus pour la cause la plus probable si `yarn typecheck`/`install` échoue après un bump.
