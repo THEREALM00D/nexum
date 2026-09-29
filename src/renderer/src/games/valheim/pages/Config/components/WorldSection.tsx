@@ -1,4 +1,5 @@
 import {
+  Autocomplete,
   FormControl,
   InputLabel,
   MenuItem,
@@ -7,6 +8,7 @@ import {
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import type { ValheimLaunchConfig } from "@shared/types";
+import { useExistingWorlds } from "../hooks/useExistingWorlds";
 import Section from "./Section";
 
 export default function WorldSection({
@@ -17,15 +19,30 @@ export default function WorldSection({
   onChange: (patch: Partial<ValheimLaunchConfig>) => void;
 }) {
   const { t } = useTranslation();
+  const existingWorlds = useExistingWorlds(config.savedir);
   return (
     <Section label={t("valheimConfig.sections.world")}>
-      <TextField
-        label={t("valheimConfig.fields.world.label")}
-        helperText={t("valheimConfig.fields.world.description")}
+      <Autocomplete
+        freeSolo
+        options={existingWorlds.map((w) => w.name)}
         value={config.world}
-        onChange={(e) => onChange({ world: e.target.value })}
-        size="small"
-        fullWidth
+        inputValue={config.world}
+        onInputChange={(_, value) => onChange({ world: value })}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label={t("valheimConfig.fields.world.label")}
+            helperText={
+              existingWorlds.length > 0
+                ? t("valheimConfig.fields.world.detected", {
+                    count: existingWorlds.length,
+                  })
+                : t("valheimConfig.fields.world.description")
+            }
+            size="small"
+            fullWidth
+          />
+        )}
       />
       <TextField
         label={t("valheimConfig.fields.savedir.label")}

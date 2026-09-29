@@ -46,6 +46,10 @@ const api = {
       }>,
     ) => ipcRenderer.invoke("servers:update", id, patch),
     delete: (id: string) => ipcRenderer.invoke("servers:delete", id),
+    detectGameType: (path: string): Promise<GameType | null> =>
+      ipcRenderer.invoke("servers:detectGameType", path),
+    hasExpectedExe: (path: string, gameType: GameType): Promise<boolean> =>
+      ipcRenderer.invoke("servers:hasExpectedExe", path, gameType),
   },
   // SteamCMD
   steamcmd: {
@@ -195,6 +199,8 @@ const api = {
       ipcRenderer.invoke("valheim:setConfig", cfg, serverId),
     openSaveFolder: (customSavedir: string) =>
       ipcRenderer.invoke("valheim:openSaveFolder", customSavedir),
+    listExistingWorlds: (customSavedir: string) =>
+      ipcRenderer.invoke("valheim:listExistingWorlds", customSavedir),
     mods: {
       // Parcourir un registre (public, sans clé API)
       getTrending: (registry: ModRegistry) =>

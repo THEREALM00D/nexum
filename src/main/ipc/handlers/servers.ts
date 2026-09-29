@@ -2,12 +2,24 @@ import { ipcMain } from "electron/main";
 import type { Server } from "../../../shared/types";
 import type { IpcContext } from "../context";
 import type { ServerRegistry } from "../../servers/ServerRegistry";
+import { detectGameType, hasExpectedExe } from "../../servers/detectGameType";
 
 export function registerServersHandlers(
   ctx: IpcContext,
   registry: ServerRegistry,
 ): void {
   ipcMain.handle("servers:list", () => registry.list());
+  // Devine le type de jeu (et confirme la présence de son exécutable) d'un
+  // dossier existant — utilisé par le dialogue d'ajout de serveur pour
+  // importer une installation déjà présente sur le disque.
+  ipcMain.handle("servers:detectGameType", (_, path: string) =>
+    detectGameType(path),
+  );
+  ipcMain.handle(
+    "servers:hasExpectedExe",
+    (_, path: string, gameType: Server["gameType"]) =>
+      hasExpectedExe(path, gameType),
+  );
   ipcMain.handle("servers:getActive", () => registry.getActive());
   ipcMain.handle("servers:setActive", (_, id: string | null) => {
     registry.setActive(id);

@@ -44,12 +44,16 @@ export default {
       nameHelper: "E.g.: FREEPORT, PvE Casual, Test",
       path: "Server folder",
       pathHelper:
-        "Folder containing PalServer.exe (e.g. E:\\Server\\Palworld_Freeport)",
+        "Folder containing the server executable — new install or an existing one, e.g. E:\\Server\\Palworld_Freeport",
       pathBrowse: "Browse",
       gameType: "Game",
       color: "Color",
       save: "Save",
       cancel: "Cancel",
+      exeFound: "{{game}} server detected in this folder",
+      exeMissing:
+        "No known server executable found in this folder — check the path or the game selection",
+      exeChecking: "Checking…",
     },
     notify: {
       created: 'Server "{{name}}" added.',

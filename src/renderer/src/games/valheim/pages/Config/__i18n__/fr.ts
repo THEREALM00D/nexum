@@ -77,6 +77,8 @@ export default {
       world: {
         label: "Nom du monde",
         description: "Nom du fichier de monde (sans extension).",
+        detected:
+          "{{count}} monde(s) détecté(s) sur disque — cliquez pour choisir.",
       },
       password: {
         label: "Mot de passe",
