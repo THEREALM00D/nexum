@@ -16,6 +16,7 @@ import { useTranslation } from "react-i18next";
 import type { ValheimMod, ModUpdate, ModRegistry } from "@shared/types";
 import { formatDate } from "../../../../../utils/format";
 import { REGISTRY_LABEL, modPageUrl } from "../utils/modPageUrl";
+import DeprecatedChip from "./DeprecatedChip";
 
 // Le nom complet est stocké comme "auteur-nom" (voir
 // ValheimModsManager.installMod) — on retire le préfixe auteur pour
@@ -37,6 +38,7 @@ interface Props {
   mods: ValheimMod[];
   locale: string;
   updates: ModUpdate[];
+  deprecatedCodes: string[];
   onRemove: (modId: number, name: string) => void;
   onToggle: (modId: number, enabled: boolean) => void;
   onUpdate: (registry: ModRegistry, latestCode: string) => void;
@@ -46,6 +48,7 @@ export default function InstalledModsList({
   mods,
   locale,
   updates,
+  deprecatedCodes,
   onRemove,
   onToggle,
   onUpdate,
@@ -53,6 +56,7 @@ export default function InstalledModsList({
   const { t } = useTranslation();
 
   const updateMap = new Map(updates.map((u) => [u.installedCode, u]));
+  const deprecatedSet = new Set(deprecatedCodes);
 
   if (mods.length === 0) {
     return (
@@ -122,6 +126,17 @@ export default function InstalledModsList({
                       sx={{ fontSize: 10, height: 18, px: 0 }}
                     />
                   )}
+                  {mod.thunderstoreCode &&
+                    deprecatedSet.has(mod.thunderstoreCode) &&
+                    (mod.source === "thunderstore" ||
+                      mod.source === "hexium") && (
+                      <DeprecatedChip
+                        registry={mod.source}
+                        alternative={
+                          update?.sourceChanged ? update.registry : undefined
+                        }
+                      />
+                    )}
                   {update && (
                     <Chip
                       label={

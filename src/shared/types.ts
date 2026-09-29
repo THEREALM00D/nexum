@@ -244,6 +244,8 @@ export interface ThunderstoreModInfo {
   endorsement_count: number;
   updated_timestamp: number;
   registry: ModRegistry;
+  /** Package marqué déprécié par son auteur sur ce registre. */
+  deprecated?: boolean;
 }
 
 export interface ThunderstoreModVersion {
@@ -266,6 +268,12 @@ export interface ModUpdate {
   registry: ModRegistry;
   /** true si `registry` diffère du registre sur lequel le mod est actuellement installé (ex: mod déprécié sur Thunderstore, toujours maintenu sur Hexium). */
   sourceChanged: boolean;
+}
+
+export interface ModUpdateCheck {
+  updates: ModUpdate[];
+  /** `thunderstoreCode` des mods installés dont le package est déprécié sur leur registre d'origine. */
+  deprecatedCodes: string[];
 }
 
 // --- Historique des joueurs ---

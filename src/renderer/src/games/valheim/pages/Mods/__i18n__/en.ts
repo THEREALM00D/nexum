@@ -83,6 +83,13 @@ export default {
       installAll: "Install all ({{count}})",
       skip: "Skip",
     },
+    deprecated: {
+      label: "Deprecated",
+      tooltip:
+        "Marked deprecated by its author on {{registry}} — no longer maintained, may break after a game update.",
+      tooltipAlternative:
+        "Deprecated on {{registry}} — a maintained version exists on {{alternative}}, use the suggested update.",
+    },
     updates: {
       newVersion: "v{{version}} available",
       newVersionOnRegistry: "v{{version}} available on {{registry}}",

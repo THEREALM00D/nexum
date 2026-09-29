@@ -47,6 +47,8 @@ export function useValheimMods() {
 
   // Mises à jour disponibles pour les mods installés
   const [updates, setUpdates] = useState<ModUpdate[]>([]);
+  // Codes des mods installés dépréciés sur leur registre d'origine
+  const [deprecatedCodes, setDeprecatedCodes] = useState<string[]>([]);
 
   // Entrées {code, registry} des mods installés via un registre (exclut les
   // mods manuels, qui n'ont pas de thunderstoreCode) — nécessaire pour
@@ -68,11 +70,13 @@ export function useValheimMods() {
       const entries = getInstalledEntries(mods);
       if (entries.length === 0) {
         setUpdates([]);
+        setDeprecatedCodes([]);
         return;
       }
       try {
         const found = await window.api.valheim.mods.checkUpdates(entries);
-        setUpdates(found);
+        setUpdates(found.updates);
+        setDeprecatedCodes(found.deprecatedCodes);
       } catch (e) {
         notify((e as Error).message, "error");
       }
@@ -328,11 +332,12 @@ export function useValheimMods() {
     setCheckingUpdates(true);
     try {
       const entries = getInstalledEntries(installedMods);
-      const found =
+      const { updates: found, deprecatedCodes: deprecated } =
         entries.length === 0
-          ? []
+          ? { updates: [], deprecatedCodes: [] }
           : await window.api.valheim.mods.checkUpdates(entries);
       setUpdates(found);
+      setDeprecatedCodes(deprecated);
       notify(
         found.length > 0
           ? t("valheimMods.updates.found", { count: found.length })
@@ -409,6 +414,7 @@ export function useValheimMods() {
     locale,
     pendingDeps,
     updates,
+    deprecatedCodes,
     handleTabChange,
     handleBrowseRegistryChange,
     handleSearch,
