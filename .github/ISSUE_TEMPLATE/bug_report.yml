@@ -5,7 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to report a bug — ServerForge is still in alpha, so this really helps.
+        Thanks for taking the time to report a bug — this really helps improve the app.
 
   - type: input
     id: version

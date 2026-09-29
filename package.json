@@ -5,7 +5,7 @@
   "main": "./out/main/index.js",
   "author": "",
   "homepage": "https://github.com",
-  "license": "UNLICENSED",
+  "license": "GPL-3.0-or-later",
   "scripts": {
     "format": "prettier --write .",
     "fix:prettier": "prettier --write",
