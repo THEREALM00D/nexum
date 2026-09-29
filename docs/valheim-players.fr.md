@@ -32,11 +32,10 @@ Laissez le champ vide pour désactiver le suivi des joueurs.
 ## 3. Ce que vous obtenez
 
 - **Page Joueurs** : historique de tous les joueurs vus, avec statut en ligne, dernière connexion, temps de jeu total et nombre de sessions. Le suivi tourne toutes les 30 secondes **tant que le serveur est en cours d'exécution**.
-- **Dashboard** : le compteur « Joueurs connectés » utilise Odin-Eye. Sans lui, le compteur est déduit des logs de la console et peut rester à 0 pour un serveur déjà lancé avant ServerForge.
+- **Dashboard** : le compteur « Joueurs connectés » utilise Odin-Eye, avec ou sans crossplay. Sans Odin-Eye, le compteur ne peut être lu dans les logs de la console **que si le crossplay est activé** (Valheim n'écrit le nombre de joueurs que pour les sessions crossplay) ; sinon il affiche « — ». Il peut aussi rester faux pour un serveur déjà lancé avant ServerForge (ses logs sont perdus).
 
 ## Limitations
 
 - Pas d'adresse IP des joueurs (le plugin ne la fournit pas) : la colonne « Dernière IP » reste vide.
-- Le code de connexion et l'IP affichés sur le dashboard viennent toujours des logs de la console.
 - Les identifiants sont affichés en SteamID64 nu (le préfixe `Steam_` est retiré).
 - Odin-Eye n'est ni installé ni mis à jour par ServerForge ; vous le gérez comme n'importe quel mod BepInEx.

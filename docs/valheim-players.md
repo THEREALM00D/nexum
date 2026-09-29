@@ -32,11 +32,10 @@ Leave the field empty to disable player tracking.
 ## 3. What you get
 
 - **Players page**: history of every player seen, with online status, last connection, total playtime and session count. Tracking runs every 30 seconds **while the server is running**.
-- **Dashboard**: the "Connected players" counter uses Odin-Eye. Without it, the counter is parsed from the console logs and can stay at 0 for a server that was already running when ServerForge started.
+- **Dashboard**: the "Connected players" counter uses Odin-Eye, with or without crossplay. Without Odin-Eye, the counter can only be read from the console logs **when crossplay is enabled** (Valheim only logs the player count for crossplay sessions); otherwise it shows "—". It can also stay wrong for a server that was already running when ServerForge started (its logs are lost).
 
 ## Limitations
 
 - No player IP address (the plugin does not provide it): the "Last IP" column stays empty.
-- The join code and IP shown on the dashboard still come from the console logs.
 - Player IDs are shown as plain SteamID64 (the `Steam_` prefix is removed).
 - Odin-Eye is not installed or updated by ServerForge; you manage it like any other BepInEx mod.

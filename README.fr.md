@@ -53,7 +53,7 @@ Téléchargez la dernière version depuis [Releases](https://github.com/THEREALM
 1. Lancez **ServerForge**
 2. Allez dans **Installation**
 3. Cliquez sur **Installer SteamCMD** (téléchargement automatique)
-4. Choisissez un dossier de destination et installez le serveur du jeu souhaité
+4. Choisissez un dossier de destination et installez le serveur du jeu souhaité — ou, s'il est déjà installé, allez dans **Serveurs → Ajouter un serveur** et choisissez son dossier
 5. Allez dans **Dashboard** et cliquez sur **Démarrer**
 
 Voir [docs/installation.fr.md](docs/installation.fr.md) pour le guide complet.
@@ -68,11 +68,12 @@ Voir [docs/installation.fr.md](docs/installation.fr.md) pour le guide complet.
 - [Planification](docs/scheduling.fr.md)
 - [Logs](docs/logs.fr.md)
 - [Suivi des joueurs Valheim (Odin-Eye)](docs/valheim-players.fr.md)
+- [Mods Valheim](docs/valheim-mods.fr.md)
 - [Architecture technique](CLAUDE.md)
 
 ## Stack technique
 
-- Electron 31, React 19, MUI 9, TypeScript 6, Vite 5
+- Electron 44, React 19, MUI 9, TypeScript 6, Vite 5
 
 ## Licence
 
