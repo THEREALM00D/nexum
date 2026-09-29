@@ -111,7 +111,7 @@ export default function Sidebar({ currentPage, onNavigate }: SidebarProps) {
       sx={{
         width: collapsed ? COLLAPSED_WIDTH : EXPANDED_WIDTH,
         flexShrink: 0,
-        bgcolor: "#020617",
+        bgcolor: "background.paper",
         display: "flex",
         flexDirection: "column",
         borderRight: "1px solid",

@@ -13,7 +13,7 @@ export default function Titlebar() {
         justifyContent: "space-between",
         height: 40,
         px: 2,
-        bgcolor: "#020617",
+        bgcolor: "background.default",
         flexShrink: 0,
         WebkitAppRegion: "drag",
         userSelect: "none",

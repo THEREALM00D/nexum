@@ -111,7 +111,8 @@ L'app s'appelait **ServerForge** jusqu'à la 0.2.0. Le rebrand garde volontairem
 
 - Icône Windows : `resources/icon.ico` (16 → 256 px, lu par electron-builder). Logo de la Titlebar : `src/renderer/src/assets/logo.svg` (symbole seul, version pour fond sombre).
 - README : `docs/images/nexum-logo-{dark,light}-bg-1200.png` via un `<picture>` qui suit le thème GitHub du visiteur. `docs/images/nexum-social-preview-1280x640.png` = aperçu social à téléverser dans _Settings → Social preview_ du repo.
-- Couleurs : fond `#0E1116`, texte `#E6EAF0`, vert signal `#22C55E` (sur fond sombre) / `#16A34A` (sur fond clair). Typo de marque : Archivo Expanded 700 (logo, titres), IBM Plex Sans / Mono.
+- **Palette d'interface** : `src/renderer/src/theme.ts` (constantes `NEXUM` + `darkTheme` MUI) — Ink `#0D1117` (fond), Graphite `#1A2029` (surfaces, barre latérale), Steel `#8A94A3` (texte secondaire), Paper `#F3F2EE` (texte), Signal `#3FD68C` (accent **et** statut « en ligne » → `primary` et `success`), Signal profond `#117A4A`, Alerte `#F2A33A` (`warning`), Critique `#E5484D` (`error`). Ne jamais écrire de hex en dur dans un composant : passer par le thème (`"background.paper"`, `"text.secondary"`…) ou `NEXUM.*`. Signal étant clair, les boutons pleins ont un texte Ink (`contrastText`). Exception : `backgroundColor` de la `BrowserWindow` (`main/index.ts`, Ink) — le main ne peut pas importer le thème du renderer.
+- Couleurs du **logo** (kit de marque, légèrement différentes de la palette UI) : `#0E1116`, `#E6EAF0`, vert `#22C55E` / `#16A34A` sur fond clair. Typo de marque : Archivo Expanded 700 (logo, titres), IBM Plex Sans / Mono (l'app utilise encore Roboto / police système).
 - Règles : ne pas recolorer ni déformer le logo ; sous 24 px, utiliser l'icône (tuile) plutôt que le logo horizontal.
 
 ### Communication IPC

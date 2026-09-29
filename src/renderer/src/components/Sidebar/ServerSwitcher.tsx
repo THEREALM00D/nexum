@@ -16,6 +16,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import { useTranslation } from "react-i18next";
 import { useServer } from "../../context/ServerContext";
 import type { Page } from "../../App";
+import { NEXUM } from "../../theme";
 
 interface Props {
   onManage: (page: Page) => void;
@@ -44,7 +45,7 @@ export default function ServerSwitcher({ onManage, collapsed }: Props) {
   };
 
   const activeName = state.activeServer?.name ?? t("sidebar.noServer");
-  const activeColor = state.activeServer?.color ?? "#64748b";
+  const activeColor = state.activeServer?.color ?? NEXUM.steel;
 
   const colorDot = (
     <Box
@@ -82,7 +83,7 @@ export default function ServerSwitcher({ onManage, collapsed }: Props) {
                 width: 12,
                 height: 12,
                 borderRadius: "50%",
-                bgcolor: srv.color ?? "#64748b",
+                bgcolor: srv.color ?? NEXUM.steel,
               }}
             />
           </ListItemIcon>
