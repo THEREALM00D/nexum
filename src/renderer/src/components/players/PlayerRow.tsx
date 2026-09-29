@@ -12,6 +12,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useTranslation } from "react-i18next";
 import type { PlayerHistoryEntry } from "@shared/types";
 import { formatDuration, formatRelative } from "./utils";
+import { FONT_MONO } from "../../theme";
 
 interface Props {
   entry: PlayerHistoryEntry;
@@ -31,7 +32,7 @@ export default function PlayerRow({ entry, onRemove }: Props) {
             variant="caption"
             sx={{
               color: "text.secondary",
-              fontFamily: "monospace",
+              fontFamily: FONT_MONO,
               fontSize: 11,
             }}
           >
@@ -65,7 +66,7 @@ export default function PlayerRow({ entry, onRemove }: Props) {
       <TableCell>
         <Typography
           variant="caption"
-          sx={{ fontFamily: "monospace", color: "text.secondary" }}
+          sx={{ fontFamily: FONT_MONO, color: "text.secondary" }}
         >
           {entry.lastIp || "—"}
         </Typography>

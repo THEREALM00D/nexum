@@ -35,6 +35,7 @@ import DepsDialog from "./components/DepsDialog";
 import ConfigFilesList from "./components/ConfigFilesList";
 import ConfigFileEditorDialog from "./components/ConfigFileEditorDialog";
 import { REGISTRY_LABEL } from "./utils/modPageUrl";
+import { FONT_MONO } from "../../../../theme";
 
 type MainTab = "installed" | "browse" | "configs";
 
@@ -339,7 +340,7 @@ export default function ValheimMods() {
             helperText={t("valheimMods.thunderstore.profileHelper")}
             value={profileCode}
             onChange={(e) => setProfileCode(e.target.value)}
-            sx={{ mt: 1, fontFamily: "monospace" }}
+            sx={{ mt: 1, fontFamily: FONT_MONO }}
           />
           <Divider sx={{ my: 2 }}>{t("common.or")}</Divider>
           <Button

@@ -1,6 +1,7 @@
 import { Box, Divider, Paper, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import type { RefObject } from "react";
+import { FONT_MONO } from "../../../theme";
 
 export default function InstallLogs({
   logs,
@@ -27,7 +28,7 @@ export default function InstallLogs({
         sx={{
           height: 180,
           overflowY: "auto",
-          fontFamily: "monospace",
+          fontFamily: FONT_MONO,
           fontSize: 11,
           color: "text.secondary",
           lineHeight: 1.6,

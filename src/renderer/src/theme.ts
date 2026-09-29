@@ -16,6 +16,11 @@ export const NEXUM = {
   line: "#252B35", // séparateurs, bordures
 } as const;
 
+// Polices de la marque (chargées dans main.tsx via @fontsource)
+export const FONT_SANS = '"IBM Plex Sans", "Segoe UI", system-ui, sans-serif';
+export const FONT_MONO =
+  '"IBM Plex Mono", Consolas, "Cascadia Mono", monospace';
+
 export const darkTheme = createTheme({
   palette: {
     mode: "dark",
@@ -40,7 +45,7 @@ export const darkTheme = createTheme({
   },
   shape: { borderRadius: 10 },
   typography: {
-    fontFamily: '"Roboto", sans-serif',
+    fontFamily: FONT_SANS,
     h6: { fontWeight: 600 },
   },
   components: {

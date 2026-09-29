@@ -3,6 +3,7 @@ import { Box, Typography, Paper, Button, Stack, Divider } from "@mui/material";
 import DeleteSweepIcon from "@mui/icons-material/DeleteSweep";
 import { useTranslation } from "react-i18next";
 import { useServer } from "../../context/ServerContext";
+import { FONT_MONO } from "../../theme";
 
 export default function Logs() {
   const { t } = useTranslation();
@@ -52,7 +53,7 @@ export default function Logs() {
           sx={{
             flex: 1,
             overflowY: "auto",
-            fontFamily: "monospace",
+            fontFamily: FONT_MONO,
             fontSize: 12,
             lineHeight: 1.7,
           }}

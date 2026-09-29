@@ -19,6 +19,7 @@ import { useTranslation } from "react-i18next";
 import type { FirewallRuleStatus } from "@shared/types";
 import { useState } from "react";
 import RuleStatus from "./RuleStatus";
+import { FONT_MONO } from "../../theme";
 
 const HEAD_SX = {
   color: "text.secondary",
@@ -162,7 +163,7 @@ export default function StandardRules({
                   <Typography variant="body2">{rule.name}</Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography variant="body2" sx={{ fontFamily: "monospace" }}>
+                  <Typography variant="body2" sx={{ fontFamily: FONT_MONO }}>
                     {rule.port}
                   </Typography>
                 </TableCell>
