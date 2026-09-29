@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/THEREALM00D/server-forge/compare/v0.2.0...v0.3.0) (2026-09-29)
+
+
+### Features
+
+* rebrand ServerForge to Nexum ([#41](https://github.com/THEREALM00D/server-forge/issues/41)) ([147378e](https://github.com/THEREALM00D/server-forge/commit/147378e1afc1158b3082c599526356b9874c6097))
+
 ## [0.2.0](https://github.com/THEREALM00D/server-forge/compare/v0.1.1...v0.2.0) (2026-09-29)
 
 
