@@ -68,6 +68,7 @@ See [docs/installation.md](docs/installation.md) for the full guide.
 - [Scheduling](docs/scheduling.md)
 - [Logs](docs/logs.md)
 - [Valheim player tracking (Odin-Eye)](docs/valheim-players.md)
+- [Valheim mods](docs/valheim-mods.md)
 - [Technical architecture](CLAUDE.md)
 
 ## Tech stack

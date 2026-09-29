@@ -26,6 +26,8 @@
 - On evite la dupplication
 - Preferer les components reutilisable au lieu de dupliquer les choses
 - Toujours ajuster CLAUDE.md a la fin du travail pour avoir la meilleur doc possible
+- **Toujours mettre à jour la doc utilisateur dans la même PR que la feature, sans attendre qu'on le demande** : `docs/*.md` + `docs/*.fr.md` (FR **et** EN, mêmes changements des deux côtés) et `README.md`/`README.fr.md` si le démarrage rapide, la liste des pages de doc ou la stack changent. Une feature visible par l'utilisateur sans page de doc → créer la page (+ son lien dans la section « Documentation » des deux README). Retirer aussi ce qui devient faux (feature supprimée ou comportement changé). CLAUDE.md = doc technique pour les devs, `docs/` = doc utilisateur : les deux sont à tenir à jour.
+- `BACKLOG.md` est dans le `.gitignore` (local uniquement) : le mettre à jour, mais ne jamais annoncer qu'il fait partie d'une PR.
 - utiliser la doc officiel dans ## Utiliser la doc
 - Tu peux te utiliser et mettre a jour BACKLOG.md
 
