@@ -35,7 +35,7 @@ function createWindow(): void {
     autoHideMenuBar: true,
     frame: false,
     titleBarStyle: "hidden",
-    backgroundColor: "#0D1117", // Ink (palette Nexum, voir renderer/src/theme.ts)
+    backgroundColor: "#0E1116", // Ink (palette Nexum, voir renderer/src/theme.ts)
     webPreferences: {
       preload: join(__dirname, "../preload/index.js"),
       sandbox: false, // requis par electron-vite (preload bundlé en CJS)

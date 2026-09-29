@@ -1,17 +1,19 @@
 import { createTheme } from "@mui/material";
 
-// Palette d'interface Nexum (fournie avec l'identité visuelle). Noms repris de
-// la charte : utiliser ces constantes plutôt que des hex en dur.
+// Palette d'interface Nexum, alignée sur les couleurs du logo (kit de marque) :
+// fond, texte et vert sont ceux du logo ; surfaces, bordures et texte gris
+// viennent de l'aperçu social du même kit. Utiliser ces constantes plutôt que
+// des hex en dur.
 export const NEXUM = {
-  ink: "#0D1117", // fond principal
-  graphite: "#1A2029", // surfaces, panneaux, barre latérale
-  steel: "#8A94A3", // texte secondaire
-  paper: "#F3F2EE", // texte principal (sur sombre)
-  signal: "#3FD68C", // accent + statut « en ligne »
-  signalDeep: "#117A4A", // accent sur fond clair / variante foncée
+  ink: "#0E1116", // fond principal (fond du logo)
+  graphite: "#161B22", // surfaces, panneaux, barre latérale
+  steel: "#8B95A5", // texte secondaire
+  paper: "#E6EAF0", // texte principal (barres du logo)
+  signal: "#22C55E", // accent + statut « en ligne » (vert du logo)
+  signalDeep: "#16A34A", // vert du logo sur fond clair / variante foncée
   alert: "#F2A33A", // avertissements, redémarrage
   critical: "#E5484D", // erreurs, crash, actions destructives
-  line: "#2A313C", // séparateurs (dérivé de Graphite)
+  line: "#252B35", // séparateurs, bordures
 } as const;
 
 export const darkTheme = createTheme({
