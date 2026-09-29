@@ -10,7 +10,7 @@ body:
   - type: input
     id: version
     attributes:
-      label: ServerForge version
+      label: Nexum version
       description: Shown at the bottom of the Sidebar (e.g. v0.1.0)
     validations:
       required: true

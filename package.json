@@ -1,10 +1,11 @@
 {
-  "name": "server-forge",
+  "name": "nexum",
+  "productName": "Nexum",
   "version": "0.2.0",
   "description": "Open-source desktop manager for game dedicated servers",
   "main": "./out/main/index.js",
   "author": "",
-  "homepage": "https://github.com",
+  "homepage": "https://github.com/THEREALM00D/nexum",
   "license": "GPL-3.0-or-later",
   "scripts": {
     "format": "prettier --write .",
@@ -23,6 +24,8 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/ibm-plex-sans": "^5.3.0",
     "@mui/icons-material": "^9.4.0",
     "@mui/material": "^9.4.0",
     "@tanstack/react-form": "^1.33.5",

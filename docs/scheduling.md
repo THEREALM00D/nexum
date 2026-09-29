@@ -58,7 +58,7 @@ The restart process:
 
 > ⚠️ **The REST API must be enabled** in `PalWorldSettings.ini` (`RESTAPIEnabled=True`) for the scheduled restart to work correctly.
 
-If the API is disabled, ServerForge shows a warning with an **Enable** button that updates the configuration in one click.
+If the API is disabled, Nexum shows a warning with an **Enable** button that updates the configuration in one click.
 
 > Without the REST API, the shutdown happens via `taskkill /F` with no save — you risk losing recent data.
 

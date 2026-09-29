@@ -38,10 +38,7 @@ export function sendCtrlC(pid: number): Promise<void> {
       `}`,
     ].join("\r\n");
 
-    const scriptPath = join(
-      tmpdir(),
-      `serverforge-ctrlc-${pid}-${Date.now()}.ps1`,
-    );
+    const scriptPath = join(tmpdir(), `nexum-ctrlc-${pid}-${Date.now()}.ps1`);
     try {
       writeFileSync(scriptPath, script, "utf-8");
     } catch {

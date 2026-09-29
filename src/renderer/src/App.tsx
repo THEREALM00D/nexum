@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { ThemeProvider, createTheme, CssBaseline, Box } from "@mui/material";
+import { ThemeProvider, CssBaseline, Box } from "@mui/material";
+import { darkTheme } from "./theme";
 import { ServerProvider, useServer } from "./context/ServerContext";
 import { NotificationProvider } from "./context/NotificationContext";
 import Install from "./pages/Install/Install";
@@ -19,42 +20,6 @@ export type Page =
   | "players"
   | "mods"
   | "servers";
-
-const darkTheme = createTheme({
-  palette: {
-    mode: "dark",
-    primary: { main: "#3b82f6" },
-    success: { main: "#22c55e" },
-    error: { main: "#ef4444" },
-    warning: { main: "#f59e0b" },
-    background: {
-      default: "#0f172a",
-      paper: "#1e293b",
-    },
-    text: {
-      primary: "#f1f5f9",
-      secondary: "#94a3b8",
-    },
-    divider: "#334155",
-  },
-  shape: { borderRadius: 10 },
-  typography: {
-    fontFamily: '"Roboto", sans-serif',
-    h6: { fontWeight: 600 },
-  },
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: { textTransform: "none", fontWeight: 500 },
-      },
-    },
-    MuiPaper: {
-      styleOverrides: {
-        root: { backgroundImage: "none" },
-      },
-    },
-  },
-});
 
 function AppShell() {
   const [page, setPage] = useState<Page>("dashboard");

@@ -9,9 +9,9 @@
 - **~10 GB of disk space** for SteamCMD + the Palworld server
 - Internet connection for the initial download
 
-## Installing ServerForge
+## Installing Nexum
 
-1. Download `server-forge-{version}-setup.exe` from the [Releases](https://github.com/THEREALM00D/server-forge/releases) page
+1. Download `nexum-{version}-setup.exe` from the [Releases](https://github.com/THEREALM00D/nexum/releases) page
 2. Run the installer (accept the administrator elevation prompt)
 3. A shortcut is created on the desktop
 
@@ -21,10 +21,10 @@
 
 SteamCMD is Valve's official utility for downloading Steam servers.
 
-- Open ServerForge
+- Open Nexum
 - Go to **Install** in the sidebar
 - Click **Install SteamCMD**
-- ServerForge downloads and configures SteamCMD automatically (logs visible at the bottom)
+- Nexum downloads and configures SteamCMD automatically (logs visible at the bottom)
 
 ### 2. Install the Palworld server
 
@@ -78,6 +78,6 @@ When a Palworld update is available:
 
 ## Uninstalling
 
-Use the Windows Control Panel or run `Uninstall ServerForge.exe` from the installation folder.
+Use the Windows Control Panel or run `Uninstall Nexum.exe` from the installation folder.
 
 > Palworld server files and backups are **not** removed automatically.

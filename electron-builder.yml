@@ -1,5 +1,7 @@
+# appId conservé tel quel depuis le rebrand ServerForge → Nexum : le changer
+# ferait installer Nexum À CÔTÉ de ServerForge au lieu de le mettre à jour.
 appId: com.serverforge.app
-productName: ServerForge
+productName: Nexum
 directories:
   buildResources: resources
 files:
@@ -13,7 +15,7 @@ asarUnpack:
   - resources/**
   - node_modules/node-pty/**
 win:
-  executableName: server-forge
+  executableName: nexum
   icon: resources/icon.ico
   requestedExecutionLevel: requireAdministrator
   target:

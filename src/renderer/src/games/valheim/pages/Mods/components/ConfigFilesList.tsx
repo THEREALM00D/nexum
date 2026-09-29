@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import type { ValheimModConfigFile } from "@shared/types";
 import { formatDate, formatSize } from "../../../../../utils/format";
 import SearchField from "../../../../../components/common/SearchField";
+import { FONT_MONO } from "../../../../../theme";
 
 interface Props {
   files: ValheimModConfigFile[];
@@ -69,7 +70,7 @@ export default function ConfigFilesList({ files, locale, onOpen }: Props) {
           >
             <Typography
               variant="body2"
-              sx={{ flex: 1, fontFamily: "monospace" }}
+              sx={{ flex: 1, fontFamily: FONT_MONO }}
               noWrap
             >
               {file.name}

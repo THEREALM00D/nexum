@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## ServerForge
+## Nexum
 
 Gestionnaire de serveurs dédiés de jeux vidéo. Supporte Palworld, Valheim et Astroneer.
 
@@ -97,6 +97,24 @@ src/
     └── pages/, services/  # Pages globales (Install, Servers) + services partagés
 ```
 
+### Nom de l'app : Nexum (ex-ServerForge)
+
+L'app s'appelait **ServerForge** jusqu'à la 0.2.0. Le rebrand garde volontairement plusieurs traces de l'ancien nom pour ne pas casser les installations existantes :
+
+- **`appId: com.serverforge.app`** (`electron-builder.yml`) **conservé** : le changer ferait installer Nexum _à côté_ de ServerForge au lieu de le mettre à jour (clé de désinstallation NSIS dérivée de l'appId). `app.setAppUserModelId()` (`main/index.ts`) utilise la même valeur (regroupement barre des tâches + notifications) — valait `com.palworld.manager` avant le rebrand.
+- **Dossier de données** (`main/index.ts`, avant `ready`) : une install existante garde `%APPDATA%\ServerForge` si son `config.json` (electron-store) existe et qu'il n'y en a pas dans `%APPDATA%\Nexum`. Pas de déplacement : SteamCMD (lourd) et des chemins absolus (dossier de backup) y sont persistés. Nouvelles installs → `%APPDATA%\Nexum`. En dev (`!app.isPackaged`) : `%APPDATA%\server-forge`, séparé de l'app installée.
+- **Repo GitHub renommé** `server-forge` → `nexum` : les builds ≤ 0.2.0 ont `server-forge` dans leur `app-update.yml` et comptent sur la redirection GitHub des repos renommés pour trouver les mises à jour — ne jamais recréer un repo nommé `server-forge` (ça casserait la redirection).
+- `User-Agent` des appels aux registres de mods : `USER_AGENT` (`games/valheim/registries.ts`, `Nexum/<version>`).
+- `CHANGELOG.md` garde l'ancien nom (historique).
+
+**Identité visuelle** (kit fourni par le propriétaire, sources SVG hors repo) :
+
+- Icône Windows : `resources/icon.ico` (16 → 256 px, lu par electron-builder). Logo de la Titlebar : `src/renderer/src/assets/logo.svg` (symbole seul, version pour fond sombre).
+- README : `docs/images/nexum-logo-{dark,light}-bg-1200.png` via un `<picture>` qui suit le thème GitHub du visiteur. `docs/images/nexum-social-preview-1280x640.png` = aperçu social à téléverser dans _Settings → Social preview_ du repo.
+- **Palette d'interface** : `src/renderer/src/theme.ts` (constantes `NEXUM` + `darkTheme` MUI), **alignée sur les couleurs du logo** : Ink `#0E1116` (fond), Graphite `#161B22` (surfaces, barre latérale), Steel `#8B95A5` (texte secondaire), Paper `#E6EAF0` (texte), Signal `#22C55E` (accent **et** statut « en ligne » → `primary` et `success`), Signal profond `#16A34A`, Alerte `#F2A33A` (`warning`), Critique `#E5484D` (`error`), bordures `#252B35`. Ne jamais écrire de hex en dur dans un composant : passer par le thème (`"background.paper"`, `"text.secondary"`…) ou `NEXUM.*`. Signal étant clair, les boutons pleins ont un texte Ink (`contrastText`). Exception : `backgroundColor` de la `BrowserWindow` (`main/index.ts`, Ink) — le main ne peut pas importer le thème du renderer.
+- Typo de marque : Archivo Expanded 700 (logo, titres), IBM Plex Sans / Mono, embarquées dans l'app via `@fontsource/ibm-plex-sans` et `@fontsource/ibm-plex-mono` (imports dans `renderer/src/main.tsx`, graisses 400-700 / 400-500 ; pas de Google Fonts : app hors-ligne + CSP `font-src 'self'`). Constantes `FONT_SANS` / `FONT_MONO` dans `theme.ts` — utiliser `fontFamily: FONT_MONO`, jamais `"monospace"` en dur.
+- Règles : ne pas recolorer ni déformer le logo ; sous 24 px, utiliser l'icône (tuile) plutôt que le logo horizontal.
+
 ### Communication IPC
 
 ```
@@ -136,7 +154,7 @@ Chaque jeu expose un manifest typé dans `games/<jeu>/index.ts`. Le shell consom
 - Pour ajouter des strings à une page : éditer `<Page>/__i18n__/fr.ts` ET `en.ts`, puis utiliser `const { t } = useTranslation(); t("page.key")`.
 - **Interpolation** : `t("key", { name: "Bob" })` + `"Hello {{name}}"` dans la traduction.
 - **Values vs labels** : les `value` des `<Select>` (ex: `Casual`, `ItemAndEquipment` de `Difficulty`/`DeathPenalty`) restent les valeurs INI brutes — seuls les labels UI sont traduits.
-- Ce qui n'est **pas** traduit : logs du process serveur, tokens de coloration de logs (`[Manager]`, `[ERR]`), brand « ServerForge » dans la Titlebar.
+- Ce qui n'est **pas** traduit : logs du process serveur, tokens de coloration de logs (`[Manager]`, `[ERR]`), brand « Nexum » dans la Titlebar.
 
 ### Adoption d'un processus existant
 
@@ -193,7 +211,7 @@ Au démarrage, `ServerManager.tryAdopt()` scanne les processus via `systeminform
 
 ## Config INI Astroneer
 
-> **MVP sans RCON** : Astroneer expose un protocole RCON (TCP, `ConsolePort`, défaut 1234) pour liste de joueurs / save / shutdown gracieux, mais ServerForge ne l'implémente pas (choix produit — voir historique du projet). L'arrêt est donc toujours brutal (`taskkill`), comme Valheim. `ConsolePort`/`ConsolePassword` sont éditables dans la page Config (parité avec le groupe RCON de Palworld) mais **sans usage applicatif**, et **sans règle firewall automatique** — ne jamais exposer ce port publiquement (avertissement officiel Astroneer).
+> **MVP sans RCON** : Astroneer expose un protocole RCON (TCP, `ConsolePort`, défaut 1234) pour liste de joueurs / save / shutdown gracieux, mais Nexum ne l'implémente pas (choix produit — voir historique du projet). L'arrêt est donc toujours brutal (`taskkill`), comme Valheim. `ConsolePort`/`ConsolePassword` sont éditables dans la page Config (parité avec le groupe RCON de Palworld) mais **sans usage applicatif**, et **sans règle firewall automatique** — ne jamais exposer ce port publiquement (avertissement officiel Astroneer).
 
 - **2 fichiers INI standards** (contrairement au format Palworld `OptionSettings=(...)` sur une ligne), fusionnés en un seul objet `AstroneerSettings` côté app :
   - `{serverPath}/Astro/Saved/Config/WindowsServer/Engine.ini` → section `[URL]`, clé `Port` (défaut 8777)
@@ -240,13 +258,13 @@ Au démarrage, `ServerManager.tryAdopt()` scanne les processus via `systeminform
 - Une heure quotidienne (`HH:MM` 24h), pas de multi-horaires
 - Flow (Palworld) : annonce (via `/v1/api/announce`) → attente `warningMinutes` → save → shutdown API
 - Scheduler vérifie toutes les 30 secondes
-- **Requiert l'API REST activée** (Palworld) — sinon l'arrêt est brutal (`taskkill`) sans save. Astroneer n'a pas de flow gracieux dans ServerForge (`getStopConfig()` renvoie `restApiEnabled: false` → `taskkill` systématique). **Valheim** n'a pas d'API REST mais a son propre mécanisme : `getStopConfig()` renvoie `gracefulSignal: true`, et `ServerManager.stop()` envoie un vrai CTRL+C (`windowsCtrlC.ts`, via `AttachConsole`/`GenerateConsoleCtrlEvent`) avant de retomber sur `taskkill` en dernier recours (timeout 30s) — recommandé par le manuel officiel pour éviter une sauvegarde corrompue.
+- **Requiert l'API REST activée** (Palworld) — sinon l'arrêt est brutal (`taskkill`) sans save. Astroneer n'a pas de flow gracieux dans Nexum (`getStopConfig()` renvoie `restApiEnabled: false` → `taskkill` systématique). **Valheim** n'a pas d'API REST mais a son propre mécanisme : `getStopConfig()` renvoie `gracefulSignal: true`, et `ServerManager.stop()` envoie un vrai CTRL+C (`windowsCtrlC.ts`, via `AttachConsole`/`GenerateConsoleCtrlEvent`) avant de retomber sur `taskkill` en dernier recours (timeout 30s) — recommandé par le manuel officiel pour éviter une sauvegarde corrompue.
 
 ## Historique des joueurs
 
 - `PlayerHistoryTracker` (`src/main/players/`) est **générique multi-jeux** : il ne connaît que l'interface structurelle `{ getPlayers(): Promise<{ players: TrackedPlayer[] }> }` (voir en tête du fichier), pas les clients concrets. Poll toutes les 30s **uniquement quand le serveur tourne ET qu'une source de données joueurs est configurée pour ce jeu**.
   - **Palworld** : `PalworldApiClient.getPlayers()` (API REST officielle, voir plus haut).
-  - **Valheim** : `OdinEyeApiClient.getPlayers()` (`src/main/games/valheim/OdinEyeApiClient.ts`), qui interroge le plugin BepInEx tiers **Odin-Eye** ([sparcopt.github.io/odin-eye](https://sparcopt.github.io/odin-eye/)). ⚠️ La doc en ligne (`GET /v1/players` → `{ entries: [...] }`) ne correspond pas au plugin v1.0.0.0 réellement installé, qui expose `GET /players` (tableau JSON) et répond un **200 au corps vide** sur tout chemin inconnu (donc un 200 ne prouve rien) — le client essaie les deux et échoue si aucun ne renvoie du JSON. Il adapte `steamId`→`userId`/`id`→`playerId` (pas d'IP disponible côté cette API). `odinEyeUrl` (ex: `http://127.0.0.1:21618`) est un champ de `ValheimLaunchConfig`, édité dans la section Réseau de la page Config Valheim — vide = suivi désactivé. **Installation côté serveur** (à faire manuellement par l'utilisateur, ServerForge ne l'automatise pas) : BepInEx requis, copier les `.dll` de la release Odin-Eye dans `Valheim/BepInEx/plugins/`, démarrer une fois pour générer `Valheim/BepInEx/config/org.bepinex.plugins.odineye.cfg`, y renseigner `HttpServerAddress` sur un port ≠ 2456/2457, redémarrer. ⚠️ Comme Palworld, **pas d'authentification** côté plugin à ce jour — ne jamais exposer ce port publiquement.
+  - **Valheim** : `OdinEyeApiClient.getPlayers()` (`src/main/games/valheim/OdinEyeApiClient.ts`), qui interroge le plugin BepInEx tiers **Odin-Eye** ([sparcopt.github.io/odin-eye](https://sparcopt.github.io/odin-eye/)). ⚠️ La doc en ligne (`GET /v1/players` → `{ entries: [...] }`) ne correspond pas au plugin v1.0.0.0 réellement installé, qui expose `GET /players` (tableau JSON) et répond un **200 au corps vide** sur tout chemin inconnu (donc un 200 ne prouve rien) — le client essaie les deux et échoue si aucun ne renvoie du JSON. Il adapte `steamId`→`userId`/`id`→`playerId` (pas d'IP disponible côté cette API). `odinEyeUrl` (ex: `http://127.0.0.1:21618`) est un champ de `ValheimLaunchConfig`, édité dans la section Réseau de la page Config Valheim — vide = suivi désactivé. **Installation côté serveur** (à faire manuellement par l'utilisateur, Nexum ne l'automatise pas) : BepInEx requis, copier les `.dll` de la release Odin-Eye dans `Valheim/BepInEx/plugins/`, démarrer une fois pour générer `Valheim/BepInEx/config/org.bepinex.plugins.odineye.cfg`, y renseigner `HttpServerAddress` sur un port ≠ 2456/2457, redémarrer. ⚠️ Comme Palworld, **pas d'authentification** côté plugin à ce jour — ne jamais exposer ce port publiquement.
   - `PlayerCountCard` (Dashboard Valheim) s'affiche dès que le serveur tourne, **crossplay ou non**. Compteur (`useValheimPlayerCount`) : Odin-Eye quand `odinEyeUrl` est renseigné (`useOdinEyeOnlineCount` = entrées `online` de l'historique, rafraîchi toutes les 10s ; latence max ~30s du tracker), sinon regex `now N player(s)` sur les logs — ⚠️ ces lignes viennent de la session PlayFab et **n'existent qu'avec `-crossplay`** : hors crossplay sans Odin-Eye, le compteur affiche « — ». Le code de connexion / IP ne sont **volontairement pas affichés** (uniquement dans les logs crossplay, Odin-Eye ne les expose pas : `/v1/serverInfo` = `maxNumberOfPlayers`/`gameVersion`/`steamAppId`).
   - **Astroneer** : pas de source (MVP sans RCON, voir plus haut) — le tracker ne démarre jamais pour ce jeu.
   - Le routage par jeu (`gameType` → bon client) est fait dans `getApiClientForServer` (`main/ipc/handlers.ts`).

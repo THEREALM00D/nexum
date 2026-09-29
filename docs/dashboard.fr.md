@@ -2,7 +2,7 @@
 
 🇬🇧 [English](dashboard.md) | 🇫🇷 Français
 
-Vue principale de ServerForge — statut du serveur, statistiques, contrôles et joueurs connectés.
+Vue principale de Nexum — statut du serveur, statistiques, contrôles et joueurs connectés.
 
 ## Statut du serveur
 

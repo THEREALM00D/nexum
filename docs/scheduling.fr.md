@@ -58,7 +58,7 @@ Le processus de redémarrage :
 
 > ⚠️ **L'API REST doit être activée** dans `PalWorldSettings.ini` (`RESTAPIEnabled=True`) pour que le redémarrage planifié fonctionne correctement.
 
-Si l'API est désactivée, ServerForge affiche un avertissement avec un bouton **Activer** qui modifie la configuration en un clic.
+Si l'API est désactivée, Nexum affiche un avertissement avec un bouton **Activer** qui modifie la configuration en un clic.
 
 > Sans API REST, l'arrêt se fait avec `taskkill /F` sans sauvegarde — vous risquez de perdre des données récentes.
 

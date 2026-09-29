@@ -7,7 +7,7 @@ import type {
   ModUpdate,
   ModUpdateCheck,
 } from "../../../shared/types";
-import { REGISTRIES, REGISTRY_API_BASE } from "./registries";
+import { REGISTRIES, REGISTRY_API_BASE, USER_AGENT } from "./registries";
 // Importer les types générés depuis le spec OpenAPI Thunderstore
 // Régénérer avec : yarn generate:thunderstore
 // Hexium expose une API "compatible Thunderstore" avec le même schéma (mêmes
@@ -66,7 +66,7 @@ export class ModRegistryClient {
             hostname: parsed.hostname,
             path: parsed.pathname + parsed.search,
             headers: {
-              "User-Agent": "ServerForge/1.0.0",
+              "User-Agent": USER_AGENT,
               Accept: "application/json",
             },
           },

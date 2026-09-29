@@ -113,7 +113,7 @@ export interface UpdateCheckResult {
   requiredBuild: string | null;
 }
 
-// --- Mise à jour de ServerForge lui-même (electron-updater, releases GitHub) ---
+// --- Mise à jour de Nexum lui-même (electron-updater, releases GitHub) ---
 export type AppUpdateStatus =
   | { state: "idle" }
   | { state: "checking" }

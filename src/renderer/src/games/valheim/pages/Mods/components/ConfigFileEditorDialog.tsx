@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import type { CfgEntry } from "../utils/cfgParser";
 import SearchField from "../../../../../components/common/SearchField";
 import CfgStructuredEditor from "./CfgStructuredEditor";
+import { FONT_MONO } from "../../../../../theme";
 
 interface Props {
   fileName: string | null;
@@ -60,7 +61,7 @@ export default function ConfigFileEditorDialog({
         maxWidth="sm"
         fullWidth
       >
-        <DialogTitle sx={{ fontFamily: "monospace" }}>{fileName}</DialogTitle>
+        <DialogTitle sx={{ fontFamily: FONT_MONO }}>{fileName}</DialogTitle>
         <DialogContent>
           <Box sx={{ mt: 1 }}>
             <SearchField

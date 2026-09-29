@@ -23,6 +23,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useTranslation } from "react-i18next";
 import type { Server, ServerStatus } from "@shared/types";
 import { STATUS_COLOR } from "../../../utils/status";
+import { FONT_MONO, NEXUM } from "../../../theme";
 
 interface Props {
   servers: Server[];
@@ -115,7 +116,7 @@ export default function ServersTable({
                           width: 10,
                           height: 10,
                           borderRadius: "50%",
-                          bgcolor: srv.color ?? "#64748b",
+                          bgcolor: srv.color ?? NEXUM.steel,
                         }}
                       />
                       <Typography
@@ -143,7 +144,7 @@ export default function ServersTable({
                   <TableCell>
                     <Typography
                       variant="caption"
-                      sx={{ fontFamily: "monospace", color: "text.secondary" }}
+                      sx={{ fontFamily: FONT_MONO, color: "text.secondary" }}
                     >
                       {srv.path}
                     </Typography>

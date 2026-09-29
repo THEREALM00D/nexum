@@ -11,13 +11,13 @@ Par défaut, Windows bloque les connexions entrantes vers `PalServer.exe`. Sans 
 - Les joueurs **ne peuvent pas rejoindre** votre serveur depuis l'extérieur
 - L'API REST et le RCON sont inaccessibles depuis le réseau local
 
-ServerForge crée des règles `netsh` ciblées pour les ports utilisés.
+Nexum crée des règles `netsh` ciblées pour les ports utilisés.
 
 ## Permissions
 
-La gestion des règles requiert les **droits administrateur**. ServerForge détecte automatiquement si vous êtes admin et désactive les boutons sinon.
+La gestion des règles requiert les **droits administrateur**. Nexum détecte automatiquement si vous êtes admin et désactive les boutons sinon.
 
-> Lancez ServerForge en mode administrateur (clic droit → **Exécuter en tant qu'administrateur**) ou utilisez l'installateur qui élève les privilèges automatiquement.
+> Lancez Nexum en mode administrateur (clic droit → **Exécuter en tant qu'administrateur**) ou utilisez l'installateur qui élève les privilèges automatiquement.
 
 ## Règles standard
 
@@ -40,7 +40,7 @@ Chaque règle a un toggle. Activer crée la règle dans le firewall Windows ; d�
 ### Tout activer / Tout supprimer
 
 - **Tout activer** : crée les 3 règles standard d'un coup
-- **Tout supprimer** : retire toutes les règles ServerForge (standard + custom)
+- **Tout supprimer** : retire toutes les règles Nexum (standard + custom)
 
 ### Règles personnalisées
 
@@ -50,7 +50,7 @@ Pour exposer d'autres ports (mods, services tiers) :
 2. Cliquez sur **Créer**
 3. La règle apparaît dans la liste avec un bouton de suppression
 
-> Les règles custom sont préfixées par `ServerForge - ` dans `netsh advfirewall` pour faciliter l'identification.
+> Les règles custom sont préfixées par `Nexum - ` dans `netsh advfirewall` pour faciliter l'identification.
 
 ## Exposer le serveur sur Internet
 
@@ -69,7 +69,7 @@ Le firewall Windows ne suffit pas — vous devez aussi :
 Pour tester que les règles sont actives :
 
 ```powershell
-netsh advfirewall firewall show rule name=all | findstr "ServerForge"
+netsh advfirewall firewall show rule name=all | findstr "Nexum"
 ```
 
 Vous devriez voir les règles créées par l'application.

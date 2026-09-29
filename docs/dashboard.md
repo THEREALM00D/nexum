@@ -2,7 +2,7 @@
 
 🇬🇧 English | 🇫🇷 [Français](dashboard.fr.md)
 
-ServerForge's main view — server status, statistics, controls, and connected players.
+Nexum's main view — server status, statistics, controls, and connected players.
 
 ## Server status
 

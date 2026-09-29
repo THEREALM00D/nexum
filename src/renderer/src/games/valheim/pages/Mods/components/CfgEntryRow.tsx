@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import type { CfgEntry } from "../utils/cfgParser";
+import { FONT_MONO } from "../../../../../theme";
 
 interface Props {
   entry: CfgEntry;
@@ -23,7 +24,7 @@ function FieldLabel({ entry }: { entry: CfgEntry }) {
     <Box sx={{ width: 200, flexShrink: 0 }}>
       <Typography
         variant="body2"
-        sx={{ fontFamily: "monospace", overflowWrap: "break-word" }}
+        sx={{ fontFamily: FONT_MONO, overflowWrap: "break-word" }}
       >
         {entry.key}
       </Typography>
