@@ -110,6 +110,13 @@ export default {
       loadFailed: "Impossible de lister les fichiers de config",
       readFailed: "Impossible de lire ce fichier de config",
       saveFailed: "Impossible d'enregistrer ce fichier de config",
+      unsaved: {
+        title: "Modifications non enregistrées",
+        message:
+          "Vous avez modifié {{name}} sans enregistrer. Quitter quand même ?",
+        keepEditing: "Continuer l'édition",
+        discard: "Quitter sans enregistrer",
+      },
     },
   },
 };

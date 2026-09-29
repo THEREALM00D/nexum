@@ -109,6 +109,12 @@ export default {
       loadFailed: "Unable to list config files",
       readFailed: "Unable to read this config file",
       saveFailed: "Unable to save this config file",
+      unsaved: {
+        title: "Unsaved changes",
+        message: "You changed {{name}} without saving. Close anyway?",
+        keepEditing: "Keep editing",
+        discard: "Discard changes",
+      },
     },
   },
 };
