@@ -107,6 +107,13 @@ L'app s'appelait **ServerForge** jusqu'à la 0.2.0. Le rebrand garde volontairem
 - `User-Agent` des appels aux registres de mods : `USER_AGENT` (`games/valheim/registries.ts`, `Nexum/<version>`).
 - `CHANGELOG.md` garde l'ancien nom (historique).
 
+**Identité visuelle** (kit fourni par le propriétaire, sources SVG hors repo) :
+
+- Icône Windows : `resources/icon.ico` (16 → 256 px, lu par electron-builder). Logo de la Titlebar : `src/renderer/src/assets/logo.svg` (symbole seul, version pour fond sombre).
+- README : `docs/images/nexum-logo-{dark,light}-bg-1200.png` via un `<picture>` qui suit le thème GitHub du visiteur. `docs/images/nexum-social-preview-1280x640.png` = aperçu social à téléverser dans _Settings → Social preview_ du repo.
+- Couleurs : fond `#0E1116`, texte `#E6EAF0`, vert signal `#22C55E` (sur fond sombre) / `#16A34A` (sur fond clair). Typo de marque : Archivo Expanded 700 (logo, titres), IBM Plex Sans / Mono.
+- Règles : ne pas recolorer ni déformer le logo ; sous 24 px, utiliser l'icône (tuile) plutôt que le logo horizontal.
+
 ### Communication IPC
 
 ```

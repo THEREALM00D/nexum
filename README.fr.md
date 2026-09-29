@@ -1,4 +1,9 @@
-# Nexum
+<h1 align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/nexum-logo-dark-bg-1200.png">
+    <img src="docs/images/nexum-logo-light-bg-1200.png" alt="Nexum" width="360">
+  </picture>
+</h1>
 
 🇬🇧 [English](README.md) | 🇫🇷 Français
 

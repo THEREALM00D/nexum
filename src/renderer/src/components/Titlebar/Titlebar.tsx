@@ -2,7 +2,7 @@ import { Box, IconButton, Typography } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
 import CropSquareIcon from "@mui/icons-material/CropSquare";
 import CloseIcon from "@mui/icons-material/Close";
-import logo from "../../assets/logo.png";
+import logo from "../../assets/logo.svg";
 
 export default function Titlebar() {
   return (
