@@ -16,7 +16,7 @@ export const astroneerServerConfig = {
   },
 
   getStopConfig() {
-    // Astroneer n'a pas d'API d'administration exposée par ServerForge
+    // Astroneer n'a pas d'API d'administration exposée par Nexum
     // (MVP sans RCON) — arrêt toujours brutal, comme Valheim.
     return {
       restApiEnabled: false,

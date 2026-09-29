@@ -1,8 +1,6 @@
-# ServerForge
+# Nexum
 
 🇬🇧 English | 🇫🇷 [Français](README.fr.md)
-
-> ⚠️ **The current name and logo are temporary.** The project's final branding has not been decided yet.
 
 Desktop manager for dedicated game servers. Compatible with **Palworld**, **Valheim**, and **Astroneer**.
 
@@ -11,16 +9,18 @@ Desktop manager for dedicated game servers. Compatible with **Palworld**, **Valh
 
 ## Features
 
-- **Automatic installation** of SteamCMD and the game server
-- **Start / stop / restart** with graceful shutdown via the REST API
-- **Real-time monitoring**: CPU, RAM, uptime, server FPS, online players
-- **INI configuration editor** with difficulty presets (Casual / Normal / Hard)
-- **Player management**: kick, ban, unban directly from the dashboard
-- **Windows firewall management** (automatic + custom rules)
+- **Multiple servers, multiple games**: Palworld, Valheim and Astroneer from one app, no command line
+- **Automatic install** of SteamCMD and the game server, or **import a server that is already installed** (game and worlds detected automatically)
+- **Start / stop / restart** with clean shutdown (Palworld REST API, Valheim CTRL+C) so saves don't get corrupted
+- **Real-time monitoring**: CPU, RAM, uptime, online players, server console
+- **Visual configuration editor** for each game (Palworld difficulty presets, Valheim world modifiers)
+- **Valheim mods**: browse, install and update from **Thunderstore and Hexium**, automatic dependencies, r2modman/Gale profile import, BepInEx config editor, deprecated mods flagged
+- **Player tracking**: history, playtime, sessions (native on Palworld, Valheim via Odin-Eye); kick / ban / unban on Palworld
+- **Windows firewall**: rules created automatically + custom rules
 - **Scheduled automatic backups** with rotation
 - **Daily scheduled restart** with in-game announcement and save
-- **Update checking** via SteamCMD
-- **Real-time logs** of the server process
+- **Built-in app updates**
+- **Bilingual UI**: English / French
 
 ## Screenshots
 
@@ -41,16 +41,16 @@ Desktop manager for dedicated game servers. Compatible with **Palworld**, **Valh
 
 ## Installation
 
-Download the latest version from [Releases](https://github.com/THEREALM00D/server-forge/releases):
+Download the latest version from [Releases](https://github.com/THEREALM00D/nexum/releases):
 
-- **Installer**: `server-forge-{version}-setup.exe`
-- **Portable**: `server-forge-{version}-portable.exe`
+- **Installer**: `nexum-{version}-setup.exe`
+- **Portable**: `nexum-{version}-portable.exe`
 
 > The application requires **administrator rights** to manage Windows firewall rules.
 
 ## Quick start
 
-1. Launch **ServerForge**
+1. Launch **Nexum**
 2. Go to **Install**
 3. Click **Install SteamCMD** (automatic download)
 4. Choose a destination folder and install the server for your game — or, if it is already installed, go to **Servers → Add server** and pick its folder

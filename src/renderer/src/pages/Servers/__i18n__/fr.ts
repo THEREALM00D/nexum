@@ -36,7 +36,7 @@ export default {
       edit: "Modifier",
       delete: "Supprimer",
       deleteConfirm:
-        "Supprimer le serveur « {{name}} » ? Les fichiers du jeu restent intacts, seules les configurations ServerForge sont effacées.",
+        "Supprimer le serveur « {{name}} » ? Les fichiers du jeu restent intacts, seules les configurations Nexum sont effacées.",
       deleteTypeToConfirm: "Tapez « {{name}} » pour confirmer",
     },
     dialog: {

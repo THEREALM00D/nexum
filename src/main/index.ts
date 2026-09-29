@@ -1,8 +1,29 @@
 import { app, BrowserWindow, session } from "electron/main";
 import { shell } from "electron";
 import { join } from "path";
+import { existsSync } from "fs";
 import { registerIpcHandlers } from "./ipc/handlers";
 import { checkForUpdateOnStartup } from "./update/AutoUpdater";
+
+// Dossier de données — doit être fixé avant `ready` et avant tout accès à
+// userData.
+// - Dev : dossier séparé de l'app installée (historiquement `server-forge`).
+// - Rebrand ServerForge → Nexum : une installation existante garde son dossier
+//   (%APPDATA%\ServerForge — serveurs, historique joueurs, SteamCMD, backups
+//   par défaut). Le déplacer casserait les chemins absolus persistés (dossier
+//   de backup, etc.) : on le réutilise tel quel. `config.json` = fichier
+//   electron-store, présent dès qu'un dossier a réellement servi.
+if (!app.isPackaged) {
+  app.setPath("userData", join(app.getPath("appData"), "server-forge"));
+} else {
+  const legacyUserData = join(app.getPath("appData"), "ServerForge");
+  if (
+    !existsSync(join(app.getPath("userData"), "config.json")) &&
+    existsSync(join(legacyUserData, "config.json"))
+  ) {
+    app.setPath("userData", legacyUserData);
+  }
+}
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -43,7 +64,9 @@ function createWindow(): void {
 
 app.whenReady().then(async () => {
   if (process.platform === "win32") {
-    app.setAppUserModelId("com.palworld.manager");
+    // Doit correspondre à `appId` (electron-builder.yml) : regroupement barre
+    // des tâches + notifications Windows.
+    app.setAppUserModelId("com.serverforge.app");
   }
 
   // CSP en production uniquement (dev : Vite HMR utilise eval)

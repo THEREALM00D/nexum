@@ -6,7 +6,7 @@ Système de sauvegardes ZIP du dossier `SaveGames` du serveur Palworld.
 
 ## Que sauvegarde-t-on ?
 
-ServerForge zippe le dossier suivant :
+Nexum zippe le dossier suivant :
 
 ```
 {serverPath}/Pal/Saved/SaveGames/
@@ -100,4 +100,4 @@ Si le serveur ne démarre plus après corruption :
 
 ### Valheim : fichiers `.old` intégrés
 
-Valheim garde lui-même une copie de l'état de sauvegarde précédent à côté du fichier actif (`worldname.db.old` / `worldname.fwl.old`), rafraîchie à chaque cycle de sauvegarde. Comme le backup ZIP de ServerForge zippe tout le dossier de sauvegarde, ces fichiers `.old` sont déjà inclus automatiquement dans chaque backup. En dépannage rapide, sans même passer par ServerForge, vous pouvez en restaurer un manuellement en retirant l'extension `.old` — utile si une corruption est survenue entre deux backups planifiés.
+Valheim garde lui-même une copie de l'état de sauvegarde précédent à côté du fichier actif (`worldname.db.old` / `worldname.fwl.old`), rafraîchie à chaque cycle de sauvegarde. Comme le backup ZIP de Nexum zippe tout le dossier de sauvegarde, ces fichiers `.old` sont déjà inclus automatiquement dans chaque backup. En dépannage rapide, sans même passer par Nexum, vous pouvez en restaurer un manuellement en retirant l'extension `.old` — utile si une corruption est survenue entre deux backups planifiés.

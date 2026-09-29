@@ -101,7 +101,7 @@ export default {
       RESTAPIEnabled: {
         label: "Activer REST API",
         description:
-          "Active l'API REST officielle (requise pour les redémarrages planifiés gracieux et les commandes admin de ServerForge).",
+          "Active l'API REST officielle (requise pour les redémarrages planifiés gracieux et les commandes admin de Nexum).",
       },
       RESTAPIPort: {
         label: "Port REST API",

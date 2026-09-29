@@ -10,7 +10,7 @@
 {serverPath}/Pal/Saved/Config/WindowsServer/PalWorldSettings.ini
 ```
 
-ServerForge lit ce fichier au chargement de la page **Configuration** et écrit les modifications quand vous cliquez sur **Enregistrer**.
+Nexum lit ce fichier au chargement de la page **Configuration** et écrit les modifications quand vous cliquez sur **Enregistrer**.
 
 > ⚠️ Le serveur doit être **redémarré** pour que les changements prennent effet.
 
@@ -53,12 +53,12 @@ Trois presets prédéfinis modifient une vingtaine de paramètres en un clic :
 
 ### API REST
 
-| Paramètre        | Description                                            |
-| ---------------- | ------------------------------------------------------ |
-| `RESTAPIEnabled` | Active l'API REST locale (recommandé pour ServerForge) |
-| `RESTAPIPort`    | Port HTTP de l'API (défaut 8212)                       |
+| Paramètre        | Description                                      |
+| ---------------- | ------------------------------------------------ |
+| `RESTAPIEnabled` | Active l'API REST locale (recommandé pour Nexum) |
+| `RESTAPIPort`    | Port HTTP de l'API (défaut 8212)                 |
 
-> **Important** : avec l'API REST activée, ServerForge peut afficher les joueurs, gérer kick/ban, et arrêter proprement le serveur avec sauvegarde.
+> **Important** : avec l'API REST activée, Nexum peut afficher les joueurs, gérer kick/ban, et arrêter proprement le serveur avec sauvegarde.
 
 ### RCON
 
@@ -96,6 +96,6 @@ Le bouton **Enregistrer** :
 
 ## Conseils
 
-- **Activez RESTAPI** dès le départ pour profiter de toutes les fonctionnalités de ServerForge
+- **Activez RESTAPI** dès le départ pour profiter de toutes les fonctionnalités de Nexum
 - Définissez un **mot de passe admin fort** : il sert à l'API REST et au RCON
 - **Sauvegardez votre INI** avant de tester un preset (le bouton de preset écrase les valeurs concernées)

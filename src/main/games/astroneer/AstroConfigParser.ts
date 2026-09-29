@@ -29,7 +29,7 @@ const INTEGER_FIELDS = new Set([
 /**
  * Valeurs par défaut sourcées de la doc communautaire (blog.astroneer.space +
  * documentation tierce). ConsolePort/ConsolePassword sont exposés en édition
- * mais sans usage applicatif (pas de client RCON dans ServerForge) — ne
+ * mais sans usage applicatif (pas de client RCON dans Nexum) — ne
  * jamais ouvrir ce port au firewall (avertissement officiel Astroneer).
  */
 export const DEFAULT_SETTINGS: AstroneerSettings = {
@@ -120,7 +120,7 @@ export class AstroConfigParser {
    * en préservant tout le reste du fichier (autres sections, clés non
    * suivies par l'app, commentaires) — Engine.ini/AstroServerSettings.ini
    * sont des .ini Unreal Engine génériques qui peuvent contenir bien plus
-   * que ce que ServerForge édite.
+   * que ce que Nexum édite.
    */
   private writeIni(
     iniPath: string,

@@ -100,7 +100,7 @@ export default {
       RESTAPIEnabled: {
         label: "Enable REST API",
         description:
-          "Enables the official REST API (required for graceful scheduled restarts and ServerForge admin commands).",
+          "Enables the official REST API (required for graceful scheduled restarts and Nexum admin commands).",
       },
       RESTAPIPort: {
         label: "REST API port",

@@ -21,7 +21,7 @@ import type {
   ValheimModConfigFile,
 } from "../../../shared/types";
 import { ModRegistryClient } from "./ModRegistryClient";
-import { REGISTRIES, REGISTRY_API_BASE } from "./registries";
+import { REGISTRIES, REGISTRY_API_BASE, USER_AGENT } from "./registries";
 import { backupBeforeWrite } from "../../utils/ini";
 
 interface TSVersion {
@@ -250,7 +250,7 @@ export class ValheimModsManager {
 
   private static async fetchJson<T>(url: string): Promise<T> {
     const { statusCode, body } = await ValheimModsManager.fetchRaw(url, {
-      "User-Agent": "ServerForge/1.0.0",
+      "User-Agent": USER_AGENT,
       Accept: "application/json",
     });
     try {
@@ -264,7 +264,7 @@ export class ValheimModsManager {
 
   private static async fetchText(url: string): Promise<string> {
     const { body } = await ValheimModsManager.fetchRaw(url, {
-      "User-Agent": "ServerForge/1.0.0",
+      "User-Agent": USER_AGENT,
     });
     return body;
   }

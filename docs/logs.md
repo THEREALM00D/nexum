@@ -2,17 +2,17 @@
 
 🇬🇧 English | 🇫🇷 [Français](logs.fr.md)
 
-Real-time display of the `PalServer.exe` process output and ServerForge's internal messages.
+Real-time display of the `PalServer.exe` process output and Nexum's internal messages.
 
 ## Log sources
 
 Three sources are merged into the same view:
 
-| Prefix      | Origin                                                   |
-| ----------- | -------------------------------------------------------- |
-| `[Manager]` | ServerForge's internal messages (start, stop, API, etc.) |
-| `[ERR]`     | Error output (stderr) from the server process            |
-| _(none)_    | Standard output (stdout) from the server process         |
+| Prefix      | Origin                                             |
+| ----------- | -------------------------------------------------- |
+| `[Manager]` | Nexum's internal messages (start, stop, API, etc.) |
+| `[ERR]`     | Error output (stderr) from the server process      |
+| _(none)_    | Standard output (stdout) from the server process   |
 
 > Note: `[Manager]` messages are currently emitted in French only, regardless of the app's display language (see [CLAUDE.md](../CLAUDE.md)).
 
@@ -36,7 +36,7 @@ For detailed server logs (player connections, Unreal Engine errors, etc.), check
 
 ### Limited buffer
 
-ServerForge keeps the **last 500 lines** in memory. Beyond that, older lines are removed from the display (but not from the process's own history).
+Nexum keeps the **last 500 lines** in memory. Beyond that, older lines are removed from the display (but not from the process's own history).
 
 ## Actions
 
@@ -84,8 +84,8 @@ Very little output as long as there's no connection or error.
 
 To investigate a crash or unexpected behavior:
 
-1. **ServerForge logs**: look for `[ERR]` or `[Manager]` in the view
+1. **Nexum logs**: look for `[ERR]` or `[Manager]` in the view
 2. **Palworld logs**: open the latest file in `{serverPath}/Pal/Saved/Logs/`
 3. **Windows Event Viewer**: Application → errors related to `PalServer.exe`
 
-When reporting a bug to the Palworld team, attaching files from `Pal/Saved/Logs/` is more useful than ServerForge's own log.
+When reporting a bug to the Palworld team, attaching files from `Pal/Saved/Logs/` is more useful than Nexum's own log.

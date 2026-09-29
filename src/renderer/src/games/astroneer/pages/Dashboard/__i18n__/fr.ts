@@ -4,6 +4,6 @@ export default {
     noServerPath: "Aucun chemin configuré",
     waitingStats: "En attente des statistiques système...",
     noApi:
-      "ServerForge n'utilise pas le protocole console/RCON d'Astroneer (MVP) — les statistiques de jeu (joueurs, monde) ne sont pas disponibles.",
+      "Nexum n'utilise pas le protocole console/RCON d'Astroneer (MVP) — les statistiques de jeu (joueurs, monde) ne sont pas disponibles.",
   },
 };

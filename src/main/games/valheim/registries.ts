@@ -1,3 +1,4 @@
+import { app } from "electron/main";
 import type { ModRegistry } from "../../../shared/types";
 
 export const REGISTRIES: ModRegistry[] = ["thunderstore", "hexium"];
@@ -24,3 +25,6 @@ export function modPageUrl(
     ? `https://valheim.hexium.gg/mods/${owner}/${name}`
     : `https://thunderstore.io/c/valheim/p/${owner}/${name}/`;
 }
+
+// User-Agent envoyé aux registres de mods (bonne pratique d'API publique).
+export const USER_AGENT = `Nexum/${app.getVersion()}`;

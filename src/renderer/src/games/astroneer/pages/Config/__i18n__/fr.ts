@@ -69,7 +69,7 @@ export default {
       BackupSaveGamesInterval: {
         label: "Intervalle backup interne (s)",
         description:
-          "Intervalle entre chaque backup interne du jeu (indépendant des sauvegardes ServerForge).",
+          "Intervalle entre chaque backup interne du jeu (indépendant des sauvegardes Nexum).",
       },
       MaxServerFramerate: {
         label: "Framerate max (joueurs connectés)",
@@ -94,7 +94,7 @@ export default {
       ConsolePort: {
         label: "Port console (RCON)",
         description:
-          "Port TCP du protocole console/RCON. À ne jamais exposer publiquement — ServerForge ne l'utilise pas (MVP).",
+          "Port TCP du protocole console/RCON. À ne jamais exposer publiquement — Nexum ne l'utilise pas (MVP).",
       },
       ConsolePassword: {
         label: "Mot de passe console (RCON)",

@@ -1,8 +1,6 @@
-# ServerForge
+# Nexum
 
 🇬🇧 [English](README.md) | 🇫🇷 Français
-
-> ⚠️ **Le nom et le logo actuels sont temporaires.** Le branding définitif du projet n'est pas encore arrêté.
 
 Gestionnaire de bureau pour serveurs dédiés de jeux vidéo. Compatible avec **Palworld**, **Valheim** et **Astroneer**.
 
@@ -11,16 +9,18 @@ Gestionnaire de bureau pour serveurs dédiés de jeux vidéo. Compatible avec **
 
 ## Fonctionnalités
 
-- **Installation automatique** de SteamCMD et du serveur Palworld
-- **Démarrage / arrêt / redémarrage** avec sauvegarde gracieuse via l'API REST
-- **Surveillance temps réel** : CPU, RAM, uptime, FPS serveur, joueurs en ligne
-- **Éditeur de configuration** INI avec presets de difficulté (Casual / Normal / Hard)
-- **Gestion des joueurs** : kick, ban, unban directement depuis le dashboard
-- **Gestion du firewall Windows** (règles automatiques + personnalisées)
-- **Sauvegardes** automatiques planifiables avec rotation
-- **Redémarrage planifié** quotidien avec annonce et sauvegarde
-- **Vérification des mises à jour** Palworld via SteamCMD
-- **Logs en temps réel** du processus serveur
+- **Plusieurs serveurs, plusieurs jeux** : Palworld, Valheim et Astroneer depuis une seule app, sans ligne de commande
+- **Installation automatique** de SteamCMD et du serveur, ou **import d'un serveur déjà installé** (jeu et mondes détectés automatiquement)
+- **Démarrage / arrêt / redémarrage** avec arrêt propre (API REST Palworld, CTRL+C Valheim) pour ne pas corrompre les sauvegardes
+- **Surveillance en temps réel** : CPU, RAM, uptime, joueurs en ligne, console du serveur
+- **Éditeur de configuration** visuel pour chaque jeu (presets de difficulté Palworld, modificateurs de monde Valheim)
+- **Mods Valheim** : parcourir, installer et mettre à jour depuis **Thunderstore et Hexium**, dépendances automatiques, import de profils r2modman/Gale, éditeur de configs BepInEx, mods dépréciés signalés
+- **Suivi des joueurs** : historique, temps de jeu, sessions (Palworld natif, Valheim via Odin-Eye) ; kick / ban / unban sur Palworld
+- **Firewall Windows** : règles créées automatiquement + règles personnalisées
+- **Sauvegardes** automatiques planifiées avec rotation
+- **Redémarrage planifié** quotidien avec annonce en jeu et sauvegarde
+- **Mise à jour de l'app intégrée**
+- **Interface bilingue** français / anglais
 
 ## Captures d'écran
 
@@ -41,16 +41,16 @@ Gestionnaire de bureau pour serveurs dédiés de jeux vidéo. Compatible avec **
 
 ## Installation
 
-Téléchargez la dernière version depuis [Releases](https://github.com/THEREALM00D/server-forge/releases) :
+Téléchargez la dernière version depuis [Releases](https://github.com/THEREALM00D/nexum/releases) :
 
-- **Installateur** : `server-forge-{version}-setup.exe`
-- **Portable** : `server-forge-{version}-portable.exe`
+- **Installateur** : `nexum-{version}-setup.exe`
+- **Portable** : `nexum-{version}-portable.exe`
 
 > L'application requiert les **droits administrateur** pour gérer les règles du firewall Windows.
 
 ## Démarrage rapide
 
-1. Lancez **ServerForge**
+1. Lancez **Nexum**
 2. Allez dans **Installation**
 3. Cliquez sur **Installer SteamCMD** (téléchargement automatique)
 4. Choisissez un dossier de destination et installez le serveur du jeu souhaité — ou, s'il est déjà installé, allez dans **Serveurs → Ajouter un serveur** et choisissez son dossier

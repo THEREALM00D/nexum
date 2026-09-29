@@ -20,12 +20,12 @@ export default function Titlebar() {
       }}
     >
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <img src={logo} alt="ServerForge" width={20} height={20} />
+        <img src={logo} alt="Nexum" width={20} height={20} />
         <Typography
           variant="body2"
           sx={{ fontWeight: 600, color: "text.primary", letterSpacing: 0.5 }}
         >
-          ServerForge
+          Nexum
         </Typography>
       </Box>
 

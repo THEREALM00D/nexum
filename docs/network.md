@@ -11,13 +11,13 @@ By default, Windows blocks inbound connections to `PalServer.exe`. Without a fir
 - Players **cannot join** your server from outside
 - The REST API and RCON are unreachable even from the local network
 
-ServerForge creates targeted `netsh` rules for the ports in use.
+Nexum creates targeted `netsh` rules for the ports in use.
 
 ## Permissions
 
-Managing rules requires **administrator rights**. ServerForge automatically detects whether you're an admin and disables the buttons otherwise.
+Managing rules requires **administrator rights**. Nexum automatically detects whether you're an admin and disables the buttons otherwise.
 
-> Launch ServerForge as administrator (right-click → **Run as administrator**) or use the installer, which elevates privileges automatically.
+> Launch Nexum as administrator (right-click → **Run as administrator**) or use the installer, which elevates privileges automatically.
 
 ## Standard rules
 
@@ -40,7 +40,7 @@ Each rule has a toggle. Enabling it creates the rule in the Windows firewall; di
 ### Enable all / Remove all
 
 - **Enable all**: creates the 3 standard rules at once
-- **Remove all**: removes every ServerForge rule (standard + custom)
+- **Remove all**: removes every Nexum rule (standard + custom)
 
 ### Custom rules
 
@@ -50,7 +50,7 @@ To expose other ports (mods, third-party services):
 2. Click **Create**
 3. The rule appears in the list with a delete button
 
-> Custom rules are prefixed with `ServerForge - ` in `netsh advfirewall` to make them easy to identify.
+> Custom rules are prefixed with `Nexum - ` in `netsh advfirewall` to make them easy to identify.
 
 ## Exposing the server to the Internet
 
@@ -69,7 +69,7 @@ The Windows firewall alone isn't enough — you also need to:
 To test that the rules are active:
 
 ```powershell
-netsh advfirewall firewall show rule name=all | findstr "ServerForge"
+netsh advfirewall firewall show rule name=all | findstr "Nexum"
 ```
 
 You should see the rules created by the application.

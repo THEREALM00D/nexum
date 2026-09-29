@@ -34,7 +34,7 @@ export default {
       edit: "Edit",
       delete: "Delete",
       deleteConfirm:
-        'Delete server "{{name}}"? Game files stay intact, only ServerForge configuration is removed.',
+        'Delete server "{{name}}"? Game files stay intact, only Nexum configuration is removed.',
       deleteTypeToConfirm: 'Type "{{name}}" to confirm',
     },
     dialog: {
