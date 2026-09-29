@@ -27,6 +27,25 @@ export function useServers() {
 
   const closeDialog = () => setDialogOpen(false);
 
+  // À l'import d'un serveur Valheim déjà installé, pas de fichier de config
+  // à lire (tout passe par les args CLI) — mais s'il n'existe qu'un seul
+  // monde déjà sur disque, on peut au moins deviner son nom sans que
+  // l'utilisateur ait à retaper exactement le même. Si plusieurs mondes sont
+  // trouvés, on laisse le choix se faire via l'Autocomplete de la page Config.
+  const importValheimWorld = async (server: Server) => {
+    try {
+      const worlds = await window.api.valheim.listExistingWorlds("");
+      if (worlds.length === 1) {
+        await window.api.valheim.setConfig(
+          { world: worlds[0].name },
+          server.id,
+        );
+      }
+    } catch {
+      // best-effort — l'utilisateur peut toujours choisir manuellement
+    }
+  };
+
   const handleSubmit = async (values: ServerFormValues) => {
     try {
       if (editing) {
@@ -35,6 +54,7 @@ export function useServers() {
       } else {
         const created = await window.api.servers.create(values);
         notify(t("servers.notify.created", { name: created.name }), "success");
+        if (created.gameType === "valheim") await importValheimWorld(created);
       }
       await refreshServers();
       setDialogOpen(false);

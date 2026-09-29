@@ -144,6 +144,14 @@ export interface ValheimModifiers {
   portals: "veryhard" | "hard" | "casual" | "";
 }
 
+// Monde Valheim détecté sur disque (dossier worlds_local) — utilisé pour
+// proposer les mondes déjà existants (import d'un serveur déjà installé)
+// au lieu de retaper le nom exact à la main.
+export interface ValheimWorldInfo {
+  name: string;
+  lastModified: number;
+}
+
 export interface ValheimLaunchConfig {
   name: string;
   world: string;

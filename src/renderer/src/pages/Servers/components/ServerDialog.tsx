@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  Box,
   Button,
   Dialog,
   DialogActions,
@@ -17,16 +16,9 @@ import {
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import { useTranslation } from "react-i18next";
 import type { GameType, Server } from "@shared/types";
-
-const DEFAULT_COLORS = [
-  "#3b82f6",
-  "#22c55e",
-  "#f59e0b",
-  "#ef4444",
-  "#a855f7",
-  "#06b6d4",
-  "#ec4899",
-];
+import { useExeDetection } from "../hooks/useExeDetection";
+import ExeStatusHint from "./ExeStatusHint";
+import ColorPicker, { DEFAULT_COLORS } from "./ColorPicker";
 
 export interface ServerFormValues {
   name: string;
@@ -56,6 +48,7 @@ export default function ServerDialog({
     color: DEFAULT_COLORS[0],
   });
   const [submitting, setSubmitting] = useState(false);
+  const exeStatus = useExeDetection(open, values.path, values.gameType);
 
   useEffect(() => {
     if (open) {
@@ -70,7 +63,13 @@ export default function ServerDialog({
 
   const handleBrowse = async () => {
     const folder = await window.api.dialog.selectFolder();
-    if (folder) setValues((v) => ({ ...v, path: folder }));
+    if (!folder) return;
+    const detected = await window.api.servers.detectGameType(folder);
+    setValues((v) => ({
+      ...v,
+      path: folder,
+      gameType: detected ?? v.gameType,
+    }));
   };
 
   const handleSubmit = async () => {
@@ -121,6 +120,8 @@ export default function ServerDialog({
             </IconButton>
           </Stack>
 
+          <ExeStatusHint status={exeStatus} gameType={values.gameType} />
+
           <FormControl size="small" fullWidth>
             <InputLabel>{t("servers.dialog.gameType")}</InputLabel>
             <Select
@@ -143,33 +144,10 @@ export default function ServerDialog({
             </Select>
           </FormControl>
 
-          <Box>
-            <Box
-              sx={{ fontSize: 12, color: "text.secondary", mb: 1 }}
-              component="div"
-            >
-              {t("servers.dialog.color")}
-            </Box>
-            <Stack direction="row" spacing={1}>
-              {DEFAULT_COLORS.map((c) => (
-                <Box
-                  key={c}
-                  onClick={() => setValues((v) => ({ ...v, color: c }))}
-                  sx={{
-                    width: 28,
-                    height: 28,
-                    borderRadius: "50%",
-                    bgcolor: c,
-                    cursor: "pointer",
-                    border: "2px solid",
-                    borderColor: values.color === c ? "white" : "transparent",
-                    transition: "transform 0.1s",
-                    "&:hover": { transform: "scale(1.1)" },
-                  }}
-                />
-              ))}
-            </Stack>
-          </Box>
+          <ColorPicker
+            value={values.color}
+            onChange={(color) => setValues((v) => ({ ...v, color }))}
+          />
         </Stack>
       </DialogContent>
       <DialogActions>

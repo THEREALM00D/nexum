@@ -11,6 +11,7 @@ import type {
   AppUpdateStatus,
   LaunchArgsConfig,
   ValheimLaunchConfig,
+  ValheimWorldInfo,
   AstroneerLaunchConfig,
   AstroneerSettings,
   ValheimMod,
@@ -63,6 +64,8 @@ interface API {
       }>,
     ) => Promise<Server>;
     delete: (id: string) => Promise<void>;
+    detectGameType: (path: string) => Promise<GameType | null>;
+    hasExpectedExe: (path: string, gameType: GameType) => Promise<boolean>;
   };
   steamcmd: {
     isInstalled: () => Promise<boolean>;
@@ -195,6 +198,7 @@ interface API {
       serverId?: string,
     ) => Promise<void>;
     openSaveFolder: (customSavedir: string) => Promise<void>;
+    listExistingWorlds: (customSavedir: string) => Promise<ValheimWorldInfo[]>;
     mods: {
       getTrending: (registry: ModRegistry) => Promise<ThunderstoreModInfo[]>;
       getLatestAdded: (registry: ModRegistry) => Promise<ThunderstoreModInfo[]>;

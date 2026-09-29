@@ -139,6 +139,12 @@ Chaque jeu expose un manifest typé dans `games/<jeu>/index.ts`. Le shell consom
 
 Au démarrage, `ServerManager.tryAdopt()` scanne les processus via `systeminformation` pour détecter l'exécutable du jeu en cours (orphelin d'une session précédente) — préfixe par jeu dans `PROCESS_NAME_PREFIXES` (`main/servers/ServerManagerRegistry.ts` : `palserver`, `valheim_server`, `astroserver`). Si trouvé, le statut passe à `running` et on peut stop/restart via l'API REST (Palworld) + `taskkill`. **Les logs stdout/stderr ne sont pas récupérables** pour un processus adopté (le pipe appartenait à l'ancien parent).
 
+### Import d'un serveur déjà installé
+
+- Pas de flow dédié : le dialogue d'ajout de serveur (`pages/Servers/components/ServerDialog.tsx`) accepte un dossier existant. Au choix du dossier, `servers:detectGameType` devine le jeu d'après l'exécutable présent à la racine (`main/servers/detectGameType.ts`, qui lit `exeName` de chaque `games/<jeu>/serverConfig.ts` — pas de liste dupliquée), et `useExeDetection` + `ExeStatusHint` confirment en direct que l'exe attendu existe (`servers:hasExpectedExe`).
+- Palworld/Astroneer : rien d'autre à faire, leur config vit dans des `.ini` sous `serverPath`, relus tels quels.
+- Valheim : la config passe par les args CLI (rien à relire sur disque), mais le nom du monde doit correspondre exactement. `valheim:listExistingWorlds` scanne `worlds_local` (ancien format `<nom>.fwl` à plat **et** nouveau format en dossier `<nom>/`, en excluant `*_backup*` et `.old`). À la création d'un serveur Valheim, s'il n'existe qu'un seul monde, il est pré-rempli (`useServers.importValheimWorld`) ; sinon le champ Monde de la page Config est un `Autocomplete` freeSolo qui propose les mondes détectés (`useExistingWorlds`).
+
 ## Conventions
 
 - **UI bilingue FR/EN** via `react-i18next` — toute string user-facing passe par `t()` (jamais de texte en dur dans les JSX). Commentaires de code en français.
