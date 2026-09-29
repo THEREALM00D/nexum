@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNotification } from "../../../../../context/NotificationContext";
 import type { ValheimModConfigFile } from "@shared/types";
@@ -13,6 +13,8 @@ export function useValheimModConfigs() {
   const [editing, setEditing] = useState<string | null>(null);
   const [lines, setLines] = useState<string[]>([]);
   const [entries, setEntries] = useState<CfgEntry[]>([]);
+  // Valeurs telles que lues sur disque, pour détecter les modifs non sauvegardées
+  const [initialEntries, setInitialEntries] = useState<CfgEntry[]>([]);
   const [saving, setSaving] = useState(false);
 
   const load = useCallback(async () => {
@@ -37,6 +39,7 @@ export function useValheimModConfigs() {
         const parsed = parseCfg(text);
         setLines(parsed.lines);
         setEntries(parsed.entries);
+        setInitialEntries(parsed.entries);
         setEditing(fileName);
       } catch {
         notify(t("valheimMods.configs.readFailed"), "error");
@@ -49,7 +52,15 @@ export function useValheimModConfigs() {
     setEditing(null);
     setLines([]);
     setEntries([]);
+    setInitialEntries([]);
   }, []);
+
+  // `updateEntry` ne remplace que l'entrée modifiée et garde l'ordre : une
+  // comparaison index par index suffit (revenir à la valeur d'origine = propre).
+  const dirty = useMemo(
+    () => entries.some((e, i) => e.value !== initialEntries[i]?.value),
+    [entries, initialEntries],
+  );
 
   const updateEntry = useCallback((lineIndex: number, value: string) => {
     setEntries((prev) =>
@@ -81,6 +92,7 @@ export function useValheimModConfigs() {
     editing,
     entries,
     saving,
+    dirty,
     openFile,
     closeEditor,
     updateEntry,

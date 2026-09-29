@@ -82,6 +82,7 @@ export default function ValheimMods() {
     editing: editingConfig,
     entries: configEntries,
     saving: savingConfig,
+    dirty: configDirty,
     updateEntry: updateConfigEntry,
     openFile: openConfigFile,
     closeEditor: closeConfigEditor,
@@ -264,6 +265,7 @@ export default function ValheimMods() {
         fileName={editingConfig}
         entries={configEntries}
         saving={savingConfig}
+        dirty={configDirty}
         onChange={updateConfigEntry}
         onClose={closeConfigEditor}
         onSave={saveConfigFile}
