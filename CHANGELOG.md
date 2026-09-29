@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.1](https://github.com/THEREALM00D/nexum/compare/v0.3.0...v0.3.1) (2026-09-29)
+
+
+### Bug Fixes
+
+* find existing server list after the Nexum rename ([#45](https://github.com/THEREALM00D/nexum/issues/45)) ([7df1825](https://github.com/THEREALM00D/nexum/commit/7df18259495fb7b445ce6d24b6cc7c202d46c380))
+* show uptime day unit in the UI language ([#43](https://github.com/THEREALM00D/nexum/issues/43)) ([746ce4b](https://github.com/THEREALM00D/nexum/commit/746ce4bd28fc0112c1ca3a3fd45c144a13a71909))
+
 ## [0.3.0](https://github.com/THEREALM00D/server-forge/compare/v0.2.0...v0.3.0) (2026-09-29)
 
 
