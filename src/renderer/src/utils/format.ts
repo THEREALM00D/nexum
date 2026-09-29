@@ -1,10 +1,11 @@
 import { intervalToDuration } from "date-fns";
 
-export function formatDuration(seconds: number): string {
+// Unité de jour selon la langue : « j » (jours) en FR, « d » (days) en EN.
+export function formatDuration(seconds: number, locale: string): string {
   if (!seconds || seconds <= 0) return "—";
   const d = intervalToDuration({ start: 0, end: seconds * 1000 });
   const parts: string[] = [];
-  if (d.days) parts.push(`${d.days}j`);
+  if (d.days) parts.push(`${d.days}${locale === "fr" ? "j" : "d"}`);
   if (d.hours) parts.push(`${d.hours}h`);
   if (d.minutes !== undefined && (d.days || d.hours)) {
     parts.push(`${String(d.minutes).padStart(2, "0")}m`);

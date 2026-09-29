@@ -57,7 +57,7 @@ function StatCard({
 }
 
 export default function StatsGrid({ stats }: { stats: SystemStats }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   return (
     <Box sx={{ display: "flex", gap: 2 }}>
       <Box sx={{ flex: 1 }}>
@@ -93,13 +93,16 @@ export default function StatsGrid({ stats }: { stats: SystemStats }) {
       <Box sx={{ flex: 1 }}>
         <StatCard
           label={t("dashboard.stats.uptimeSystem")}
-          value={formatDuration(stats.uptime)}
+          value={formatDuration(stats.uptime, i18n.resolvedLanguage ?? "fr")}
         />
       </Box>
       <Box sx={{ flex: 1 }}>
         <StatCard
           label={t("dashboard.stats.uptimeServer")}
-          value={formatDuration(stats.serverUptime)}
+          value={formatDuration(
+            stats.serverUptime,
+            i18n.resolvedLanguage ?? "fr",
+          )}
         />
       </Box>
     </Box>
