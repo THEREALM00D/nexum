@@ -18,6 +18,8 @@ Gestionnaire de serveurs dédiés de jeux vidéo. Supporte Palworld, Valheim et 
 
 ⚠️ **`archiver` (v8+) et `electron-store` (v9+) sont en ESM pur** (plus de build CommonJS), alors que le process main est bundlé en CJS. Un `import`/`require` statique classique casse au runtime (`ERR_REQUIRE_ESM` / « X is not a constructor » — le typecheck ne le détecte PAS, seul un vrai lancement le révèle). Pattern obligatoire : `const { default: X } = await import("paquet-esm-only")` au moment de l'utiliser, jamais en haut de fichier. Voir `BackupManager.create()` (archiver → `ZipArchive`) et `ipc/handlers.ts`/`FirewallManager.ts` (electron-store) pour des exemples. Réflexe à avoir à **chaque** bump majeur d'une dépendance qui touche le main process : vérifier `"type"` dans son `package.json`.
 
+**Licence : GPL-3.0-or-later** (`LICENSE` = texte officiel gnu.org, `package.json` → `license`). Toute dépendance ajoutée doit être compatible GPL-3.0 (MIT/BSD/Apache-2.0/ISC/LGPL OK ; éviter les licences propriétaires ou « non-commercial »).
+
 Pas de tests unitaires configurés dans ce projet — ne pas en chercher ni en ajouter sans demander.
 
 ## Commandes
