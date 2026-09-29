@@ -7,7 +7,7 @@
 Gestionnaire de bureau pour serveurs dédiés de jeux vidéo. Compatible avec **Palworld**, **Valheim** et **Astroneer**.
 
 ![Plateforme](https://img.shields.io/badge/platform-Windows-blue)
-![Licence](https://img.shields.io/badge/license-proprietary-red)
+![Licence](https://img.shields.io/badge/license-GPL--3.0-blue)
 
 ## Fonctionnalités
 
@@ -77,7 +77,7 @@ Voir [docs/installation.fr.md](docs/installation.fr.md) pour le guide complet.
 
 ## Licence
 
-Propriétaire — tous droits réservés. Voir [LICENSE](LICENSE). Le code n'est pas open-source : le rendre visible publiquement pendant l'alpha ne constitue pas une autorisation d'utilisation, copie ou redistribution.
+Open source sous licence [GNU General Public License v3.0 ou ultérieure](LICENSE). Vous êtes libre d'utiliser, étudier, modifier et partager le logiciel ; toute version modifiée que vous distribuez doit rester open source sous la même licence.
 
 ## Contribuer
 

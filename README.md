@@ -7,7 +7,7 @@
 Desktop manager for dedicated game servers. Compatible with **Palworld**, **Valheim**, and **Astroneer**.
 
 ![Platform](https://img.shields.io/badge/platform-Windows-blue)
-![License](https://img.shields.io/badge/license-proprietary-red)
+![License](https://img.shields.io/badge/license-GPL--3.0-blue)
 
 ## Features
 
@@ -77,7 +77,7 @@ See [docs/installation.md](docs/installation.md) for the full guide.
 
 ## License
 
-Proprietary — all rights reserved. See [LICENSE](LICENSE). This code is not open-source: making it publicly visible during the alpha does not grant any right to use, copy, or redistribute it.
+Open source under the [GNU General Public License v3.0 or later](LICENSE). You are free to use, study, modify and share the software; any modified version you distribute must stay open source under the same license.
 
 ## Contributing
 
