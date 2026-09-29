@@ -18,7 +18,7 @@ import type {
   ModRegistry,
   ThunderstoreModInfo,
   ThunderstoreModVersion,
-  ModUpdate,
+  ModUpdateCheck,
   PlayerHistoryEntry,
   Server,
   GameType,
@@ -242,7 +242,7 @@ interface API {
       ) => Promise<ThunderstoreModInfo[]>;
       checkUpdates: (
         entries: { code: string; registry: ModRegistry }[],
-      ) => Promise<ModUpdate[]>;
+      ) => Promise<ModUpdateCheck>;
       listConfigFiles: (serverId?: string) => Promise<ValheimModConfigFile[]>;
       readConfigFile: (fileName: string, serverId?: string) => Promise<string>;
       writeConfigFile: (

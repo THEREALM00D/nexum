@@ -5,6 +5,7 @@ import type {
   ThunderstoreModInfo,
   ThunderstoreModVersion,
   ModUpdate,
+  ModUpdateCheck,
 } from "../../../shared/types";
 import { REGISTRIES, REGISTRY_API_BASE } from "./registries";
 // Importer les types générés depuis le spec OpenAPI Thunderstore
@@ -106,7 +107,10 @@ export class ModRegistryClient {
     });
   }
 
-  // Récupère tous les packages Valheim d'un registre, avec cache TTL 5 min par registre
+  // Récupère tous les packages Valheim d'un registre, avec cache TTL 5 min par registre.
+  // ⚠️ Les packages dépréciés sont CONSERVÉS (flag `is_deprecated`) : il faut
+  // pouvoir les signaler sur les mods installés et dans la recherche. Les
+  // listes de découverte (tendances, récents) les excluent via `active()`.
   static async listPackages(registry: ModRegistry): Promise<RegistryPackage[]> {
     const now = Date.now();
     const cached = ModRegistryClient.cache.get(registry);
@@ -115,11 +119,13 @@ export class ModRegistryClient {
     const data = await ModRegistryClient.fetchJson<RegistryPackage[]>(
       `${REGISTRY_API_BASE[registry]}/c/valheim/api/v1/package/`,
     );
-    const filtered = data.filter(
-      (p) => !p.is_deprecated && p.versions.length > 0,
-    );
+    const filtered = data.filter((p) => p.versions.length > 0);
     ModRegistryClient.cache.set(registry, { data: filtered, ts: now });
     return filtered;
+  }
+
+  private static active(pkgs: RegistryPackage[]): RegistryPackage[] {
+    return pkgs.filter((p) => !p.is_deprecated);
   }
 
   // Cherche un package dans le cache puis dans la liste complète d'un registre
@@ -145,17 +151,25 @@ export class ModRegistryClient {
     const order = preferred
       ? [preferred, ...REGISTRIES.filter((r) => r !== preferred)]
       : REGISTRIES;
+    // Une version maintenue sur un autre registre est préférée à une version
+    // dépréciée sur le registre préféré ; à défaut on garde la dépréciée.
+    let deprecatedHit: { registry: ModRegistry; pkg: RegistryPackage } | null =
+      null;
     let lastError: unknown;
     for (const registry of order) {
       try {
-        return {
+        const pkg = await ModRegistryClient.getPackage(
           registry,
-          pkg: await ModRegistryClient.getPackage(registry, namespace, name),
-        };
+          namespace,
+          name,
+        );
+        if (!pkg.is_deprecated) return { registry, pkg };
+        deprecatedHit ??= { registry, pkg };
       } catch (e) {
         lastError = e;
       }
     }
+    if (deprecatedHit) return deprecatedHit;
     throw lastError ?? new Error(`Package ${namespace}-${name} introuvable`);
   }
 
@@ -176,6 +190,7 @@ export class ModRegistryClient {
         new Date(pkg.date_updated).getTime() / 1000,
       ),
       registry,
+      deprecated: pkg.is_deprecated,
     };
   }
 
@@ -199,7 +214,9 @@ export class ModRegistryClient {
     registry: ModRegistry,
     limit = 20,
   ): Promise<ThunderstoreModInfo[]> {
-    const pkgs = await ModRegistryClient.listPackages(registry);
+    const pkgs = ModRegistryClient.active(
+      await ModRegistryClient.listPackages(registry),
+    );
     return pkgs
       .sort((a, b) => b.rating_score - a.rating_score)
       .slice(0, limit)
@@ -210,7 +227,9 @@ export class ModRegistryClient {
     registry: ModRegistry,
     limit = 20,
   ): Promise<ThunderstoreModInfo[]> {
-    const pkgs = await ModRegistryClient.listPackages(registry);
+    const pkgs = ModRegistryClient.active(
+      await ModRegistryClient.listPackages(registry),
+    );
     return pkgs
       .sort(
         (a, b) =>
@@ -225,7 +244,9 @@ export class ModRegistryClient {
     registry: ModRegistry,
     limit = 20,
   ): Promise<ThunderstoreModInfo[]> {
-    const pkgs = await ModRegistryClient.listPackages(registry);
+    const pkgs = ModRegistryClient.active(
+      await ModRegistryClient.listPackages(registry),
+    );
     return pkgs
       .sort(
         (a, b) =>
@@ -243,16 +264,21 @@ export class ModRegistryClient {
   ): Promise<ThunderstoreModInfo[]> {
     const q = query.toLowerCase();
     const pkgs = await ModRegistryClient.listPackages(registry);
-    return pkgs
-      .filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          (p.full_name ?? "").toLowerCase().includes(q) ||
-          (p.owner ?? "").toLowerCase().includes(q) ||
-          p.versions[0]?.description.toLowerCase().includes(q),
-      )
-      .slice(0, limit)
-      .map((p) => ModRegistryClient.toModInfo(p, registry));
+    return (
+      pkgs
+        .filter(
+          (p) =>
+            p.name.toLowerCase().includes(q) ||
+            (p.full_name ?? "").toLowerCase().includes(q) ||
+            (p.owner ?? "").toLowerCase().includes(q) ||
+            p.versions[0]?.description.toLowerCase().includes(q),
+        )
+        // Dépréciés gardés (on peut chercher un mod qu'on connaît) mais en fin
+        // de liste — sort() est stable, l'ordre d'origine est conservé sinon.
+        .sort((a, b) => Number(a.is_deprecated) - Number(b.is_deprecated))
+        .slice(0, limit)
+        .map((p) => ModRegistryClient.toModInfo(p, registry))
+    );
   }
 
   // Retourne les dépendances non installées d'un package (exclut BepInExPack_Valheim).
@@ -323,9 +349,11 @@ export class ModRegistryClient {
   // d'être maintenu ailleurs (cas Azumatt : mods figés sur Thunderstore,
   // toujours à jour sur Hexium). `sourceChanged` signale ce cas à l'UI, à la
   // manière de Gale qui prévient explicitement du changement de source.
+  // Renvoie aussi les mods dont le package est déprécié sur leur registre
+  // d'origine (`deprecatedCodes`), pour les signaler dans l'UI.
   static async checkUpdates(
     installed: { code: string; registry: ModRegistry }[],
-  ): Promise<ModUpdate[]> {
+  ): Promise<ModUpdateCheck> {
     const packagesByRegistry = new Map<ModRegistry, RegistryPackage[]>();
     for (const registry of REGISTRIES) {
       packagesByRegistry.set(
@@ -335,6 +363,7 @@ export class ModRegistryClient {
     }
 
     const updates: ModUpdate[] = [];
+    const deprecatedCodes: string[] = [];
 
     for (const { code, registry } of installed) {
       if (!code) continue;
@@ -343,6 +372,12 @@ export class ModRegistryClient {
       const installedVersion = parts[parts.length - 1];
       const modName = parts[parts.length - 2];
       const modNamespace = parts.slice(0, parts.length - 2).join("-");
+      const findIn = (r: ModRegistry) =>
+        packagesByRegistry
+          .get(r)!
+          .find((p) => p.owner === modNamespace && p.name === modName);
+
+      if (findIn(registry)?.is_deprecated) deprecatedCodes.push(code);
 
       // Registre d'origine en premier, puis les autres — dès qu'un registre
       // propose une version différente de celle installée, on s'arrête là.
@@ -351,9 +386,11 @@ export class ModRegistryClient {
         ...REGISTRIES.filter((r) => r !== registry),
       ];
       for (const candidateRegistry of searchOrder) {
-        const pkg = packagesByRegistry
-          .get(candidateRegistry)!
-          .find((p) => p.owner === modNamespace && p.name === modName);
+        const pkg = findIn(candidateRegistry);
+        // Un package déprécié ne propose pas de mise à jour : on continue sur
+        // les autres registres (même comportement qu'avant, quand ils étaient
+        // exclus du cache).
+        if (!pkg || pkg.is_deprecated) continue;
         const latestVersion = pkg?.versions[0]?.version_number;
         if (!latestVersion || latestVersion === installedVersion) continue;
 
@@ -361,8 +398,8 @@ export class ModRegistryClient {
           installedCode: code,
           latestCode: `${modNamespace}-${modName}-${latestVersion}`,
           latestVersion,
-          name: pkg!.name,
-          author: pkg!.owner,
+          name: pkg.name,
+          author: pkg.owner,
           registry: candidateRegistry,
           sourceChanged: candidateRegistry !== registry,
         });
@@ -370,6 +407,6 @@ export class ModRegistryClient {
       }
     }
 
-    return updates;
+    return { updates, deprecatedCodes };
   }
 }

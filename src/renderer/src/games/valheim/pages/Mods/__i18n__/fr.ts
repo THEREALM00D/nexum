@@ -84,6 +84,13 @@ export default {
       installAll: "Tout installer ({{count}})",
       skip: "Ignorer",
     },
+    deprecated: {
+      label: "Déprécié",
+      tooltip:
+        "Marqué déprécié par son auteur sur {{registry}} — plus maintenu, peut cesser de fonctionner après une mise à jour du jeu.",
+      tooltipAlternative:
+        "Déprécié sur {{registry}} — une version maintenue existe sur {{alternative}}, utilisez la mise à jour proposée.",
+    },
     updates: {
       newVersion: "v{{version}} dispo",
       newVersionOnRegistry: "v{{version}} dispo sur {{registry}}",

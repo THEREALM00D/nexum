@@ -32,6 +32,7 @@ import type {
   ModRegistry,
 } from "@shared/types";
 import { REGISTRY_LABEL, modPageUrl } from "../utils/modPageUrl";
+import DeprecatedChip from "./DeprecatedChip";
 
 type BrowseTab = "trending" | "latest" | "updated";
 
@@ -203,16 +204,23 @@ export default function ModBrowser({
                   />
                 )}
                 <Box sx={{ flex: 1, minWidth: 0 }}>
-                  <Typography variant="body2" sx={{ fontWeight: 500 }} noWrap>
-                    {mod.name}{" "}
-                    <Typography
-                      component="span"
-                      variant="caption"
-                      sx={{ color: "text.secondary" }}
-                    >
-                      v{mod.version}
+                  <Box
+                    sx={{ display: "flex", alignItems: "center", gap: 0.75 }}
+                  >
+                    <Typography variant="body2" sx={{ fontWeight: 500 }} noWrap>
+                      {mod.name}{" "}
+                      <Typography
+                        component="span"
+                        variant="caption"
+                        sx={{ color: "text.secondary" }}
+                      >
+                        v{mod.version}
+                      </Typography>
                     </Typography>
-                  </Typography>
+                    {mod.deprecated && (
+                      <DeprecatedChip registry={mod.registry} />
+                    )}
+                  </Box>
                   <Typography
                     variant="caption"
                     sx={{ color: "text.secondary" }}

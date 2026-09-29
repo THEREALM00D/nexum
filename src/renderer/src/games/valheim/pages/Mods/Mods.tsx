@@ -62,6 +62,7 @@ export default function ValheimMods() {
     locale,
     pendingDeps,
     updates,
+    deprecatedCodes,
     handleTabChange,
     handleBrowseRegistryChange,
     handleSearch,
@@ -231,6 +232,7 @@ export default function ValheimMods() {
             mods={installedMods}
             locale={locale}
             updates={updates}
+            deprecatedCodes={deprecatedCodes}
             onRemove={handleRemoveMod}
             onToggle={handleToggleMod}
             onUpdate={handleInstallMod}
