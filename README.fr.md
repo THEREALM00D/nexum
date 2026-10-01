@@ -13,7 +13,7 @@ Application Windows gratuite et open source pour héberger des serveurs dédiés
 ![Licence](https://img.shields.io/badge/license-GPL--3.0-blue)
 
 <p align="center">
-  <img src="docs/images/demo.gif" alt="Démo de Nexum : démarrage d'un serveur Valheim, règles de pare-feu, mods Thunderstore et Hexium" width="900">
+  <img src="docs/images/demo.gif" alt="Démo de Nexum : mods Valheim installés, recherche sur Hexium et Thunderstore, mods dépréciés signalés, éditeur de configs BepInEx, règles de pare-feu" width="960">
 </p>
 
 ## Fonctionnalités
