@@ -99,6 +99,13 @@ export interface RestartConfig {
 }
 
 // --- Firewall ---
+// Règle de pare-feu nommée, pour les opérations groupées (une seule invite UAC)
+export interface FirewallNamedRule {
+  name: string;
+  port: number;
+  protocol: "TCP" | "UDP";
+}
+
 export interface FirewallRuleStatus {
   name: string;
   port: number;

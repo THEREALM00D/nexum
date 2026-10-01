@@ -17,7 +17,7 @@ asarUnpack:
 win:
   executableName: nexum
   icon: resources/icon.ico
-  requestedExecutionLevel: requireAdministrator
+  requestedExecutionLevel: asInvoker
   target:
     - nsis
     - portable

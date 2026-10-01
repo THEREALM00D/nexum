@@ -34,14 +34,13 @@ export default function Network() {
       <StandardRules
         rules={rules}
         loading={loading}
-        isAdmin={isAdmin}
         onRefresh={refresh}
         onToggle={onToggle}
         onApplyAll={onApplyAll}
         onRemoveAll={onRemoveAll}
       />
 
-      <CustomRules rules={customRules} isAdmin={isAdmin} onRefresh={refresh} />
+      <CustomRules rules={customRules} onRefresh={refresh} />
     </Stack>
   );
 }

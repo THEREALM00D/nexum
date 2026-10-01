@@ -20,7 +20,7 @@ export default function AdminBanner({ isAdmin }: { isAdmin: boolean | null }) {
       >
         <Stack direction="row" spacing={1.5} sx={{ alignItems: "center" }}>
           <ShieldIcon
-            sx={{ color: isAdmin ? "success.main" : "warning.main" }}
+            sx={{ color: isAdmin ? "success.main" : "text.secondary" }}
           />
           <Box>
             <Typography variant="subtitle2">
@@ -38,14 +38,14 @@ export default function AdminBanner({ isAdmin }: { isAdmin: boolean | null }) {
             label={
               isAdmin ? t("network.admin.isAdmin") : t("network.admin.notAdmin")
             }
-            color={isAdmin ? "success" : "warning"}
+            color={isAdmin ? "success" : "default"}
             size="small"
             variant="outlined"
           />
         )}
       </Stack>
       {isAdmin === false && (
-        <Alert severity="warning" sx={{ mt: 2 }}>
+        <Alert severity="info" sx={{ mt: 2 }}>
           {t("network.admin.warning")}
         </Alert>
       )}

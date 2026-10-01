@@ -5,14 +5,14 @@
 ## Requirements
 
 - **Windows 10 or 11** (64-bit)
-- **Administrator rights** (required for firewall management and running the server)
+- No administrator rights needed: Windows only asks for confirmation (UAC) when you change firewall rules
 - **~10 GB of disk space** for SteamCMD + the Palworld server
 - Internet connection for the initial download
 
 ## Installing Nexum
 
 1. Download `nexum-{version}-setup.exe` from the [Releases](https://github.com/THEREALM00D/nexum/releases) page
-2. Run the installer (accept the administrator elevation prompt)
+2. Run the installer. If Windows SmartScreen shows "Windows protected your PC", click **More info → Run anyway** (the installer is not code-signed yet; you can check its SHA256, listed in the release notes)
 3. A shortcut is created on the desktop
 
 ## First use

@@ -51,7 +51,13 @@ Download the latest version from [Releases](https://github.com/THEREALM00D/nexum
 - **Installer**: `nexum-{version}-setup.exe`
 - **Portable**: `nexum-{version}-portable.exe`
 
-> The application requires **administrator rights** to manage Windows firewall rules.
+> **No administrator rights needed.** Nexum runs as a normal app. Only changing Windows Firewall rules needs them: Windows then asks you to confirm (UAC), once per change.
+
+**Windows SmartScreen warning**: the installer is not code-signed yet, so Windows may show "Windows protected your PC" on first launch. Click **More info → Run anyway**. The source code is open (GPL-3.0), and each release lists the **SHA256** of its files so you can check your download:
+
+```powershell
+Get-FileHash .\nexum-<version>-setup.exe -Algorithm SHA256
+```
 
 ## Quick start
 

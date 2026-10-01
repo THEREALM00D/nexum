@@ -15,9 +15,9 @@ Nexum creates targeted `netsh` rules for the ports in use.
 
 ## Permissions
 
-Managing rules requires **administrator rights**. Nexum automatically detects whether you're an admin and disables the buttons otherwise.
+Nexum runs without administrator rights. When you add or remove a rule, Windows asks you to confirm (UAC prompt): **one** confirmation per action, including **Apply all**. If you decline, nothing is changed.
 
-> Launch Nexum as administrator (right-click → **Run as administrator**) or use the installer, which elevates privileges automatically.
+> Custom rule names can only contain letters, digits, spaces and `- _ . ( ) :` (80 characters max).
 
 ## Standard rules
 

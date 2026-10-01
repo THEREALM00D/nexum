@@ -1,5 +1,6 @@
 import { ipcMain } from "electron/main";
 import type { IpcContext } from "../context";
+import type { FirewallNamedRule } from "../../../shared/types";
 
 type RuleKey = "game" | "rcon" | "restapi";
 type Protocol = "TCP" | "UDP";
@@ -45,6 +46,15 @@ export function registerFirewallHandlers(ctx: IpcContext): void {
     "firewall:disableNamedRule",
     (_, name: string, protocol?: Protocol) =>
       ctx.firewall.disableNamedRule(name, protocol),
+  );
+  // Opérations groupées : une seule invite UAC pour tout le lot
+  ipcMain.handle("firewall:applyNamedRules", (_, rules: FirewallNamedRule[]) =>
+    ctx.firewall.applyNamedRules(rules),
+  );
+  ipcMain.handle(
+    "firewall:removeNamedRules",
+    (_, rules: { name: string; protocol?: Protocol }[]) =>
+      ctx.firewall.removeNamedRules(rules),
   );
   ipcMain.handle("firewall:listCustomRules", () =>
     ctx.firewall.listCustomRules(),
