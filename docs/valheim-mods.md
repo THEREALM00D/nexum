@@ -35,7 +35,7 @@ Manually installed mods are not covered: without a known registry, Nexum can che
 ## Browse tab
 
 - Pick the registry (**Thunderstore** or **Hexium**): the two lists are independent.
-- **Trending**, **New**, **Updated** tabs, or free search. Deprecated mods only show up in search results, at the end of the list and with the **Deprecated** badge.
+- **Trending**, **New**, **Updated** tabs, or free search. Search results are sorted by relevance: exact name first, then names starting with or containing your search, then author and description matches (spaces and dashes are ignored, so `azu auto` finds AzuAutoStore). Deprecated mods only show up in search results, with the **Deprecated** badge, after maintained mods that match just as well.
 - Install the latest version in one click, or pick a specific one via **Versions**.
 - If the mod has dependencies that aren't installed, Nexum offers to install them (**Install all**), including when they come from the other registry.
 

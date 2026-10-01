@@ -35,7 +35,7 @@ Les mods installés manuellement ne sont pas concernés : sans registre connu, N
 ## Onglet Parcourir
 
 - Choisissez le registre (**Thunderstore** ou **Hexium**) : les deux listes sont indépendantes.
-- Onglets **Tendances**, **Nouveaux**, **Mis à jour**, ou recherche libre. Les mods dépréciés n'apparaissent que dans la recherche, en fin de liste et avec le badge **Déprécié**.
+- Onglets **Tendances**, **Nouveaux**, **Mis à jour**, ou recherche libre. Les résultats sont triés par pertinence : nom identique d'abord, puis noms qui commencent par votre recherche ou la contiennent, puis auteur et description (les espaces et tirets sont ignorés : `azu auto` trouve AzuAutoStore). Les mods dépréciés n'apparaissent que dans la recherche, avec le badge **Déprécié**, après les mods maintenus aussi pertinents.
 - Installez la dernière version en un clic, ou choisissez une version précise via **Versions**.
 - Si le mod a des dépendances non installées, Nexum propose de les installer (**Tout installer**), y compris quand elles viennent de l'autre registre.
 

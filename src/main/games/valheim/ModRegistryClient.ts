@@ -262,23 +262,45 @@ export class ModRegistryClient {
     query: string,
     limit = 50,
   ): Promise<ThunderstoreModInfo[]> {
-    const q = query.toLowerCase();
+    const q = query.trim().toLowerCase();
+    if (!q) return [];
     const pkgs = await ModRegistryClient.listPackages(registry);
-    return (
-      pkgs
-        .filter(
-          (p) =>
-            p.name.toLowerCase().includes(q) ||
-            (p.full_name ?? "").toLowerCase().includes(q) ||
-            (p.owner ?? "").toLowerCase().includes(q) ||
-            p.versions[0]?.description.toLowerCase().includes(q),
-        )
-        // Dépréciés gardés (on peut chercher un mod qu'on connaît) mais en fin
-        // de liste — sort() est stable, l'ordre d'origine est conservé sinon.
-        .sort((a, b) => Number(a.is_deprecated) - Number(b.is_deprecated))
-        .slice(0, limit)
-        .map((p) => ModRegistryClient.toModInfo(p, registry))
-    );
+    return pkgs
+      .map((p) => ({ p, rank: ModRegistryClient.searchRank(p, q) }))
+      .filter((r) => r.rank !== null)
+      .sort(
+        (a, b) =>
+          a.rank! - b.rank! ||
+          // Déprécié après le maintenu, mais seulement à pertinence égale :
+          // un mod déprécié cherché par son nom exact doit rester en tête
+          // (sinon il peut disparaître derrière la limite de résultats).
+          Number(a.p.is_deprecated) - Number(b.p.is_deprecated) ||
+          b.p.rating_score - a.p.rating_score,
+      )
+      .slice(0, limit)
+      .map((r) => ModRegistryClient.toModInfo(r.p, registry));
+  }
+
+  // Pertinence d'un package pour une recherche (plus petit = plus pertinent,
+  // null = hors résultats). Les noms sont comparés sans espaces, tirets ni
+  // soulignés : « azu auto » trouve AzuAutoStore, « better ui » BetterUI.
+  private static searchRank(p: RegistryPackage, q: string): number | null {
+    const compact = (s: string) => s.toLowerCase().replace(/[\s_-]+/g, "");
+    const name = compact(p.name);
+    const qc = compact(q);
+    const owner = (p.owner ?? "").toLowerCase();
+    const desc = (p.versions[0]?.description ?? "").toLowerCase();
+
+    if (qc && name === qc) return 0;
+    if (qc && name.startsWith(qc)) return 1;
+    if (qc && name.includes(qc)) return 2;
+    if (owner === q || compact(p.full_name ?? "").includes(qc)) return 3;
+    if (desc.includes(q)) return 4;
+    // Recherche à plusieurs mots : tous présents quelque part
+    const haystack = `${name} ${owner} ${desc}`;
+    const words = q.split(/\s+/).filter(Boolean);
+    if (words.length > 1 && words.every((w) => haystack.includes(w))) return 5;
+    return null;
   }
 
   // Retourne les dépendances non installées d'un package (exclut BepInExPack_Valheim).
