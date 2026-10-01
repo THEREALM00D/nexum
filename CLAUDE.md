@@ -269,6 +269,7 @@ Au démarrage, `ServerManager.tryAdopt()` scanne les processus via `systeminform
 - Flow (Palworld) : annonce (via `/v1/api/announce`) → attente `warningMinutes` → save → shutdown API
 - Scheduler vérifie toutes les 30 secondes
 - **Requiert l'API REST activée** (Palworld) — sinon l'arrêt est brutal (`taskkill`) sans save. Astroneer n'a pas de flow gracieux dans Nexum (`getStopConfig()` renvoie `restApiEnabled: false` → `taskkill` systématique). **Valheim** n'a pas d'API REST mais a son propre mécanisme : `getStopConfig()` renvoie `gracefulSignal: true`, et `ServerManager.stop()` envoie un vrai CTRL+C (`windowsCtrlC.ts`, via `AttachConsole`/`GenerateConsoleCtrlEvent`) avant de retomber sur `taskkill` en dernier recours (timeout 30s) — recommandé par le manuel officiel pour éviter une sauvegarde corrompue.
+- **Détection de fin d'arrêt** (`ServerManager.stop`) : pour un processus lancé par Nexum, la fin est lue sur le `ChildProcess` lui-même (`close` / `exitCode`), **jamais** via `si.processes()` — cette liste peut échouer ou être en retard (appels concurrents du monitoring) et `isPidAlive` répond alors « vivant », ce qui déclenchait un `taskkill /F /T` sur un serveur déjà fermé proprement (log « Server exited with code 0 » suivi de « Le processus ne répond pas »), au risque de tuer un autre programme si Windows a réattribué le PID. La vérification par PID (`ensureStopped`, `waitForPidExit`) ne sert que pour les processus **adoptés**.
 
 ## Historique des joueurs
 
