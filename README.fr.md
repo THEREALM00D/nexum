@@ -80,6 +80,7 @@ Voir [docs/installation.fr.md](docs/installation.fr.md) pour le guide complet.
 - [Logs](docs/logs.fr.md)
 - [Suivi des joueurs Valheim (Odin-Eye)](docs/valheim-players.fr.md)
 - [Mods Valheim](docs/valheim-mods.fr.md)
+- [Politique de signature et confidentialité](docs/code-signing.fr.md)
 - [Architecture technique](CLAUDE.md)
 
 ## Stack technique
