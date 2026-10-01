@@ -13,7 +13,7 @@ Free, open-source Windows app to run **Valheim**, **Palworld** and **Astroneer**
 ![License](https://img.shields.io/badge/license-GPL--3.0-blue)
 
 <p align="center">
-  <img src="docs/images/demo.gif" alt="Nexum demo: start a Valheim server, firewall rules, mods from Thunderstore and Hexium" width="900">
+  <img src="docs/images/demo.gif" alt="Nexum demo: installed Valheim mods, searching Hexium and Thunderstore, deprecated mods flagged, BepInEx config editor, firewall rules" width="960">
 </p>
 
 ## Features
