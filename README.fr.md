@@ -7,10 +7,14 @@
 
 🇬🇧 [English](README.md) | 🇫🇷 Français
 
-Gestionnaire de bureau pour serveurs dédiés de jeux vidéo. Compatible avec **Palworld**, **Valheim** et **Astroneer**.
+Application Windows gratuite et open source pour héberger des serveurs dédiés **Valheim**, **Palworld** et **Astroneer** sans ligne de commande, avec **gestion intégrée des mods Valheim** (Thunderstore + Hexium).
 
 ![Plateforme](https://img.shields.io/badge/platform-Windows-blue)
 ![Licence](https://img.shields.io/badge/license-GPL--3.0-blue)
+
+<p align="center">
+  <img src="docs/images/demo.gif" alt="Démo de Nexum : démarrage d'un serveur Valheim, règles de pare-feu, mods Thunderstore et Hexium" width="900">
+</p>
 
 ## Fonctionnalités
 

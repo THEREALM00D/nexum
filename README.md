@@ -7,10 +7,14 @@
 
 🇬🇧 English | 🇫🇷 [Français](README.fr.md)
 
-Desktop manager for dedicated game servers. Compatible with **Palworld**, **Valheim**, and **Astroneer**.
+Free, open-source Windows app to run **Valheim**, **Palworld** and **Astroneer** dedicated servers without the command line, with built-in **Valheim mod management** (Thunderstore + Hexium).
 
 ![Platform](https://img.shields.io/badge/platform-Windows-blue)
 ![License](https://img.shields.io/badge/license-GPL--3.0-blue)
+
+<p align="center">
+  <img src="docs/images/demo.gif" alt="Nexum demo: start a Valheim server, firewall rules, mods from Thunderstore and Hexium" width="900">
+</p>
 
 ## Features
 
