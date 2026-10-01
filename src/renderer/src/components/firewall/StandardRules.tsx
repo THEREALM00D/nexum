@@ -31,7 +31,6 @@ const HEAD_SX = {
 interface Props {
   rules: FirewallRuleStatus[];
   loading: boolean;
-  isAdmin: boolean | null;
   onRefresh: () => Promise<void>;
   onToggle: (rule: FirewallRuleStatus) => Promise<void>;
   onApplyAll?: () => Promise<void>;
@@ -41,7 +40,6 @@ interface Props {
 export default function StandardRules({
   rules,
   loading,
-  isAdmin,
   onRefresh,
   onToggle,
   onApplyAll,
@@ -103,7 +101,7 @@ export default function StandardRules({
                       <SyncIcon />
                     )
                   }
-                  disabled={busy !== null || !isAdmin}
+                  disabled={busy !== null}
                   onClick={handleApplyAll}
                 >
                   {t("network.standard.applyAll")}
@@ -119,7 +117,7 @@ export default function StandardRules({
                   variant="outlined"
                   color="error"
                   startIcon={<DeleteSweepIcon />}
-                  disabled={busy !== null || !isAdmin}
+                  disabled={busy !== null}
                   onClick={handleRemoveAll}
                 >
                   {t("network.standard.removeAll")}
@@ -183,7 +181,7 @@ export default function StandardRules({
                     size="small"
                     variant={rule.active ? "outlined" : "contained"}
                     color={rule.active ? "error" : "success"}
-                    disabled={busy !== null || !isAdmin}
+                    disabled={busy !== null}
                     onClick={() => handleToggle(rule)}
                     sx={{ minWidth: 90 }}
                   >

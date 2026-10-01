@@ -1,5 +1,10 @@
 import { contextBridge, ipcRenderer } from "electron";
-import type { AppUpdateStatus, GameType, ModRegistry } from "../shared/types";
+import type {
+  AppUpdateStatus,
+  FirewallNamedRule,
+  GameType,
+  ModRegistry,
+} from "../shared/types";
 
 const api = {
   // Window controls
@@ -129,6 +134,10 @@ const api = {
       ipcRenderer.invoke("firewall:enableNamedRule", name, port, protocol),
     disableNamedRule: (name: string, protocol?: "TCP" | "UDP") =>
       ipcRenderer.invoke("firewall:disableNamedRule", name, protocol),
+    applyNamedRules: (rules: FirewallNamedRule[]) =>
+      ipcRenderer.invoke("firewall:applyNamedRules", rules),
+    removeNamedRules: (rules: { name: string; protocol?: "TCP" | "UDP" }[]) =>
+      ipcRenderer.invoke("firewall:removeNamedRules", rules),
     listCustomRules: () => ipcRenderer.invoke("firewall:listCustomRules"),
     createCustomRule: (name: string, port: number, protocol: "TCP" | "UDP") =>
       ipcRenderer.invoke("firewall:createCustomRule", name, port, protocol),

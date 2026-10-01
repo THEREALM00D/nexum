@@ -27,6 +27,7 @@ import type { FirewallRuleStatus } from "@shared/types";
 import { useNotification } from "../../context/NotificationContext";
 import RuleStatus from "./RuleStatus";
 import { FONT_MONO } from "../../theme";
+import { firewallErrorMessage } from "./useNamedRulesFirewall";
 
 const HEAD_SX = {
   color: "text.secondary",
@@ -37,11 +38,10 @@ const HEAD_SX = {
 
 interface Props {
   rules: FirewallRuleStatus[];
-  isAdmin: boolean | null;
   onRefresh: () => Promise<void>;
 }
 
-export default function CustomRules({ rules, isAdmin, onRefresh }: Props) {
+export default function CustomRules({ rules, onRefresh }: Props) {
   const { t } = useTranslation();
   const { notify } = useNotification();
   const [newName, setNewName] = useState("");
@@ -63,7 +63,12 @@ export default function CustomRules({ rules, isAdmin, onRefresh }: Props) {
       newProtocol,
     );
     if (!res.success) {
-      notify(res.error ?? t("network.custom.createErrorFallback"), "error");
+      notify(
+        res.error
+          ? firewallErrorMessage(t, res.error)
+          : t("network.custom.createErrorFallback"),
+        "error",
+      );
     } else {
       notify(t("network.custom.created", { name: newName.trim() }), "success");
       setNewName("");
@@ -80,7 +85,12 @@ export default function CustomRules({ rules, isAdmin, onRefresh }: Props) {
       rule.protocol,
     );
     if (!res.success)
-      notify(res.error ?? t("network.custom.deleteErrorFallback"), "error");
+      notify(
+        res.error
+          ? firewallErrorMessage(t, res.error)
+          : t("network.custom.deleteErrorFallback"),
+        "error",
+      );
     else notify(t("network.custom.deleted", { name: rule.name }), "success");
     await onRefresh();
     setDeleting(null);
@@ -110,7 +120,7 @@ export default function CustomRules({ rules, isAdmin, onRefresh }: Props) {
           size="small"
           value={newName}
           onChange={(e) => setNewName(e.target.value)}
-          disabled={!isAdmin || creating}
+          disabled={creating}
           sx={{ flex: 2 }}
         />
         <TextField
@@ -118,15 +128,11 @@ export default function CustomRules({ rules, isAdmin, onRefresh }: Props) {
           size="small"
           value={newPort}
           onChange={(e) => setNewPort(e.target.value.replace(/\D/g, ""))}
-          disabled={!isAdmin || creating}
+          disabled={creating}
           slotProps={{ htmlInput: { maxLength: 5 } }}
           sx={{ flex: 1 }}
         />
-        <FormControl
-          size="small"
-          sx={{ minWidth: 90 }}
-          disabled={!isAdmin || creating}
-        >
+        <FormControl size="small" sx={{ minWidth: 90 }} disabled={creating}>
           <InputLabel>{t("network.custom.proto")}</InputLabel>
           <Select
             label={t("network.custom.proto")}
@@ -147,7 +153,7 @@ export default function CustomRules({ rules, isAdmin, onRefresh }: Props) {
               <AddIcon />
             )
           }
-          disabled={!isAdmin || creating || !newName.trim() || !newPort}
+          disabled={creating || !newName.trim() || !newPort}
           onClick={handleCreate}
           sx={{ height: 40 }}
         >
@@ -201,7 +207,7 @@ export default function CustomRules({ rules, isAdmin, onRefresh }: Props) {
                         <IconButton
                           size="small"
                           color="error"
-                          disabled={!isAdmin || deleting !== null}
+                          disabled={deleting !== null}
                           onClick={() => handleDelete(rule)}
                         >
                           {deleting === `${rule.name}-${rule.protocol}` ? (

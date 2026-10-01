@@ -2,12 +2,21 @@ export default {
   network: {
     title: "Network & Firewall",
     subtitle: "Manage Windows Defender Firewall rules for the Palworld server",
+    errors: {
+      uacCancelled:
+        "Change cancelled: the Windows confirmation (UAC) was declined.",
+      invalidRule:
+        "Invalid rule name: letters, digits, spaces and - _ . ( ) : only (80 characters max).",
+      notApplied:
+        "The rule could not be changed. Try again, or check that no security software is blocking Windows Firewall.",
+    },
     admin: {
       title: "Administrator privileges",
-      subtitle: "Required to modify firewall rules",
+      subtitle: "Only needed to change firewall rules",
       isAdmin: "Administrator",
-      notAdmin: "Not an administrator",
-      warning: "Relaunch the app as administrator to modify firewall rules.",
+      notAdmin: "Standard mode",
+      warning:
+        'Nexum runs without administrator rights. When you change a rule, Windows asks you to confirm (UAC): just once for "Apply all".',
     },
     standard: {
       title: "Firewall rules",

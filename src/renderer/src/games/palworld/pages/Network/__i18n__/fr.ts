@@ -3,13 +3,21 @@ export default {
     title: "Réseau & Pare-feu",
     subtitle:
       "Gestion des règles Windows Defender Firewall pour le serveur Palworld",
+    errors: {
+      uacCancelled:
+        "Modification annulée : la confirmation Windows (UAC) a été refusée.",
+      invalidRule:
+        "Nom de règle invalide : lettres, chiffres, espaces et - _ . ( ) : uniquement (80 caractères max).",
+      notApplied:
+        "La règle n'a pas pu être modifiée. Réessayez, ou vérifiez qu'aucun logiciel de sécurité ne bloque le pare-feu Windows.",
+    },
     admin: {
       title: "Privilèges administrateur",
-      subtitle: "Requis pour modifier les règles de pare-feu",
+      subtitle: "Nécessaires uniquement pour modifier les règles de pare-feu",
       isAdmin: "Administrateur",
-      notAdmin: "Non-administrateur",
+      notAdmin: "Mode standard",
       warning:
-        "Relancez l'application en tant qu'administrateur pour modifier les règles de pare-feu.",
+        "Nexum tourne sans droits administrateur. Quand vous modifiez une règle, Windows vous demande une confirmation (UAC) : une seule pour « Tout appliquer ».",
     },
     standard: {
       title: "Règles pare-feu",

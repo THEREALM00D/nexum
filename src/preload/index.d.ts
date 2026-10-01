@@ -7,6 +7,7 @@ import type {
   BackupConfig,
   RestartConfig,
   FirewallRuleStatus,
+  FirewallNamedRule,
   UpdateCheckResult,
   AppUpdateStatus,
   LaunchArgsConfig,
@@ -134,6 +135,12 @@ interface API {
     ) => Promise<{ success: boolean; errors: string[] }>;
     removeAll: () => Promise<void>;
     checkRule: (name: string) => Promise<boolean>;
+    applyNamedRules: (
+      rules: FirewallNamedRule[],
+    ) => Promise<{ success: boolean; error?: string }>;
+    removeNamedRules: (
+      rules: { name: string; protocol?: "TCP" | "UDP" }[],
+    ) => Promise<{ success: boolean; error?: string }>;
     enableNamedRule: (
       name: string,
       port: number,

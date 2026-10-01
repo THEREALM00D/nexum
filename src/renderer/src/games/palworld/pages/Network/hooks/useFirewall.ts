@@ -4,6 +4,7 @@ import { firewallService } from "../../../services/firewallService";
 import { configService } from "../../../services/configService";
 import { useNotification } from "../../../../../context/NotificationContext";
 import type { FirewallRuleStatus } from "@shared/types";
+import { firewallErrorMessage } from "../../../../../components/firewall/useNamedRulesFirewall";
 
 const RULE_KEYS: Record<string, "game" | "rcon" | "restapi"> = {
   "Palworld Server - Game": "game",
@@ -56,7 +57,7 @@ export function useFirewall(serverPath: string) {
       if (!key) return;
       if (rule.active) {
         const res = await firewallService.disableRule(key);
-        if (!res.success) notify(res.error ?? t("common.error"), "error");
+        if (!res.success) notify(firewallErrorMessage(t, res.error), "error");
         else
           notify(
             t("network.standard.ruleRemoved", { name: rule.name }),
@@ -68,7 +69,7 @@ export function useFirewall(serverPath: string) {
           rule.port,
           rule.protocol,
         );
-        if (!res.success) notify(res.error ?? t("common.error"), "error");
+        if (!res.success) notify(firewallErrorMessage(t, res.error), "error");
         else
           notify(
             t("network.standard.ruleAdded", { name: rule.name }),
@@ -82,7 +83,11 @@ export function useFirewall(serverPath: string) {
   const onApplyAll = useCallback(async () => {
     const { gamePort, rconPort, restApiPort } = await getPorts();
     const res = await firewallService.applyAll(gamePort, rconPort, restApiPort);
-    if (!res.success) notify(res.errors.join("\n"), "error");
+    if (!res.success)
+      notify(
+        res.errors.map((e) => firewallErrorMessage(t, e)).join("\n"),
+        "error",
+      );
     else notify(t("network.standard.allApplied"), "success");
   }, [getPorts, notify, t]);
 

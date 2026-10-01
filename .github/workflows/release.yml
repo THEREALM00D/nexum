@@ -33,6 +33,9 @@ jobs:
     needs: release-please
     if: ${{ needs.release-please.outputs.release_created == 'true' }}
     runs-on: windows-latest
+    env:
+      # Vide si le secret n'existe pas : l'étape VirusTotal est alors sautée
+      VT_API_KEY: ${{ secrets.VT_API_KEY }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -56,6 +59,47 @@ jobs:
         run: yarn build --publish always
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Confiance : l'exe n'est pas signé, on publie son empreinte et un scan
+      # VirusTotal pour que l'utilisateur puisse vérifier son téléchargement.
+      # VirusTotal ne tourne que si le secret VT_API_KEY existe (clé gratuite
+      # sur virustotal.com) et ne bloque jamais la release (continue-on-error).
+      - name: VirusTotal scan
+        id: virustotal
+        if: ${{ env.VT_API_KEY != '' }}
+        continue-on-error: true
+        uses: crazy-max/ghaction-virustotal@v4
+        with:
+          vt_api_key: ${{ secrets.VT_API_KEY }}
+          files: dist/*.exe
+
+      - name: Add SHA256 and VirusTotal links to release notes
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VT_ANALYSIS: ${{ steps.virustotal.outputs.analysis }}
+        run: |
+          tag="${{ needs.release-please.outputs.tag_name }}"
+          {
+            gh release view "$tag" --json body -q .body
+            echo
+            echo "### Verify your download"
+            echo
+            echo "SHA256 (PowerShell: \`Get-FileHash <file> -Algorithm SHA256\`):"
+            echo
+            echo '```'
+            (cd dist && sha256sum *.exe)
+            echo '```'
+            # Sortie de l'action : "fichier=url,fichier=url"
+            if [ -n "$VT_ANALYSIS" ]; then
+              echo
+              echo "VirusTotal:"
+              echo "$VT_ANALYSIS" | tr ',' '\n' | while IFS='=' read -r file url; do
+                echo "- [$(basename "$file")]($url)"
+              done
+            fi
+          } > release-notes.md
+          gh release edit "$tag" --notes-file release-notes.md
 
       # Publiée seulement une fois tous les assets en ligne : l'auto-updater
       # ne voit jamais une release sans latest.yml.

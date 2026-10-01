@@ -15,9 +15,9 @@ Nexum crée des règles `netsh` ciblées pour les ports utilisés.
 
 ## Permissions
 
-La gestion des règles requiert les **droits administrateur**. Nexum détecte automatiquement si vous êtes admin et désactive les boutons sinon.
+Nexum tourne sans droits administrateur. Quand vous ajoutez ou supprimez une règle, Windows vous demande une confirmation (UAC) : **une seule** par action, y compris pour **Tout appliquer**. Si vous refusez, rien n'est modifié.
 
-> Lancez Nexum en mode administrateur (clic droit → **Exécuter en tant qu'administrateur**) ou utilisez l'installateur qui élève les privilèges automatiquement.
+> Les noms de règles personnalisées ne peuvent contenir que des lettres, chiffres, espaces et `- _ . ( ) :` (80 caractères max).
 
 ## Règles standard
 
