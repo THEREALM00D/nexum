@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/THEREALM00D/nexum/compare/v0.3.1...v0.4.0) (2026-10-01)
+
+
+### Features
+
+* run without administrator rights, elevate only for firewall changes ([#47](https://github.com/THEREALM00D/nexum/issues/47)) ([b56006b](https://github.com/THEREALM00D/nexum/commit/b56006b82032cd00f83646138742b879e7b866cd))
+
 ## [0.3.1](https://github.com/THEREALM00D/nexum/compare/v0.3.0...v0.3.1) (2026-09-29)
 
 
