@@ -4,7 +4,7 @@
   "version": "0.4.0",
   "description": "Open-source desktop manager for game dedicated servers",
   "main": "./out/main/index.js",
-  "author": "",
+  "author": "THEREALM00D",
   "homepage": "https://github.com/THEREALM00D/nexum",
   "license": "GPL-3.0-or-later",
   "scripts": {
