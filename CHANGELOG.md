@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/THEREALM00D/nexum/compare/v0.4.0...v0.4.1) (2026-10-01)
+
+
+### Bug Fixes
+
+* sort Valheim mod search results by relevance ([#51](https://github.com/THEREALM00D/nexum/issues/51)) ([7dab9f2](https://github.com/THEREALM00D/nexum/commit/7dab9f2609e398fd413ae398e0fcda190b1bf0bd))
+
 ## [0.4.0](https://github.com/THEREALM00D/nexum/compare/v0.3.1...v0.4.0) (2026-10-01)
 
 
