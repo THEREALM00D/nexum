@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.2](https://github.com/THEREALM00D/nexum/compare/v0.4.1...v0.4.2) (2026-10-01)
+
+
+### Bug Fixes
+
+* don't force-kill a server that already exited after a graceful stop ([#54](https://github.com/THEREALM00D/nexum/issues/54)) ([5bc1cd0](https://github.com/THEREALM00D/nexum/commit/5bc1cd01015d62b83a5d44c9bd7a5ef34f64457d))
+
 ## [0.4.1](https://github.com/THEREALM00D/nexum/compare/v0.4.0...v0.4.1) (2026-10-01)
 
 
