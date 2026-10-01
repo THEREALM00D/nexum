@@ -275,9 +275,19 @@ export class ServerManager {
     this.autoRestart = false;
     this.status = "stopping";
     const adopted = !this.process && this.adoptedPid !== null;
+    // Processus lancé par nous : sa fin est connue de façon fiable (événement
+    // `close` / exitCode). Ne JAMAIS repasser par la liste des processus dans
+    // ce cas : si.processes() peut échouer ou être en retard (appels
+    // concurrents du monitoring), ce qui faisait croire à un serveur bloqué et
+    // lançait un taskkill /F /T sur un PID déjà terminé — voire réattribué
+    // par Windows à un autre programme.
+    const child = this.process;
+    const childExited = () =>
+      child !== null && (child.exitCode !== null || child.signalCode !== null);
 
     const waitForExit = (timeoutMs: number): Promise<void> => {
-      if (this.process) {
+      if (child) {
+        if (childExited()) return Promise.resolve();
         return new Promise((resolve) => {
           let done = false;
           const finish = () => {
@@ -286,7 +296,7 @@ export class ServerManager {
               resolve();
             }
           };
-          this.process!.once("close", finish);
+          child.once("close", finish);
           setTimeout(finish, timeoutMs);
         });
       }
@@ -303,6 +313,10 @@ export class ServerManager {
       success: boolean;
       error?: string;
     }> => {
+      if (childExited()) {
+        this.status = "stopped";
+        return { success: true };
+      }
       const stopped = await this.ensureStopped(pid);
       return stopped
         ? { success: true }
