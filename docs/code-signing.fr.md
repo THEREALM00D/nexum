@@ -4,15 +4,13 @@
 
 ## Politique de signature de code
 
-Free code signing provided by [SignPath.io](https://signpath.io), certificate by [SignPath Foundation](https://signpath.org).
+> **État :** les exécutables Windows **ne sont pas signés** pour l'instant, Windows SmartScreen peut donc afficher un avertissement. Chaque release indique l'empreinte SHA256 de ses fichiers et leurs liens d'analyse VirusTotal pour vérifier votre téléchargement. La signature de code est prévue ; cette page sera mise à jour quand elle sera en place.
 
-(Signature de code gratuite fournie par SignPath.io, certificat de SignPath Foundation.)
-
-> **État :** candidature en cours. Tant qu'elle n'est pas acceptée, les exécutables Windows **ne sont pas signés** et Windows SmartScreen peut afficher un avertissement. Chaque release indique l'empreinte SHA256 de ses fichiers (et, quand ils sont disponibles, les liens d'analyse VirusTotal) pour vérifier votre téléchargement.
+Quand la signature sera activée, elle suivra ces règles :
 
 - Seuls les exécutables compilés par le workflow GitHub Actions de ce dépôt (`.github/workflows/release.yml`), à partir de son code source, sont signés.
-- Chaque release est approuvée manuellement avant d'être signée.
-- Les exécutables signés portent le nom du produit (Nexum) et sa version dans leurs métadonnées.
+- Chaque release sera approuvée manuellement avant d'être signée.
+- Les exécutables signés porteront le nom du produit (Nexum) et sa version dans leurs métadonnées.
 
 ### Rôles de l'équipe
 
