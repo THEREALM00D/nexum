@@ -4,13 +4,13 @@
 
 ## Code signing policy
 
-Free code signing provided by [SignPath.io](https://signpath.io), certificate by [SignPath Foundation](https://signpath.org).
+> **Status:** Windows binaries are currently **not signed**, so Windows SmartScreen may warn about them. Each release lists the SHA256 of its files and their VirusTotal analysis links, so you can check your download. Code signing is planned; this page will be updated when it is in place.
 
-> **Status:** application in progress. Until it is approved, Windows binaries are **not signed** and Windows SmartScreen may warn about them. Each release lists the SHA256 of its files (and, when available, VirusTotal analysis links) so you can check your download.
+When signing is enabled, it will follow these rules:
 
 - Only binaries built by this repository's GitHub Actions workflow (`.github/workflows/release.yml`), from the source code of this repository, are signed.
-- Every release is approved manually before it is signed.
-- Signed binaries carry the product name (Nexum) and version in their file metadata.
+- Every release will be approved manually before it is signed.
+- Signed binaries will carry the product name (Nexum) and version in their file metadata.
 
 ### Team roles
 
