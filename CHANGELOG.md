@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/THEREALM00D/nexum/compare/v0.4.3...v0.5.0) (2026-10-04)
+
+
+### Features
+
+* add a Discord button to the sidebar ([#61](https://github.com/THEREALM00D/nexum/issues/61)) ([b7b624a](https://github.com/THEREALM00D/nexum/commit/b7b624a02d28af519b38cec4cc36a8471f80f7af))
+
 ## [0.4.3](https://github.com/THEREALM00D/nexum/compare/v0.4.2...v0.4.3) (2026-10-04)
 
 
