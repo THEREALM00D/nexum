@@ -1,1 +1,5 @@
 blank_issues_enabled: false
+contact_links:
+  - name: Questions & help (Discord)
+    url: https://discord.gg/t49ZaZ3hWy
+    about: Ask setup questions and get help from the community. Use issues for bugs and feature requests.
