@@ -180,7 +180,7 @@ Au démarrage, `ServerManager.tryAdopt()` scanne les processus via `systeminform
 ### Page Paramètres (réglages de l'app)
 
 - `pages/Settings/` : page **globale** (comme Serveurs) — Démarrage (`LaunchAtLoginSwitch`), Langue, Mises à jour (`UpdateIndicator align="left"`), Aide et à propos (Discord, docs, bug, confidentialité). Règle : réglage **de l'app** → Paramètres ; réglage **d'un serveur** → sa fenêtre (`ServerDialog`) ou les pages du jeu.
-- `GLOBAL_PAGES` (`App.tsx`) liste les pages indépendantes du jeu/serveur actif : toujours affichées dans la Sidebar, pas de remount au changement de serveur. Toute nouvelle page globale doit y être ajoutée.
+- `GLOBAL_PAGES` (`App.tsx`) liste les pages indépendantes du jeu/serveur actif : toujours affichées, **séparées des pages du jeu dans la Sidebar** (groupe du bas, au-dessus de la langue et de la version, après un séparateur), pas de remount au changement de serveur. Toute nouvelle page globale doit y être ajoutée. Rendu d'une entrée : `components/Sidebar/SidebarNavItem.tsx` (partagé par les deux groupes).
 - Sélecteur de langue partagé : `components/common/LanguageToggle.tsx` (compact dans la Sidebar, `size="medium"` dans Paramètres).
 
 ### Import d'un serveur déjà installé
