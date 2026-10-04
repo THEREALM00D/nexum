@@ -8,6 +8,7 @@ import type {
   RestartConfig,
   FirewallRuleStatus,
   FirewallNamedRule,
+  LaunchAtLoginState,
   UpdateCheckResult,
   AppUpdateStatus,
   LaunchArgsConfig,
@@ -54,6 +55,7 @@ interface API {
       path: string;
       gameType?: GameType;
       color?: string | null;
+      autoStart?: boolean;
     }) => Promise<Server>;
     update: (
       id: string,
@@ -62,6 +64,7 @@ interface API {
         path: string;
         gameType: GameType;
         color: string | null;
+        autoStart: boolean;
       }>,
     ) => Promise<Server>;
     delete: (id: string) => Promise<void>;
@@ -286,6 +289,8 @@ interface API {
   };
   app: {
     getVersion: () => Promise<string>;
+    getLaunchAtLogin: () => Promise<LaunchAtLoginState>;
+    setLaunchAtLogin: (enabled: boolean) => Promise<LaunchAtLoginState>;
   };
 }
 

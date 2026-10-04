@@ -39,7 +39,17 @@ export default {
         "Supprimer le serveur « {{name}} » ? Les fichiers du jeu restent intacts, seules les configurations Nexum sont effacées.",
       deleteTypeToConfirm: "Tapez « {{name}} » pour confirmer",
     },
+    launchAtLogin: {
+      label: "Lancer Nexum au démarrage de Windows",
+      helper:
+        "Nexum s'ouvre réduit dans la barre des tâches, puis démarre les serveurs marqués « Démarrage automatique ».",
+      on: "Nexum se lancera au démarrage de Windows",
+      off: "Nexum ne se lancera plus au démarrage de Windows",
+    },
     dialog: {
+      autoStart: "Démarrer automatiquement à l'ouverture de Nexum",
+      autoStartHelper:
+        "Pratique avec « Lancer Nexum au démarrage de Windows » : le serveur repart tout seul après un redémarrage du PC.",
       addTitle: "Nouveau serveur",
       editTitle: "Modifier le serveur",
       name: "Nom",

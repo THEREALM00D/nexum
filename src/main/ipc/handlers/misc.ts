@@ -1,6 +1,10 @@
 import { ipcMain, BrowserWindow, dialog } from "electron/main";
 import { shell } from "electron";
 import type { IpcContext } from "../context";
+import {
+  getLaunchAtLogin,
+  setLaunchAtLogin,
+} from "../../startup/launchAtLogin";
 
 export function registerMiscHandlers(ctx: IpcContext): void {
   // Window controls
@@ -43,6 +47,10 @@ export function registerMiscHandlers(ctx: IpcContext): void {
 
   // App
   ipcMain.handle("app:getVersion", () => ctx.app.getVersion());
+  ipcMain.handle("app:getLaunchAtLogin", () => getLaunchAtLogin());
+  ipcMain.handle("app:setLaunchAtLogin", (_, enabled: boolean) =>
+    setLaunchAtLogin(enabled),
+  );
 
   // Persistent config (legacy compat : retourne/configure le serveur actif)
   ipcMain.handle("config:getServerPath", () => ctx.getActiveServerPath());

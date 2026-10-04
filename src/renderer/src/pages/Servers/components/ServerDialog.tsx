@@ -12,6 +12,10 @@ import {
   Select,
   Stack,
   TextField,
+  Box,
+  Checkbox,
+  FormControlLabel,
+  Typography,
 } from "@mui/material";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import { useTranslation } from "react-i18next";
@@ -25,6 +29,7 @@ export interface ServerFormValues {
   path: string;
   gameType: GameType;
   color: string | null;
+  autoStart: boolean;
 }
 
 interface Props {
@@ -46,6 +51,7 @@ export default function ServerDialog({
     path: "",
     gameType: "palworld",
     color: DEFAULT_COLORS[0],
+    autoStart: false,
   });
   const [submitting, setSubmitting] = useState(false);
   const exeStatus = useExeDetection(open, values.path, values.gameType);
@@ -57,6 +63,7 @@ export default function ServerDialog({
         path: initial?.path ?? "",
         gameType: initial?.gameType ?? "palworld",
         color: initial?.color ?? DEFAULT_COLORS[0],
+        autoStart: initial?.autoStart ?? false,
       });
     }
   }, [open, initial]);
@@ -147,6 +154,27 @@ export default function ServerDialog({
           <ColorPicker
             value={values.color}
             onChange={(color) => setValues((v) => ({ ...v, color }))}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={values.autoStart}
+                onChange={(e) =>
+                  setValues((v) => ({ ...v, autoStart: e.target.checked }))
+                }
+              />
+            }
+            label={
+              <Box>
+                <Typography variant="body2">
+                  {t("servers.dialog.autoStart")}
+                </Typography>
+                <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                  {t("servers.dialog.autoStartHelper")}
+                </Typography>
+              </Box>
+            }
           />
         </Stack>
       </DialogContent>

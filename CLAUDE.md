@@ -169,6 +169,12 @@ Chaque jeu expose un manifest typé dans `games/<jeu>/index.ts`. Le shell consom
 
 Au démarrage, `ServerManager.tryAdopt()` scanne les processus via `systeminformation` pour détecter l'exécutable du jeu en cours (orphelin d'une session précédente) — préfixe par jeu dans `PROCESS_NAME_PREFIXES` (`main/servers/ServerManagerRegistry.ts` : `palserver`, `valheim_server`, `astroserver`). Si trouvé, le statut passe à `running` et on peut stop/restart via l'API REST (Palworld) + `taskkill`. **Les logs stdout/stderr ne sont pas récupérables** pour un processus adopté (le pipe appartenait à l'ancien parent).
 
+### Démarrage automatique (issue #57)
+
+- **Point d'entrée unique de démarrage** : `startServer(ctx, id, sendLog)` (`main/server/startServer.ts`) — validations (conflits de ports Palworld, mot de passe Valheim), args, env (`getGameEnv`), log des mods Valheim. Utilisé par l'IPC `server:start` ET par le démarrage automatique : ne jamais redupliquer cette logique ailleurs.
+- **Par serveur** : `Server.autoStart` (case dans `ServerDialog`). `autoStartServers()` tourne **après** `tryAdoptAll` (`ipc/handlers.ts`, promesse `adoption`) : un serveur adopté (déjà en cours) n'est pas relancé ; démarrages espacés de 5 s ; un échec est écrit dans les logs du serveur.
+- **Lancer Nexum avec Windows** : `main/startup/launchAtLogin.ts` — `app.setLoginItemSettings` avec l'argument `--autostart` (l'état vit dans Windows, pas dans notre config). Lancé avec cet argument, la fenêtre démarre **réduite** (`launchedAtLogin()` dans `main/index.ts`). Build portable : chemin réel via `PORTABLE_EXECUTABLE_FILE` (sinon l'exe temporaire extrait serait enregistré). Non supporté en dev (`supported: false` → l'interrupteur `LaunchAtLoginSwitch` de la page Serveurs est masqué).
+
 ### Import d'un serveur déjà installé
 
 - Pas de flow dédié : le dialogue d'ajout de serveur (`pages/Servers/components/ServerDialog.tsx`) accepte un dossier existant. Au choix du dossier, `servers:detectGameType` devine le jeu d'après l'exécutable présent à la racine (`main/servers/detectGameType.ts`, qui lit `exeName` de chaque `games/<jeu>/serverConfig.ts` — pas de liste dupliquée), et `useExeDetection` + `ExeStatusHint` confirment en direct que l'exe attendu existe (`servers:hasExpectedExe`).

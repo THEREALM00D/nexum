@@ -5,6 +5,7 @@ import { useServers } from "./hooks/useServers";
 import ServersTable from "./components/ServersTable";
 import ServerDialog from "./components/ServerDialog";
 import ConfirmDeleteDialog from "./components/ConfirmDeleteDialog";
+import LaunchAtLoginSwitch from "./components/LaunchAtLoginSwitch";
 
 export default function Servers() {
   const { t } = useTranslation();
@@ -44,6 +45,8 @@ export default function Servers() {
           {t("servers.addServer")}
         </Button>
       </Box>
+
+      <LaunchAtLoginSwitch />
 
       <ServersTable
         servers={state.servers}

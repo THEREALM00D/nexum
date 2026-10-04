@@ -69,6 +69,7 @@ export class ServerRegistry {
     path: string;
     gameType?: Server["gameType"];
     color?: string | null;
+    autoStart?: boolean;
   }): Server {
     const servers = this.list();
     const server: Server = {
@@ -79,6 +80,7 @@ export class ServerRegistry {
       color:
         input.color ?? DEFAULT_COLORS[servers.length % DEFAULT_COLORS.length],
       createdAt: Date.now(),
+      autoStart: input.autoStart ?? false,
     };
     this.store.set("servers", [...servers, server]);
     if (!this.getActiveId()) this.store.set("activeServerId", server.id);

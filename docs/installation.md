@@ -68,6 +68,15 @@ If a dedicated server is already installed on your machine (installed by hand, w
 - Palworld and Astroneer: your existing `.ini` settings are read as they are
 - Valheim: existing worlds are detected. If there is only one, it is selected automatically; otherwise pick it from the suggestions in the **World name** field of **Configuration** — the name must match exactly, or Valheim creates a new empty world
 
+## Starting automatically
+
+To have your servers come back on their own after a PC restart:
+
+1. In **Servers**, edit a server and check **Start automatically when Nexum opens**. Repeat for each server you want started.
+2. On the same page, turn on **Launch Nexum when Windows starts** (only shown in the installed app).
+
+When you log in to Windows, Nexum opens minimized in the taskbar and starts the checked servers, a few seconds apart. A server that is already running is left as is. The same checks as a manual start apply (Valheim password rules, Palworld port conflicts): if a server can't start, the reason is written in its log.
+
 ## Updating the Palworld server
 
 When a Palworld update is available:

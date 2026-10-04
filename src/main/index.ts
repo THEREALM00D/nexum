@@ -4,6 +4,7 @@ import { join } from "path";
 import { existsSync } from "fs";
 import { registerIpcHandlers } from "./ipc/handlers";
 import { checkForUpdateOnStartup } from "./update/AutoUpdater";
+import { launchedAtLogin } from "./startup/launchAtLogin";
 
 // Dossier de données — doit être fixé avant `ready` et avant tout accès à
 // userData.
@@ -46,7 +47,13 @@ function createWindow(): void {
   });
 
   mainWindow.on("ready-to-show", () => {
-    mainWindow.show();
+    // Lancé à la connexion Windows : démarrer réduit dans la barre des tâches
+    if (launchedAtLogin()) {
+      mainWindow.showInactive();
+      mainWindow.minimize();
+    } else {
+      mainWindow.show();
+    }
     if (!app.isPackaged)
       mainWindow.webContents.openDevTools({ mode: "detach" });
     checkForUpdateOnStartup();

@@ -42,6 +42,7 @@ import {
   getGameStopConfig,
   getGameSavePath,
 } from "../games/registry";
+import { autoStartServers } from "../server/startServer";
 
 const DEFAULT_RESTART_CONFIG: RestartConfig = {
   enabled: false,
@@ -316,7 +317,7 @@ export async function registerIpcHandlers(): Promise<void> {
 
   // Try to adopt any existing PalServer.exe processes on startup, matching
   // each running process to a configured server by executable path.
-  serverManagers.tryAdoptAll(broadcastLog).catch(() => {});
+  const adoption = serverManagers.tryAdoptAll(broadcastLog).catch(() => {});
 
   const ctx: IpcContext = {
     app,
@@ -350,6 +351,10 @@ export async function registerIpcHandlers(): Promise<void> {
     updateAstroneerConfig,
     getModsDataDir,
   };
+
+  // Serveurs marqués « démarrage automatique » : après l'adoption, pour ne
+  // pas relancer un serveur déjà en cours (voir server/startServer.ts).
+  adoption.then(() => autoStartServers(ctx, broadcastLog)).catch(() => {});
 
   registerMiscHandlers(ctx);
   registerAutoUpdater();
