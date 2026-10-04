@@ -11,6 +11,14 @@ export interface Server {
   path: string;
   color: string | null;
   createdAt: number;
+  // Démarré automatiquement à l'ouverture de Nexum (cf. autoStartServers)
+  autoStart?: boolean;
+}
+
+// « Lancer Nexum au démarrage de Windows » — `supported` faux en dev
+export interface LaunchAtLoginState {
+  supported: boolean;
+  enabled: boolean;
 }
 
 // Configuration par-serveur (launch args, backup, restart) — stockée séparément

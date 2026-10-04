@@ -33,6 +33,7 @@ export function registerServersHandlers(
         path: string;
         gameType?: Server["gameType"];
         color?: string | null;
+        autoStart?: boolean;
       },
     ) => registry.create(input),
   );

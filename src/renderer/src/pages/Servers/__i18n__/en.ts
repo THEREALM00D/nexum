@@ -38,6 +38,9 @@ export default {
       deleteTypeToConfirm: 'Type "{{name}}" to confirm',
     },
     dialog: {
+      autoStart: "Start automatically when Nexum opens",
+      autoStartHelper:
+        'With "Launch Nexum when Windows starts" (Settings page), the server comes back on its own after a PC restart.',
       addTitle: "New server",
       editTitle: "Edit server",
       name: "Name",

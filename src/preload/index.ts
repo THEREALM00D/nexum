@@ -313,6 +313,9 @@ const api = {
   // App
   app: {
     getVersion: () => ipcRenderer.invoke("app:getVersion"),
+    getLaunchAtLogin: () => ipcRenderer.invoke("app:getLaunchAtLogin"),
+    setLaunchAtLogin: (enabled: boolean) =>
+      ipcRenderer.invoke("app:setLaunchAtLogin", enabled),
   },
 };
 

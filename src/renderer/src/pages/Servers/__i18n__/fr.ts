@@ -40,6 +40,9 @@ export default {
       deleteTypeToConfirm: "Tapez « {{name}} » pour confirmer",
     },
     dialog: {
+      autoStart: "Démarrer automatiquement à l'ouverture de Nexum",
+      autoStartHelper:
+        "Avec « Lancer Nexum au démarrage de Windows » (page Paramètres), le serveur repart tout seul après un redémarrage du PC.",
       addTitle: "Nouveau serveur",
       editTitle: "Modifier le serveur",
       name: "Nom",

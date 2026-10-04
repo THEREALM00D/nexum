@@ -1,17 +1,5 @@
 import { useState } from "react";
-import {
-  Box,
-  Chip,
-  Divider,
-  IconButton,
-  List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  ToggleButton,
-  ToggleButtonGroup,
-  Tooltip,
-} from "@mui/material";
+import { Box, Chip, Divider, IconButton, List, Tooltip } from "@mui/material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import DownloadIcon from "@mui/icons-material/Download";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -25,13 +13,16 @@ import StorageIcon from "@mui/icons-material/Storage";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { useTranslation } from "react-i18next";
-import { Page } from "../../App";
+import { GLOBAL_PAGES, type Page } from "../../App";
 import { useServer } from "../../context/ServerContext";
 import { DEFAULT_GAME, getGamePlugin } from "../../games/registry";
 import { STATUS_COLOR } from "../../utils/status";
 import ServerSwitcher from "./ServerSwitcher";
 import UpdateIndicator from "./UpdateIndicator";
 import DiscordButton from "./DiscordButton";
+import TuneIcon from "@mui/icons-material/Tune";
+import LanguageToggle from "../common/LanguageToggle";
+import SidebarNavItem from "./SidebarNavItem";
 
 const EXPANDED_WIDTH = 220;
 const COLLAPSED_WIDTH = 56;
@@ -87,6 +78,11 @@ const navItems: { id: Page; labelKey: string; icon: React.ReactNode }[] = [
     labelKey: "sidebar.servers",
     icon: <StorageIcon fontSize="small" />,
   },
+  {
+    id: "settings",
+    labelKey: "sidebar.settings",
+    icon: <TuneIcon fontSize="small" />,
+  },
 ];
 
 interface SidebarProps {
@@ -96,16 +92,20 @@ interface SidebarProps {
 
 export default function Sidebar({ currentPage, onNavigate }: SidebarProps) {
   const { state } = useServer();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const plugin = getGamePlugin(state.activeServer?.gameType ?? DEFAULT_GAME);
   const [collapsed, setCollapsed] = useState(false);
 
-  const handleLanguageChange = (
-    _: React.MouseEvent<HTMLElement>,
-    newLang: string | null,
-  ) => {
-    if (newLang) i18n.changeLanguage(newLang);
-  };
+  const renderItem = ({ id, labelKey, icon }: (typeof navItems)[number]) => (
+    <SidebarNavItem
+      key={id}
+      label={t(labelKey)}
+      icon={icon}
+      active={currentPage === id}
+      collapsed={collapsed}
+      onClick={() => onNavigate(id)}
+    />
+  );
 
   return (
     <Box
@@ -147,97 +147,30 @@ export default function Sidebar({ currentPage, onNavigate }: SidebarProps) {
 
       <Divider sx={{ mx: collapsed ? 0.5 : 1.5, mb: 1 }} />
 
+      {/* Pages du jeu / du serveur actif */}
       <List dense sx={{ py: 1, px: collapsed ? 0.5 : 1 }}>
         {navItems
           .filter(
-            ({ id }) => id === "servers" || plugin?.supportedPages.includes(id),
+            ({ id }) =>
+              !GLOBAL_PAGES.includes(id) && plugin?.supportedPages.includes(id),
           )
-          .map(({ id, labelKey, icon }) => {
-            const isActive = currentPage === id;
-            if (collapsed) {
-              return (
-                <Tooltip key={id} title={t(labelKey)} placement="right">
-                  <ListItemButton
-                    selected={isActive}
-                    onClick={() => onNavigate(id)}
-                    sx={{
-                      borderRadius: 2,
-                      mb: 0.5,
-                      justifyContent: "center",
-                      px: 0,
-                      minHeight: 36,
-                      "&.Mui-selected": {
-                        bgcolor: "action.selected",
-                        "&:hover": { bgcolor: "action.selected" },
-                      },
-                    }}
-                  >
-                    <ListItemIcon
-                      sx={{
-                        minWidth: 0,
-                        color: isActive ? "primary.main" : "text.secondary",
-                        justifyContent: "center",
-                      }}
-                    >
-                      {icon}
-                    </ListItemIcon>
-                  </ListItemButton>
-                </Tooltip>
-              );
-            }
-            return (
-              <ListItemButton
-                key={id}
-                selected={isActive}
-                onClick={() => onNavigate(id)}
-                sx={{
-                  borderRadius: 2,
-                  mb: 0.5,
-                  "&.Mui-selected": {
-                    bgcolor: "action.selected",
-                    "&:hover": { bgcolor: "action.selected" },
-                  },
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 36,
-                    color: isActive ? "primary.main" : "text.secondary",
-                  }}
-                >
-                  {icon}
-                </ListItemIcon>
-                <ListItemText
-                  primary={t(labelKey)}
-                  slotProps={{
-                    primary: {
-                      sx: { fontSize: 13, fontWeight: isActive ? 600 : 400 },
-                    },
-                  }}
-                />
-              </ListItemButton>
-            );
-          })}
+          .map(renderItem)}
       </List>
 
-      <Box sx={{ mt: "auto", p: collapsed ? 0.5 : 2 }}>
+      {/* Pages globales, indépendantes du serveur actif */}
+      <Box sx={{ mt: "auto" }}>
+        <Divider sx={{ mx: collapsed ? 0.5 : 1.5 }} />
+        <List dense sx={{ py: 1, px: collapsed ? 0.5 : 1 }}>
+          {navItems
+            .filter(({ id }) => GLOBAL_PAGES.includes(id))
+            .map(renderItem)}
+        </List>
+      </Box>
+
+      <Box sx={{ p: collapsed ? 0.5 : 2, pt: 0 }}>
         {!collapsed && (
           <>
-            <ToggleButtonGroup
-              value={i18n.resolvedLanguage ?? "fr"}
-              exclusive
-              onChange={handleLanguageChange}
-              size="small"
-              fullWidth
-              sx={{ mb: 1.5 }}
-            >
-              <ToggleButton value="fr" sx={{ fontSize: 11, py: 0.25 }}>
-                FR
-              </ToggleButton>
-              <ToggleButton value="en" sx={{ fontSize: 11, py: 0.25 }}>
-                EN
-              </ToggleButton>
-            </ToggleButtonGroup>
+            <LanguageToggle sx={{ mb: 1.5 }} />
             <Divider sx={{ mb: 1.5 }} />
             <Chip
               label={t(`status.${state.status}`, {
