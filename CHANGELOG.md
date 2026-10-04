@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/THEREALM00D/nexum/compare/v0.5.0...v0.6.0) (2026-10-04)
+
+
+### Features
+
+* Settings page, launch Nexum with Windows and auto-start servers ([#63](https://github.com/THEREALM00D/nexum/issues/63)) ([682de10](https://github.com/THEREALM00D/nexum/commit/682de10588de52ebcaedb08c59f141c8e818a7de))
+
 ## [0.5.0](https://github.com/THEREALM00D/nexum/compare/v0.4.3...v0.5.0) (2026-10-04)
 
 
