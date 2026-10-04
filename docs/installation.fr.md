@@ -76,6 +76,14 @@ Quand une mise à jour Palworld est disponible :
 - Cliquez sur **Vérifier** pour comparer la version installée et la version Steam
 - Si une mise à jour est disponible, cliquez sur **Mettre à jour Palworld**
 
+## Dépannage
+
+### Le serveur Valheim s'arrête quelques secondes après le démarrage
+
+- **Mot de passe** : Valheim refuse de démarrer si le mot de passe fait moins de 5 caractères ou s'il apparaît dans le nom du serveur. Nexum bloque alors le démarrage et indique lequel des deux. Attention : Nexum lance le serveur avec les réglages de sa page **Configuration**, pas avec ceux de votre propre script `.bat` : après l'import d'un serveur existant, vérifiez-y le nom du serveur, le monde et le mot de passe.
+- **Identifiant Steam** : Nexum définit `SteamAppId=892970` au lancement du serveur, comme le script officiel `start_headless_server.bat` (depuis la 0.4.3). Avec une version plus ancienne, mettez Nexum à jour.
+- **Les lignes `[ERR]`** `Setting breakpad minidump AppID` et `SteamInternal_SetMinidumpSteamID … [API loaded no]` sont des messages de démarrage normaux de Valheim, pas la cause : regardez les dernières lignes avant l'arrêt du serveur.
+
 ## Désinstallation
 
 Utilisez le panneau de configuration Windows ou exécutez `Uninstall Nexum.exe` dans le dossier d'installation.

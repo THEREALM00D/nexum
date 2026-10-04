@@ -13,6 +13,13 @@ const GAME_SERVER_CONFIGS = {
 export const getGameServerConfig = (type: GameType) =>
   GAME_SERVER_CONFIGS[type];
 
+// Variables d'environnement à passer au process serveur (ex : SteamAppId pour
+// Valheim). Vide pour les jeux qui n'en ont pas besoin.
+export function getGameEnv(type: GameType): Record<string, string> {
+  const cfg = GAME_SERVER_CONFIGS[type] as { env?: Record<string, string> };
+  return cfg.env ?? {};
+}
+
 export function buildGameArgs(gameType: GameType, cfg: ServerConfig): string[] {
   if (gameType === "valheim")
     return valheimServerConfig.buildArgs(cfg.valheimConfig);

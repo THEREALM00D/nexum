@@ -76,6 +76,14 @@ When a Palworld update is available:
 - Click **Check** to compare the installed version against the Steam version
 - If an update is available, click **Update Palworld**
 
+## Troubleshooting
+
+### The Valheim server stops a few seconds after starting
+
+- **Password**: Valheim refuses to start if the password is shorter than 5 characters or appears in the server name. Nexum blocks the start and tells you which one. Note that Nexum starts the server with the settings of its **Configuration** page, not the ones from your own `.bat` script: check the server name, world and password there after importing an existing server.
+- **Steam app ID**: Nexum sets `SteamAppId=892970` when starting the server, like the official `start_headless_server.bat` script (since 0.4.3). If you are on an older version, update Nexum.
+- **The `[ERR]` lines** `Setting breakpad minidump AppID` and `SteamInternal_SetMinidumpSteamID … [API loaded no]` are normal startup messages from Valheim, not the cause: look at the last lines before the server stops.
+
 ## Uninstalling
 
 Use the Windows Control Panel or run `Uninstall Nexum.exe` from the installation folder.

@@ -37,6 +37,7 @@ import { registerValheimModsHandlers } from "../games/valheim/handlers/mods";
 import { registerAstroneerHandlers } from "../games/astroneer/handlers/config";
 import {
   getGameServerConfig,
+  getGameEnv,
   buildGameArgs,
   getGameStopConfig,
   getGameSavePath,
@@ -245,6 +246,7 @@ export async function registerIpcHandlers(): Promise<void> {
       args,
       (line) => broadcastLog(active?.id ?? "", line),
       getStopConfigForRestart(),
+      getGameEnv(gameType),
     );
   });
 

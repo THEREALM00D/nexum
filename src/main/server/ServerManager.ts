@@ -117,6 +117,7 @@ export class ServerManager {
     exeName: string,
     args: string[],
     onLog: (line: string) => void,
+    env: Record<string, string> = {},
   ): Promise<{ success: boolean; error?: string }> {
     if (this.status === "running" || this.status === "starting") {
       return { success: false, error: "Server is already running" };
@@ -136,6 +137,7 @@ export class ServerManager {
       this.process = spawn(exe, args, {
         cwd: serverPath,
         detached: false,
+        env: { ...process.env, ...env },
         stdio: ["ignore", "pipe", "pipe"],
       });
 
@@ -175,7 +177,10 @@ export class ServerManager {
           onLog(
             `[Manager] Auto-restarting... (attempt ${this.restartCount}/${this.maxRestarts})`,
           );
-          setTimeout(() => this.start(serverPath, exeName, args, onLog), 5000);
+          setTimeout(
+            () => this.start(serverPath, exeName, args, onLog, env),
+            5000,
+          );
         }
       });
 
@@ -366,13 +371,14 @@ export class ServerManager {
     args: string[],
     onLog: (line: string) => void,
     cfg?: StopConfig,
+    env: Record<string, string> = {},
   ): Promise<{ success: boolean; error?: string }> {
     if (this.getRunningPid()) {
       await this.stop(cfg);
       await new Promise((r) => setTimeout(r, 1500));
     }
     this.restartCount = 0;
-    return this.start(serverPath, exeName, args, onLog);
+    return this.start(serverPath, exeName, args, onLog, env);
   }
 
   getStatus(): ServerStatus {

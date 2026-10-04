@@ -5,7 +5,11 @@ import {
   detectPortConflicts,
   formatConflictsError,
 } from "../../servers/portConflicts";
-import { buildGameArgs, getGameServerConfig } from "../../games/registry";
+import {
+  buildGameArgs,
+  getGameEnv,
+  getGameServerConfig,
+} from "../../games/registry";
 import { ValheimModsManager } from "../../games/valheim/ValheimModsManager";
 
 // Liste les mods BepInEx actifs dans la console au démarrage — Valheim ne
@@ -67,7 +71,17 @@ export function registerServerHandlers(ctx: IpcContext): void {
     // générer le monde. On bloque en amont plutôt que de laisser
     // l'utilisateur deviner pourquoi le serveur ne démarre jamais.
     if (gameType === "valheim") {
-      const { password } = ctx.getServerConfig(id).valheimConfig;
+      const { password, name } = ctx.getServerConfig(id).valheimConfig;
+      // Valheim refuse aussi un mot de passe contenu dans le nom du serveur
+      // (note du script officiel start_headless_server.bat) — même symptôme :
+      // arrêt silencieux quelques secondes après le démarrage.
+      if (password && name.includes(password)) {
+        return {
+          success: false,
+          error:
+            "Le mot de passe Valheim ne doit pas apparaître dans le nom du serveur.",
+        };
+      }
       if (password && password.length < 5) {
         return {
           success: false,
@@ -87,7 +101,7 @@ export function registerServerHandlers(ctx: IpcContext): void {
 
     return ctx.serverManagers
       .getOrCreate(id)
-      .start(serverPath, exeName, args, sendLog);
+      .start(serverPath, exeName, args, sendLog, getGameEnv(gameType));
   });
 
   ipcMain.handle("server:stop", (_, serverId?: string) => {
@@ -109,7 +123,14 @@ export function registerServerHandlers(ctx: IpcContext): void {
 
     return ctx.serverManagers
       .getOrCreate(id)
-      .restart(serverPath, exeName, args, sendLog, ctx.getStopConfig(id));
+      .restart(
+        serverPath,
+        exeName,
+        args,
+        sendLog,
+        ctx.getStopConfig(id),
+        getGameEnv(gameType),
+      );
   });
 
   // Compat : status du serveur actif. Retourne "stopped" si aucun actif.
@@ -119,9 +140,8 @@ export function registerServerHandlers(ctx: IpcContext): void {
   );
 
   // Phase 5 : statuses agrégés pour tous les serveurs configurés.
-  ipcMain.handle(
-    "server:statuses",
-    (): Record<string, ServerStatus> => ctx.serverManagers.statuses(),
+  ipcMain.handle("server:statuses", (): Record<string, ServerStatus> =>
+    ctx.serverManagers.statuses(),
   );
 
   // Launch arguments — stockés par-serveur. serverId optionnel = actif.
