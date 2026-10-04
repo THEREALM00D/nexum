@@ -1,11 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  FormControlLabel,
-  Paper,
-  Switch,
-  Typography,
-  Box,
-} from "@mui/material";
+import { Box, FormControlLabel, Switch, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import type { LaunchAtLoginState } from "@shared/types";
 import { useNotification } from "../../../context/NotificationContext";
@@ -13,7 +7,8 @@ import { useNotification } from "../../../context/NotificationContext";
 /**
  * « Lancer Nexum au démarrage de Windows ». Combiné à la case « Démarrer
  * automatiquement » de chaque serveur, un redémarrage du PC relance tout sans
- * intervention. Masqué quand non supporté (mode dev).
+ * intervention. Grisé (avec une explication) quand non supporté : mode dev,
+ * où on enregistrerait electron.exe au démarrage.
  */
 export default function LaunchAtLoginSwitch() {
   const { t } = useTranslation();
@@ -27,8 +22,6 @@ export default function LaunchAtLoginSwitch() {
       .catch(() => setState(null));
   }, []);
 
-  if (!state?.supported) return null;
-
   const toggle = async (enabled: boolean) => {
     try {
       const next = await window.api.app.setLaunchAtLogin(enabled);
@@ -36,8 +29,8 @@ export default function LaunchAtLoginSwitch() {
       notify(
         t(
           next.enabled
-            ? "servers.launchAtLogin.on"
-            : "servers.launchAtLogin.off",
+            ? "settings.startup.launchAtLogin.on"
+            : "settings.startup.launchAtLogin.off",
         ),
         "success",
       );
@@ -46,26 +39,31 @@ export default function LaunchAtLoginSwitch() {
     }
   };
 
+  const supported = state?.supported ?? false;
+
   return (
-    <Paper sx={{ px: 2.5, py: 1.5 }}>
-      <FormControlLabel
-        control={
-          <Switch
-            checked={state.enabled}
-            onChange={(e) => toggle(e.target.checked)}
-          />
-        }
-        label={
-          <Box>
-            <Typography variant="body2">
-              {t("servers.launchAtLogin.label")}
-            </Typography>
-            <Typography variant="caption" sx={{ color: "text.secondary" }}>
-              {t("servers.launchAtLogin.helper")}
-            </Typography>
-          </Box>
-        }
-      />
-    </Paper>
+    <FormControlLabel
+      disabled={!supported}
+      control={
+        <Switch
+          checked={state?.enabled ?? false}
+          onChange={(e) => toggle(e.target.checked)}
+        />
+      }
+      label={
+        <Box>
+          <Typography variant="body2">
+            {t("settings.startup.launchAtLogin.label")}
+          </Typography>
+          <Typography variant="caption" sx={{ color: "text.secondary" }}>
+            {t(
+              supported
+                ? "settings.startup.launchAtLogin.helper"
+                : "settings.startup.launchAtLogin.unsupported",
+            )}
+          </Typography>
+        </Box>
+      }
+    />
   );
 }

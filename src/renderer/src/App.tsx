@@ -5,6 +5,7 @@ import { ServerProvider, useServer } from "./context/ServerContext";
 import { NotificationProvider } from "./context/NotificationContext";
 import Install from "./pages/Install/Install";
 import Servers from "./pages/Servers/Servers";
+import Settings from "./pages/Settings/Settings";
 import Titlebar from "./components/Titlebar/Titlebar";
 import Sidebar from "./components/Sidebar/Sidebar";
 import { DEFAULT_GAME, getGamePlugin } from "./games/registry";
@@ -19,7 +20,11 @@ export type Page =
   | "schedule"
   | "players"
   | "mods"
-  | "servers";
+  | "servers"
+  | "settings";
+
+// Pages indépendantes du jeu / du serveur actif (toujours affichées)
+export const GLOBAL_PAGES: Page[] = ["servers", "settings"];
 
 function AppShell() {
   const [page, setPage] = useState<Page>("dashboard");
@@ -31,7 +36,7 @@ function AppShell() {
   // pour ce jeu (ex: "mods" en quittant Valheim), on retombe sur le
   // dashboard plutôt que d'afficher un écran vide.
   useEffect(() => {
-    if (page === "install" || page === "servers") return;
+    if (page === "install" || GLOBAL_PAGES.includes(page)) return;
     const supported = getGamePlugin(gameType)?.supportedPages ?? [];
     if (!supported.includes(page)) setPage("dashboard");
   }, [gameType, page]);
@@ -39,17 +44,17 @@ function AppShell() {
   const renderPage = () => {
     if (page === "install") return <Install />;
     if (page === "servers") return <Servers />;
+    if (page === "settings") return <Settings />;
     const Component = getGamePlugin(gameType)?.pages[page];
     return Component ? <Component /> : null;
   };
 
   // Clé composée : changement de page OU de serveur actif → re-mount complet,
   // donc tous les useEffect/state des pages se réinitialisent avec les bonnes
-  // données du nouveau serveur. Sauf pour la page "servers" qui est globale.
-  const pageKey =
-    page === "servers"
-      ? "servers"
-      : `${page}:${state.activeServerId ?? "none"}`;
+  // données du nouveau serveur. Sauf pour les pages globales.
+  const pageKey = GLOBAL_PAGES.includes(page)
+    ? page
+    : `${page}:${state.activeServerId ?? "none"}`;
 
   return (
     <Box

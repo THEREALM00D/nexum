@@ -18,15 +18,23 @@ import { useAppUpdate } from "./hooks/useAppUpdate";
 // déjà proposée (mise à jour dispo ou prête à installer).
 const CAN_CHECK_STATES = ["idle", "error", "unavailable"];
 
-export default function UpdateIndicator() {
+export default function UpdateIndicator({
+  align = "center",
+}: {
+  align?: "center" | "left";
+}) {
   const { t } = useTranslation();
   const { currentVersion, status, check, download, install } = useAppUpdate();
 
   return (
-    <Box sx={{ textAlign: "center", mb: 1.5 }}>
+    <Box sx={{ textAlign: align, mb: align === "center" ? 1.5 : 0 }}>
       <Stack
         direction="row"
-        sx={{ alignItems: "center", justifyContent: "center", gap: 0.25 }}
+        sx={{
+          alignItems: "center",
+          justifyContent: align === "center" ? "center" : "flex-start",
+          gap: 0.25,
+        }}
       >
         <Typography variant="caption" sx={{ color: "text.disabled" }}>
           {t("sidebar.version", { version: currentVersion })}

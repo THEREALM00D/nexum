@@ -175,7 +175,13 @@ Au démarrage, `ServerManager.tryAdopt()` scanne les processus via `systeminform
 
 - **Point d'entrée unique de démarrage** : `startServer(ctx, id, sendLog)` (`main/server/startServer.ts`) — validations (conflits de ports Palworld, mot de passe Valheim), args, env (`getGameEnv`), log des mods Valheim. Utilisé par l'IPC `server:start` ET par le démarrage automatique : ne jamais redupliquer cette logique ailleurs.
 - **Par serveur** : `Server.autoStart` (case dans `ServerDialog`). `autoStartServers()` tourne **après** `tryAdoptAll` (`ipc/handlers.ts`, promesse `adoption`) : un serveur adopté (déjà en cours) n'est pas relancé ; démarrages espacés de 5 s ; un échec est écrit dans les logs du serveur.
-- **Lancer Nexum avec Windows** : `main/startup/launchAtLogin.ts` — `app.setLoginItemSettings` avec l'argument `--autostart` (l'état vit dans Windows, pas dans notre config). Lancé avec cet argument, la fenêtre démarre **réduite** (`launchedAtLogin()` dans `main/index.ts`). Build portable : chemin réel via `PORTABLE_EXECUTABLE_FILE` (sinon l'exe temporaire extrait serait enregistré). Non supporté en dev (`supported: false` → l'interrupteur `LaunchAtLoginSwitch` de la page Serveurs est masqué).
+- **Lancer Nexum avec Windows** : `main/startup/launchAtLogin.ts` — `app.setLoginItemSettings` avec l'argument `--autostart` (l'état vit dans Windows, pas dans notre config). Lancé avec cet argument, la fenêtre démarre **réduite** (`launchedAtLogin()` dans `main/index.ts`). Build portable : chemin réel via `PORTABLE_EXECUTABLE_FILE` (sinon l'exe temporaire extrait serait enregistré). Non supporté en dev (`supported: false` → l'interrupteur `LaunchAtLoginSwitch` est grisé avec une explication, pour ne pas enregistrer `electron.exe` au démarrage).
+
+### Page Paramètres (réglages de l'app)
+
+- `pages/Settings/` : page **globale** (comme Serveurs) — Démarrage (`LaunchAtLoginSwitch`), Langue, Mises à jour (`UpdateIndicator align="left"`), Aide et à propos (Discord, docs, bug, confidentialité). Règle : réglage **de l'app** → Paramètres ; réglage **d'un serveur** → sa fenêtre (`ServerDialog`) ou les pages du jeu.
+- `GLOBAL_PAGES` (`App.tsx`) liste les pages indépendantes du jeu/serveur actif : toujours affichées dans la Sidebar, pas de remount au changement de serveur. Toute nouvelle page globale doit y être ajoutée.
+- Sélecteur de langue partagé : `components/common/LanguageToggle.tsx` (compact dans la Sidebar, `size="medium"` dans Paramètres).
 
 ### Import d'un serveur déjà installé
 

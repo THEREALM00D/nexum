@@ -73,7 +73,7 @@ Si un serveur dédié est déjà installé sur votre machine (à la main, avec S
 Pour que vos serveurs repartent tout seuls après un redémarrage du PC :
 
 1. Dans **Serveurs**, modifiez un serveur et cochez **Démarrer automatiquement à l'ouverture de Nexum**. Répétez pour chaque serveur à démarrer.
-2. Sur la même page, activez **Lancer Nexum au démarrage de Windows** (visible seulement dans l'application installée).
+2. Dans **Paramètres**, activez **Lancer Nexum au démarrage de Windows** (disponible seulement dans l'application installée).
 
 À l'ouverture de votre session Windows, Nexum s'ouvre réduit dans la barre des tâches et démarre les serveurs cochés, à quelques secondes d'intervalle. Un serveur déjà en cours est laissé tel quel. Les mêmes vérifications qu'un démarrage manuel s'appliquent (règles du mot de passe Valheim, conflits de ports Palworld) : si un serveur ne peut pas démarrer, la raison est écrite dans ses logs.
 

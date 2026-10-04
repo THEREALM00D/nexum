@@ -37,17 +37,10 @@ export default {
         'Delete server "{{name}}"? Game files stay intact, only Nexum configuration is removed.',
       deleteTypeToConfirm: 'Type "{{name}}" to confirm',
     },
-    launchAtLogin: {
-      label: "Launch Nexum when Windows starts",
-      helper:
-        'Nexum opens minimized in the taskbar, then starts the servers marked "Start automatically".',
-      on: "Nexum will launch when Windows starts",
-      off: "Nexum will no longer launch when Windows starts",
-    },
     dialog: {
       autoStart: "Start automatically when Nexum opens",
       autoStartHelper:
-        'Pairs well with "Launch Nexum when Windows starts": the server comes back on its own after a PC restart.',
+        'With "Launch Nexum when Windows starts" (Settings page), the server comes back on its own after a PC restart.',
       addTitle: "New server",
       editTitle: "Edit server",
       name: "Name",

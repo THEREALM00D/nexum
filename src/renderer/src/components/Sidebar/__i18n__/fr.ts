@@ -9,6 +9,7 @@ export default {
     schedule: "Planification",
     players: "Joueurs",
     mods: "Mods",
+    settings: "Paramètres",
     servers: "Serveurs",
     noServer: "Aucun serveur",
     noServers: "Aucun serveur configuré",
