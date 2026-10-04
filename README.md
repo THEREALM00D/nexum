@@ -90,7 +90,7 @@ See [docs/installation.md](docs/installation.md) for the full guide.
 
 ## Help & community
 
-- **Questions, help, ideas**: join the [Nexum Discord](https://discord.gg/t49ZaZ3hWy) (there is a channel for French speakers too).
+- **Questions, help, ideas**: join the [Nexum Discord](https://discord.gg/t49ZaZ3hWy) (there is a channel for French speakers too). From the app, use the **Help & Discord** button at the bottom of the sidebar.
 - **Bugs**: open an [issue on GitHub](https://github.com/THEREALM00D/nexum/issues/new/choose).
 
 ## Tech stack
