@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.3](https://github.com/THEREALM00D/nexum/compare/v0.4.2...v0.4.3) (2026-10-04)
+
+
+### Bug Fixes
+
+* set SteamAppId when starting a Valheim server ([#58](https://github.com/THEREALM00D/nexum/issues/58)) ([6949c08](https://github.com/THEREALM00D/nexum/commit/6949c0802aa61fb0a84eb4e8c5797280db95d286))
+
 ## [0.4.2](https://github.com/THEREALM00D/nexum/compare/v0.4.1...v0.4.2) (2026-10-01)
 
 
