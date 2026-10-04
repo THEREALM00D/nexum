@@ -31,6 +31,7 @@ import { DEFAULT_GAME, getGamePlugin } from "../../games/registry";
 import { STATUS_COLOR } from "../../utils/status";
 import ServerSwitcher from "./ServerSwitcher";
 import UpdateIndicator from "./UpdateIndicator";
+import DiscordButton from "./DiscordButton";
 
 const EXPANDED_WIDTH = 220;
 const COLLAPSED_WIDTH = 56;
@@ -247,9 +248,11 @@ export default function Sidebar({ currentPage, onNavigate }: SidebarProps) {
               variant="outlined"
               sx={{ width: "100%", fontSize: 11, mb: 1 }}
             />
+            <DiscordButton collapsed={false} />
             <UpdateIndicator />
           </>
         )}
+        {collapsed && <DiscordButton collapsed />}
       </Box>
     </Box>
   );
