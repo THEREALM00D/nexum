@@ -16,6 +16,10 @@ export default {
     collapse: "Réduire",
     expand: "Agrandir",
     version: "v{{version}}",
+    discord: {
+      label: "Aide et Discord",
+      tooltip: "Rejoindre le Discord de Nexum : aide, questions et idées",
+    },
     update: {
       checkNow: "Vérifier les mises à jour",
       checking: "Vérification…",
