@@ -249,6 +249,8 @@ Au démarrage, `ServerManager.tryAdopt()` scanne les processus via `systeminform
 
 ## Arguments de lancement
 
+- **Variables d'environnement par jeu** : `env` dans `games/<jeu>/serverConfig.ts`, lues par `getGameEnv()` (`main/games/registry.ts`) et passées à `ServerManager.start/restart` (conservées pour l'auto-restart). **Valheim : `SteamAppId=892970`**, comme `start_headless_server.bat` — sans elle ni `steam_appid.txt` dans le dossier (absent de certaines installs faites via la bibliothèque Steam ; SteamCMD le crée), le serveur s'arrête quelques secondes après le démarrage (signalé par un utilisateur, 0.4.2). Tout démarrage (manuel, redémarrage, planifié) doit passer `getGameEnv(gameType)`.
+- **Validations Valheim au démarrage** (`server:start`, `ipc/handlers/server.ts`) : mot de passe < 5 caractères et mot de passe contenu dans le nom du serveur → démarrage bloqué avec un message (Valheim quitterait silencieusement). ⚠️ Nexum lance avec **sa** config (page Config), pas avec le `.bat` de l'utilisateur : un serveur importé peut avoir un nom/monde/mot de passe différents.
 - **Palworld** : config `launchArgs: { publicLobby, performanceFlags, customArgs }` (type `LaunchArgsConfig`). `buildArgs` dans `src/main/games/palworld/serverConfig.ts`.
 - **Valheim** : config `valheimConfig: ValheimLaunchConfig`. `buildArgs` dans `src/main/games/valheim/serverConfig.ts`.
 - **Astroneer** : config `astroneerConfig: { customArgs }` (type `AstroneerLaunchConfig`) — Astroneer ne prend quasi aucun argument CLI, toute la config passe par les fichiers `.ini` (voir « Config INI Astroneer »). `buildArgs` dans `src/main/games/astroneer/serverConfig.ts`.

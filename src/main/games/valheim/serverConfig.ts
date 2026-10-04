@@ -5,6 +5,12 @@ import type { ValheimLaunchConfig } from "../../../shared/types";
 export const valheimServerConfig = {
   exeName: "valheim_server.exe",
 
+  // Le script officiel (start_headless_server.bat) fait `set SteamAppId=892970`
+  // avant de lancer le serveur. Sans cette variable ni `steam_appid.txt` dans
+  // le dossier (absent de certaines installs faites via la bibliothèque
+  // Steam), le serveur s'arrête quelques secondes après le démarrage.
+  env: { SteamAppId: "892970" } as Record<string, string>,
+
   // Valheim stocke ses mondes hors de `serverPath` : dossier custom (savedir)
   // ou %LOCALAPPDATA_LOW%/IronGate/Valheim/worlds_local par défaut.
   getSavePath(cfg: ValheimLaunchConfig): string {
