@@ -11,6 +11,7 @@ Application Windows gratuite et open source pour héberger des serveurs dédiés
 
 ![Plateforme](https://img.shields.io/badge/platform-Windows-blue)
 ![Licence](https://img.shields.io/badge/license-GPL--3.0-blue)
+[![Discord](https://img.shields.io/badge/Discord-join-5865F2?logo=discord&logoColor=white)](https://discord.gg/t49ZaZ3hWy)
 
 <p align="center">
   <img src="docs/images/demo.gif" alt="Démo de Nexum : mods Valheim installés, recherche sur Hexium et Thunderstore, mods dépréciés signalés, éditeur de configs BepInEx, règles de pare-feu" width="960">
@@ -86,6 +87,11 @@ Voir [docs/installation.fr.md](docs/installation.fr.md) pour le guide complet.
 - [Mods Valheim](docs/valheim-mods.fr.md)
 - [Politique de signature et confidentialité](docs/code-signing.fr.md)
 - [Architecture technique](CLAUDE.md)
+
+## Aide et communauté
+
+- **Questions, aide, idées** : rejoignez le [Discord de Nexum](https://discord.gg/t49ZaZ3hWy) (avec un salon francophone). Depuis l'app : bouton **Aide et Discord** en bas de la barre latérale.
+- **Bugs** : ouvrez une [issue sur GitHub](https://github.com/THEREALM00D/nexum/issues/new/choose).
 
 ## Stack technique
 
