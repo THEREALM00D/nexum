@@ -27,7 +27,7 @@ const GRACEFUL_SIGNAL_TIMEOUT_MS = 30_000;
 // Masque la valeur qui suit -password avant d'afficher les args dans les
 // logs (utile pour diagnostiquer ce qui est réellement envoyé au process).
 function redactArgs(args: string[]): string[] {
-  return args.map((arg, i) => (args[i - 1] === "-password" ? "***" : arg));
+  return args.map((arg, i) => (args[i - 1] === "-password" ? "[hidden]" : arg));
 }
 
 export class ServerManager {

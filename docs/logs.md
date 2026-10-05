@@ -53,7 +53,16 @@ To share the log (Discord, GitHub issue):
 
 The whole log is exported, not just the last lines: when a server stops on its own, the cause is usually near the **start** of the log, while the last lines only show the shutdown.
 
-> ⚠️ Before sharing, check the log doesn't contain IP addresses, Steam IDs or join codes. Nexum already hides passwords in its `[Manager] Args:` line.
+**Personal data is hidden automatically** in the copied or saved log (not in the on-screen view):
+
+| Data                                            | Becomes                                     |
+| ----------------------------------------------- | ------------------------------------------- |
+| Public IP addresses                             | `[IP]` (the port is kept, e.g. `[IP]:2456`) |
+| Steam IDs (every player who joined)             | `[SteamID]`                                 |
+| Valheim crossplay join codes                    | `join code [hidden]`                        |
+| Server password (in the `[Manager] Args:` line) | `[hidden]`                                  |
+
+Local addresses (`127.0.0.1`, `0.0.0.0`, `192.168.x.x`, `10.x.x.x`, `172.16-31.x.x`) are kept: they don't identify anyone and help diagnose network issues. **Player names are kept**: remove them yourself if needed. A version number with 4 parts (e.g. `1.0.0.0`) can look like an IP address and be hidden too.
 
 ### Clear
 
