@@ -1,19 +1,15 @@
-import { useEffect, useRef } from "react";
 import { Box, Typography, Paper, Button, Stack, Divider } from "@mui/material";
 import DeleteSweepIcon from "@mui/icons-material/DeleteSweep";
 import { useTranslation } from "react-i18next";
 import { useServer } from "../../context/ServerContext";
 import { FONT_MONO } from "../../theme";
 import LogExportButtons from "./LogExportButtons";
+import { useStickToBottom } from "../../hooks/useStickToBottom";
 
 export default function Logs() {
   const { t } = useTranslation();
   const { state, dispatch } = useServer();
-  const endRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [state.logs]);
+  const { ref: scrollRef, onScroll } = useStickToBottom(state.logs);
 
   return (
     <Stack
@@ -54,6 +50,8 @@ export default function Logs() {
       >
         <Divider sx={{ mb: 1 }} />
         <Box
+          ref={scrollRef}
+          onScroll={onScroll}
           sx={{
             flex: 1,
             overflowY: "auto",
@@ -84,7 +82,6 @@ export default function Logs() {
               </Box>
             ))
           )}
-          <div ref={endRef} />
         </Box>
       </Paper>
     </Stack>

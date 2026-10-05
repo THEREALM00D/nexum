@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useServer } from "../../../context/ServerContext";
 import { useNotification } from "../../../context/NotificationContext";
@@ -42,7 +42,6 @@ export function useInstall() {
   const [updateStatus, setUpdateStatus] = useState<UpdateStatus | null>(null);
   const [launchArgs, setLaunchArgs] =
     useState<LaunchArgsConfig>(DEFAULT_LAUNCH_ARGS);
-  const logsEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     steamService.isInstalled().then(setSteamInstalled);
@@ -52,10 +51,6 @@ export function useInstall() {
   useEffect(() => {
     window.api.server.getLaunchArgs().then(setLaunchArgs);
   }, []);
-
-  useEffect(() => {
-    logsEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [logs]);
 
   useEffect(() => {
     const unsub = steamService.onProgress((msg) => setLogs((p) => [...p, msg]));
@@ -168,7 +163,6 @@ export function useInstall() {
     updateStatus,
     launchArgs,
     setLaunchArgs,
-    logsEndRef,
     updateLaunchArgs,
     handleBrowse,
     handleInstallSteam,
