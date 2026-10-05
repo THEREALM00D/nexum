@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.1](https://github.com/THEREALM00D/nexum/compare/v0.7.0...v0.7.1) (2026-10-05)
+
+
+### Bug Fixes
+
+* hide IPs, Steam IDs and join codes in exported logs ([#71](https://github.com/THEREALM00D/nexum/issues/71)) ([a8b00bf](https://github.com/THEREALM00D/nexum/commit/a8b00bf40bfef5a9ebf6414b29fb1c7e67dac9c9))
+
 ## [0.7.0](https://github.com/THEREALM00D/nexum/compare/v0.6.1...v0.7.0) (2026-10-05)
 
 
