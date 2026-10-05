@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 
 // Invitation permanente du Discord communautaire — aussi utilisée dans les
 // README et .github/ISSUE_TEMPLATE/config.yml (voir CLAUDE.md, à garder synchro).
-export const DISCORD_INVITE_URL = "https://discord.gg/t49ZaZ3hWy";
+export const DISCORD_INVITE_URL = "https://discord.gg/DbJ3WkK5QU";
 
 // Logo Discord (Simple Icons, CC0) — absent de @mui/icons-material
 export function DiscordIcon(props: SvgIconProps) {

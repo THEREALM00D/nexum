@@ -11,7 +11,7 @@ Free, open-source Windows app to run **Valheim**, **Palworld** and **Astroneer**
 
 ![Platform](https://img.shields.io/badge/platform-Windows-blue)
 ![License](https://img.shields.io/badge/license-GPL--3.0-blue)
-[![Discord](https://img.shields.io/badge/Discord-join-5865F2?logo=discord&logoColor=white)](https://discord.gg/t49ZaZ3hWy)
+[![Discord](https://img.shields.io/badge/Discord-join-5865F2?logo=discord&logoColor=white)](https://discord.gg/DbJ3WkK5QU)
 
 <p align="center">
   <img src="docs/images/demo.gif" alt="Nexum demo: installed Valheim mods, searching Hexium and Thunderstore, deprecated mods flagged, BepInEx config editor, firewall rules" width="960">
@@ -90,7 +90,7 @@ See [docs/installation.md](docs/installation.md) for the full guide.
 
 ## Help & community
 
-- **Questions, help, ideas**: join the [Nexum Discord](https://discord.gg/t49ZaZ3hWy) (there is a channel for French speakers too). From the app, use the **Help & Discord** button at the bottom of the sidebar.
+- **Questions, help, ideas**: join the [Nexum Discord](https://discord.gg/DbJ3WkK5QU) (there is a channel for French speakers too). From the app, use the **Help & Discord** button at the bottom of the sidebar.
 - **Bugs**: open an [issue on GitHub](https://github.com/THEREALM00D/nexum/issues/new/choose).
 
 ## Tech stack
