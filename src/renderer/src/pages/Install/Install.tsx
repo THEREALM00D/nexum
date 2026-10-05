@@ -21,7 +21,6 @@ export default function Install() {
     updateStatus,
     launchArgs,
     setLaunchArgs,
-    logsEndRef,
     updateLaunchArgs,
     handleBrowse,
     handleInstallSteam,
@@ -86,7 +85,7 @@ export default function Install() {
         />
       )}
 
-      {logs.length > 0 && <InstallLogs logs={logs} logsEndRef={logsEndRef} />}
+      {logs.length > 0 && <InstallLogs logs={logs} />}
     </Stack>
   );
 }

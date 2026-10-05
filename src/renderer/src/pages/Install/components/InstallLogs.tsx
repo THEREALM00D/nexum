@@ -1,16 +1,11 @@
 import { Box, Divider, Paper, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import type { RefObject } from "react";
 import { FONT_MONO } from "../../../theme";
+import { useStickToBottom } from "../../../hooks/useStickToBottom";
 
-export default function InstallLogs({
-  logs,
-  logsEndRef,
-}: {
-  logs: string[];
-  logsEndRef: RefObject<HTMLDivElement | null>;
-}) {
+export default function InstallLogs({ logs }: { logs: string[] }) {
   const { t } = useTranslation();
+  const { ref: scrollRef, onScroll } = useStickToBottom(logs);
   return (
     <Paper sx={{ p: 2 }}>
       <Typography
@@ -25,6 +20,8 @@ export default function InstallLogs({
       </Typography>
       <Divider sx={{ my: 1 }} />
       <Box
+        ref={scrollRef}
+        onScroll={onScroll}
         sx={{
           height: 180,
           overflowY: "auto",
@@ -37,7 +34,6 @@ export default function InstallLogs({
         {logs.map((line, i) => (
           <div key={i}>{line}</div>
         ))}
-        <div ref={logsEndRef} />
       </Box>
     </Paper>
   );
