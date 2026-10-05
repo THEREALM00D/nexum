@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.1](https://github.com/THEREALM00D/nexum/compare/v0.6.0...v0.6.1) (2026-10-05)
+
+
+### Bug Fixes
+
+* replace the expired Discord invite link ([#67](https://github.com/THEREALM00D/nexum/issues/67)) ([f503de5](https://github.com/THEREALM00D/nexum/commit/f503de53f96b601d7ba8ae69a6d69e4709baa173))
+
 ## [0.6.0](https://github.com/THEREALM00D/nexum/compare/v0.5.0...v0.6.0) (2026-10-04)
 
 
