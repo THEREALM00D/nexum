@@ -4,6 +4,7 @@ import DeleteSweepIcon from "@mui/icons-material/DeleteSweep";
 import { useTranslation } from "react-i18next";
 import { useServer } from "../../context/ServerContext";
 import { FONT_MONO } from "../../theme";
+import LogExportButtons from "./LogExportButtons";
 
 export default function Logs() {
   const { t } = useTranslation();
@@ -29,14 +30,17 @@ export default function Logs() {
             {t("logs.lines", { count: state.logs.length })}
           </Typography>
         </Box>
-        <Button
-          size="small"
-          variant="outlined"
-          startIcon={<DeleteSweepIcon />}
-          onClick={() => dispatch({ type: "CLEAR_LOGS" })}
-        >
-          {t("logs.clear")}
-        </Button>
+        <Stack direction="row" spacing={1}>
+          <LogExportButtons />
+          <Button
+            size="small"
+            variant="outlined"
+            startIcon={<DeleteSweepIcon />}
+            onClick={() => dispatch({ type: "CLEAR_LOGS" })}
+          >
+            {t("logs.clear")}
+          </Button>
+        </Stack>
       </Stack>
 
       <Paper

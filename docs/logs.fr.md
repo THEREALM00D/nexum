@@ -42,6 +42,17 @@ Nexum garde les **500 dernières lignes** en mémoire. Au-delà, les anciennes l
 
 L'affichage défile automatiquement vers le bas quand de nouvelles lignes arrivent. Cliquez et scrollez vers le haut pour interrompre l'auto-scroll, puis revenez en bas pour le réactiver.
 
+### Copier / Enregistrer en .txt
+
+Pour partager le log (Discord, issue GitHub) :
+
+- **Copier** : copie **tout** le log (les 500 dernières lignes gardées par Nexum) dans le presse-papiers, précédé d'une ligne avec votre version de Nexum, le jeu et la date. Collez-le directement : sur Discord, un long texte collé devient automatiquement un fichier `message.txt`.
+- **Enregistrer en .txt** : ouvre la fenêtre « Enregistrer sous » de Windows (dossier Documents par défaut). Une fois le fichier enregistré, le bouton **Afficher dans le dossier** ouvre l'Explorateur, prêt à joindre le fichier.
+
+Tout le log est exporté, pas seulement les dernières lignes : quand un serveur s'arrête tout seul, la cause est généralement au **début** du log, les dernières lignes ne montrent que la fermeture.
+
+> ⚠️ Avant de partager, vérifiez que le log ne contient pas d'adresse IP, d'identifiant Steam ni de code de connexion. Nexum masque déjà les mots de passe dans sa ligne `[Manager] Args:`.
+
 ### Effacer
 
 Bouton **Effacer** : vide complètement la vue. N'arrête **pas** la capture des logs futurs.

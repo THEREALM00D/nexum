@@ -80,7 +80,7 @@ src/
     ├── components/
     │   ├── common/        # Petits composants génériques (SearchField)
     │   ├── firewall/      # AdminBanner, StandardRules, CustomRules, RuleStatus
-    │   ├── server/        # ServerControls, StatsGrid
+    │   ├── server/        # ServerControls, StatsGrid, Logs (page partagée par les 3 jeux)
     │   ├── players/       # Page « Joueurs » complète (Palworld + Valheim)
     │   ├── Sidebar/       # Sidebar + ServerSwitcher
     │   └── Titlebar/
@@ -176,6 +176,12 @@ Au démarrage, `ServerManager.tryAdopt()` scanne les processus via `systeminform
 - **Point d'entrée unique de démarrage** : `startServer(ctx, id, sendLog)` (`main/server/startServer.ts`) — validations (conflits de ports Palworld, mot de passe Valheim), args, env (`getGameEnv`), log des mods Valheim. Utilisé par l'IPC `server:start` ET par le démarrage automatique : ne jamais redupliquer cette logique ailleurs.
 - **Par serveur** : `Server.autoStart` (case dans `ServerDialog`). `autoStartServers()` tourne **après** `tryAdoptAll` (`ipc/handlers.ts`, promesse `adoption`) : un serveur adopté (déjà en cours) n'est pas relancé ; démarrages espacés de 5 s ; un échec est écrit dans les logs du serveur.
 - **Lancer Nexum avec Windows** : `main/startup/launchAtLogin.ts` — `app.setLoginItemSettings` avec l'argument `--autostart` (l'état vit dans Windows, pas dans notre config). Lancé avec cet argument, la fenêtre démarre **réduite** (`launchedAtLogin()` dans `main/index.ts`). Build portable : chemin réel via `PORTABLE_EXECUTABLE_FILE` (sinon l'exe temporaire extrait serait enregistré). Non supporté en dev (`supported: false` → l'interrupteur `LaunchAtLoginSwitch` est grisé avec une explication, pour ne pas enregistrer `electron.exe` au démarrage).
+
+### Page Logs (partagée)
+
+- `components/server/Logs.tsx` est la page Logs des **trois** jeux (`games/<jeu>/pages/Logs/Logs.tsx` ne fait que la réexporter). Ses textes sont dans `components/server/__i18n__/`, importés par chaque manifest (comme `components/players/`) — ils étaient dupliqués dans Palworld et Valheim, et Astroneer n'en avait pas.
+- Tampon : 500 dernières lignes par serveur, en mémoire seulement (`ADD_LOG` dans `ServerContext`), perdu à la fermeture de Nexum.
+- **Export pour les rapports de bug** (`LogExportButtons.tsx`, suggestion d'un utilisateur Discord) : **Copier** (presse-papiers) et **Enregistrer en .txt** (IPC `logs:saveToFile` → `dialog.showSaveDialog`, Documents par défaut ; puis bouton « Afficher dans le dossier » via `shell:showItemInFolder`). Toujours **tout** le tampon, jamais « les N dernières lignes » : la cause d'un arrêt est au début du log, la fin ne montre que la fermeture (vécu sur un rapport Valheim). Première ligne = `Nexum <version> · <jeu> · <date ISO>`. Pas d'anonymisation automatique des IP : la notification rappelle de vérifier avant de partager (les mots de passe sont déjà masqués par `redactArgs` dans la ligne `[Manager] Args:`).
 
 ### Page Paramètres (réglages de l'app)
 

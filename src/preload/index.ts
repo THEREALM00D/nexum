@@ -193,6 +193,13 @@ const api = {
     openPath: (path: string) => ipcRenderer.invoke("shell:openPath", path),
     openExternal: (url: string) =>
       ipcRenderer.invoke("shell:openExternal", url),
+    showItemInFolder: (path: string) =>
+      ipcRenderer.invoke("shell:showItemInFolder", path),
+  },
+  // Export du log serveur (page Logs)
+  logs: {
+    saveToFile: (content: string, defaultName: string) =>
+      ipcRenderer.invoke("logs:saveToFile", content, defaultName),
   },
   // Dialog
   dialog: {

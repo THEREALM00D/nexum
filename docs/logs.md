@@ -44,6 +44,17 @@ Nexum keeps the **last 500 lines** in memory. Beyond that, older lines are remov
 
 The view automatically scrolls down as new lines arrive. Click and scroll up to pause auto-scroll, then scroll back down to resume it.
 
+### Copy / Save as .txt
+
+To share the log (Discord, GitHub issue):
+
+- **Copy**: copies the **whole** log (the last 500 lines kept by Nexum) to the clipboard, with a first line giving your Nexum version, the game and the date. Paste it directly: on Discord, a long paste is automatically turned into a `message.txt` file.
+- **Save as .txt**: opens the Windows "Save as" dialog (Documents folder by default). Once saved, a **Show in folder** button opens the folder in Explorer, ready to attach the file.
+
+The whole log is exported, not just the last lines: when a server stops on its own, the cause is usually near the **start** of the log, while the last lines only show the shutdown.
+
+> ⚠️ Before sharing, check the log doesn't contain IP addresses, Steam IDs or join codes. Nexum already hides passwords in its `[Manager] Args:` line.
+
 ### Clear
 
 **Clear** button: empties the view completely. It does **not** stop future log capture.
