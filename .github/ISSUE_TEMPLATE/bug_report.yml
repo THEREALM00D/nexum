@@ -57,7 +57,7 @@ body:
     id: logs
     attributes:
       label: Relevant logs
-      description: Server console output or app logs, if relevant. Redact IPs/tokens if any.
+      description: Server console output, if relevant. On the Logs page, use **Copy** (or **Save as .txt** and attach the file) to get the whole log with your Nexum version. Redact IPs/tokens if any.
       render: shell
     validations:
       required: false

@@ -194,6 +194,14 @@ interface API {
   shell: {
     openPath: (path: string) => Promise<void>;
     openExternal: (url: string) => Promise<void>;
+    showItemInFolder: (path: string) => Promise<void>;
+  };
+  logs: {
+    /** Chemin du fichier écrit, ou null si l'utilisateur a annulé. */
+    saveToFile: (
+      content: string,
+      defaultName: string,
+    ) => Promise<string | null>;
   };
   dialog: {
     selectFolder: () => Promise<string | null>;

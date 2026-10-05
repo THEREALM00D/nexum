@@ -1,5 +1,7 @@
-import { ipcMain, BrowserWindow, dialog } from "electron/main";
+import { ipcMain, BrowserWindow, dialog, app } from "electron/main";
 import { shell } from "electron";
+import { writeFile } from "fs/promises";
+import { basename, join } from "path";
 import type { IpcContext } from "../context";
 import {
   getLaunchAtLogin,
@@ -39,8 +41,26 @@ export function registerMiscHandlers(ctx: IpcContext): void {
     },
   );
 
+  // Export du log serveur (page Logs) : « Enregistrer sous » natif, dossier
+  // Documents par défaut. Renvoie le chemin écrit, ou null si annulé.
+  ipcMain.handle(
+    "logs:saveToFile",
+    async (_, content: string, defaultName: string) => {
+      const result = await dialog.showSaveDialog({
+        defaultPath: join(app.getPath("documents"), basename(defaultName)),
+        filters: [{ name: "Text", extensions: ["txt"] }],
+      });
+      if (result.canceled || !result.filePath) return null;
+      await writeFile(result.filePath, content, "utf-8");
+      return result.filePath;
+    },
+  );
+
   // Shell
   ipcMain.handle("shell:openPath", (_, path: string) => shell.openPath(path));
+  ipcMain.handle("shell:showItemInFolder", (_, path: string) =>
+    shell.showItemInFolder(path),
+  );
   ipcMain.handle("shell:openExternal", (_, url: string) =>
     shell.openExternal(url),
   );
