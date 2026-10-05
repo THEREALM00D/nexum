@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.2](https://github.com/THEREALM00D/nexum/compare/v0.7.1...v0.7.2) (2026-10-05)
+
+
+### Bug Fixes
+
+* stop log auto-scroll from fighting the user and scrolling the page ([#73](https://github.com/THEREALM00D/nexum/issues/73)) ([a0966ea](https://github.com/THEREALM00D/nexum/commit/a0966ea8d7ac526850c8ff2018f91727e9bb701a))
+
 ## [0.7.1](https://github.com/THEREALM00D/nexum/compare/v0.7.0...v0.7.1) (2026-10-05)
 
 
