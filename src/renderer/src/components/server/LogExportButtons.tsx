@@ -7,12 +7,14 @@ import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
 import { useServer } from "../../context/ServerContext";
 import { useNotification } from "../../context/NotificationContext";
+import { redactLog } from "./redactLog";
 
 /**
  * Copier / enregistrer le log du serveur actif pour un rapport de bug.
  * Tout le log est exporté (pas « les N dernières lignes ») : la cause d'un
  * arrêt est souvent au début, les dernières lignes ne montrent que la
  * fermeture. L'en-tête évite de devoir demander la version et le jeu.
+ * IP publiques, SteamID et codes de connexion sont masqués (`redactLog`).
  */
 export default function LogExportButtons() {
   const { t } = useTranslation();
@@ -28,7 +30,7 @@ export default function LogExportButtons() {
       `Nexum ${version} · ${game} · ${new Date().toISOString()}`,
       "-".repeat(60),
     ];
-    return [...header, ...state.logs].join("\n");
+    return [...header, redactLog(state.logs.join("\n"))].join("\n");
   };
 
   const copy = async () => {

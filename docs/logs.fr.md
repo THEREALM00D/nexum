@@ -51,7 +51,16 @@ Pour partager le log (Discord, issue GitHub) :
 
 Tout le log est exporté, pas seulement les dernières lignes : quand un serveur s'arrête tout seul, la cause est généralement au **début** du log, les dernières lignes ne montrent que la fermeture.
 
-> ⚠️ Avant de partager, vérifiez que le log ne contient pas d'adresse IP, d'identifiant Steam ni de code de connexion. Nexum masque déjà les mots de passe dans sa ligne `[Manager] Args:`.
+**Les données personnelles sont masquées automatiquement** dans le log copié ou enregistré (pas dans l'affichage à l'écran) :
+
+| Donnée                                              | Devient                                        |
+| --------------------------------------------------- | ---------------------------------------------- |
+| Adresses IP publiques                               | `[IP]` (le port est conservé, ex. `[IP]:2456`) |
+| Identifiants Steam (de chaque joueur déjà connecté) | `[SteamID]`                                    |
+| Codes de connexion crossplay Valheim                | `join code [hidden]`                           |
+| Mot de passe du serveur (ligne `[Manager] Args:`)   | `[hidden]`                                     |
+
+Les adresses locales (`127.0.0.1`, `0.0.0.0`, `192.168.x.x`, `10.x.x.x`, `172.16-31.x.x`) sont conservées : elles n'identifient personne et aident à diagnostiquer les problèmes réseau. **Les noms des joueurs sont conservés** : retirez-les vous-même au besoin. Un numéro de version en 4 parties (ex. `1.0.0.0`) peut ressembler à une adresse IP et être masqué aussi.
 
 ### Effacer
 
