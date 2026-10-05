@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.0](https://github.com/THEREALM00D/nexum/compare/v0.6.1...v0.7.0) (2026-10-05)
+
+
+### Features
+
+* copy or save the server log for bug reports ([#69](https://github.com/THEREALM00D/nexum/issues/69)) ([6d95cab](https://github.com/THEREALM00D/nexum/commit/6d95cab36d8e555f5216c49c069cd44ca58dbaa6))
+
 ## [0.6.1](https://github.com/THEREALM00D/nexum/compare/v0.6.0...v0.6.1) (2026-10-05)
 
 
