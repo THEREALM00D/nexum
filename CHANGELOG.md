@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0](https://github.com/THEREALM00D/nexum/compare/v0.7.2...v0.8.0) (2026-10-06)
+
+
+### Features
+
+* show mod update dates and flag stale mods in the Valheim mod browser ([#75](https://github.com/THEREALM00D/nexum/issues/75)) ([ae38c08](https://github.com/THEREALM00D/nexum/commit/ae38c08796a508ed688f73188761135f6a81b6f1))
+
 ## [0.7.2](https://github.com/THEREALM00D/nexum/compare/v0.7.1...v0.7.2) (2026-10-05)
 
 

@@ -1,7 +1,7 @@
 {
   "name": "nexum",
   "productName": "Nexum",
-  "version": "0.7.2",
+  "version": "0.8.0",
   "description": "Open-source desktop manager for game dedicated servers",
   "main": "./out/main/index.js",
   "author": "THEREALM00D",
