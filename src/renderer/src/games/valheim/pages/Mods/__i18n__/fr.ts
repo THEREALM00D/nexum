@@ -8,6 +8,8 @@ export default {
       browse: "Parcourir",
       configs: "Configs",
     },
+    clientHint:
+      "Nexum installe les mods sur le serveur seulement. La plupart doivent aussi être installés par chaque joueur, avec un gestionnaire de mods comme Gale, r2modman ou le gestionnaire de mods Hexium (la page du mod indique s'il est nécessaire côté client).",
     bepinex: {
       warning:
         "BepInEx non détecté dans le dossier serveur. La plupart des mods Valheim nécessitent BepInEx pour fonctionner.",
@@ -25,7 +27,7 @@ export default {
       disabled: "Désactivé",
       manual: "Manuel",
       installedAt: "Installé le {{date}}",
-      updatedAt: "MàJ {{registry}} : {{date}}",
+      updatedAt: "Version publiée sur {{registry}} : {{date}}",
       version: "v{{version}}",
       loadFailed: "Impossible de charger les mods installés",
       restartRequired:
@@ -65,6 +67,9 @@ export default {
         noFiles: "Aucune version disponible",
       },
       endorsements: "{{count}} étoiles",
+      updatedOn: "Mis à jour le {{date}}",
+      staleTooltip:
+        "Pas mis à jour depuis plus d'un an : il ne fonctionne peut-être plus avec la version actuelle de Valheim. Consultez les commentaires sur sa page avant de l'installer.",
       loading: "Chargement…",
       error: "Impossible de charger les mods {{registry}}",
     },
