@@ -29,6 +29,7 @@ import { dialogService } from "../../../../services/dialogService";
 import { useValheimMods } from "./hooks/useValheimMods";
 import { useValheimModConfigs } from "./hooks/useValheimModConfigs";
 import BepInExBanner from "./components/BepInExBanner";
+import ClientModsHint from "./components/ClientModsHint";
 import InstalledModsList from "./components/InstalledModsList";
 import ModBrowser from "./components/ModBrowser";
 import DepsDialog from "./components/DepsDialog";
@@ -128,6 +129,7 @@ export default function ValheimMods() {
         installing={installingBepInEx}
         onInstall={handleInstallBepInEx}
       />
+      <ClientModsHint />
 
       {/* Boutons Thunderstore */}
       <Stack

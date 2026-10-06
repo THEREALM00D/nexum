@@ -12,6 +12,12 @@ La plupart des mods Valheim nécessitent **BepInEx**. Si Nexum ne le détecte pa
 
 > Les mods ne sont chargés qu'au démarrage du serveur : redémarrez-le après toute installation, désinstallation ou activation/désactivation.
 
+## Serveur et joueurs
+
+Nexum installe les mods **sur le serveur seulement**. La plupart des mods doivent **aussi être installés par chaque joueur**, avec un gestionnaire de mods client comme [Gale](https://github.com/Kesomannen/gale), r2modman ou le [gestionnaire de mods Hexium](https://hexium.gg/mod-manager). La page du mod sur son registre indique s'il est nécessaire côté client, côté serveur ou les deux. Un mod installé seulement sur le serveur semblera généralement ne rien faire.
+
+Astuce : montez votre modpack dans Gale, exportez le code du profil et importez-le dans Nexum (voir plus bas) pour que le serveur et les joueurs aient les mêmes mods.
+
 ## Onglet Installés
 
 Liste des mods présents dans `BepInEx/plugins/`, avec pour chacun :
@@ -19,6 +25,8 @@ Liste des mods présents dans `BepInEx/plugins/`, avec pour chacun :
 - un badge indiquant sa source (**Thunderstore**, **Hexium**, ou **Manuel** pour un mod copié à la main hors de Nexum) ;
 - un interrupteur **Activé / Désactivé** (le mod est réellement déplacé hors de `plugins/` quand il est désactivé) ;
 - **Désinstaller**, et un lien vers la page du mod sur son registre.
+
+La ligne sous le nom indique la date d'installation et la date de publication de la version installée sur son registre (« Version publiée sur Thunderstore : … »).
 
 ### Mises à jour
 
@@ -36,6 +44,7 @@ Les mods installés manuellement ne sont pas concernés : sans registre connu, N
 
 - Choisissez le registre (**Thunderstore** ou **Hexium**) : les deux listes sont indépendantes.
 - Onglets **Tendances**, **Nouveaux**, **Mis à jour**, ou recherche libre. Les résultats sont triés par pertinence : nom identique d'abord, puis noms qui commencent par votre recherche ou la contiennent, puis auteur et description (les espaces et tirets sont ignorés : `azu auto` trouve AzuAutoStore). Les mods dépréciés n'apparaissent que dans la recherche, avec le badge **Déprécié**, après les mods maintenus aussi pertinents.
+- Chaque mod affiche la date de sa **dernière mise à jour** à côté de l'auteur. Elle passe en **orange** avec un ⚠ quand le mod n'a pas été mis à jour depuis plus d'un an : il ne fonctionne peut-être plus avec la version actuelle de Valheim, consultez les commentaires sur sa page avant de l'installer. (La page d'un registre peut aussi afficher la date de _première_ publication du mod ; Nexum affiche la dernière mise à jour.)
 - Installez la dernière version en un clic, ou choisissez une version précise via **Versions**.
 - Si le mod a des dépendances non installées, Nexum propose de les installer (**Tout installer**), y compris quand elles viennent de l'autre registre.
 

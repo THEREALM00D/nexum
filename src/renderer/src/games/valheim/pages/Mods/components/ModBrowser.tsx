@@ -32,6 +32,7 @@ import type {
   ModRegistry,
 } from "@shared/types";
 import { REGISTRY_LABEL, modPageUrl } from "../utils/modPageUrl";
+import ModUpdatedDate from "./ModUpdatedDate";
 import DeprecatedChip from "./DeprecatedChip";
 
 type BrowseTab = "trending" | "latest" | "updated";
@@ -226,7 +227,8 @@ export default function ModBrowser({
                     sx={{ color: "text.secondary" }}
                     noWrap
                   >
-                    {mod.author}
+                    {mod.author} ·{" "}
+                    <ModUpdatedDate timestamp={mod.updated_timestamp} />
                   </Typography>
                   <Typography
                     variant="caption"

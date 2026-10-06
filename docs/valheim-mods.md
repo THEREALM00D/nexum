@@ -12,6 +12,12 @@ Most Valheim mods require **BepInEx**. If Nexum doesn't find it in the server fo
 
 > Mods are only loaded when the server starts: restart it after any install, uninstall, or enable/disable.
 
+## Server and players
+
+Nexum installs mods **on the server only**. Most mods must **also be installed by each player**, with a client mod manager such as [Gale](https://github.com/Kesomannen/gale), r2modman or the [Hexium mod manager](https://hexium.gg/mod-manager). The mod's page on its registry says whether it's needed on the client, on the server, or both. A mod installed on the server only will usually seem to do nothing.
+
+Tip: build your modpack in Gale, export the profile code, and import it in Nexum (see below) so the server and players get the same mods.
+
 ## Installed tab
 
 Lists the mods in `BepInEx/plugins/`, each with:
@@ -19,6 +25,8 @@ Lists the mods in `BepInEx/plugins/`, each with:
 - a badge showing its source (**Thunderstore**, **Hexium**, or **Manual** for a mod copied by hand outside Nexum);
 - an **Enabled / Disabled** switch (a disabled mod is actually moved out of `plugins/`);
 - **Uninstall**, and a link to the mod's page on its registry.
+
+The line under the name shows when the mod was installed and when the installed version was published on its registry ("Version published on Thunderstore: …").
 
 ### Updates
 
@@ -36,6 +44,7 @@ Manually installed mods are not covered: without a known registry, Nexum can che
 
 - Pick the registry (**Thunderstore** or **Hexium**): the two lists are independent.
 - **Trending**, **New**, **Updated** tabs, or free search. Search results are sorted by relevance: exact name first, then names starting with or containing your search, then author and description matches (spaces and dashes are ignored, so `azu auto` finds AzuAutoStore). Deprecated mods only show up in search results, with the **Deprecated** badge, after maintained mods that match just as well.
+- Each mod shows the date of its **last update** next to the author. It turns **orange** with a ⚠ when the mod hasn't been updated in over a year: it may not work with the current version of Valheim, so check the comments on its page before installing. (A registry page may also show the date the mod was _first_ uploaded; Nexum shows the latest update.)
 - Install the latest version in one click, or pick a specific one via **Versions**.
 - If the mod has dependencies that aren't installed, Nexum offers to install them (**Install all**), including when they come from the other registry.
 
