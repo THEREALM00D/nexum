@@ -15,13 +15,20 @@ import { redactLog } from "./redactLog";
  * arrêt est souvent au début, les dernières lignes ne montrent que la
  * fermeture. L'en-tête évite de devoir demander la version et le jeu.
  * IP publiques, SteamID et codes de connexion sont masqués (`redactLog`).
+ * `loadLog` fournit le texte complet (fichier de la session, sans la limite
+ * d'affichage) : session en cours ou session terminée choisie.
  */
-export default function LogExportButtons() {
+export default function LogExportButtons({
+  loadLog,
+  disabled,
+}: {
+  loadLog: () => Promise<string>;
+  disabled: boolean;
+}) {
   const { t } = useTranslation();
   const { notify } = useNotification();
   const { state } = useServer();
   const [savedPath, setSavedPath] = useState<string | null>(null);
-  const disabled = state.logs.length === 0;
 
   const buildReport = async (): Promise<string> => {
     const version = await window.api.app.getVersion();
@@ -30,7 +37,7 @@ export default function LogExportButtons() {
       `Nexum ${version} · ${game} · ${new Date().toISOString()}`,
       "-".repeat(60),
     ];
-    return [...header, redactLog(state.logs.join("\n"))].join("\n");
+    return [...header, redactLog(await loadLog())].join("\n");
   };
 
   const copy = async () => {

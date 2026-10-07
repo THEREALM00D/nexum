@@ -27,6 +27,7 @@ import type {
   GameType,
   ServerStatus,
   ServerLogEvent,
+  LogSession,
 } from "../shared/types";
 
 interface API {
@@ -100,6 +101,7 @@ interface API {
     getLaunchArgs: (serverId?: string) => Promise<LaunchArgsConfig>;
     setLaunchArgs: (cfg: LaunchArgsConfig, serverId?: string) => Promise<void>;
     onLog: (cb: (event: ServerLogEvent) => void) => () => void;
+    onLogSession: (cb: (event: { serverId: string }) => void) => () => void;
   };
   palconfig: {
     read: (
@@ -197,6 +199,10 @@ interface API {
     showItemInFolder: (path: string) => Promise<void>;
   };
   logs: {
+    listSessions: (serverId?: string) => Promise<LogSession[]>;
+    /** Contenu complet d'un fichier de session (`LogSession.name`). */
+    readSession: (name: string, serverId?: string) => Promise<string>;
+    openDir: (serverId?: string) => Promise<void>;
     /** Chemin du fichier écrit, ou null si l'utilisateur a annulé. */
     saveToFile: (
       content: string,

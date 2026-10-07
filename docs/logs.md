@@ -34,9 +34,27 @@ Unlike many game servers, **PalServer.exe writes very little to stdout/stderr**.
 
 For detailed server logs (player connections, Unreal Engine errors, etc.), check these files directly.
 
-### Limited buffer
+### On-screen view
 
-Nexum keeps the **last 500 lines** in memory. Beyond that, older lines are removed from the display (but not from the process's own history).
+The live view shows the **last 500 lines** of the current session. The full session is in its file (see below).
+
+### Servers started before Nexum
+
+If a server was already running when Nexum opened (Nexum "adopts" it), its output can't be read: only Nexum's own `[Manager]` lines are shown and saved for that session. Restart the server from Nexum to get its full log again.
+
+### Valheim "Log file" field
+
+In Valheim's **Configuration → Advanced**, leave **Log file** empty. When it's set, Valheim writes its output to that file instead of sending it to Nexum, so the Logs page, the Dashboard console and the saved sessions stay empty.
+
+## Sessions (logs saved on disk)
+
+Every server start opens a **new session**: the view starts empty, and everything is also written to a file that survives closing Nexum. A manual restart, the daily scheduled restart and an automatic restart after a crash each start a new session.
+
+- **Session picker** (next to the buttons): **Current session (live)**, or any previous session to read it again. Sessions marked ⚠ **crashed** are the ones where the server stopped on its own with an error: that's the file to share in a bug report.
+- **Folder button**: opens the folder with the log files, `%APPDATA%\Nexum\servers\<server id>\logs\` (`%APPDATA%\server-forge\…` for installs that started as ServerForge).
+- Each line in the file starts with the time, e.g. `[14:32:07]`.
+- Nexum keeps the **last 20 sessions** per server and deletes older ones. A single session file stops at **20 MB** (a note marks where), so a server stuck in an error loop can't fill your disk.
+- Files keep the raw log (IPs, Steam IDs): they stay on your PC. Personal data is only hidden when you **Copy** or **Save as .txt** (see below).
 
 ## Actions
 
@@ -48,7 +66,7 @@ The view automatically scrolls down as new lines arrive. Click and scroll up to 
 
 To share the log (Discord, GitHub issue):
 
-- **Copy**: copies the **whole** log (the last 500 lines kept by Nexum) to the clipboard, with a first line giving your Nexum version, the game and the date. Paste it directly: on Discord, a long paste is automatically turned into a `message.txt` file.
+- **Copy**: copies the **whole** log of the selected session (the full file, not just the 500 lines on screen) to the clipboard, with a first line giving your Nexum version, the game and the date. Paste it directly: on Discord, a long paste is automatically turned into a `message.txt` file.
 - **Save as .txt**: opens the Windows "Save as" dialog (Documents folder by default). Once saved, a **Show in folder** button opens the folder in Explorer, ready to attach the file.
 
 The whole log is exported, not just the last lines: when a server stops on its own, the cause is usually near the **start** of the log, while the last lines only show the shutdown.
@@ -66,7 +84,7 @@ Local addresses (`127.0.0.1`, `0.0.0.0`, `192.168.x.x`, `10.x.x.x`, `172.16-31.x
 
 ### Clear
 
-**Clear** button: empties the view completely. It does **not** stop future log capture.
+**Clear** button: empties the live view. It does **not** delete the session file nor stop future log capture. Disabled while you're reading a previous session.
 
 ## What you'll typically see
 

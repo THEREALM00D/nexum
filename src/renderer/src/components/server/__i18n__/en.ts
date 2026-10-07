@@ -15,5 +15,13 @@ export default {
       "Log saved. IP addresses, Steam IDs and join codes were hidden; player names were kept.",
     saveError: "Couldn't save the log: {{error}}",
     showInFolder: "Show in folder",
+    session: {
+      live: "Current session (live)",
+      crashed: "crashed",
+      size: "{{size}} KB",
+      openDir: "Open the logs folder",
+      truncated:
+        "Showing the last {{count}} lines of this session. Copy and Save export the whole file.",
+    },
   },
 };

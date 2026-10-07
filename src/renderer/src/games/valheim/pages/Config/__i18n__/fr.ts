@@ -121,7 +121,7 @@ export default {
       logFile: {
         label: "Fichier de log",
         description:
-          "Chemin vers un fichier de log personnalisé. Vide = comportement par défaut.",
+          "À laisser vide (recommandé). S'il est rempli, Valheim écrit sa sortie dans ce fichier au lieu de l'envoyer à Nexum : la page Logs, la console du Dashboard et les sessions enregistrées restent vides.",
       },
       customArgs: {
         label: "Arguments supplémentaires",

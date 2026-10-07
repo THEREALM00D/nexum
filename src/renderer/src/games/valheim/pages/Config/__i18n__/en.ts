@@ -117,7 +117,8 @@ export default {
       },
       logFile: {
         label: "Log file",
-        description: "Path to a custom log file. Empty = default behavior.",
+        description:
+          "Leave empty (recommended). If set, Valheim writes its output to this file instead of sending it to Nexum: the Logs page, the Dashboard console and the saved sessions stay empty.",
       },
       customArgs: {
         label: "Extra arguments",

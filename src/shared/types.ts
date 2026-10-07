@@ -40,6 +40,21 @@ export interface ServerLogEvent {
   line: string;
 }
 
+/**
+ * Fichier de log d'une session de serveur (démarrage → arrêt), conservé sur
+ * disque (`{userData}/servers/<id>/logs/`).
+ */
+export interface LogSession {
+  /** Nom du fichier, ex. `2026-10-07_14-32-05.log` (identifiant de la session). */
+  name: string;
+  startedAt: number;
+  sizeBytes: number;
+  /** Le serveur s'est arrêté seul avec une erreur (fichier `.crashed.log`). */
+  crashed: boolean;
+  /** Session en cours (le serveur tourne encore). */
+  current: boolean;
+}
+
 export interface SystemStats {
   cpu: number; // %
   ram: number; // %

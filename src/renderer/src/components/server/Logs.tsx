@@ -1,15 +1,17 @@
-import { Box, Typography, Paper, Button, Stack, Divider } from "@mui/material";
+import { Alert, Box, Typography, Paper, Button, Stack } from "@mui/material";
 import DeleteSweepIcon from "@mui/icons-material/DeleteSweep";
 import { useTranslation } from "react-i18next";
 import { useServer } from "../../context/ServerContext";
-import { FONT_MONO } from "../../theme";
 import LogExportButtons from "./LogExportButtons";
-import { useStickToBottom } from "../../hooks/useStickToBottom";
+import LogSessionPicker from "./LogSessionPicker";
+import LogLines from "./LogLines";
+import { MAX_DISPLAYED_LINES, useLogSessions } from "./hooks/useLogSessions";
 
 export default function Logs() {
   const { t } = useTranslation();
-  const { state, dispatch } = useServer();
-  const { ref: scrollRef, onScroll } = useStickToBottom(state.logs);
+  const { dispatch } = useServer();
+  const logs = useLogSessions();
+  const viewingPast = logs.selected !== null;
 
   return (
     <Stack
@@ -18,26 +20,52 @@ export default function Logs() {
     >
       <Stack
         direction="row"
-        sx={{ alignItems: "center", justifyContent: "space-between" }}
+        sx={{
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: 1,
+        }}
       >
         <Box>
           <Typography variant="h6">{t("logs.title")}</Typography>
           <Typography variant="body2" sx={{ color: "text.secondary", mt: 0.5 }}>
-            {t("logs.lines", { count: state.logs.length })}
+            {t("logs.lines", { count: logs.displayed.length })}
           </Typography>
         </Box>
-        <Stack direction="row" spacing={1}>
-          <LogExportButtons />
+        <Stack
+          direction="row"
+          spacing={1}
+          sx={{ alignItems: "center", flexWrap: "wrap" }}
+        >
+          <LogSessionPicker
+            sessions={logs.sessions}
+            selected={logs.selected}
+            onSelect={logs.setSelected}
+            onOpen={logs.refresh}
+            onOpenDir={logs.openDir}
+          />
+          <LogExportButtons
+            loadLog={logs.loadFullLog}
+            disabled={logs.displayed.length === 0}
+          />
           <Button
             size="small"
             variant="outlined"
             startIcon={<DeleteSweepIcon />}
             onClick={() => dispatch({ type: "CLEAR_LOGS" })}
+            disabled={viewingPast}
           >
             {t("logs.clear")}
           </Button>
         </Stack>
       </Stack>
+
+      {logs.truncated && (
+        <Alert severity="info" sx={{ fontSize: 13 }}>
+          {t("logs.session.truncated", { count: MAX_DISPLAYED_LINES })}
+        </Alert>
+      )}
 
       <Paper
         sx={{
@@ -46,43 +74,10 @@ export default function Logs() {
           overflow: "hidden",
           display: "flex",
           flexDirection: "column",
+          minHeight: 0,
         }}
       >
-        <Divider sx={{ mb: 1 }} />
-        <Box
-          ref={scrollRef}
-          onScroll={onScroll}
-          sx={{
-            flex: 1,
-            overflowY: "auto",
-            fontFamily: FONT_MONO,
-            fontSize: 12,
-            lineHeight: 1.7,
-          }}
-        >
-          {state.logs.length === 0 ? (
-            <Typography variant="body2" sx={{ color: "text.disabled" }}>
-              {t("logs.empty")}
-            </Typography>
-          ) : (
-            state.logs.map((line, i) => (
-              <Box
-                key={i}
-                component="div"
-                sx={{
-                  color:
-                    line.includes("[ERR]") || line.includes("Error")
-                      ? "error.main"
-                      : line.includes("[Manager]")
-                        ? "primary.main"
-                        : "text.secondary",
-                }}
-              >
-                {line}
-              </Box>
-            ))
-          )}
-        </Box>
+        <LogLines lines={logs.displayed} />
       </Paper>
     </Stack>
   );

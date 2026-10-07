@@ -2,6 +2,7 @@ import si from "systeminformation";
 import { ServerManager } from "../server/ServerManager";
 import type { GameType, ServerStatus, Server } from "../../shared/types";
 import type { ServerRegistry } from "./ServerRegistry";
+import type { SessionLogStore } from "../logs/SessionLogStore";
 
 export const PROCESS_NAME_PREFIXES: Record<GameType, string> = {
   palworld: "palserver",
@@ -18,7 +19,10 @@ export const PROCESS_NAME_PREFIXES: Record<GameType, string> = {
 export class ServerManagerRegistry {
   private managers = new Map<string, ServerManager>();
 
-  constructor(private servers: ServerRegistry) {}
+  constructor(
+    private servers: ServerRegistry,
+    private sessionLogs?: SessionLogStore,
+  ) {}
 
   /**
    * Récupère le manager pour ce serveur, en le créant si nécessaire.
@@ -30,7 +34,7 @@ export class ServerManagerRegistry {
     }
     let mgr = this.managers.get(serverId);
     if (!mgr) {
-      mgr = new ServerManager();
+      mgr = new ServerManager(this.sessionLogs?.sink(serverId));
       this.managers.set(serverId, mgr);
     }
     return mgr;

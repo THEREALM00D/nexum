@@ -11,4 +11,6 @@ export const serverService = {
   getStatuses: (): Promise<Record<string, ServerStatus>> =>
     window.api.server.getStatuses(),
   onLog: (cb: (event: ServerLogEvent) => void) => window.api.server.onLog(cb),
+  onLogSession: (cb: (event: { serverId: string }) => void) =>
+    window.api.server.onLogSession(cb),
 };
