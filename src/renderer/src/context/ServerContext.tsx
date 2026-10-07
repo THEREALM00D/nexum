@@ -190,6 +190,11 @@ export function ServerProvider({ children }: { children: ReactNode }) {
     const stopLogs = serverService.onLog((event) => {
       dispatch({ type: "ADD_LOG", payload: event });
     });
+    // Nouvelle session (démarrage du serveur) : vue vidée pour ce serveur,
+    // les sessions précédentes restent consultables (fichiers sur disque).
+    const stopLogSessions = serverService.onLogSession(({ serverId }) => {
+      dispatch({ type: "CLEAR_LOGS", payload: { serverId } });
+    });
 
     // Polling des statuses agrégés (3s) : récupère le status de tous les
     // serveurs en une seule IPC call.
@@ -205,6 +210,7 @@ export function ServerProvider({ children }: { children: ReactNode }) {
     return () => {
       stopMonitor();
       stopLogs();
+      stopLogSessions();
       clearInterval(statusInterval);
       monitorService.stopPolling();
     };

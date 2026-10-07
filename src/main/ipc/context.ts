@@ -1,3 +1,4 @@
+import type { SessionLogStore } from "../logs/SessionLogStore";
 import type { BrowserWindow, App } from "electron";
 import type { ServerManager } from "../server/ServerManager";
 import type { SteamCMD } from "../steamcmd/SteamCMD";
@@ -42,6 +43,8 @@ export interface IpcContext {
   store: Store<AppStore>;
   servers: ServerRegistry;
   serverManagers: ServerManagerRegistry;
+  /** Logs persistants par session (un fichier par démarrage de serveur). */
+  sessionLogs: SessionLogStore;
   /**
    * Helper compat : retourne le ServerManager du serveur actif, ou lance si
    * aucun serveur n'est sélectionné. Évite de mettre `null` partout dans les

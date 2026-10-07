@@ -89,11 +89,20 @@ export async function startServer(
   const exeName = getGameServerConfig(gameType).exeName;
   const args = buildGameArgs(gameType, ctx.getServerConfig(id));
 
-  if (gameType === "valheim") logActiveValheimMods(ctx, id, sendLog);
-
-  return ctx.serverManagers
-    .getOrCreate(id)
-    .start(serverPath, exeName, args, sendLog, getGameEnv(gameType));
+  const mgr = ctx.serverManagers.getOrCreate(id);
+  const res = await mgr.start(
+    serverPath,
+    exeName,
+    args,
+    sendLog,
+    getGameEnv(gameType),
+  );
+  // Après start() : le démarrage ouvre une nouvelle session de log (vue vidée,
+  // nouveau fichier), la liste des mods doit y figurer.
+  if (res.success && gameType === "valheim") {
+    logActiveValheimMods(ctx, id, (line) => mgr.log(line));
+  }
+  return res;
 }
 
 /**
@@ -113,12 +122,16 @@ export async function autoStartServers(
     if (status === "running" || status === "starting") continue;
     if (i > 0) await new Promise((r) => setTimeout(r, 5000));
     const log = (line: string) => broadcastLog(server.id, line);
-    log("[Manager] Démarrage automatique (ouverture de Nexum)...");
     const res = await startServer(ctx, server.id, log).catch((e: Error) => ({
       success: false,
       error: e.message,
     }));
-    if (!res.success)
+    if (res.success) {
+      ctx.serverManagers
+        .getOrCreate(server.id)
+        .log("[Manager] Démarré automatiquement à l'ouverture de Nexum.");
+    } else {
       log(`[Manager] Démarrage automatique impossible : ${res.error}`);
+    }
   }
 }

@@ -15,6 +15,7 @@ import {
   DEFAULT_SERVER_CONFIG,
 } from "../servers/ServerConfigStore";
 import { ServerManagerRegistry } from "../servers/ServerManagerRegistry";
+import { SessionLogStore } from "../logs/SessionLogStore";
 import { PlayerHistoryRegistry } from "../servers/PlayerHistoryRegistry";
 import type {
   RestartConfig,
@@ -23,6 +24,7 @@ import type {
 } from "../../shared/types";
 import type { AppStore, IpcContext } from "./context";
 import { registerMiscHandlers } from "./handlers/misc";
+import { registerLogsHandlers } from "./handlers/logs";
 import { registerSteamHandlers } from "./handlers/steam";
 import { registerServerHandlers } from "./handlers/server";
 import { registerFirewallHandlers } from "./handlers/firewall";
@@ -128,7 +130,17 @@ export async function registerIpcHandlers(): Promise<void> {
     return join(app.getPath("userData"), "servers", serverId);
   };
 
-  const serverManagers = new ServerManagerRegistry(servers);
+  // Logs persistants, un fichier par session. Une nouvelle session vide la
+  // vue Logs de l'app (« server:logSession »).
+  const sessionLogs = new SessionLogStore(
+    (serverId) => join(app.getPath("userData"), "servers", serverId),
+    (serverId) =>
+      BrowserWindow.getAllWindows().forEach((w) =>
+        w.webContents.send("server:logSession", { serverId }),
+      ),
+  );
+  app.on("will-quit", () => sessionLogs.flushAll());
+  const serverManagers = new ServerManagerRegistry(servers, sessionLogs);
   const requireActiveManager = () => {
     const mgr = serverManagers.getActive();
     if (!mgr) throw new Error("Aucun serveur actif configuré");
@@ -324,6 +336,7 @@ export async function registerIpcHandlers(): Promise<void> {
     store,
     servers,
     serverManagers,
+    sessionLogs,
     requireActiveManager,
     steamcmd,
     configParser,
@@ -357,6 +370,7 @@ export async function registerIpcHandlers(): Promise<void> {
   adoption.then(() => autoStartServers(ctx, broadcastLog)).catch(() => {});
 
   registerMiscHandlers(ctx);
+  registerLogsHandlers(ctx);
   registerAutoUpdater();
   registerSteamHandlers(ctx);
   registerServerHandlers(ctx);

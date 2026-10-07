@@ -18,6 +18,12 @@ export default function AdvancedSection({
         helperText={t("valheimConfig.fields.logFile.description")}
         value={config.logFile}
         onChange={(e) => onChange({ logFile: e.target.value })}
+        // Rempli, Valheim n'envoie plus rien à Nexum : avertissement visible.
+        slotProps={{
+          formHelperText: {
+            sx: config.logFile ? { color: "warning.main" } : undefined,
+          },
+        }}
         size="small"
         fullWidth
       />

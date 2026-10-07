@@ -38,18 +38,19 @@ export function registerServerHandlers(ctx: IpcContext): void {
     const sendLog = (line: string) =>
       event.sender.send("server:log", { serverId: id, line });
 
-    if (gameType === "valheim") logActiveValheimMods(ctx, id, sendLog);
-
-    return ctx.serverManagers
-      .getOrCreate(id)
-      .restart(
-        serverPath,
-        exeName,
-        args,
-        sendLog,
-        ctx.getStopConfig(id),
-        getGameEnv(gameType),
-      );
+    const mgr = ctx.serverManagers.getOrCreate(id);
+    const res = await mgr.restart(
+      serverPath,
+      exeName,
+      args,
+      sendLog,
+      ctx.getStopConfig(id),
+      getGameEnv(gameType),
+    );
+    if (res.success && gameType === "valheim") {
+      logActiveValheimMods(ctx, id, (line) => mgr.log(line));
+    }
+    return res;
   });
 
   // Compat : status du serveur actif. Retourne "stopped" si aucun actif.

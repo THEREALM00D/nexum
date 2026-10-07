@@ -5,6 +5,7 @@ import si from "systeminformation";
 import { PalworldApiClient } from "../games/palworld/PalworldApiClient";
 import { sendCtrlC } from "./windowsCtrlC";
 import type { ServerStatus } from "../../shared/types";
+import type { SessionLogSink } from "../logs/SessionLogStore";
 
 export interface StopConfig {
   restApiEnabled?: boolean;
@@ -40,6 +41,32 @@ export class ServerManager {
   private readonly maxRestarts = 5;
   private onLog: (line: string) => void = () => {};
 
+  /**
+   * `sessionLog` : fichier de log persistant, un par session (démarrage →
+   * arrêt). Optionnel pour ne pas imposer le disque aux usages sans fichier.
+   */
+  constructor(private sessionLog?: SessionLogSink) {}
+
+  /** Écrit une ligne dans la console du serveur ET dans son fichier de session. */
+  log(line: string): void {
+    this.onLog(line);
+  }
+
+  /** Ouvre une nouvelle session de log et renvoie le logger à utiliser. */
+  private beginSession(onLog: (line: string) => void): (line: string) => void {
+    this.sessionLog?.begin();
+    const log = (line: string) => {
+      this.sessionLog?.line(line);
+      onLog(line);
+    };
+    this.onLog = log;
+    return log;
+  }
+
+  private endSession(crashed: boolean): void {
+    this.sessionLog?.end(crashed);
+  }
+
   private getRunningPid(): number | null {
     return this.process?.pid ?? this.adoptedPid ?? null;
   }
@@ -58,8 +85,11 @@ export class ServerManager {
 
       this.adoptedPid = proc.pid;
       this.status = "running";
-      this.onLog = onLog;
-      onLog(`[Manager] Processus existant détecté (PID ${proc.pid}).`);
+      const log = this.beginSession(onLog);
+      log(`[Manager] Processus existant détecté (PID ${proc.pid}).`);
+      log(
+        "[Manager] Serveur lancé avant l'ouverture de Nexum : sa sortie n'est pas récupérable, seules les lignes de Nexum sont enregistrées pour cette session.",
+      );
       this.startAdoptedPoll();
       return true;
     } catch {
@@ -81,6 +111,7 @@ export class ServerManager {
           this.adoptedPid = null;
           this.status = this.status === "stopping" ? "stopped" : "crashed";
           this.stopAdoptedPoll();
+          this.endSession(this.status === "crashed");
         }
       } catch {
         // ignore
@@ -128,10 +159,12 @@ export class ServerManager {
       return { success: false, error: `${exeName} not found at: ${exe}` };
     }
 
-    this.onLog = onLog;
     this.status = "starting";
-    onLog(`[Manager] Starting server (${exeName})...`);
-    onLog(`[Manager] Args: ${redactArgs(args).join(" ")}`);
+    // Nouvelle session à chaque démarrage (manuel, planifié, relance auto) :
+    // un fichier neuf, et la vue de l'app repart de zéro.
+    const log = this.beginSession(onLog);
+    log(`[Manager] Starting server (${exeName})...`);
+    log(`[Manager] Args: ${redactArgs(args).join(" ")}`);
 
     try {
       this.process = spawn(exe, args, {
@@ -143,17 +176,17 @@ export class ServerManager {
 
       this.process.on("spawn", () => {
         if (this.status === "starting") this.status = "running";
-        onLog("[Manager] Processus démarré.");
+        log("[Manager] Processus démarré.");
       });
 
       this.process.stdout?.on("data", (data: Buffer) => {
         const lines = data.toString().split("\n").filter(Boolean);
-        lines.forEach((line) => onLog(line));
+        lines.forEach((line) => log(line));
       });
 
       this.process.stderr?.on("data", (data: Buffer) => {
         const lines = data.toString().split("\n").filter(Boolean);
-        lines.forEach((line) => onLog(`[ERR] ${line}`));
+        lines.forEach((line) => log(`[ERR] ${line}`));
       });
 
       this.process.on("close", (code) => {
@@ -166,7 +199,8 @@ export class ServerManager {
               ? "stopped"
               : "crashed";
         this.process = null;
-        onLog(`[Manager] Server exited with code ${code}`);
+        log(`[Manager] Server exited with code ${code}`);
+        this.endSession(this.status === "crashed");
 
         if (
           wasRunning &&
@@ -174,6 +208,8 @@ export class ServerManager {
           this.restartCount < this.maxRestarts
         ) {
           this.restartCount++;
+          // Écrit dans la console seulement : la session plantée est déjà
+          // close, la relance ouvre la sienne.
           onLog(
             `[Manager] Auto-restarting... (attempt ${this.restartCount}/${this.maxRestarts})`,
           );
@@ -187,12 +223,14 @@ export class ServerManager {
       this.process.on("error", (err) => {
         this.status = "crashed";
         this.process = null;
-        onLog(`[Manager] Process error: ${err.message}`);
+        log(`[Manager] Process error: ${err.message}`);
+        this.endSession(true);
       });
 
       return { success: true };
     } catch (err) {
       this.status = "crashed";
+      this.endSession(true);
       return { success: false, error: String(err) };
     }
   }
@@ -267,6 +305,7 @@ export class ServerManager {
       this.process = null;
       this.status = "stopped";
       this.stopAdoptedPoll();
+      this.endSession(false);
     }
     return !alive;
   }
@@ -310,6 +349,7 @@ export class ServerManager {
           this.adoptedPid = null;
           this.status = "stopped";
           this.stopAdoptedPoll();
+          this.endSession(false);
         }
       });
     };

@@ -97,6 +97,11 @@ const api = {
       ipcRenderer.on("server:log", (_e, event) => cb(event));
       return () => ipcRenderer.removeAllListeners("server:log");
     },
+    // Nouvelle session de log (démarrage du serveur) : la vue repart de zéro.
+    onLogSession: (cb: (event: { serverId: string }) => void) => {
+      ipcRenderer.on("server:logSession", (_e, event) => cb(event));
+      return () => ipcRenderer.removeAllListeners("server:logSession");
+    },
   },
   // Palworld config (serverId optionnel — par défaut actif)
   palconfig: {
@@ -200,6 +205,12 @@ const api = {
   logs: {
     saveToFile: (content: string, defaultName: string) =>
       ipcRenderer.invoke("logs:saveToFile", content, defaultName),
+    listSessions: (serverId?: string) =>
+      ipcRenderer.invoke("logs:listSessions", serverId),
+    readSession: (name: string, serverId?: string) =>
+      ipcRenderer.invoke("logs:readSession", name, serverId),
+    openDir: (serverId?: string) =>
+      ipcRenderer.invoke("logs:openDir", serverId),
   },
   // Dialog
   dialog: {
