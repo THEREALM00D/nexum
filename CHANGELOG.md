@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.9.0](https://github.com/THEREALM00D/nexum/compare/v0.8.0...v0.9.0) (2026-10-07)
+
+
+### Features
+
+* keep server logs on disk, one file per server session ([#78](https://github.com/THEREALM00D/nexum/issues/78)) ([0029bd5](https://github.com/THEREALM00D/nexum/commit/0029bd56d5f09cd9c8a31d7f3ad1095d26cb6ea0))
+
+
+### Bug Fixes
+
+* give Thunderstore and Hexium mod badges distinct colors ([#77](https://github.com/THEREALM00D/nexum/issues/77)) ([68f495b](https://github.com/THEREALM00D/nexum/commit/68f495b0039080119263a76c91779773ed38507f))
+
 ## [0.8.0](https://github.com/THEREALM00D/nexum/compare/v0.7.2...v0.8.0) (2026-10-06)
 
 
