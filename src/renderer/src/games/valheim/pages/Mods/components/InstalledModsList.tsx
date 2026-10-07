@@ -16,6 +16,7 @@ import { useTranslation } from "react-i18next";
 import type { ValheimMod, ModUpdate, ModRegistry } from "@shared/types";
 import { formatDate } from "../../../../../utils/format";
 import { REGISTRY_LABEL, modPageUrl } from "../utils/modPageUrl";
+import RegistryChip from "./RegistryChip";
 import DeprecatedChip from "./DeprecatedChip";
 
 // Le nom complet est stocké comme "auteur-nom" (voir
@@ -108,24 +109,7 @@ export default function InstalledModsList({
                       })}
                     </Typography>
                   </Typography>
-                  {mod.source === "manual" && (
-                    <Chip
-                      label={t("valheimMods.installed.manual")}
-                      size="small"
-                      variant="outlined"
-                      sx={{ fontSize: 10, height: 18, px: 0 }}
-                    />
-                  )}
-                  {(mod.source === "thunderstore" ||
-                    mod.source === "hexium") && (
-                    <Chip
-                      label={REGISTRY_LABEL[mod.source]}
-                      size="small"
-                      variant="outlined"
-                      color="secondary"
-                      sx={{ fontSize: 10, height: 18, px: 0 }}
-                    />
-                  )}
+                  {mod.source && <RegistryChip source={mod.source} />}
                   {mod.thunderstoreCode &&
                     deprecatedSet.has(mod.thunderstoreCode) &&
                     (mod.source === "thunderstore" ||

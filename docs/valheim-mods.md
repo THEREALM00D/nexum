@@ -22,7 +22,7 @@ Tip: build your modpack in Gale, export the profile code, and import it in Nexum
 
 Lists the mods in `BepInEx/plugins/`, each with:
 
-- a badge showing its source (**Thunderstore**, **Hexium**, or **Manual** for a mod copied by hand outside Nexum);
+- a badge showing its source: **Thunderstore** (blue), **Hexium** (purple), or **Manual** (grey) for a mod copied by hand outside Nexum;
 - an **Enabled / Disabled** switch (a disabled mod is actually moved out of `plugins/`);
 - **Uninstall**, and a link to the mod's page on its registry.
 
