@@ -22,7 +22,7 @@ Astuce : montez votre modpack dans Gale, exportez le code du profil et importez-
 
 Liste des mods présents dans `BepInEx/plugins/`, avec pour chacun :
 
-- un badge indiquant sa source (**Thunderstore**, **Hexium**, ou **Manuel** pour un mod copié à la main hors de Nexum) ;
+- un badge indiquant sa source : **Thunderstore** (bleu), **Hexium** (violet), ou **Manuel** (gris) pour un mod copié à la main hors de Nexum ;
 - un interrupteur **Activé / Désactivé** (le mod est réellement déplacé hors de `plugins/` quand il est désactivé) ;
 - **Désinstaller**, et un lien vers la page du mod sur son registre.
 

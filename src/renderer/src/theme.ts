@@ -14,6 +14,10 @@ export const NEXUM = {
   alert: "#F2A33A", // avertissements, redémarrage
   critical: "#E5484D", // erreurs, crash, actions destructives
   line: "#252B35", // séparateurs, bordures
+  // Pastilles de registre de mods Valheim (RegistryChip) : hors des couleurs
+  // de statut (vert/orange/rouge) pour ne pas être lues comme un état.
+  thunderstore: "#4EA8F5", // bleu
+  hexium: "#B48CF2", // violet
 } as const;
 
 // Polices de la marque (chargées dans main.tsx via @fontsource)
