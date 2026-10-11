@@ -77,13 +77,19 @@ Pour que vos serveurs repartent tout seuls après un redémarrage du PC :
 
 À l'ouverture de votre session Windows, Nexum s'ouvre réduit dans la barre des tâches et démarre les serveurs cochés, à quelques secondes d'intervalle. Un serveur déjà en cours est laissé tel quel. Les mêmes vérifications qu'un démarrage manuel s'appliquent (règles du mot de passe Valheim, conflits de ports Palworld) : si un serveur ne peut pas démarrer, la raison est écrite dans ses logs.
 
-## Mise à jour du serveur Palworld
+## Mise à jour du serveur
 
-Quand une mise à jour Palworld est disponible :
+Un serveur en retard d'une version refuse les joueurs qui ont mis leur jeu à jour. À chaque démarrage d'un serveur (bouton **Démarrer** ou démarrage automatique), Nexum vérifie donc en arrière-plan s'il est à jour :
+
+- Le démarrage n'attend pas cette vérification : si Steam ne répond pas, le serveur démarre normalement et rien n'est signalé.
+- Si une mise à jour existe, une notification l'indique, avec un bouton **Mettre à jour** qui ouvre la page **Installation** de ce serveur. Le résultat est aussi écrit dans ses logs (pratique après un démarrage avec Windows, quand personne ne regarde l'écran).
+- Serveur installé via la **bibliothèque Steam** (dans `steamapps\common`) : c'est Steam qui le met à jour, la notification vous le rappelle. La vérification nécessite que SteamCMD soit installé (page **Installation**).
+
+Pour mettre à jour (le serveur doit être arrêté) :
 
 - Allez dans **Installation**
 - Cliquez sur **Vérifier** pour comparer la version installée et la version Steam
-- Si une mise à jour est disponible, cliquez sur **Mettre à jour Palworld**
+- Si une mise à jour est disponible, cliquez sur **Mettre à jour**
 
 ## Dépannage
 

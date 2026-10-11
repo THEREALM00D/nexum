@@ -1,14 +1,34 @@
-import { join } from "path";
+import { basename, dirname, join } from "path";
 import { existsSync, mkdirSync, readFileSync } from "fs";
 import { spawn } from "child_process";
 import { app } from "electron/main";
 import fs from "fs";
 import https from "https";
-import type { UpdateCheckResult } from "../../shared/types";
+import type { GameType, UpdateCheckResult } from "../../shared/types";
 
 const PALWORLD_APP_ID = "2394010";
 const VALHEIM_APP_ID = "896660";
 const ASTRONEER_APP_ID = "728470";
+
+/** AppId Steam du serveur dédié de chaque jeu. */
+export const STEAM_APP_IDS: Record<GameType, string> = {
+  palworld: PALWORLD_APP_ID,
+  valheim: VALHEIM_APP_ID,
+  astroneer: ASTRONEER_APP_ID,
+};
+
+/**
+ * Serveur installé via la bibliothèque Steam (`<bibliothèque>/steamapps/common/<jeu>`) :
+ * c'est le client Steam qui le met à jour, et son manifest est dans
+ * `<bibliothèque>/steamapps/`, pas dans le dossier du serveur.
+ */
+export function isSteamLibraryInstall(installPath: string): boolean {
+  const parent = dirname(installPath);
+  return (
+    basename(parent).toLowerCase() === "common" &&
+    basename(dirname(parent)).toLowerCase() === "steamapps"
+  );
+}
 const STEAMCMD_URL =
   "https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip";
 
@@ -130,10 +150,15 @@ export class SteamCMD {
     appId: string,
   ): string | null {
     // SteamCMD peut écrire le manifest dans installPath/steamapps/ ou dans son propre répertoire
+    const manifest = `appmanifest_${appId}.acf`;
     const candidates = [
-      join(installPath, "steamapps", `appmanifest_${appId}.acf`),
-      join(this.steamcmdDir, "steamapps", `appmanifest_${appId}.acf`),
+      join(installPath, "steamapps", manifest),
+      join(this.steamcmdDir, "steamapps", manifest),
     ];
+    // Bibliothèque Steam : <bibliothèque>/steamapps/appmanifest_X.acf
+    if (isSteamLibraryInstall(installPath)) {
+      candidates.unshift(join(dirname(dirname(installPath)), manifest));
+    }
     for (const acf of candidates) {
       if (!existsSync(acf)) continue;
       const match = readFileSync(acf, "utf-8").match(/"buildid"\s+"(\d+)"/);
@@ -147,16 +172,18 @@ export class SteamCMD {
     appId: string = PALWORLD_APP_ID,
   ): Promise<UpdateCheckResult> {
     const installedBuild = this.getInstalledBuildId(installPath, appId);
+    const steamLibrary = isSteamLibraryInstall(installPath);
+    const fallback: UpdateCheckResult = {
+      upToDate: false,
+      installedBuild,
+      requiredBuild: null,
+      steamLibrary,
+    };
     if (!installedBuild || !this.isInstalled()) {
-      return Promise.resolve({
-        upToDate: false,
-        installedBuild,
-        requiredBuild: null,
-      });
+      return Promise.resolve(fallback);
     }
 
     return new Promise((resolve) => {
-      const fallback = { upToDate: false, installedBuild, requiredBuild: null };
       let settled = false;
       const done = (result: UpdateCheckResult) => {
         if (!settled) {
@@ -204,6 +231,7 @@ export class SteamCMD {
           upToDate: installedBuild === latestBuild,
           installedBuild,
           requiredBuild: installedBuild !== latestBuild ? latestBuild : null,
+          steamLibrary,
         });
       });
 

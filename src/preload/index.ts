@@ -3,6 +3,7 @@ import type {
   AppUpdateStatus,
   FirewallNamedRule,
   GameType,
+  GameUpdateNotice,
   ModRegistry,
 } from "../shared/types";
 
@@ -101,6 +102,11 @@ const api = {
     onLogSession: (cb: (event: { serverId: string }) => void) => {
       ipcRenderer.on("server:logSession", (_e, event) => cb(event));
       return () => ipcRenderer.removeAllListeners("server:logSession");
+    },
+    // Vérification faite au démarrage : une version plus récente du jeu existe.
+    onGameUpdateAvailable: (cb: (notice: GameUpdateNotice) => void) => {
+      ipcRenderer.on("server:gameUpdateAvailable", (_e, notice) => cb(notice));
+      return () => ipcRenderer.removeAllListeners("server:gameUpdateAvailable");
     },
   },
   // Palworld config (serverId optionnel — par défaut actif)

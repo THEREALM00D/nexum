@@ -1,12 +1,6 @@
 import { ipcMain } from "electron/main";
 import type { IpcContext } from "../context";
-import type { GameType } from "../../../shared/types";
-
-const STEAM_APP_IDS: Record<GameType, string> = {
-  palworld: "2394010",
-  valheim: "896660",
-  astroneer: "728470",
-};
+import { STEAM_APP_IDS } from "../../steamcmd/SteamCMD";
 
 export function registerSteamHandlers(ctx: IpcContext): void {
   ipcMain.handle("steamcmd:isInstalled", () => ctx.steamcmd.isInstalled());
