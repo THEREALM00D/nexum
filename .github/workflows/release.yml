@@ -124,3 +124,43 @@ jobs:
         with:
           name: windows-build
           path: dist/*.exe
+
+  # Annonce la release sur le Discord communautaire (webhook du salon des
+  # changelogs). Sautée si le secret DISCORD_RELEASE_WEBHOOK n'existe pas, et
+  # ne bloque jamais rien : la release est déjà publiée à ce stade.
+  discord-notify:
+    needs: [release-please, build-windows]
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    env:
+      DISCORD_WEBHOOK: ${{ secrets.DISCORD_RELEASE_WEBHOOK }}
+    steps:
+      - name: Post changelog to Discord
+        if: ${{ env.DISCORD_WEBHOOK != '' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ needs.release-please.outputs.tag_name }}
+        run: |
+          url="https://github.com/${{ github.repository }}/releases/tag/$TAG"
+          # Notes de release-please uniquement : on retire la ligne de titre
+          # (déjà dans l'embed), la section SHA256/VirusTotal ajoutée par le
+          # build, et les liens de commit (bruit sur Discord, la PR suffit).
+          notes=$(gh release view "$TAG" --repo "${{ github.repository }}" --json body -q .body \
+            | sed '/^### Verify your download/,$d' \
+            | sed '/^## \[/d' \
+            | sed -E 's/ \(\[[0-9a-f]{7,}\]\([^)]*\)\)//g' \
+            | sed -e :a -e '/^\n*$/{$d;N;ba' -e '}')
+          # Limite Discord : 4096 caractères pour la description d'un embed
+          if [ ${#notes} -gt 3900 ]; then
+            notes="${notes:0:3900}…"$'\n\n'"[Changelog complet / Full changelog]($url)"
+          fi
+          jq -n --arg title "Nexum $TAG" --arg url "$url" --arg desc "$notes" '{
+            username: "Nexum",
+            embeds: [{
+              title: $title,
+              url: $url,
+              description: $desc,
+              color: 2278750
+            }]
+          }' > payload.json
+          curl -fsS -H "Content-Type: application/json" -d @payload.json "$DISCORD_WEBHOOK"
