@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.0](https://github.com/THEREALM00D/nexum/compare/v0.9.0...v0.10.0) (2026-10-11)
+
+
+### Features
+
+* warn when a game server is out of date on start ([#81](https://github.com/THEREALM00D/nexum/issues/81)) ([a493452](https://github.com/THEREALM00D/nexum/commit/a49345285fe3342f40154fed226cb12617f4ca5c))
+
 ## [0.9.0](https://github.com/THEREALM00D/nexum/compare/v0.8.0...v0.9.0) (2026-10-07)
 
 
