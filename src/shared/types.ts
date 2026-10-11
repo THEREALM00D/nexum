@@ -141,6 +141,19 @@ export interface UpdateCheckResult {
   upToDate: boolean;
   installedBuild: string | null;
   requiredBuild: string | null;
+  /** Installé via la bibliothèque Steam : c'est Steam qui le met à jour. */
+  steamLibrary: boolean;
+}
+
+/**
+ * Envoyé au renderer (`server:gameUpdateAvailable`) quand la vérification
+ * faite au démarrage d'un serveur trouve une version plus récente du jeu.
+ */
+export interface GameUpdateNotice {
+  serverId: string;
+  installedBuild: string;
+  latestBuild: string;
+  steamLibrary: boolean;
 }
 
 // --- Mise à jour de Nexum lui-même (electron-updater, releases GitHub) ---

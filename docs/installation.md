@@ -77,13 +77,19 @@ To have your servers come back on their own after a PC restart:
 
 When you log in to Windows, Nexum opens minimized in the taskbar and starts the checked servers, a few seconds apart. A server that is already running is left as is. The same checks as a manual start apply (Valheim password rules, Palworld port conflicts): if a server can't start, the reason is written in its log.
 
-## Updating the Palworld server
+## Updating the server
 
-When a Palworld update is available:
+A server that is one version behind refuses players who updated their game. So every time a server starts (**Start** button or automatic start), Nexum checks in the background whether it is up to date:
+
+- The start doesn't wait for this check: if Steam doesn't answer, the server starts normally and nothing is reported.
+- If an update exists, a notification says so, with an **Update** button that opens the **Install** page of that server. The result is also written in its log (handy after a start with Windows, when nobody is watching the screen).
+- Server installed through the **Steam library** (in `steamapps\common`): Steam updates it, and the notification reminds you of that. The check needs SteamCMD to be installed (**Install** page).
+
+To update (the server must be stopped):
 
 - Go to **Install**
 - Click **Check** to compare the installed version against the Steam version
-- If an update is available, click **Update Palworld**
+- If an update is available, click **Update**
 
 ## Troubleshooting
 

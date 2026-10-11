@@ -1,4 +1,5 @@
 import type { OperationResult, ServerStatus, ServerLogEvent } from "../types";
+import type { GameUpdateNotice } from "@shared/types";
 
 export const serverService = {
   start: (serverId?: string): Promise<OperationResult> =>
@@ -13,4 +14,6 @@ export const serverService = {
   onLog: (cb: (event: ServerLogEvent) => void) => window.api.server.onLog(cb),
   onLogSession: (cb: (event: { serverId: string }) => void) =>
     window.api.server.onLogSession(cb),
+  onGameUpdateAvailable: (cb: (notice: GameUpdateNotice) => void) =>
+    window.api.server.onGameUpdateAvailable(cb),
 };

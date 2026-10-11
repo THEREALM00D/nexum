@@ -14,6 +14,13 @@ export default {
     or: "OR",
     clearSearch: "Clear search",
   },
+  gameUpdate: {
+    available:
+      "{{name}}: a server update is available (build {{build}}). Players who updated their game won't be able to join.",
+    availableSteamLibrary:
+      "{{name}}: a server update is available (build {{build}}). Installed through the Steam library: update it from Steam.",
+    update: "Update",
+  },
   status: {
     running: "Online",
     starting: "Starting...",

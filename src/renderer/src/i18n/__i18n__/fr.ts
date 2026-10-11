@@ -14,6 +14,13 @@ export default {
     or: "OU",
     clearSearch: "Effacer la recherche",
   },
+  gameUpdate: {
+    available:
+      "{{name}} : une mise à jour du serveur est disponible (build {{build}}). Les joueurs qui ont mis le jeu à jour ne pourront pas se connecter.",
+    availableSteamLibrary:
+      "{{name}} : une mise à jour du serveur est disponible (build {{build}}). Installé via la bibliothèque Steam : mettez-le à jour depuis Steam.",
+    update: "Mettre à jour",
+  },
   status: {
     running: "En ligne",
     starting: "Démarrage...",

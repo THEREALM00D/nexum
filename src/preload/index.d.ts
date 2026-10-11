@@ -10,6 +10,7 @@ import type {
   FirewallNamedRule,
   LaunchAtLoginState,
   UpdateCheckResult,
+  GameUpdateNotice,
   AppUpdateStatus,
   LaunchArgsConfig,
   ValheimLaunchConfig,
@@ -102,6 +103,9 @@ interface API {
     setLaunchArgs: (cfg: LaunchArgsConfig, serverId?: string) => Promise<void>;
     onLog: (cb: (event: ServerLogEvent) => void) => () => void;
     onLogSession: (cb: (event: { serverId: string }) => void) => () => void;
+    onGameUpdateAvailable: (
+      cb: (notice: GameUpdateNotice) => void,
+    ) => () => void;
   };
   palconfig: {
     read: (
