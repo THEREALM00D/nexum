@@ -30,6 +30,7 @@ export default {
       "Log saved. IP addresses, Steam IDs and join codes were hidden; player names were kept.",
     saveError: "Couldn't save the log: {{error}}",
     showInFolder: "Show in folder",
+    newLines: "New lines — back to live",
     session: {
       live: "Current session (live)",
       crashed: "crashed",

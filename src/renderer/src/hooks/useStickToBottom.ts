@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useRef } from "react";
+import { useCallback, useLayoutEffect, useRef, useState } from "react";
 
 // Marge (px) sous laquelle on considère l'utilisateur « en bas » du log.
 const BOTTOM_THRESHOLD = 24;
@@ -17,12 +17,23 @@ const BOTTOM_THRESHOLD = 24;
 export function useStickToBottom(trigger: unknown) {
   const ref = useRef<HTMLDivElement>(null);
   const atBottom = useRef(true);
+  // Même info en état React, pour que l'affichage puisse réagir (vue figée,
+  // bouton « revenir en bas ») ; la ref reste la source pour le défilement.
+  const [following, setFollowing] = useState(true);
 
   const onScroll = useCallback(() => {
     const el = ref.current;
     if (!el) return;
     atBottom.current =
       el.scrollHeight - el.scrollTop - el.clientHeight < BOTTOM_THRESHOLD;
+    setFollowing(atBottom.current);
+  }, []);
+
+  const scrollToBottom = useCallback(() => {
+    const el = ref.current;
+    atBottom.current = true;
+    setFollowing(true);
+    if (el) el.scrollTop = el.scrollHeight;
   }, []);
 
   useLayoutEffect(() => {
@@ -30,5 +41,5 @@ export function useStickToBottom(trigger: unknown) {
     if (el && atBottom.current) el.scrollTop = el.scrollHeight;
   }, [trigger]);
 
-  return { ref, onScroll };
+  return { ref, onScroll, following, scrollToBottom };
 }
