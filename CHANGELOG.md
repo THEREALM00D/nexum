@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.1](https://github.com/THEREALM00D/nexum/compare/v0.11.0...v0.11.1) (2026-10-13)
+
+
+### Bug Fixes
+
+* show the Nexum icon in the taskbar instead of the Electron one ([#91](https://github.com/THEREALM00D/nexum/issues/91)) ([affeb15](https://github.com/THEREALM00D/nexum/commit/affeb15c1aad508382b0049b5fa41fb41a4092df))
+
 ## [0.11.0](https://github.com/THEREALM00D/nexum/compare/v0.10.0...v0.11.0) (2026-10-13)
 
 
