@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.3](https://github.com/THEREALM00D/nexum/compare/v0.11.2...v0.11.3) (2026-10-13)
+
+
+### Bug Fixes
+
+* keep the log view still while scrolled up ([#96](https://github.com/THEREALM00D/nexum/issues/96)) ([d8f0090](https://github.com/THEREALM00D/nexum/commit/d8f00907d5f28fd23720e4986cf39f35bf17e26f))
+
 ## [0.11.2](https://github.com/THEREALM00D/nexum/compare/v0.11.1...v0.11.2) (2026-10-13)
 
 
