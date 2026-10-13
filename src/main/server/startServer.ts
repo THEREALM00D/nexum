@@ -9,6 +9,7 @@ import {
   getGameServerConfig,
 } from "../games/registry";
 import { ValheimModsManager } from "../games/valheim/ValheimModsManager";
+import { checkModUpdatesOnStart } from "../games/valheim/modUpdateCheck";
 import { checkGameUpdateOnStart } from "./gameUpdateCheck";
 
 // Liste les mods BepInEx actifs dans la console au démarrage — Valheim ne
@@ -103,11 +104,14 @@ export async function startServer(
   if (res.success && gameType === "valheim") {
     logActiveValheimMods(ctx, id, (line) => mgr.log(line));
   }
-  // Non attendue : SteamCMD peut mettre jusqu'à 30 s à répondre.
+  // Non attendues : SteamCMD peut mettre jusqu'à 30 s à répondre, et la
+  // liste des registres de mods est lourde. Best-effort : une vérification
+  // ratée ne concerne pas le démarrage.
   if (res.success) {
-    checkGameUpdateOnStart(ctx, id).catch(() => {
-      // best-effort — une vérification ratée ne concerne pas le démarrage
-    });
+    checkGameUpdateOnStart(ctx, id).catch(() => {});
+    if (gameType === "valheim") {
+      checkModUpdatesOnStart(ctx, id).catch(() => {});
+    }
   }
   return res;
 }

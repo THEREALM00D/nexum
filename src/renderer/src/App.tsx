@@ -9,7 +9,7 @@ import Settings from "./pages/Settings/Settings";
 import Titlebar from "./components/Titlebar/Titlebar";
 import Sidebar from "./components/Sidebar/Sidebar";
 import { DEFAULT_GAME, getGamePlugin } from "./games/registry";
-import { useGameUpdateNotice } from "./hooks/useGameUpdateNotice";
+import { useUpdateNotices } from "./hooks/useUpdateNotices";
 
 export type Page =
   | "dashboard"
@@ -30,7 +30,10 @@ export const GLOBAL_PAGES: Page[] = ["servers", "settings"];
 function AppShell() {
   const [page, setPage] = useState<Page>("dashboard");
   const { state } = useServer();
-  useGameUpdateNotice(() => setPage("install"));
+  useUpdateNotices({
+    openInstallPage: () => setPage("install"),
+    openModsPage: () => setPage("mods"),
+  });
 
   const gameType = state.activeServer?.gameType ?? DEFAULT_GAME;
 

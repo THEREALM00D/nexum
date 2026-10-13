@@ -21,6 +21,16 @@ export default {
       "{{name}} : une mise à jour du serveur est disponible (build {{build}}). Installé via la bibliothèque Steam : mettez-le à jour depuis Steam.",
     update: "Mettre à jour",
   },
+  modUpdate: {
+    available_one:
+      "{{name}} : 1 mod a une mise à jour. Mettez-le à jour serveur arrêté.",
+    available_other:
+      "{{name}} : {{count}} mods ont une mise à jour. Mettez-les à jour serveur arrêté.",
+    deprecated_one: "{{name}} : 1 mod a été déprécié par son auteur.",
+    deprecated_other:
+      "{{name}} : {{count}} mods ont été dépréciés par leurs auteurs.",
+    open: "Voir les mods",
+  },
   status: {
     running: "En ligne",
     starting: "Démarrage...",
