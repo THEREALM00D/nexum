@@ -113,6 +113,32 @@ export async function startServer(
 }
 
 /**
+ * Redémarre un serveur (arrêt propre puis démarrage). Partagé par l'IPC
+ * `server:restart` et le menu de l'icône de la zone de notification.
+ */
+export async function restartServer(
+  ctx: IpcContext,
+  id: string,
+  sendLog: (line: string) => void,
+): Promise<{ success: boolean; error?: string }> {
+  const server = ctx.servers.list().find((s) => s.id === id);
+  const gameType = server?.gameType ?? "palworld";
+  const mgr = ctx.serverManagers.getOrCreate(id);
+  const res = await mgr.restart(
+    ctx.getServerPath(id),
+    getGameServerConfig(gameType).exeName,
+    buildGameArgs(gameType, ctx.getServerConfig(id)),
+    sendLog,
+    ctx.getStopConfig(id),
+    getGameEnv(gameType),
+  );
+  if (res.success && gameType === "valheim") {
+    logActiveValheimMods(ctx, id, (line) => mgr.log(line));
+  }
+  return res;
+}
+
+/**
  * Démarre les serveurs marqués « démarrage automatique » (`Server.autoStart`)
  * à l'ouverture de Nexum. Appelé APRÈS l'adoption des process existants : un
  * serveur déjà en cours (orphelin d'une session précédente) n'est pas relancé.

@@ -5,6 +5,13 @@ import { existsSync } from "fs";
 import { registerIpcHandlers } from "./ipc/handlers";
 import { checkForUpdateOnStartup } from "./update/AutoUpdater";
 import { launchedAtLogin } from "./startup/launchAtLogin";
+import type { IpcContext } from "./ipc/context";
+import {
+  attachCloseToTray,
+  closeToTrayEnabled,
+  setupTray,
+  showWindow,
+} from "./tray/windowLifecycle";
 
 // Dossier de données — doit être fixé avant `ready` et avant tout accès à
 // userData.
@@ -28,8 +35,19 @@ if (!app.isPackaged) {
   if (legacy) app.setPath("userData", legacy);
 }
 
+// Une seule instance : avec l'icône de la zone de notification, rouvrir le
+// raccourci doit ramener la fenêtre existante, pas lancer un 2e Nexum qui
+// piloterait les mêmes serveurs. Pas en dev : le dossier de données est
+// partagé avec l'app installée, qui bloquerait `yarn dev`.
+const gotLock = !app.isPackaged || app.requestSingleInstanceLock();
+if (!gotLock) app.quit();
+
+let mainWindow: BrowserWindow | null = null;
+let ipcCtx: IpcContext | null = null;
+app.on("second-instance", () => showWindow(mainWindow));
+
 function createWindow(): void {
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1280,
     height: 800,
     minWidth: 900,
@@ -46,32 +64,38 @@ function createWindow(): void {
     },
   });
 
-  mainWindow.on("ready-to-show", () => {
-    // Lancé à la connexion Windows : démarrer réduit dans la barre des tâches
+  const win = mainWindow;
+  attachCloseToTray(win, () => ipcCtx);
+
+  win.on("ready-to-show", () => {
+    // Lancé à la connexion Windows : rester dans la zone de notification, ou
+    // réduit dans la barre des tâches si l'icône est désactivée.
     if (launchedAtLogin()) {
-      mainWindow.showInactive();
-      mainWindow.minimize();
+      if (!closeToTrayEnabled(ipcCtx)) {
+        win.showInactive();
+        win.minimize();
+      }
     } else {
-      mainWindow.show();
+      win.show();
     }
-    if (!app.isPackaged)
-      mainWindow.webContents.openDevTools({ mode: "detach" });
+    if (!app.isPackaged) win.webContents.openDevTools({ mode: "detach" });
     checkForUpdateOnStartup();
   });
 
-  mainWindow.webContents.setWindowOpenHandler((details) => {
+  win.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url);
     return { action: "deny" };
   });
 
   if (!app.isPackaged && process.env["ELECTRON_RENDERER_URL"]) {
-    mainWindow.loadURL(process.env["ELECTRON_RENDERER_URL"]);
+    win.loadURL(process.env["ELECTRON_RENDERER_URL"]);
   } else {
-    mainWindow.loadFile(join(__dirname, "../renderer/index.html"));
+    win.loadFile(join(__dirname, "../renderer/index.html"));
   }
 }
 
 app.whenReady().then(async () => {
+  if (!gotLock) return;
   if (process.platform === "win32") {
     // Doit correspondre à `appId` (electron-builder.yml) : regroupement barre
     // des tâches + notifications Windows.
@@ -96,8 +120,9 @@ app.whenReady().then(async () => {
     });
   }
 
-  await registerIpcHandlers();
+  ipcCtx = await registerIpcHandlers();
   createWindow();
+  setupTray(ipcCtx, () => mainWindow);
 
   app.on("activate", function () {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();

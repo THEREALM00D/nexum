@@ -53,7 +53,7 @@ const DEFAULT_RESTART_CONFIG: RestartConfig = {
   message: "Le serveur va redémarrer dans {minutes} minutes",
 };
 
-export async function registerIpcHandlers(): Promise<void> {
+export async function registerIpcHandlers(): Promise<IpcContext> {
   // electron-store est en ESM pur depuis la v9 (plus de build CommonJS) —
   // notre process main est en CJS, donc un import statique planterait
   // (ERR_REQUIRE_ESM / "Store is not a constructor").
@@ -383,4 +383,5 @@ export async function registerIpcHandlers(): Promise<void> {
   registerValheimHandlers(ctx);
   registerValheimModsHandlers(ctx);
   registerAstroneerHandlers(ctx);
+  return ctx;
 }

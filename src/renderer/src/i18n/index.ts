@@ -50,4 +50,13 @@ i18n
     },
   });
 
+// Le main n'a pas i18n : on lui transmet la langue pour le menu de l'icône
+// de la zone de notification.
+const syncMainLanguage = (lng: string) =>
+  window.api?.app
+    ?.setLanguage(lng.startsWith("en") ? "en" : "fr")
+    .catch(() => {});
+syncMainLanguage(i18n.language ?? "fr");
+i18n.on("languageChanged", syncMainLanguage);
+
 export default i18n;

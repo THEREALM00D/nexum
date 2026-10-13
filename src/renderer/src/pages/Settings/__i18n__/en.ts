@@ -10,11 +10,18 @@ export default {
       launchAtLogin: {
         label: "Launch Nexum when Windows starts",
         helper:
-          'Nexum opens minimized in the taskbar, then starts the servers marked "Start automatically".',
+          'Nexum starts in the background (icon near the clock, or minimized in the taskbar), then starts the servers marked "Start automatically".',
         unsupported:
           "Only available in the installed app (not in development mode).",
         on: "Nexum will launch when Windows starts",
         off: "Nexum will no longer launch when Windows starts",
+      },
+      closeToTray: {
+        label: "Keep Nexum running in the notification area when closed",
+        helper:
+          "Closing the window keeps Nexum near the clock, so scheduled backups and restarts keep running. Right-click the icon to control your servers or quit.",
+        on: "Closing the window will keep Nexum in the notification area",
+        off: "Closing the window will quit Nexum",
       },
     },
     language: { title: "Language" },

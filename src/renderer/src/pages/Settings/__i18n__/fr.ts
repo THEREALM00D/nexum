@@ -10,11 +10,18 @@ export default {
       launchAtLogin: {
         label: "Lancer Nexum au démarrage de Windows",
         helper:
-          "Nexum s'ouvre réduit dans la barre des tâches, puis démarre les serveurs marqués « Démarrer automatiquement ».",
+          "Nexum démarre en arrière-plan (icône près de l'horloge, ou réduit dans la barre des tâches), puis démarre les serveurs marqués « Démarrer automatiquement ».",
         unsupported:
           "Disponible uniquement dans l'application installée (pas en mode développement).",
         on: "Nexum se lancera au démarrage de Windows",
         off: "Nexum ne se lancera plus au démarrage de Windows",
+      },
+      closeToTray: {
+        label: "Garder Nexum dans la zone de notification à la fermeture",
+        helper:
+          "Fermer la fenêtre garde Nexum près de l'horloge, pour que les sauvegardes et redémarrages planifiés continuent. Clic droit sur l'icône pour piloter vos serveurs ou quitter.",
+        on: "Fermer la fenêtre gardera Nexum dans la zone de notification",
+        off: "Fermer la fenêtre quittera Nexum",
       },
     },
     language: { title: "Langue" },

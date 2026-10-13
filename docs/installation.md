@@ -75,7 +75,18 @@ To have your servers come back on their own after a PC restart:
 1. In **Servers**, edit a server and check **Start automatically when Nexum opens**. Repeat for each server you want started.
 2. In **Settings**, turn on **Launch Nexum when Windows starts** (only available in the installed app).
 
-When you log in to Windows, Nexum opens minimized in the taskbar and starts the checked servers, a few seconds apart. A server that is already running is left as is. The same checks as a manual start apply (Valheim password rules, Palworld port conflicts): if a server can't start, the reason is written in its log.
+When you log in to Windows, Nexum starts in the background (its icon near the clock, see below) and starts the checked servers, a few seconds apart. A server that is already running is left as is. The same checks as a manual start apply (Valheim password rules, Palworld port conflicts): if a server can't start, the reason is written in its log.
+
+## Running in the background (icon near the clock)
+
+Closing the Nexum window doesn't quit it: Nexum keeps running in the Windows **notification area**, near the clock, so automatic backups, scheduled restarts and server logs keep working. The first time, a Windows notification tells you so.
+
+- **Click** the icon to bring the window back.
+- **Right-click** it to see each server's status and **Start**, **Stop** or **Restart** it, or to **Quit Nexum**.
+- If the icon isn't visible, click the **^** arrow next to the clock: Windows hides some icons there. You can drag it next to the clock to keep it visible.
+- Opening Nexum again (shortcut, Start menu) brings back the window that's already running instead of starting a second copy.
+
+To make closing the window quit Nexum instead, turn off **Settings → Keep Nexum running in the notification area when closed**. With this setting off, Nexum launched with Windows starts minimized in the taskbar instead.
 
 ## Updating the server
 

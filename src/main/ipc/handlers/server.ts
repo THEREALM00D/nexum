@@ -1,12 +1,7 @@
 import { ipcMain } from "electron/main";
 import type { IpcContext } from "../context";
 import type { LaunchArgsConfig, ServerStatus } from "../../../shared/types";
-import {
-  buildGameArgs,
-  getGameEnv,
-  getGameServerConfig,
-} from "../../games/registry";
-import { logActiveValheimMods, startServer } from "../../server/startServer";
+import { restartServer, startServer } from "../../server/startServer";
 
 export function registerServerHandlers(ctx: IpcContext): void {
   // Résout un serverId argumenté en serveur du registre. Fallback : actif.
@@ -30,27 +25,9 @@ export function registerServerHandlers(ctx: IpcContext): void {
 
   ipcMain.handle("server:restart", async (event, serverId?: string) => {
     const id = resolveId(serverId);
-    const server = ctx.servers.list().find((s) => s.id === id);
-    const gameType = server?.gameType ?? "palworld";
-    const serverPath = ctx.getServerPath(id);
-    const exeName = getGameServerConfig(gameType).exeName;
-    const args = buildGameArgs(gameType, ctx.getServerConfig(id));
-    const sendLog = (line: string) =>
-      event.sender.send("server:log", { serverId: id, line });
-
-    const mgr = ctx.serverManagers.getOrCreate(id);
-    const res = await mgr.restart(
-      serverPath,
-      exeName,
-      args,
-      sendLog,
-      ctx.getStopConfig(id),
-      getGameEnv(gameType),
+    return restartServer(ctx, id, (line) =>
+      event.sender.send("server:log", { serverId: id, line }),
     );
-    if (res.success && gameType === "valheim") {
-      logActiveValheimMods(ctx, id, (line) => mgr.log(line));
-    }
-    return res;
   });
 
   // Compat : status du serveur actif. Retourne "stopped" si aucun actif.

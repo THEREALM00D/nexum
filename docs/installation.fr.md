@@ -75,7 +75,18 @@ Pour que vos serveurs repartent tout seuls après un redémarrage du PC :
 1. Dans **Serveurs**, modifiez un serveur et cochez **Démarrer automatiquement à l'ouverture de Nexum**. Répétez pour chaque serveur à démarrer.
 2. Dans **Paramètres**, activez **Lancer Nexum au démarrage de Windows** (disponible seulement dans l'application installée).
 
-À l'ouverture de votre session Windows, Nexum s'ouvre réduit dans la barre des tâches et démarre les serveurs cochés, à quelques secondes d'intervalle. Un serveur déjà en cours est laissé tel quel. Les mêmes vérifications qu'un démarrage manuel s'appliquent (règles du mot de passe Valheim, conflits de ports Palworld) : si un serveur ne peut pas démarrer, la raison est écrite dans ses logs.
+À l'ouverture de votre session Windows, Nexum démarre en arrière-plan (son icône près de l'horloge, voir plus bas) et démarre les serveurs cochés, à quelques secondes d'intervalle. Un serveur déjà en cours est laissé tel quel. Les mêmes vérifications qu'un démarrage manuel s'appliquent (règles du mot de passe Valheim, conflits de ports Palworld) : si un serveur ne peut pas démarrer, la raison est écrite dans ses logs.
+
+## Fonctionnement en arrière-plan (icône près de l'horloge)
+
+Fermer la fenêtre de Nexum ne le quitte pas : Nexum continue de tourner dans la **zone de notification** de Windows, près de l'horloge, pour que les sauvegardes automatiques, les redémarrages planifiés et les logs des serveurs continuent. La première fois, une notification Windows vous le rappelle.
+
+- **Clic** sur l'icône : la fenêtre revient.
+- **Clic droit** : l'état de chaque serveur, avec **Démarrer**, **Arrêter** ou **Redémarrer**, et **Quitter Nexum**.
+- Si l'icône n'est pas visible, cliquez sur la flèche **^** à côté de l'horloge : Windows y range certaines icônes. Vous pouvez la glisser près de l'horloge pour la garder visible.
+- Rouvrir Nexum (raccourci, menu Démarrer) ramène la fenêtre déjà ouverte au lieu de lancer une deuxième copie.
+
+Pour que fermer la fenêtre quitte Nexum, désactivez **Paramètres → Garder Nexum dans la zone de notification à la fermeture**. Dans ce cas, Nexum lancé avec Windows démarre réduit dans la barre des tâches.
 
 ## Mise à jour du serveur
 

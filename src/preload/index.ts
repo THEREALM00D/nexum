@@ -338,6 +338,10 @@ const api = {
   app: {
     getVersion: () => ipcRenderer.invoke("app:getVersion"),
     getLaunchAtLogin: () => ipcRenderer.invoke("app:getLaunchAtLogin"),
+    getCloseToTray: () => ipcRenderer.invoke("app:getCloseToTray"),
+    setCloseToTray: (enabled: boolean) =>
+      ipcRenderer.invoke("app:setCloseToTray", enabled),
+    setLanguage: (lang: string) => ipcRenderer.invoke("app:setLanguage", lang),
     setLaunchAtLogin: (enabled: boolean) =>
       ipcRenderer.invoke("app:setLaunchAtLogin", enabled),
   },
