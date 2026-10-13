@@ -30,6 +30,7 @@ export default {
       "Log enregistré. Adresses IP, identifiants Steam et codes de connexion masqués ; les noms des joueurs sont conservés.",
     saveError: "Impossible d'enregistrer le log : {{error}}",
     showInFolder: "Afficher dans le dossier",
+    newLines: "Nouvelles lignes — revenir au direct",
     session: {
       live: "Session en cours (direct)",
       crashed: "plantée",

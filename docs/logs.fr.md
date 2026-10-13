@@ -58,7 +58,7 @@ Chaque démarrage du serveur ouvre une **nouvelle session** : la vue repart de z
 
 ### Auto-scroll
 
-L'affichage défile automatiquement vers le bas quand de nouvelles lignes arrivent. Cliquez et scrollez vers le haut pour interrompre l'auto-scroll, puis revenez en bas pour le réactiver.
+L'affichage défile automatiquement vers le bas quand de nouvelles lignes arrivent. Remontez pour le **mettre en pause** : la vue reste exactement où vous êtes, même si le serveur continue d'écrire. Un bouton **Nouvelles lignes — revenir au direct** apparaît alors ; cliquez dessus (ou redescendez tout en bas) pour reprendre.
 
 ### Copier / Enregistrer en .txt
 

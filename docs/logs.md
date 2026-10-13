@@ -60,7 +60,7 @@ Every server start opens a **new session**: the view starts empty, and everythin
 
 ### Auto-scroll
 
-The view automatically scrolls down as new lines arrive. Click and scroll up to pause auto-scroll, then scroll back down to resume it.
+The view automatically scrolls down as new lines arrive. Scroll up to **pause** it: the view stays exactly where you are, even while the server keeps writing. A **New lines — back to live** button then appears; click it (or scroll back to the bottom) to resume.
 
 ### Copy / Save as .txt
 

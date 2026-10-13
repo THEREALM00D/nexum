@@ -90,7 +90,12 @@ function AppShell() {
       <Box sx={{ display: "flex", flex: 1, overflow: "hidden" }}>
         <Sidebar currentPage={page} onNavigate={setPage} />
         <Box component="main" sx={{ flex: 1, overflow: "auto", p: 3 }}>
-          <Box key={pageKey}>{renderPage()}</Box>
+          {/* Hauteur définie : une page peut remplir l'écran (Logs) et ne faire
+              défiler que sa zone de log. Les pages plus hautes débordent et
+              la zone principale défile comme avant. */}
+          <Box key={pageKey} sx={{ height: "100%" }}>
+            {renderPage()}
+          </Box>
         </Box>
       </Box>
     </Box>
