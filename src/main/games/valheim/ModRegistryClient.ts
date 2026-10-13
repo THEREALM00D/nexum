@@ -7,6 +7,7 @@ import type {
   ModUpdate,
   ModUpdateCheck,
 } from "../../../shared/types";
+import { compareVersions } from "./versionCompare";
 import { REGISTRIES, REGISTRY_API_BASE, USER_AGENT } from "./registries";
 // Importer les types générés depuis le spec OpenAPI Thunderstore
 // Régénérer avec : yarn generate:thunderstore
@@ -402,7 +403,10 @@ export class ModRegistryClient {
       if (findIn(registry)?.is_deprecated) deprecatedCodes.push(code);
 
       // Registre d'origine en premier, puis les autres — dès qu'un registre
-      // propose une version différente de celle installée, on s'arrête là.
+      // propose une version PLUS RÉCENTE que celle installée, on s'arrête là.
+      // ⚠️ Pas juste « différente » : un mod installé depuis Hexium en
+      // dernière version se voyait proposer l'ancienne version restée sur
+      // Thunderstore (signalé sur Discord, 78 mods concernés).
       const searchOrder = [
         registry,
         ...REGISTRIES.filter((r) => r !== registry),
@@ -414,7 +418,11 @@ export class ModRegistryClient {
         // exclus du cache).
         if (!pkg || pkg.is_deprecated) continue;
         const latestVersion = pkg?.versions[0]?.version_number;
-        if (!latestVersion || latestVersion === installedVersion) continue;
+        if (
+          !latestVersion ||
+          compareVersions(latestVersion, installedVersion) <= 0
+        )
+          continue;
 
         updates.push({
           installedCode: code,
