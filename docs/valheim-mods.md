@@ -32,6 +32,8 @@ The line under the name shows when the mod was installed and when the installed 
 
 **Check for updates** compares each mod with the latest published version. A "vX.Y available" badge appears when an update exists, and **Update all** installs them in one go.
 
+Nexum also checks automatically **every time the server starts**: if active mods have an update or were deprecated, it's written in the server log and a notification offers to open the Mods page. Update mods while the server is stopped.
+
 If the new version is on the **other** registry (e.g. an author who moved from Thunderstore to Hexium), the badge says so ("available on Hexium") and the button spells out the source change before installing.
 
 ### Deprecated mods

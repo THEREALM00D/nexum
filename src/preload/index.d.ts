@@ -11,6 +11,7 @@ import type {
   LaunchAtLoginState,
   UpdateCheckResult,
   GameUpdateNotice,
+  ModUpdateNotice,
   AppUpdateStatus,
   LaunchArgsConfig,
   ValheimLaunchConfig,
@@ -106,6 +107,9 @@ interface API {
     onLogSession: (cb: (event: { serverId: string }) => void) => () => void;
     onGameUpdateAvailable: (
       cb: (notice: GameUpdateNotice) => void,
+    ) => () => void;
+    onModUpdatesAvailable: (
+      cb: (notice: ModUpdateNotice) => void,
     ) => () => void;
   };
   palconfig: {

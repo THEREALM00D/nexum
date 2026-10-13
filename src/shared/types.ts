@@ -156,6 +156,15 @@ export interface GameUpdateNotice {
   steamLibrary: boolean;
 }
 
+/** Mods Valheim à mettre à jour, trouvés au démarrage du serveur. */
+export interface ModUpdateNotice {
+  serverId: string;
+  /** Mods actifs avec une version plus récente. */
+  updates: number;
+  /** Mods actifs dépréciés par leur auteur sur leur registre. */
+  deprecated: number;
+}
+
 // --- Mise à jour de Nexum lui-même (electron-updater, releases GitHub) ---
 export type AppUpdateStatus =
   | { state: "idle" }

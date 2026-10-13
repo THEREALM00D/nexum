@@ -32,6 +32,8 @@ La ligne sous le nom indique la date d'installation et la date de publication de
 
 **Vérifier les mises à jour** compare chaque mod à la dernière version publiée. Un badge « vX.Y dispo » apparaît quand une mise à jour existe, et **Tout mettre à jour** les installe d'un coup.
 
+Nexum vérifie aussi automatiquement **à chaque démarrage du serveur** : si des mods actifs ont une mise à jour ou sont dépréciés, c'est écrit dans les logs du serveur et une notification propose d'ouvrir la page Mods. Mettez les mods à jour serveur arrêté.
+
 Si la nouvelle version se trouve sur l'**autre** registre (un auteur qui a quitté Thunderstore pour Hexium, par exemple), le badge l'indique (« dispo sur Hexium ») et le bouton précise le changement de source avant l'installation.
 
 ### Mods dépréciés

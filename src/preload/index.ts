@@ -4,6 +4,7 @@ import type {
   FirewallNamedRule,
   GameType,
   GameUpdateNotice,
+  ModUpdateNotice,
   ModRegistry,
 } from "../shared/types";
 
@@ -107,6 +108,11 @@ const api = {
     onGameUpdateAvailable: (cb: (notice: GameUpdateNotice) => void) => {
       ipcRenderer.on("server:gameUpdateAvailable", (_e, notice) => cb(notice));
       return () => ipcRenderer.removeAllListeners("server:gameUpdateAvailable");
+    },
+    onModUpdatesAvailable: (cb: (notice: ModUpdateNotice) => void) => {
+      ipcRenderer.on("valheim:modUpdatesAvailable", (_e, notice) => cb(notice));
+      return () =>
+        ipcRenderer.removeAllListeners("valheim:modUpdatesAvailable");
     },
   },
   // Palworld config (serverId optionnel — par défaut actif)

@@ -21,6 +21,16 @@ export default {
       "{{name}}: a server update is available (build {{build}}). Installed through the Steam library: update it from Steam.",
     update: "Update",
   },
+  modUpdate: {
+    available_one:
+      "{{name}}: 1 mod has an update. Update it while the server is stopped.",
+    available_other:
+      "{{name}}: {{count}} mods have an update. Update them while the server is stopped.",
+    deprecated_one: "{{name}}: 1 mod was deprecated by its author.",
+    deprecated_other:
+      "{{name}}: {{count}} mods were deprecated by their authors.",
+    open: "See mods",
+  },
   status: {
     running: "Online",
     starting: "Starting...",
