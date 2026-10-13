@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.2](https://github.com/THEREALM00D/nexum/compare/v0.11.1...v0.11.2) (2026-10-13)
+
+
+### Bug Fixes
+
+* never offer an older mod version as an update ([#94](https://github.com/THEREALM00D/nexum/issues/94)) ([136777d](https://github.com/THEREALM00D/nexum/commit/136777df5a52fd6a4c01f43dde77ba4c9177df29))
+
 ## [0.11.1](https://github.com/THEREALM00D/nexum/compare/v0.11.0...v0.11.1) (2026-10-13)
 
 
