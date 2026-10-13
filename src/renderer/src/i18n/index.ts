@@ -12,6 +12,8 @@ import serversFr from "../pages/Servers/__i18n__/fr";
 import serversEn from "../pages/Servers/__i18n__/en";
 import settingsFr from "../pages/Settings/__i18n__/fr";
 import settingsEn from "../pages/Settings/__i18n__/en";
+import setupFr from "../pages/Setup/__i18n__/fr";
+import setupEn from "../pages/Setup/__i18n__/en";
 import { GAMES } from "../games/registry";
 
 const fr = {
@@ -20,6 +22,7 @@ const fr = {
   ...installFr,
   ...serversFr,
   ...settingsFr,
+  ...setupFr,
   ...GAMES.reduce((acc, g) => ({ ...acc, ...g.i18n.fr }), {}),
 };
 
@@ -29,6 +32,7 @@ const en = {
   ...installEn,
   ...serversEn,
   ...settingsEn,
+  ...setupEn,
   ...GAMES.reduce((acc, g) => ({ ...acc, ...g.i18n.en }), {}),
 };
 

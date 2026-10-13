@@ -17,6 +17,18 @@
 
 ## First use
 
+### Setup wizard
+
+On first launch (no server yet), Nexum opens a **setup wizard** that walks you through everything below, in order:
+
+1. **Game**: pick Palworld, Valheim or Astroneer, then **Install a new server** (choose the install folder) or **I already have a server** (choose its folder: Nexum detects the game).
+2. **Installation** (new server only): install SteamCMD, then the server.
+3. **Configuration**: server name, password, world settings. Save before moving on.
+4. **Firewall**: apply the Windows firewall rules.
+5. **Start**: start the server and copy the address to give your friends.
+
+**Skip** closes the wizard at any time; everything stays available from the menu on the left. To set up another server later, use **Servers → Setup wizard**. The steps below describe the same thing by hand.
+
 ### 1. Install SteamCMD
 
 SteamCMD is Valve's official utility for downloading Steam servers.

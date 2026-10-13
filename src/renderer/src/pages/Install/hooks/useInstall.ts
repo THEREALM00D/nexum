@@ -20,7 +20,8 @@ const DEFAULT_LAUNCH_ARGS: LaunchArgsConfig = {
   customArgs: "",
 };
 
-const DEFAULT_INSTALL_PATHS: Record<GameType, string> = {
+// Exporté : aussi proposé par l'assistant de démarrage (pages/Setup).
+export const DEFAULT_INSTALL_PATHS: Record<GameType, string> = {
   palworld: "C:\\PalworldServer",
   valheim: "C:\\ValheimServer",
   astroneer: "C:\\AstroneerServer",

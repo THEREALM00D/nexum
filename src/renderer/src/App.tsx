@@ -6,6 +6,7 @@ import { NotificationProvider } from "./context/NotificationContext";
 import Install from "./pages/Install/Install";
 import Servers from "./pages/Servers/Servers";
 import Settings from "./pages/Settings/Settings";
+import SetupWizard from "./pages/Setup/SetupWizard";
 import Titlebar from "./components/Titlebar/Titlebar";
 import Sidebar from "./components/Sidebar/Sidebar";
 import { DEFAULT_GAME, getGamePlugin } from "./games/registry";
@@ -22,18 +23,28 @@ export type Page =
   | "players"
   | "mods"
   | "servers"
-  | "settings";
+  | "settings"
+  // Assistant de démarrage : hors Sidebar, ouvert sans serveur ou depuis Serveurs
+  | "setup";
 
 // Pages indépendantes du jeu / du serveur actif (toujours affichées)
 export const GLOBAL_PAGES: Page[] = ["servers", "settings"];
 
 function AppShell() {
   const [page, setPage] = useState<Page>("dashboard");
-  const { state } = useServer();
+  const { state, refreshServers } = useServer();
   useUpdateNotices({
     openInstallPage: () => setPage("install"),
     openModsPage: () => setPage("mods"),
   });
+
+  // Premier lancement (aucun serveur) : l'assistant plutôt qu'une app vide
+  useEffect(() => {
+    refreshServers()
+      .then((list) => list.length === 0 && setPage("setup"))
+      .catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const gameType = state.activeServer?.gameType ?? DEFAULT_GAME;
 
@@ -41,15 +52,19 @@ function AppShell() {
   // pour ce jeu (ex: "mods" en quittant Valheim), on retombe sur le
   // dashboard plutôt que d'afficher un écran vide.
   useEffect(() => {
-    if (page === "install" || GLOBAL_PAGES.includes(page)) return;
+    if (page === "install" || page === "setup" || GLOBAL_PAGES.includes(page))
+      return;
     const supported = getGamePlugin(gameType)?.supportedPages ?? [];
     if (!supported.includes(page)) setPage("dashboard");
   }, [gameType, page]);
 
   const renderPage = () => {
     if (page === "install") return <Install />;
-    if (page === "servers") return <Servers />;
     if (page === "settings") return <Settings />;
+    if (page === "setup")
+      return <SetupWizard onFinish={() => setPage("dashboard")} />;
+    if (page === "servers")
+      return <Servers onOpenSetup={() => setPage("setup")} />;
     const Component = getGamePlugin(gameType)?.pages[page];
     return Component ? <Component /> : null;
   };
@@ -57,9 +72,10 @@ function AppShell() {
   // Clé composée : changement de page OU de serveur actif → re-mount complet,
   // donc tous les useEffect/state des pages se réinitialisent avec les bonnes
   // données du nouveau serveur. Sauf pour les pages globales.
-  const pageKey = GLOBAL_PAGES.includes(page)
-    ? page
-    : `${page}:${state.activeServerId ?? "none"}`;
+  const pageKey =
+    GLOBAL_PAGES.includes(page) || page === "setup"
+      ? page
+      : `${page}:${state.activeServerId ?? "none"}`;
 
   return (
     <Box
