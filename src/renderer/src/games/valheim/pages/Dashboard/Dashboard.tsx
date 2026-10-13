@@ -5,6 +5,7 @@ import { useServer } from "../../../../context/ServerContext";
 import { useServerControls } from "../../../../hooks/useServerControls";
 import ServerControls from "../../../../components/server/ServerControls";
 import StatsGrid from "../../../../components/server/StatsGrid";
+import JoinServerCard from "../../../../components/server/JoinServerCard";
 import Logs from "../../../../components/server/Logs";
 import { useValheimPlayerCount } from "./hooks/useValheimPlayerCount";
 import { useOdinEyeOnlineCount } from "./hooks/useOdinEyeOnlineCount";
@@ -43,6 +44,8 @@ export default function ValheimDashboard() {
           {t("valheimDashboard.waitingStats")}
         </Typography>
       )}
+
+      <JoinServerCard />
 
       {status === "running" && <PlayerCountCard count={playerCount} />}
 

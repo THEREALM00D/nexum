@@ -1,4 +1,19 @@
 export default {
+  join: {
+    title: "Join the server",
+    local: "Same network",
+    internet: "From the Internet",
+    code: "Crossplay join code",
+    showPublicIp: "Show my public IP",
+    publicIpTooltip:
+      "Asks the ipify.org service for your public IP address (only when you click)",
+    publicIpError:
+      "Couldn't get your public IP. Check your Internet connection.",
+    copy: "Copy",
+    copied: "Copied",
+    thisPc: "this PC",
+    hint: "For friends outside your network: forward UDP port(s) {{range}} on your router to {{ip}}, and apply the firewall rules (Network page). Most routers won't let you join your own public IP from inside your network: have a friend test it.",
+  },
   logs: {
     title: "Server logs",
     lines: "{{count}} lines",

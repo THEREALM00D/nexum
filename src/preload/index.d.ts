@@ -30,6 +30,7 @@ import type {
   GameType,
   ServerStatus,
   ServerLogEvent,
+  JoinInfo,
   LogSession,
 } from "../shared/types";
 
@@ -101,6 +102,9 @@ interface API {
     ) => Promise<{ success: boolean; error?: string }>;
     getStatus: () => Promise<ServerStatus>;
     getStatuses: () => Promise<Record<string, ServerStatus>>;
+    getJoinInfo: (serverId?: string) => Promise<JoinInfo>;
+    /** IP publique via ipify — seulement sur action de l'utilisateur. */
+    getPublicIp: () => Promise<string>;
     getLaunchArgs: (serverId?: string) => Promise<LaunchArgsConfig>;
     setLaunchArgs: (cfg: LaunchArgsConfig, serverId?: string) => Promise<void>;
     onLog: (cb: (event: ServerLogEvent) => void) => () => void;

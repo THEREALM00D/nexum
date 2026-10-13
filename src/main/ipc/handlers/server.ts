@@ -2,6 +2,7 @@ import { ipcMain } from "electron/main";
 import type { IpcContext } from "../context";
 import type { LaunchArgsConfig, ServerStatus } from "../../../shared/types";
 import { restartServer, startServer } from "../../server/startServer";
+import { getJoinInfo, getPublicIp } from "../../server/joinInfo";
 
 export function registerServerHandlers(ctx: IpcContext): void {
   // Résout un serverId argumenté en serveur du registre. Fallback : actif.
@@ -29,6 +30,13 @@ export function registerServerHandlers(ctx: IpcContext): void {
       event.sender.send("server:log", { serverId: id, line }),
     );
   });
+
+  // Carte « Rejoindre le serveur » : IP locale + port (sans réseau) ; l'IP
+  // publique n'est demandée qu'au clic (service tiers ipify).
+  ipcMain.handle("server:getJoinInfo", (_, serverId?: string) =>
+    getJoinInfo(ctx, resolveId(serverId)),
+  );
+  ipcMain.handle("server:getPublicIp", () => getPublicIp());
 
   // Compat : status du serveur actif. Retourne "stopped" si aucun actif.
   ipcMain.handle(

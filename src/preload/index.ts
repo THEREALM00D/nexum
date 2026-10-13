@@ -84,6 +84,9 @@ const api = {
     restart: (serverId?: string) =>
       ipcRenderer.invoke("server:restart", serverId),
     getStatus: () => ipcRenderer.invoke("server:status"),
+    getJoinInfo: (serverId?: string) =>
+      ipcRenderer.invoke("server:getJoinInfo", serverId),
+    getPublicIp: () => ipcRenderer.invoke("server:getPublicIp"),
     getStatuses: () => ipcRenderer.invoke("server:statuses"),
     getLaunchArgs: (serverId?: string) =>
       ipcRenderer.invoke("server:getLaunchArgs", serverId),

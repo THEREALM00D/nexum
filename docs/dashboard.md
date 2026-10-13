@@ -39,6 +39,16 @@ Progress bars change color:
 - Orange: 65-85%
 - Red: > 85%
 
+## Join the server
+
+The **Join the server** card (all games) gives the address to share with your friends, each with a copy button:
+
+- **Same network**: this PC's local address and the game port (e.g. `192.168.1.30:2456`), for players on the same Wi-Fi / router.
+- **From the Internet**: click **Show my public IP** to get the address for friends outside your network. Nexum asks the ipify.org service for it, **only when you click**.
+- **Crossplay join code** (Valheim with Crossplay on): the code from the server log, once the server has started.
+
+The note below reminds you which UDP ports to forward on your router (e.g. `2456-2458` for Valheim) and to which PC. Most routers don't let you join your own public IP from inside your network: ask a friend outside to test it.
+
 ## Server information
 
 Shown only when the server is **Online** and the REST API is reachable:

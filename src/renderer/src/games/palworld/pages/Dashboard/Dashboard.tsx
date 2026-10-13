@@ -5,6 +5,7 @@ import { useServerControls } from "../../../../hooks/useServerControls";
 import { usePalApi } from "./hooks/usePalApi";
 import ServerControls from "../../../../components/server/ServerControls";
 import StatsGrid from "../../../../components/server/StatsGrid";
+import JoinServerCard from "../../../../components/server/JoinServerCard";
 import ServerInfoPanel from "./components/ServerInfoPanel";
 import PlayersPanel from "./components/PlayersPanel";
 
@@ -40,6 +41,8 @@ export default function Dashboard() {
           {t("dashboard.waitingStats")}
         </Typography>
       )}
+
+      <JoinServerCard />
 
       {serverInfo && (
         <Box sx={{ display: "flex", gap: 2 }}>
