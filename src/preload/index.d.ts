@@ -309,6 +309,11 @@ interface API {
     getVersion: () => Promise<string>;
     getLaunchAtLogin: () => Promise<LaunchAtLoginState>;
     setLaunchAtLogin: (enabled: boolean) => Promise<LaunchAtLoginState>;
+    /** Fermer la fenêtre garde Nexum dans la zone de notification. */
+    getCloseToTray: () => Promise<boolean>;
+    setCloseToTray: (enabled: boolean) => Promise<boolean>;
+    /** Langue de l'UI, pour les textes du main (menu de l'icône). */
+    setLanguage: (lang: string) => Promise<void>;
   };
 }
 

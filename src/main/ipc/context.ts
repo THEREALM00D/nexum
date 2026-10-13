@@ -36,6 +36,13 @@ export interface AppStore {
   servers: Server[];
   activeServerId: string | null;
   serversConfig: Record<string, ServerConfig>;
+
+  // Fermer la fenêtre garde Nexum dans la zone de notification (défaut : oui)
+  closeToTray?: boolean;
+  // Notification « Nexum tourne toujours » déjà montrée une fois
+  trayHintShown?: boolean;
+  // Langue de l'UI, pour les textes du main (menu de l'icône)
+  language?: "fr" | "en";
 }
 
 export interface IpcContext {

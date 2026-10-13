@@ -11,6 +11,7 @@ import {
 } from "../../components/Sidebar/DiscordButton";
 import SettingsSection from "./components/SettingsSection";
 import LaunchAtLoginSwitch from "./components/LaunchAtLoginSwitch";
+import CloseToTraySwitch from "./components/CloseToTraySwitch";
 
 const REPO = "https://github.com/THEREALM00D/nexum";
 const open = (url: string) => window.api.shell.openExternal(url);
@@ -35,6 +36,7 @@ export default function Settings() {
         description={t("settings.startup.description")}
       >
         <LaunchAtLoginSwitch />
+        <CloseToTraySwitch />
       </SettingsSection>
 
       <SettingsSection title={t("settings.language.title")}>

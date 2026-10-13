@@ -11,6 +11,12 @@ files:
   - "!{.eslintignore,.eslintrc.cjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}"
   - "!{.env,.env.*,.npmrc,pnpm-lock.yaml}"
   - "!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}"
+# resources/ est le dossier buildResources : electron-builder ne l'embarque
+# PAS dans l'app. L'icône de la zone de notification est donc copiée à part,
+# lue via process.resourcesPath (voir main/tray/AppTray.ts).
+extraResources:
+  - from: resources/icon.ico
+    to: icon.ico
 asarUnpack:
   - resources/**
   - node_modules/node-pty/**

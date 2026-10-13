@@ -51,6 +51,18 @@ export function registerMiscHandlers(ctx: IpcContext): void {
   // App
   ipcMain.handle("app:getVersion", () => ctx.app.getVersion());
   ipcMain.handle("app:getLaunchAtLogin", () => getLaunchAtLogin());
+  // Fermer la fenêtre = rester dans la zone de notification (voir main/index.ts)
+  ipcMain.handle("app:getCloseToTray", () =>
+    ctx.store.get("closeToTray", true),
+  );
+  ipcMain.handle("app:setCloseToTray", (_, enabled: boolean) => {
+    ctx.store.set("closeToTray", enabled);
+    return enabled;
+  });
+  // Langue de l'UI, pour les textes du menu de l'icône (le main n'a pas i18n)
+  ipcMain.handle("app:setLanguage", (_, lang: string) => {
+    if (lang === "fr" || lang === "en") ctx.store.set("language", lang);
+  });
   ipcMain.handle("app:setLaunchAtLogin", (_, enabled: boolean) =>
     setLaunchAtLogin(enabled),
   );
