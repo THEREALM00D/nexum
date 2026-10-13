@@ -17,6 +17,18 @@
 
 ## Première utilisation
 
+### Assistant de démarrage
+
+Au premier lancement (aucun serveur), Nexum ouvre un **assistant de démarrage** qui vous guide dans tout ce qui suit, dans l'ordre :
+
+1. **Jeu** : choisissez Palworld, Valheim ou Astroneer, puis **Installer un nouveau serveur** (choisissez le dossier d'installation) ou **J'ai déjà un serveur** (choisissez son dossier : Nexum détecte le jeu).
+2. **Installation** (nouveau serveur seulement) : installez SteamCMD, puis le serveur.
+3. **Configuration** : nom du serveur, mot de passe, paramètres du monde. Enregistrez avant de continuer.
+4. **Pare-feu** : appliquez les règles du pare-feu Windows.
+5. **Démarrage** : démarrez le serveur et copiez l'adresse à donner à vos amis.
+
+**Passer** ferme l'assistant à tout moment ; tout reste accessible depuis le menu de gauche. Pour configurer un autre serveur plus tard : **Serveurs → Assistant de démarrage**. Les étapes ci-dessous décrivent la même chose à la main.
+
 ### 1. Installer SteamCMD
 
 SteamCMD est l'utilitaire officiel de Valve pour télécharger les serveurs Steam.

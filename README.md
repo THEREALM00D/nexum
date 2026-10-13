@@ -66,11 +66,12 @@ Get-FileHash .\nexum-<version>-setup.exe -Algorithm SHA256
 
 ## Quick start
 
-1. Launch **Nexum**
-2. Go to **Install**
-3. Click **Install SteamCMD** (automatic download)
-4. Choose a destination folder and install the server for your game — or, if it is already installed, go to **Servers → Add server** and pick its folder
-5. Go to **Dashboard** and click **Start**
+1. Launch **Nexum**: on first launch, the **setup wizard** opens
+2. Pick your game, then **Install a new server** or **I already have a server**
+3. Follow the steps: installation (SteamCMD + server), configuration, firewall
+4. Click **Start**, then share the address shown under **Join the server** with your friends
+
+You can run the wizard again for another server from **Servers → Setup wizard**.
 
 See [docs/installation.md](docs/installation.md) for the full guide.
 

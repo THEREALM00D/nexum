@@ -1,12 +1,13 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import { useTranslation } from "react-i18next";
 import { useServers } from "./hooks/useServers";
 import ServersTable from "./components/ServersTable";
 import ServerDialog from "./components/ServerDialog";
 import ConfirmDeleteDialog from "./components/ConfirmDeleteDialog";
 
-export default function Servers() {
+export default function Servers({ onOpenSetup }: { onOpenSetup: () => void }) {
   const { t } = useTranslation();
   const {
     state,
@@ -40,9 +41,18 @@ export default function Servers() {
             {t("servers.subtitle")}
           </Typography>
         </Box>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={openAdd}>
-          {t("servers.addServer")}
-        </Button>
+        <Stack direction="row" spacing={1}>
+          <Button
+            variant="outlined"
+            startIcon={<AutoFixHighIcon />}
+            onClick={onOpenSetup}
+          >
+            {t("servers.setupWizard")}
+          </Button>
+          <Button variant="contained" startIcon={<AddIcon />} onClick={openAdd}>
+            {t("servers.addServer")}
+          </Button>
+        </Stack>
       </Box>
 
       <ServersTable

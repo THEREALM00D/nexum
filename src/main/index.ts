@@ -27,7 +27,13 @@ import {
 // - Dev : même dossier que l'app installée avant le rebrand (`server-forge`).
 const LEGACY_USER_DATA_DIRS = ["server-forge", "ServerForge"];
 if (!app.isPackaged) {
-  app.setPath("userData", join(app.getPath("appData"), "server-forge"));
+  // NEXUM_USER_DATA_DIR : dossier de données isolé (tests, premier lancement)
+  // pour ne pas toucher aux vrais serveurs de l'app installée.
+  app.setPath(
+    "userData",
+    process.env.NEXUM_USER_DATA_DIR ||
+      join(app.getPath("appData"), "server-forge"),
+  );
 } else if (!existsSync(join(app.getPath("userData"), "config.json"))) {
   const legacy = LEGACY_USER_DATA_DIRS.map((d) =>
     join(app.getPath("appData"), d),

@@ -5,6 +5,7 @@ export default {
     empty: "No server configured. Add your first server to get started.",
     active: "Active",
     addServer: "Add server",
+    setupWizard: "Setup wizard",
     columns: {
       name: "Name",
       game: "Game",

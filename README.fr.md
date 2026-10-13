@@ -66,11 +66,12 @@ Get-FileHash .\nexum-<version>-setup.exe -Algorithm SHA256
 
 ## Démarrage rapide
 
-1. Lancez **Nexum**
-2. Allez dans **Installation**
-3. Cliquez sur **Installer SteamCMD** (téléchargement automatique)
-4. Choisissez un dossier de destination et installez le serveur du jeu souhaité — ou, s'il est déjà installé, allez dans **Serveurs → Ajouter un serveur** et choisissez son dossier
-5. Allez dans **Dashboard** et cliquez sur **Démarrer**
+1. Lancez **Nexum** : au premier lancement, l'**assistant de démarrage** s'ouvre
+2. Choisissez votre jeu, puis **Installer un nouveau serveur** ou **J'ai déjà un serveur**
+3. Suivez les étapes : installation (SteamCMD + serveur), configuration, pare-feu
+4. Cliquez sur **Démarrer**, puis partagez l'adresse affichée sous **Rejoindre le serveur** avec vos amis
+
+Vous pouvez relancer l'assistant pour un autre serveur depuis **Serveurs → Assistant de démarrage**.
 
 Voir [docs/installation.fr.md](docs/installation.fr.md) pour le guide complet.
 

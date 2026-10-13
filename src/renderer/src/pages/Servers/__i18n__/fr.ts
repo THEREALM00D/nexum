@@ -7,6 +7,7 @@ export default {
       "Aucun serveur configuré. Ajoutez votre premier serveur pour commencer.",
     active: "Actif",
     addServer: "Ajouter un serveur",
+    setupWizard: "Assistant de démarrage",
     columns: {
       name: "Nom",
       game: "Jeu",

@@ -211,6 +211,12 @@ Au démarrage, `ServerManager.tryAdopt()` scanne les processus via `systeminform
 - ⚠️ **Icône dans l'app installée** : `resources/` est le dossier `buildResources` d'electron-builder, donc **jamais embarqué** dans l'app (ni `?asset` ni `asarUnpack` n'y changent rien). L'icône est copiée via `extraResources` (`electron-builder.yml`) et lue à `process.resourcesPath/icon.ico` ; en dev, `?asset`. Vérifié sur un build `electron-builder --dir`.
 - **Instance unique** (`app.requestSingleInstanceLock()` dans `main/index.ts`, app installée seulement) : relancer Nexum ramène la fenêtre existante (`second-instance`). Pas en dev : le dossier de données est partagé avec l'app installée, qui bloquerait `yarn dev`.
 
+### Assistant de démarrage (`pages/Setup/`)
+
+- Page `"setup"` (hors Sidebar, hors `GLOBAL_PAGES`) : ouverte automatiquement par `AppShell` quand `refreshServers()` renvoie une liste vide au lancement, ou via **Serveurs → Assistant de démarrage** (`Servers` reçoit `onOpenSetup`).
+- Étape 1 `StepGame` (jeu via `GAMES`, nouveau / existant, nom, dossier ; `useExeDetection` + `ExeStatusHint` + `detectGameType` réutilisés de la page Serveurs ; dossiers par défaut = `DEFAULT_INSTALL_PATHS` exporté par `useInstall`) → **crée le serveur** (`servers.create`, `importValheimWorld` partagé avec `useServers`, extrait dans `pages/Servers/utils/`) et le rend actif. Les étapes suivantes **affichent les pages existantes** sans les dupliquer : `Install` (nouveau serveur seulement), puis `plugin.pages.config` et `plugin.pages.network` du jeu choisi, puis `StepStart` (`ServerControls` + `JoinServerCard`). Clé = `activeServerId` pour que chaque page lise le bon serveur au montage. Retour impossible vers l'étape 1 une fois le serveur créé ; « Passer » ferme à tout moment.
+- Dev / tests : `NEXUM_USER_DATA_DIR` (dev seulement, `main/index.ts`) fait tourner l'app sur un dossier de données isolé — c'est ainsi que le premier lancement se teste sans toucher aux vrais serveurs.
+
 ### Page Paramètres (réglages de l'app)
 
 - `pages/Settings/` : page **globale** (comme Serveurs) — Démarrage (`LaunchAtLoginSwitch`), Langue, Mises à jour (`UpdateIndicator align="left"`), Aide et à propos (Discord, docs, bug, confidentialité). Règle : réglage **de l'app** → Paramètres ; réglage **d'un serveur** → sa fenêtre (`ServerDialog`) ou les pages du jeu.
