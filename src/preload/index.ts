@@ -264,6 +264,8 @@ const api = {
         ipcRenderer.invoke("valheim:mods:installBepInEx", serverId),
       installMod: (registry: ModRegistry, code: string, serverId?: string) =>
         ipcRenderer.invoke("valheim:mods:installMod", registry, code, serverId),
+      shareModpack: (serverId?: string) =>
+        ipcRenderer.invoke("valheim:mods:shareModpack", serverId),
       importProfile: (base64Code: string, serverId?: string) =>
         ipcRenderer.invoke("valheim:mods:importProfile", base64Code, serverId),
       importProfileFile: (filePath: string, serverId?: string) =>

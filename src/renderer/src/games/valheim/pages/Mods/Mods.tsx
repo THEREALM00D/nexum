@@ -30,6 +30,7 @@ import { useValheimMods } from "./hooks/useValheimMods";
 import { useValheimModConfigs } from "./hooks/useValheimModConfigs";
 import BepInExBanner from "./components/BepInExBanner";
 import ClientModsHint from "./components/ClientModsHint";
+import ShareModpackButton from "./components/ShareModpackButton";
 import InstalledModsList from "./components/InstalledModsList";
 import ModBrowser from "./components/ModBrowser";
 import DepsDialog from "./components/DepsDialog";
@@ -155,6 +156,7 @@ export default function ValheimMods() {
         >
           {t("valheimMods.thunderstore.importProfile")}
         </Button>
+        <ShareModpackButton disabled={installing} />
         <Button
           variant="outlined"
           size="small"

@@ -8,7 +8,26 @@ export default {
       configs: "Configs",
     },
     clientHint:
-      "Nexum installs mods on the server only. Most mods must also be installed by each player, with a mod manager such as Gale, r2modman or the Hexium mod manager (the mod page says whether it's needed on the client).",
+      'Nexum installs mods on the server only. Most mods must also be installed by each player, with a mod manager such as Gale, r2modman or the Hexium mod manager (the mod page says whether it\'s needed on the client). Use "Share modpack" to give them the same mods in one code.',
+    share: {
+      button: "Share modpack",
+      title: "Share the modpack with your players",
+      creating: "Creating the profile code…",
+      codeLabel: "Profile code",
+      howTo:
+        "This code contains the {{count}} active mods of this server. Give it to your players: in Gale or r2modman, Import profile → From code, then paste it. They'll get exactly the same mods as the server.",
+      hexiumWarning:
+        "Some mods come from Hexium: r2modman can't install them, your players need Gale (or the Hexium mod manager).",
+      skippedManual:
+        "{{count}} mod(s) installed by hand (outside Nexum) aren't included: they have no registry code. Players must install them themselves.",
+      expiry:
+        "The code is stored by Thunderstore and may expire after a while: create a new one if a player can't import it anymore.",
+      copy: "Copy code",
+      copied: "Code copied",
+      close: "Close",
+      noMods: "No active mod to share.",
+      error: "Couldn't create the profile code: {{error}}",
+    },
     bepinex: {
       warning:
         "BepInEx not detected in the server folder. Most Valheim mods require BepInEx to work.",
