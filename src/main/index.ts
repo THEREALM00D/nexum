@@ -5,6 +5,7 @@ import { existsSync } from "fs";
 import { registerIpcHandlers } from "./ipc/handlers";
 import { checkForUpdateOnStartup } from "./update/AutoUpdater";
 import { launchedAtLogin } from "./startup/launchAtLogin";
+import { appIconPath } from "./utils/appIcon";
 import type { IpcContext } from "./ipc/context";
 import {
   attachCloseToTray,
@@ -63,6 +64,9 @@ function createWindow(): void {
     frame: false,
     titleBarStyle: "hidden",
     backgroundColor: "#0E1116", // Ink (palette Nexum, voir renderer/src/theme.ts)
+    // Explicite : sans elle, Windows affichait l'atome d'Electron dans la
+    // barre des tâches et Alt+Tab, alors que l'exe porte bien le logo Nexum.
+    icon: appIconPath(),
     webPreferences: {
       preload: join(__dirname, "../preload/index.js"),
       sandbox: false, // requis par electron-vite (preload bundlé en CJS)
@@ -104,8 +108,12 @@ app.whenReady().then(async () => {
   if (!gotLock) return;
   if (process.platform === "win32") {
     // Doit correspondre à `appId` (electron-builder.yml) : regroupement barre
-    // des tâches + notifications Windows.
-    app.setAppUserModelId("com.serverforge.app");
+    // des tâches + notifications Windows. ⚠️ Identifiant distinct en dev :
+    // sinon electron.exe (icône = atome d'Electron) partage l'identité de
+    // l'app installée et Windows finit par afficher l'atome pour celle-ci.
+    app.setAppUserModelId(
+      app.isPackaged ? "com.serverforge.app" : "com.serverforge.app.dev",
+    );
   }
 
   // CSP en production uniquement (dev : Vite HMR utilise eval)

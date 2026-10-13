@@ -1,8 +1,7 @@
-import { app, Menu, Tray } from "electron/main";
-import { join } from "path";
+import { Menu, Tray } from "electron/main";
 import { nativeImage } from "electron";
 import type { MenuItemConstructorOptions } from "electron/main";
-import devIconPath from "../../../resources/icon.ico?asset";
+import { appIconPath } from "../utils/appIcon";
 import type { IpcContext } from "../ipc/context";
 import { restartServer, startServer } from "../server/startServer";
 import { trayStrings, type TrayLanguage } from "./trayStrings";
@@ -13,11 +12,6 @@ interface TrayOptions {
   getLanguage: () => TrayLanguage;
 }
 
-// App installée : `resources/` (dossier buildResources) n'est pas embarqué,
-// l'icône est copiée via `extraResources` (electron-builder.yml).
-const iconPath = (): string =>
-  app.isPackaged ? join(process.resourcesPath, "icon.ico") : devIconPath;
-
 /**
  * Icône de Nexum dans la zone de notification (près de l'horloge). Clic :
  * rouvre la fenêtre. Clic droit : état de chaque serveur avec Démarrer /
@@ -25,7 +19,7 @@ const iconPath = (): string =>
  * ouverture pour toujours montrer les statuts à jour.
  */
 export function createAppTray(ctx: IpcContext, opts: TrayOptions): Tray {
-  const tray = new Tray(nativeImage.createFromPath(iconPath()));
+  const tray = new Tray(nativeImage.createFromPath(appIconPath()));
   const log = (id: string) => (line: string) => ctx.broadcastLog(id, line);
 
   const buildMenu = (): Menu => {
