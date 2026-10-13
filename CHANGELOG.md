@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.11.0](https://github.com/THEREALM00D/nexum/compare/v0.10.0...v0.11.0) (2026-10-13)
+
+
+### Features
+
+* add a Join the server card to the dashboard ([#89](https://github.com/THEREALM00D/nexum/issues/89)) ([5c78809](https://github.com/THEREALM00D/nexum/commit/5c788097ee5f2ec3c49d91d77d98840154338041))
+* add a setup wizard for first launch and new servers ([#90](https://github.com/THEREALM00D/nexum/issues/90)) ([73e930b](https://github.com/THEREALM00D/nexum/commit/73e930b0426103c6654eb82d30686806906e5637))
+* check Valheim mod updates when the server starts ([#87](https://github.com/THEREALM00D/nexum/issues/87)) ([70ea922](https://github.com/THEREALM00D/nexum/commit/70ea922a9072e674320c0cf57ed5d5a999c01217))
+* keep Nexum running in the notification area with a server menu ([#84](https://github.com/THEREALM00D/nexum/issues/84)) ([af5c213](https://github.com/THEREALM00D/nexum/commit/af5c213858a560c03e7e7dea970186b72fd41971))
+* share the Valheim server modpack as a Gale / r2modman profile code ([#85](https://github.com/THEREALM00D/nexum/issues/85)) ([bf7afd1](https://github.com/THEREALM00D/nexum/commit/bf7afd1bc9abf825f4b7d602c34a93082f7781b7))
+
 ## [0.10.0](https://github.com/THEREALM00D/nexum/compare/v0.9.0...v0.10.0) (2026-10-11)
 
 
