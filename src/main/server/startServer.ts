@@ -153,6 +153,12 @@ export async function autoStartServers(
   ctx: IpcContext,
   broadcastLog: (serverId: string, line: string) => void,
 ): Promise<void> {
+  // Pas en dev : `yarn dev` (et les tests automatisés) partagent le dossier
+  // de données de l'app installée, donc ses VRAIS serveurs — chaque lancement
+  // les démarrait, puis les coupait net à la fermeture. NEXUM_DEV_AUTOSTART=1
+  // pour tester la fonction elle-même.
+  if (!ctx.app.isPackaged && process.env.NEXUM_DEV_AUTOSTART !== "1") return;
+
   const toStart = ctx.servers.list().filter((s) => s.autoStart);
   for (const [i, server] of toStart.entries()) {
     const status = ctx.serverManagers.getOrCreate(server.id).getStatus();
