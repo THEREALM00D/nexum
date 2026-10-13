@@ -53,6 +53,15 @@ Les mods installés manuellement ne sont pas concernés : sans registre connu, N
 - **Installer via un code** : collez un code `Auteur-NomDuMod-Version` et choisissez son registre (le même code peut exister sur les deux).
 - **Importer un profil** : collez un code de profil exporté depuis r2modman, Gale, Thunderstore ou Hexium, ou importez un fichier `.r2z`. Les profils qui mélangent des mods Thunderstore et Hexium sont supportés.
 
+### Partager le modpack avec vos joueurs
+
+**Partager le modpack** crée un code de profil avec tous les mods **actifs** du serveur (plus BepInEx). Donnez-le à vos joueurs : dans **Gale** ou **r2modman**, importez un profil depuis un code et collez-le. Ils ont exactement les mêmes mods et les mêmes versions que le serveur.
+
+- Si le serveur utilise des mods **Hexium**, les joueurs doivent utiliser **Gale** (ou le gestionnaire de mods Hexium) : r2modman ne connaît que Thunderstore.
+- Les mods installés à la main (hors de Nexum) n'ont pas de code de registre et ne sont pas inclus : les joueurs doivent les installer eux-mêmes.
+- Le code est conservé par Thunderstore (c'est ainsi que r2modman et Gale partagent les profils) et peut expirer après un certain temps : il suffit d'en créer un nouveau.
+- Seule la liste des mods et de leurs versions est envoyée, avec le nom du serveur comme nom de profil. Aucun fichier de config, monde ou donnée personnelle.
+
 ## Onglet Configs
 
 Liste les fichiers `.cfg` générés par les mods dans `BepInEx/config/` (un mod crée son fichier au premier lancement du serveur).

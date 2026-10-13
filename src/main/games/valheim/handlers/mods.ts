@@ -7,6 +7,7 @@ import type { ModRegistry } from "../../../../shared/types";
 import { ModRegistryClient } from "../ModRegistryClient";
 import { ValheimModsManager } from "../ValheimModsManager";
 import { REGISTRIES } from "../registries";
+import { shareModpack } from "../modpackExport";
 
 function getManager(ctx: IpcContext, serverId?: string): ValheimModsManager {
   return new ValheimModsManager(
@@ -120,6 +121,16 @@ export function registerValheimModsHandlers(ctx: IpcContext): void {
         event.sender.send("valheim:mods:progress", msg),
       ),
   );
+
+  // Partage du modpack : code de profil r2modman/Gale pour les joueurs.
+  ipcMain.handle("valheim:mods:shareModpack", (_, serverId?: string) => {
+    const name =
+      ctx.servers
+        .list()
+        .find((s) => s.id === (serverId ?? ctx.getActiveServer()?.id))?.name ??
+      "Nexum";
+    return shareModpack(getManager(ctx, serverId).list(), name);
+  });
 
   ipcMain.handle(
     "valheim:mods:installMod",

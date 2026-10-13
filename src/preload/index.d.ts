@@ -23,6 +23,7 @@ import type {
   ThunderstoreModInfo,
   ThunderstoreModVersion,
   ModUpdateCheck,
+  ModpackShare,
   PlayerHistoryEntry,
   Server,
   GameType,
@@ -256,6 +257,8 @@ interface API {
         code: string,
         serverId?: string,
       ) => Promise<ValheimMod>;
+      /** Crée un code de profil r2modman/Gale avec les mods actifs du serveur. */
+      shareModpack: (serverId?: string) => Promise<ModpackShare>;
       importProfile: (
         base64Code: string,
         serverId?: string,

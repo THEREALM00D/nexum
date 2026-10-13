@@ -321,6 +321,18 @@ export interface ModUpdate {
   sourceChanged: boolean;
 }
 
+/** Résultat du partage du modpack d'un serveur Valheim (code r2modman/Gale). */
+export interface ModpackShare {
+  /** Code à coller dans Gale / r2modman (Importer un profil → code). */
+  code: string;
+  /** Mods inclus (BepInExPack compris). */
+  modCount: number;
+  /** Mods installés à la main, sans code de registre : non inclus. */
+  skippedManual: number;
+  /** Le pack contient des mods Hexium : r2modman ne sait pas les installer. */
+  includesHexium: boolean;
+}
+
 export interface ModUpdateCheck {
   updates: ModUpdate[];
   /** `thunderstoreCode` des mods installés dont le package est déprécié sur leur registre d'origine. */
