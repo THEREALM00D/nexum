@@ -165,6 +165,18 @@ export interface ModUpdateNotice {
   deprecated: number;
 }
 
+/** Infos pour rejoindre un serveur (carte « Rejoindre le serveur »). */
+export interface JoinInfo {
+  /** IPv4 de ce PC sur le réseau local, pour les joueurs du même réseau. */
+  localIp: string | null;
+  /** Port de jeu à donner aux joueurs. */
+  port: number;
+  /** Port(s) UDP à rediriger sur la box, ex. "2456-2458". */
+  portRange: string;
+  /** Valheim lancé avec -crossplay : on rejoint aussi par code. */
+  crossplay: boolean;
+}
+
 // --- Mise à jour de Nexum lui-même (electron-updater, releases GitHub) ---
 export type AppUpdateStatus =
   | { state: "idle" }

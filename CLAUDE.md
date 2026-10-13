@@ -188,6 +188,12 @@ Au démarrage, `ServerManager.tryAdopt()` scanne les processus via `systeminform
 
 - **Mods Valheim** (`main/games/valheim/modUpdateCheck.ts`, `checkModUpdatesOnStart`) : même principe, lancée par `startServer` pour Valheim seulement, non attendue. Réutilise `ModRegistryClient.checkUpdates` sur les mods **actifs** avec registre ; écrit « Mods à jour (N vérifiés) » ou la liste des MàJ / mods dépréciés dans la session de log, et émet `valheim:modUpdatesAvailable` (`ModUpdateNotice`) si quelque chose est à faire. Côté renderer, un seul hook pour les deux vérifications : `hooks/useUpdateNotices` (ex-`useGameUpdateNotice`), boutons « Mettre à jour » → Installation et « Voir les mods » → Mods. Ces deux vérifications contactent Steam / les registres au démarrage : déclaré dans `docs/code-signing*.md`.
 
+### Carte « Rejoindre le serveur » (Dashboard des 3 jeux)
+
+- `components/server/JoinServerCard.tsx` + `main/server/joinInfo.ts` (IPC `server:getJoinInfo`, `server:getPublicIp`) : IP locale + port de jeu (même source que les règles de pare-feu : `valheimConfig.port` avec plage `port..port+2`, `PublicPort` Palworld défaut 8211, `Port` d'Engine.ini Astroneer défaut 8777), code crossplay Valheim lu dans les logs (`join code X`), rappel des ports UDP à rediriger.
+- **IP publique : uniquement au clic** (« Afficher mon IP publique » → `api.ipify.org`, cache 10 min). Service tiers déclaré dans `docs/code-signing*.md` — ne jamais l'appeler automatiquement.
+- `localIpv4()` classe les cartes réseau au lieu d'exclure par nom : ⚠️ un commutateur Hyper-V **externe** s'appelle « vEthernet (…) » et porte la vraie IP du PC sur la box (cas du propriétaire) ; seuls « Default Switch », WSL, VirtualBox, VMware, VPN… sont pénalisés. Préférence 192.168.x.x > 10.x > 172.16-31.
+
 ### Page Logs (partagée)
 
 - `components/server/Logs.tsx` est la page Logs des **trois** jeux (`games/<jeu>/pages/Logs/Logs.tsx` ne fait que la réexporter). Ses textes sont dans `components/server/__i18n__/`, importés par chaque manifest (comme `components/players/`) — ils étaient dupliqués dans Palworld et Valheim, et Astroneer n'en avait pas.

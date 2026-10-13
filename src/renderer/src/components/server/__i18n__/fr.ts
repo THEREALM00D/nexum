@@ -1,4 +1,19 @@
 export default {
+  join: {
+    title: "Rejoindre le serveur",
+    local: "Même réseau",
+    internet: "Depuis Internet",
+    code: "Code de connexion crossplay",
+    showPublicIp: "Afficher mon IP publique",
+    publicIpTooltip:
+      "Demande votre adresse IP publique au service ipify.org (seulement quand vous cliquez)",
+    publicIpError:
+      "Impossible d'obtenir votre IP publique. Vérifiez votre connexion Internet.",
+    copy: "Copier",
+    copied: "Copié",
+    thisPc: "ce PC",
+    hint: "Pour les amis hors de votre réseau : redirigez le(s) port(s) UDP {{range}} sur votre box vers {{ip}}, et appliquez les règles du pare-feu (page Réseau). La plupart des box ne permettent pas de rejoindre sa propre IP publique depuis chez soi : faites tester un ami.",
+  },
   logs: {
     title: "Logs serveur",
     lines: "{{count}} lignes",

@@ -39,6 +39,16 @@ Les barres de progression changent de couleur :
 - Orange : 65-85%
 - Rouge : > 85%
 
+## Rejoindre le serveur
+
+La carte **Rejoindre le serveur** (tous les jeux) donne l'adresse à partager avec vos amis, chacune avec un bouton Copier :
+
+- **Même réseau** : l'adresse locale de ce PC et le port du jeu (ex. `192.168.1.30:2456`), pour les joueurs sur le même Wi-Fi / la même box.
+- **Depuis Internet** : cliquez sur **Afficher mon IP publique** pour obtenir l'adresse à donner aux amis hors de votre réseau. Nexum la demande au service ipify.org, **seulement quand vous cliquez**.
+- **Code de connexion crossplay** (Valheim avec Crossplay activé) : le code lu dans les logs du serveur, une fois celui-ci démarré.
+
+La note en dessous rappelle les ports UDP à rediriger sur votre box (ex. `2456-2458` pour Valheim) et vers quel PC. La plupart des box ne permettent pas de rejoindre sa propre IP publique depuis chez soi : faites tester un ami à l'extérieur.
+
 ## Informations du serveur
 
 Affichées uniquement quand le serveur est **En ligne** et que l'API REST est accessible :

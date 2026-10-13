@@ -5,6 +5,7 @@ import { useServer } from "../../../../context/ServerContext";
 import { useServerControls } from "../../../../hooks/useServerControls";
 import ServerControls from "../../../../components/server/ServerControls";
 import StatsGrid from "../../../../components/server/StatsGrid";
+import JoinServerCard from "../../../../components/server/JoinServerCard";
 
 export default function AstroneerDashboard() {
   const { t } = useTranslation();
@@ -37,6 +38,8 @@ export default function AstroneerDashboard() {
           {t("astroneerDashboard.waitingStats")}
         </Typography>
       )}
+
+      <JoinServerCard />
 
       <Alert
         severity="info"
