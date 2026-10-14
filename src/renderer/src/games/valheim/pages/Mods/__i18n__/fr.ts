@@ -48,6 +48,11 @@ export default {
       installedAt: "Installé le {{date}}",
       updatedAt: "Version publiée sur {{registry}} : {{date}}",
       version: "v{{version}}",
+      search: "Rechercher un mod installé…",
+      count_one: "{{count}} mod",
+      count_other: "{{count}} mods",
+      countFiltered: "{{shown}} / {{total}} mods",
+      noMatch: "Aucun mod installé ne correspond à cette recherche.",
       loadFailed: "Impossible de charger les mods installés",
       restartRequired:
         "Redémarrez le serveur pour appliquer ce changement — BepInEx ne recharge les mods qu'au démarrage.",

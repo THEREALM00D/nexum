@@ -28,6 +28,8 @@ Liste des mods présents dans `BepInEx/plugins/`, avec pour chacun :
 
 La ligne sous le nom indique la date d'installation et la date de publication de la version installée sur son registre (« Version publiée sur Thunderstore : … »).
 
+La **barre de recherche** en haut filtre la liste par nom de mod ou par auteur, avec le nombre de mods affichés à côté. Les espaces, tirets et majuscules sont ignorés : `azu auto` trouve `Azumatt-AzuAutoStore`.
+
 ### Mises à jour
 
 **Vérifier les mises à jour** compare chaque mod à la dernière version publiée. Un badge « vX.Y dispo » apparaît quand une mise à jour existe, et **Tout mettre à jour** les installe d'un coup.

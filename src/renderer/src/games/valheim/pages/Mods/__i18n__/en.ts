@@ -47,6 +47,11 @@ export default {
       installedAt: "Installed on {{date}}",
       updatedAt: "Version published on {{registry}}: {{date}}",
       version: "v{{version}}",
+      search: "Search installed mods…",
+      count_one: "{{count}} mod",
+      count_other: "{{count}} mods",
+      countFiltered: "{{shown}} / {{total}} mods",
+      noMatch: "No installed mod matches this search.",
       loadFailed: "Unable to load installed mods",
       restartRequired:
         "Restart the server to apply this change — BepInEx only reloads mods on startup.",
