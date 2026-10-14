@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.1](https://github.com/THEREALM00D/nexum/compare/v0.12.0...v0.12.1) (2026-10-14)
+
+
+### Bug Fixes
+
+* ping the Release Ping role in Discord release announcements ([#101](https://github.com/THEREALM00D/nexum/issues/101)) ([052b8d2](https://github.com/THEREALM00D/nexum/commit/052b8d22e5924abc1131e6550f205666b0e33bd9))
+
 ## [0.12.0](https://github.com/THEREALM00D/nexum/compare/v0.11.3...v0.12.0) (2026-10-14)
 
 
