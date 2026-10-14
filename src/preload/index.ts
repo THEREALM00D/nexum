@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer } from "electron";
+import { contextBridge, ipcRenderer, type IpcRendererEvent } from "electron";
 import type {
   AppUpdateStatus,
   FirewallNamedRule,
@@ -23,12 +23,18 @@ const api = {
   },
   update: {
     getCurrentVersion: () => ipcRenderer.invoke("update:getCurrentVersion"),
+    getStatus: () => ipcRenderer.invoke("update:getStatus"),
     check: () => ipcRenderer.invoke("update:check"),
     download: () => ipcRenderer.invoke("update:download"),
     install: () => ipcRenderer.invoke("update:install"),
     onStatus: (cb: (status: AppUpdateStatus) => void) => {
-      ipcRenderer.on("update:status", (_e, status) => cb(status));
-      return () => ipcRenderer.removeAllListeners("update:status");
+      // Retirer CE listener seulement : l'indicateur est monté deux fois
+      // (Sidebar + Paramètres) ; un removeAllListeners en quittant Paramètres
+      // coupait aussi celui de la Sidebar, qui ne réagissait plus au clic.
+      const listener = (_e: IpcRendererEvent, status: AppUpdateStatus) =>
+        cb(status);
+      ipcRenderer.on("update:status", listener);
+      return () => ipcRenderer.removeListener("update:status", listener);
     },
   },
   // Multi-serveur

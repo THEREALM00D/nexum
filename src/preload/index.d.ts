@@ -46,6 +46,7 @@ interface API {
   };
   update: {
     getCurrentVersion: () => Promise<string>;
+    getStatus: () => Promise<AppUpdateStatus>;
     check: () => Promise<void>;
     download: () => Promise<void>;
     install: () => Promise<void>;

@@ -29,7 +29,15 @@ export default {
       install: "Redémarrer et installer v{{version}}",
       installHint:
         "L'app redémarre et installe la mise à jour automatiquement.",
-      error: "Échec de la vérification de mise à jour",
+      upToDate: "À jour · vérifié à {{time}}",
+      retry: "Réessayer",
+      devMode: "Indisponible en mode développement",
+      errors: {
+        network: "Impossible de joindre GitHub (connexion ?)",
+        rateLimit: "GitHub limite les vérifications, réessayez plus tard",
+        timeout: "GitHub ne répond pas",
+        unknown: "Échec de la vérification de mise à jour",
+      },
       unavailable: "Nouvelle version en cours de publication…",
     },
   },
