@@ -360,12 +360,28 @@ export class ValheimModsManager {
     let pictureUrl: string | undefined;
     let publishedAt: number | undefined;
     try {
-      const pkg = await ModRegistryClient.getPackage(registry, namespace, name);
-      const versionInfo =
-        pkg.versions.find((v) => v.version_number === version) ??
-        pkg.versions[0];
+      // ⚠️ Toujours la version DEMANDÉE : une version toute récente peut
+      // manquer dans la liste du registre (~1 h de retard, voir
+      // `ModRegistryClient.getFreshLatest`). Avant, on se rabattait alors sur
+      // `versions[0]` et son download_url : l'ancienne version était
+      // téléchargée mais enregistrée sous le nouveau numéro.
+      const pkg = await ModRegistryClient.getPackage(
+        registry,
+        namespace,
+        name,
+      ).catch(() => null);
+      let versionInfo = pkg?.versions.find((v) => v.version_number === version);
+      if (!versionInfo) {
+        const fresh = await ModRegistryClient.getFreshLatest(
+          registry,
+          namespace,
+          name,
+        );
+        if (fresh?.latest.version_number === version)
+          versionInfo = fresh.latest;
+      }
       if (versionInfo?.download_url) downloadUrl = versionInfo.download_url;
-      pictureUrl = versionInfo?.icon ?? undefined;
+      pictureUrl = versionInfo?.icon ?? pkg?.versions[0]?.icon ?? undefined;
       if (versionInfo?.date_created) {
         publishedAt = Math.floor(
           new Date(versionInfo.date_created).getTime() / 1000,
