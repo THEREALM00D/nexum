@@ -178,15 +178,24 @@ export interface JoinInfo {
 }
 
 // --- Mise à jour de Nexum lui-même (electron-updater, releases GitHub) ---
+/** Cause d'une erreur de mise à jour, traduite côté renderer. */
+export type AppUpdateErrorKind =
+  "network" | "rateLimit" | "timeout" | "unknown";
+
 export type AppUpdateStatus =
+  /** Aucune vérification encore faite depuis le lancement. */
   | { state: "idle" }
   | { state: "checking" }
+  /** Dernière vérification : déjà à la dernière version (`checkedAt` = timestamp ms). */
+  | { state: "upToDate"; checkedAt: number }
   | { state: "available"; version: string }
   | { state: "downloading"; percent: number }
   | { state: "downloaded"; version: string }
-  | { state: "error"; message: string }
+  | { state: "error"; kind: AppUpdateErrorKind; message: string }
   /** Fichiers de la release pas encore tous en ligne (déploiement en cours côté GitHub Actions) — pas une vraie erreur. */
-  | { state: "unavailable" };
+  | { state: "unavailable" }
+  /** `yarn dev` : pas d'app-update.yml packagé, la vérification est impossible. */
+  | { state: "devMode" };
 
 // --- Launch arguments (PalServer.exe) ---
 export interface LaunchArgsConfig {
