@@ -140,6 +140,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ needs.release-please.outputs.tag_name }}
+          ROLE_ID: ${{ vars.DISCORD_RELEASE_ROLE_ID }}
         run: |
           url="https://github.com/${{ github.repository }}/releases/tag/$TAG"
           # Notes de release-please uniquement : on retire la ligne de titre
@@ -154,13 +155,18 @@ jobs:
           if [ ${#notes} -gt 3900 ]; then
             notes="${notes:0:3900}…"$'\n\n'"[Changelog complet / Full changelog]($url)"
           fi
-          jq -n --arg title "Nexum $TAG" --arg url "$url" --arg desc "$notes" '{
+          # Mention du rôle « Release Ping » : dans `content` (une mention dans
+          # un embed ne notifie personne). ID absent ou invalide → pas de mention.
+          # allowed_mentions n'autorise que ce rôle, quoi que contiennent les notes.
+          [[ "$ROLE_ID" =~ ^[0-9]+$ ]] || ROLE_ID=""
+          jq -n --arg title "Nexum $TAG" --arg url "$url" --arg desc "$notes" --arg role "$ROLE_ID" '{
             username: "Nexum",
+            allowed_mentions: { parse: [], roles: (if $role != "" then [$role] else [] end) },
             embeds: [{
               title: $title,
               url: $url,
               description: $desc,
               color: 2278750
             }]
-          }' > payload.json
+          } + (if $role != "" then { content: "<@&\($role)>" } else {} end)' > payload.json
           curl -fsS -H "Content-Type: application/json" -d @payload.json "$DISCORD_WEBHOOK"
