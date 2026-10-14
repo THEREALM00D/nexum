@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.2](https://github.com/THEREALM00D/nexum/compare/v0.12.1...v0.12.2) (2026-10-14)
+
+
+### Bug Fixes
+
+* give visible feedback when checking for app updates ([#103](https://github.com/THEREALM00D/nexum/issues/103)) ([8ea17c3](https://github.com/THEREALM00D/nexum/commit/8ea17c3fb1b8b8531d11a6935a813ce39ed02a20))
+
 ## [0.12.1](https://github.com/THEREALM00D/nexum/compare/v0.12.0...v0.12.1) (2026-10-14)
 
 
