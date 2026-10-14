@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.12.0](https://github.com/THEREALM00D/nexum/compare/v0.11.3...v0.12.0) (2026-10-14)
+
+
+### Features
+
+* search installed Valheim mods ([#98](https://github.com/THEREALM00D/nexum/issues/98)) ([34e2e9e](https://github.com/THEREALM00D/nexum/commit/34e2e9e8f78b3206948e3a3def8e62365d2bd8ac))
+
+
+### Bug Fixes
+
+* see mod updates as soon as they're published ([#100](https://github.com/THEREALM00D/nexum/issues/100)) ([ea0b1d3](https://github.com/THEREALM00D/nexum/commit/ea0b1d35f8325e136ca00426080573b65462ba4c))
+
 ## [0.11.3](https://github.com/THEREALM00D/nexum/compare/v0.11.2...v0.11.3) (2026-10-13)
 
 
