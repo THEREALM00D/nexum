@@ -9,6 +9,7 @@ import type {
 } from "../../../shared/types";
 import { compareVersions } from "./versionCompare";
 import { REGISTRIES, REGISTRY_API_BASE, USER_AGENT } from "./registries";
+import { mapLimit } from "../../utils/mapLimit";
 // Importer les types générés depuis le spec OpenAPI Thunderstore
 // Régénérer avec : yarn generate:thunderstore
 // Hexium expose une API "compatible Thunderstore" avec le même schéma (mêmes
@@ -40,6 +41,17 @@ interface RegistryPackage extends Omit<
   rating_score: number;
   is_deprecated: boolean;
   versions: RegistryVersion[];
+}
+
+// Requêtes simultanées max vers un registre pour la vérification des mises à
+// jour (une par mod installé).
+const FRESH_CHECK_CONCURRENCY = 6;
+
+// La plus récente de deux versions (l'une ou l'autre peut manquer).
+function newest(a?: string, b?: string): string | undefined {
+  if (!a) return b;
+  if (!b) return a;
+  return compareVersions(a, b) >= 0 ? a : b;
 }
 
 function hashString(s: string): number {
@@ -123,6 +135,34 @@ export class ModRegistryClient {
     const filtered = data.filter((p) => p.versions.length > 0);
     ModRegistryClient.cache.set(registry, { data: filtered, ts: now });
     return filtered;
+  }
+
+  // Dernière version d'un package, lue sur l'endpoint par package (pas de
+  // cache chez nous). ⚠️ La liste complète `/c/valheim/api/v1/package/` est
+  // regénérée côté Thunderstore environ toutes les heures (vu le 2026-10-14 :
+  // `last-modified` 50 min avant la réponse) : une mise à jour toute fraîche y
+  // est absente alors que r2modman la voit déjà (signalé sur Reddit, joueurs
+  // refusés pour « version mismatch »). Cet endpoint-ci est à jour en quelques
+  // minutes, même schéma sur Hexium. `null` si le package n'existe pas ou si
+  // le registre ne répond pas.
+  static async getFreshLatest(
+    registry: ModRegistry,
+    namespace: string,
+    name: string,
+  ): Promise<{ latest: RegistryVersion; deprecated: boolean } | null> {
+    try {
+      const pkg = await ModRegistryClient.fetchJson<
+        Pick<PackageExperimental, "is_deprecated"> & {
+          latest?: RegistryVersion;
+        }
+      >(
+        `${REGISTRY_API_BASE[registry]}/api/experimental/package/${encodeURIComponent(namespace)}/${encodeURIComponent(name)}/`,
+      );
+      if (!pkg.latest?.version_number) return null;
+      return { latest: pkg.latest, deprecated: pkg.is_deprecated === true };
+    } catch {
+      return null;
+    }
   }
 
   private static active(pkgs: RegistryPackage[]): RegistryPackage[] {
@@ -385,56 +425,81 @@ export class ModRegistryClient {
       );
     }
 
+    const results = await mapLimit(
+      installed,
+      FRESH_CHECK_CONCURRENCY,
+      async ({ code, registry }) => {
+        if (!code) return null;
+        const parts = code.split("-");
+        if (parts.length < 3) return null;
+        const installedVersion = parts[parts.length - 1];
+        const modName = parts[parts.length - 2];
+        const modNamespace = parts.slice(0, parts.length - 2).join("-");
+        const findIn = (r: ModRegistry) =>
+          packagesByRegistry
+            .get(r)!
+            .find((p) => p.owner === modNamespace && p.name === modName);
+
+        // Registre d'origine : version fraîche (la liste peut avoir ~1 h de
+        // retard, voir getFreshLatest). Les autres registres restent lus dans
+        // la liste : le changement de registre n'est jamais urgent.
+        const fresh = await ModRegistryClient.getFreshLatest(
+          registry,
+          modNamespace,
+          modName,
+        );
+        const listed = findIn(registry);
+        const deprecated = fresh?.deprecated ?? listed?.is_deprecated ?? false;
+
+        // Registre d'origine en premier, puis les autres — dès qu'un registre
+        // propose une version PLUS RÉCENTE que celle installée, on s'arrête là.
+        // ⚠️ Pas juste « différente » : un mod installé depuis Hexium en
+        // dernière version se voyait proposer l'ancienne version restée sur
+        // Thunderstore (signalé sur Discord, 78 mods concernés).
+        const searchOrder = [
+          registry,
+          ...REGISTRIES.filter((r) => r !== registry),
+        ];
+        let update: ModUpdate | null = null;
+        for (const candidateRegistry of searchOrder) {
+          const isOrigin = candidateRegistry === registry;
+          const pkg = findIn(candidateRegistry);
+          // Un package déprécié ne propose pas de mise à jour : on continue
+          // sur les autres registres.
+          if (isOrigin ? deprecated : !pkg || pkg.is_deprecated) continue;
+          const latestVersion = isOrigin
+            ? newest(
+                fresh?.latest.version_number,
+                pkg?.versions[0]?.version_number,
+              )
+            : pkg?.versions[0]?.version_number;
+          if (
+            !latestVersion ||
+            compareVersions(latestVersion, installedVersion) <= 0
+          )
+            continue;
+
+          update = {
+            installedCode: code,
+            latestCode: `${modNamespace}-${modName}-${latestVersion}`,
+            latestVersion,
+            name: pkg?.name ?? modName,
+            author: pkg?.owner ?? modNamespace,
+            registry: candidateRegistry,
+            sourceChanged: !isOrigin,
+          };
+          break;
+        }
+        return { code, deprecated, update };
+      },
+    );
+
     const updates: ModUpdate[] = [];
     const deprecatedCodes: string[] = [];
-
-    for (const { code, registry } of installed) {
-      if (!code) continue;
-      const parts = code.split("-");
-      if (parts.length < 3) continue;
-      const installedVersion = parts[parts.length - 1];
-      const modName = parts[parts.length - 2];
-      const modNamespace = parts.slice(0, parts.length - 2).join("-");
-      const findIn = (r: ModRegistry) =>
-        packagesByRegistry
-          .get(r)!
-          .find((p) => p.owner === modNamespace && p.name === modName);
-
-      if (findIn(registry)?.is_deprecated) deprecatedCodes.push(code);
-
-      // Registre d'origine en premier, puis les autres — dès qu'un registre
-      // propose une version PLUS RÉCENTE que celle installée, on s'arrête là.
-      // ⚠️ Pas juste « différente » : un mod installé depuis Hexium en
-      // dernière version se voyait proposer l'ancienne version restée sur
-      // Thunderstore (signalé sur Discord, 78 mods concernés).
-      const searchOrder = [
-        registry,
-        ...REGISTRIES.filter((r) => r !== registry),
-      ];
-      for (const candidateRegistry of searchOrder) {
-        const pkg = findIn(candidateRegistry);
-        // Un package déprécié ne propose pas de mise à jour : on continue sur
-        // les autres registres (même comportement qu'avant, quand ils étaient
-        // exclus du cache).
-        if (!pkg || pkg.is_deprecated) continue;
-        const latestVersion = pkg?.versions[0]?.version_number;
-        if (
-          !latestVersion ||
-          compareVersions(latestVersion, installedVersion) <= 0
-        )
-          continue;
-
-        updates.push({
-          installedCode: code,
-          latestCode: `${modNamespace}-${modName}-${latestVersion}`,
-          latestVersion,
-          name: pkg.name,
-          author: pkg.owner,
-          registry: candidateRegistry,
-          sourceChanged: candidateRegistry !== registry,
-        });
-        break;
-      }
+    for (const r of results) {
+      if (!r) continue;
+      if (r.deprecated) deprecatedCodes.push(r.code);
+      if (r.update) updates.push(r.update);
     }
 
     return { updates, deprecatedCodes };

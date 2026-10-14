@@ -34,6 +34,10 @@ The **search bar** at the top filters the list by mod name or author, with the n
 
 **Check for updates** compares each mod with the latest published version. A "vX.Y available" badge appears when an update exists, and **Update all** installs them in one go.
 
+Each installed mod is checked directly with its registry, so an update published a few minutes ago already shows up. The **Browse** tab, on the other hand, uses the registry's full mod list, which can lag up to about an hour behind: a brand-new version may only appear there later. Install the mod, then use **Check for updates**.
+
+> **Players get kicked with "version mismatch" or "mod not installed"?** Mods that check versions (Jötunn and the mods built on it, ServerSync…) require the **exact same versions** on the server and on each player's game. Update the server's mods, then give your players a fresh **Share modpack** code so they get the same versions.
+
 Nexum also checks automatically **every time the server starts**: if active mods have an update or were deprecated, it's written in the server log and a notification offers to open the Mods page. Update mods while the server is stopped.
 
 If the new version is on the **other** registry (e.g. an author who moved from Thunderstore to Hexium), the badge says so ("available on Hexium") and the button spells out the source change before installing.

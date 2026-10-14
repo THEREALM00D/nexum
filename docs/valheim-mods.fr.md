@@ -34,6 +34,10 @@ La **barre de recherche** en haut filtre la liste par nom de mod ou par auteur, 
 
 **Vérifier les mises à jour** compare chaque mod à la dernière version publiée. Un badge « vX.Y dispo » apparaît quand une mise à jour existe, et **Tout mettre à jour** les installe d'un coup.
 
+Chaque mod installé est vérifié directement auprès de son registre : une mise à jour publiée il y a quelques minutes apparaît déjà. L'onglet **Parcourir**, lui, utilise la liste complète du registre, qui peut avoir jusqu'à une heure de retard : une version toute neuve peut n'y apparaître que plus tard. Installez le mod, puis utilisez **Vérifier les mises à jour**.
+
+> **Des joueurs sont refusés avec « version mismatch » ou « mod not installed » ?** Les mods qui vérifient les versions (Jötunn et les mods qui l'utilisent, ServerSync…) exigent **exactement les mêmes versions** sur le serveur et chez chaque joueur. Mettez à jour les mods du serveur, puis donnez à vos joueurs un nouveau code **Partager le modpack** pour qu'ils aient les mêmes versions.
+
 Nexum vérifie aussi automatiquement **à chaque démarrage du serveur** : si des mods actifs ont une mise à jour ou sont dépréciés, c'est écrit dans les logs du serveur et une notification propose d'ouvrir la page Mods. Mettez les mods à jour serveur arrêté.
 
 Si la nouvelle version se trouve sur l'**autre** registre (un auteur qui a quitté Thunderstore pour Hexium, par exemple), le badge l'indique (« dispo sur Hexium ») et le bouton précise le changement de source avant l'installation.
