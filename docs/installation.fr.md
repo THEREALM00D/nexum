@@ -108,7 +108,7 @@ Un serveur en retard d'une version refuse les joueurs qui ont mis leur jeu à jo
 
 - Le démarrage n'attend pas cette vérification : si Steam ne répond pas, le serveur démarre normalement et rien n'est signalé.
 - Si une mise à jour existe, une notification l'indique, avec un bouton **Mettre à jour** qui ouvre la page **Installation** de ce serveur. Le résultat est aussi écrit dans ses logs (pratique après un démarrage avec Windows, quand personne ne regarde l'écran).
-- Serveur installé via la **bibliothèque Steam** (dans `steamapps\common`) : c'est Steam qui le met à jour, la notification vous le rappelle. La vérification nécessite que SteamCMD soit installé (page **Installation**).
+- Serveur installé via la **bibliothèque Steam** (dans `steamapps\common`) : c'est Steam qui le met à jour, la notification vous le rappelle. Si vous le mettez plutôt à jour depuis la page **Installation** de Nexum, Nexum le détecte aussi (jusqu'à la 0.12.4, il continuait d'annoncer la mise à jour). La vérification nécessite que SteamCMD soit installé (page **Installation**).
 
 Pour mettre à jour (le serveur doit être arrêté) :
 
