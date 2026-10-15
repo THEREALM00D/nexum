@@ -17,6 +17,8 @@
 
 > ⚠️ **Ne rangez pas vos serveurs ni vos sauvegardes dans le dossier d'installation de Nexum** (par exemple `H:\Nexum`). Jusqu'à la version 0.12.3, chaque mise à jour de Nexum vidait entièrement ce dossier, y compris les fichiers que vous y aviez ajoutés (des mondes Valheim ont été perdus ainsi). Les versions suivantes ne suppriment plus que leurs propres fichiers, mais choisissez quand même un dossier à part, par exemple `H:\ValheimSaves`. Nexum affiche un avertissement sous les champs de dossier (serveur, sauvegardes Valheim, backups) qui pointent dans son dossier d'installation.
 
+> **« Nexum cannot be closed » pendant une mise à jour depuis la 0.12.4 ou la 0.12.5**, alors que Nexum est fermé : cela arrive quand Nexum est installé sur un autre lecteur que `C:` (par exemple `H:\Nexum`). Cliquez sur **Cancel** : la version installée reste intacte. Installez plutôt la 0.12.6 ou une version plus récente, qui corrige le problème. Si vous restez bloqué avec un ancien installeur, désinstallez Nexum depuis les Paramètres de Windows (vos serveurs et réglages sont conservés), puis installez la nouvelle version.
+
 ## Première utilisation
 
 ### Assistant de démarrage

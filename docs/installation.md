@@ -17,6 +17,8 @@
 
 > ⚠️ **Don't keep your servers or saves inside Nexum's install folder** (for example `H:\Nexum`). Up to version 0.12.3, every Nexum update emptied that whole folder, including files you had added to it (Valheim worlds were lost this way). Later versions only remove their own files, but still pick a separate folder, for example `H:\ValheimSaves`. Nexum shows a warning under folder fields (server, Valheim saves, backups) that point inside its install folder.
 
+> **"Nexum cannot be closed" while updating from 0.12.4 or 0.12.5**, although Nexum is closed: this happens when Nexum is installed on another drive than `C:` (for example `H:\Nexum`). Click **Cancel**: your installed version stays intact. Install 0.12.6 or later instead, which fixes it. If you're stuck on an older installer, uninstall Nexum from Windows Settings (your servers and settings are kept), then install the new version.
+
 ## First use
 
 ### Setup wizard
