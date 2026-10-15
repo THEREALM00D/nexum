@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.6](https://github.com/THEREALM00D/nexum/compare/v0.12.5...v0.12.6) (2026-10-15)
+
+
+### Bug Fixes
+
+* let updates finish when Nexum is installed on another drive ([#111](https://github.com/THEREALM00D/nexum/issues/111)) ([6ab7a3c](https://github.com/THEREALM00D/nexum/commit/6ab7a3ccc3f7b1be9bedd8be716c8eaf16506454))
+
 ## [0.12.5](https://github.com/THEREALM00D/nexum/compare/v0.12.4...v0.12.5) (2026-10-15)
 
 
