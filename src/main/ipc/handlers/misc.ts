@@ -75,16 +75,31 @@ export function registerMiscHandlers(ctx: IpcContext): void {
 
   // System monitoring — filtré sur le process du jeu du serveur actif
   // (chaque jeu a son propre nom d'exécutable, cf. PROCESS_NAME_PREFIXES).
+  const activeGameType = () => ctx.getActiveServer()?.gameType ?? "palworld";
+  // La liste des processus (coûteuse sous Windows) n'est lue que si le
+  // serveur actif a un process : sinon RAM du jeu et uptime serveur valent 0.
+  const activeServerRunning = () => {
+    const status = ctx.serverManagers.getActive()?.getStatus() ?? "stopped";
+    return status !== "stopped" && status !== "crashed";
+  };
   ipcMain.handle("monitor:getStats", () =>
-    ctx.systemMonitor.getStats(ctx.getActiveServer()?.gameType ?? "palworld"),
+    ctx.systemMonitor.getStats(activeGameType(), activeServerRunning()),
   );
   ipcMain.handle("monitor:startPolling", (event) => {
+    const sender = event.sender;
     ctx.systemMonitor.startPolling(
       2000,
       (stats) => {
-        event.sender.send("monitor:stats", stats);
+        if (!sender.isDestroyed()) sender.send("monitor:stats", stats);
       },
-      () => ctx.getActiveServer()?.gameType ?? "palworld",
+      activeGameType,
+      activeServerRunning,
+      // Fenêtre cachée dans la zone de notification ou réduite : personne ne
+      // regarde les stats, on saute le tick.
+      () => {
+        const win = BrowserWindow.fromWebContents(sender);
+        return !!win && win.isVisible() && !win.isMinimized();
+      },
     );
   });
   ipcMain.handle("monitor:stopPolling", () => ctx.systemMonitor.stopPolling());

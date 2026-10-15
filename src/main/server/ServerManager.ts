@@ -25,6 +25,19 @@ export interface StopConfig {
 // avant de basculer sur un arrêt forcé.
 const GRACEFUL_SIGNAL_TIMEOUT_MS = 30_000;
 
+// Teste l'existence d'un PID sans lancer de processus : le signal 0 ne tue
+// rien. EPERM = le process existe mais appartient à un autre utilisateur ou
+// tourne en admin. Avant : si.processes(), soit un PowerShell (~1,5 s de CPU)
+// à chaque vérification, toutes les 5 s pour un serveur adopté.
+function pidExists(pid: number): boolean {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch (err) {
+    return (err as NodeJS.ErrnoException).code === "EPERM";
+  }
+}
+
 // Masque la valeur qui suit -password avant d'afficher les args dans les
 // logs (utile pour diagnostiquer ce qui est réellement envoyé au process).
 function redactArgs(args: string[]): string[] {
@@ -99,23 +112,15 @@ export class ServerManager {
 
   private startAdoptedPoll(): void {
     if (this.adoptedPollInterval) clearInterval(this.adoptedPollInterval);
-    this.adoptedPollInterval = setInterval(async () => {
-      if (!this.adoptedPid) return;
-      try {
-        const procs = await si.processes();
-        const alive = procs.list.some((p) => p.pid === this.adoptedPid);
-        if (!alive) {
-          this.onLog(
-            `[Manager] Processus adopté (PID ${this.adoptedPid}) disparu.`,
-          );
-          this.adoptedPid = null;
-          this.status = this.status === "stopping" ? "stopped" : "crashed";
-          this.stopAdoptedPoll();
-          this.endSession(this.status === "crashed");
-        }
-      } catch {
-        // ignore
-      }
+    this.adoptedPollInterval = setInterval(() => {
+      if (!this.adoptedPid || pidExists(this.adoptedPid)) return;
+      this.onLog(
+        `[Manager] Processus adopté (PID ${this.adoptedPid}) disparu.`,
+      );
+      this.adoptedPid = null;
+      this.status = this.status === "stopping" ? "stopped" : "crashed";
+      this.stopAdoptedPoll();
+      this.endSession(this.status === "crashed");
     }, 5000);
   }
 
@@ -132,12 +137,7 @@ export class ServerManager {
   ): Promise<boolean> {
     const start = Date.now();
     while (Date.now() - start < timeoutMs) {
-      try {
-        const procs = await si.processes();
-        if (!procs.list.some((p) => p.pid === pid)) return true;
-      } catch {
-        // ignore
-      }
+      if (!pidExists(pid)) return true;
       await new Promise((r) => setTimeout(r, 500));
     }
     return false;
@@ -273,22 +273,13 @@ export class ServerManager {
     }
   }
 
-  private async isPidAlive(pid: number): Promise<boolean> {
-    try {
-      const procs = await si.processes();
-      return procs.list.some((p) => p.pid === pid);
-    } catch {
-      return true;
-    }
-  }
-
   /**
    * Si le process tourne toujours après le délai d'attente accordé, force
    * l'arrêt via taskkill au lieu de rapporter un faux succès qui laisserait
    * le statut bloqué sur "stopping" indéfiniment.
    */
   private async ensureStopped(pid: number): Promise<boolean> {
-    if (!(await this.isPidAlive(pid))) return true;
+    if (!pidExists(pid)) return true;
     this.onLog(
       "[Manager] Le processus ne répond pas, arrêt forcé via taskkill...",
     );
@@ -296,10 +287,10 @@ export class ServerManager {
     const timeoutMs = 6000;
     const start = Date.now();
     while (Date.now() - start < timeoutMs) {
-      if (!(await this.isPidAlive(pid))) break;
+      if (!pidExists(pid)) break;
       await new Promise((r) => setTimeout(r, 500));
     }
-    const alive = await this.isPidAlive(pid);
+    const alive = pidExists(pid);
     if (!alive) {
       this.adoptedPid = null;
       this.process = null;
