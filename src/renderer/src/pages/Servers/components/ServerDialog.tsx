@@ -22,6 +22,7 @@ import { useTranslation } from "react-i18next";
 import type { GameType, Server } from "@shared/types";
 import { useExeDetection } from "../hooks/useExeDetection";
 import ExeStatusHint from "./ExeStatusHint";
+import InstallDirWarning from "../../../components/common/InstallDirWarning";
 import ColorPicker, { DEFAULT_COLORS } from "./ColorPicker";
 
 export interface ServerFormValues {
@@ -128,6 +129,7 @@ export default function ServerDialog({
           </Stack>
 
           <ExeStatusHint status={exeStatus} gameType={values.gameType} />
+          <InstallDirWarning path={values.path} />
 
           <FormControl size="small" fullWidth>
             <InputLabel>{t("servers.dialog.gameType")}</InputLabel>

@@ -5,6 +5,7 @@ import {
   getLaunchAtLogin,
   setLaunchAtLogin,
 } from "../../startup/launchAtLogin";
+import { installDirConflict } from "../../utils/installDir";
 
 export function registerMiscHandlers(ctx: IpcContext): void {
   // Window controls
@@ -65,6 +66,10 @@ export function registerMiscHandlers(ctx: IpcContext): void {
   });
   ipcMain.handle("app:setLaunchAtLogin", (_, enabled: boolean) =>
     setLaunchAtLogin(enabled),
+  );
+  // Dossier choisi par l'utilisateur rangé dans le dossier d'installation ?
+  ipcMain.handle("app:installDirConflict", (_, path: string) =>
+    installDirConflict(path),
   );
 
   // Persistent config (legacy compat : retourne/configure le serveur actif)

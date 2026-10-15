@@ -14,6 +14,7 @@ import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import LaunchIcon from "@mui/icons-material/Launch";
 import { useTranslation } from "react-i18next";
 import type { BackupConfig } from "@shared/types";
+import InstallDirWarning from "../common/InstallDirWarning";
 
 interface Props {
   config: BackupConfig;
@@ -58,6 +59,7 @@ export default function BackupConfigPanel({
             </span>
           </Tooltip>
         </Stack>
+        <InstallDirWarning path={config.backupDir} />
 
         <TextField
           label={t("backup.config.keep")}

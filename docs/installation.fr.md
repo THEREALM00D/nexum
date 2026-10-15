@@ -15,6 +15,8 @@
 2. Lancez l'installateur. Si Windows SmartScreen affiche « Windows a protégé votre ordinateur », cliquez sur **Informations complémentaires → Exécuter quand même** (l'installeur n'est pas encore signé ; vous pouvez vérifier son empreinte SHA256, indiquée dans les notes de release)
 3. Un raccourci est créé sur le bureau
 
+> ⚠️ **Ne rangez pas vos serveurs ni vos sauvegardes dans le dossier d'installation de Nexum** (par exemple `H:\Nexum`). Jusqu'à la version 0.12.3, chaque mise à jour de Nexum vidait entièrement ce dossier, y compris les fichiers que vous y aviez ajoutés (des mondes Valheim ont été perdus ainsi). Les versions suivantes ne suppriment plus que leurs propres fichiers, mais choisissez quand même un dossier à part, par exemple `H:\ValheimSaves`. Nexum affiche un avertissement sous les champs de dossier (serveur, sauvegardes Valheim, backups) qui pointent dans son dossier d'installation.
+
 ## Première utilisation
 
 ### Assistant de démarrage
@@ -126,4 +128,4 @@ Pour mettre à jour (le serveur doit être arrêté) :
 
 Utilisez le panneau de configuration Windows ou exécutez `Uninstall Nexum.exe` dans le dossier d'installation.
 
-> Les fichiers du serveur Palworld et les sauvegardes ne sont **pas** supprimés automatiquement.
+> Les fichiers des serveurs et les sauvegardes ne sont **pas** supprimés automatiquement. Le désinstalleur ne retire que les fichiers de Nexum : ce que vous avez ajouté dans son dossier d'installation reste en place (depuis la version qui suit la 0.12.3).
