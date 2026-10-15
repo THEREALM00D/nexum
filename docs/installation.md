@@ -108,7 +108,7 @@ A server that is one version behind refuses players who updated their game. So e
 
 - The start doesn't wait for this check: if Steam doesn't answer, the server starts normally and nothing is reported.
 - If an update exists, a notification says so, with an **Update** button that opens the **Install** page of that server. The result is also written in its log (handy after a start with Windows, when nobody is watching the screen).
-- Server installed through the **Steam library** (in `steamapps\common`): Steam updates it, and the notification reminds you of that. The check needs SteamCMD to be installed (**Install** page).
+- Server installed through the **Steam library** (in `steamapps\common`): Steam updates it, and the notification reminds you of that. If you update it from Nexum's **Install** page instead, Nexum detects that too (up to 0.12.4, it kept announcing the update). The check needs SteamCMD to be installed (**Install** page).
 
 To update (the server must be stopped):
 

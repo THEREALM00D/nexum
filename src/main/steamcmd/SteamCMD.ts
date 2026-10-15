@@ -1,5 +1,5 @@
 import { basename, dirname, join } from "path";
-import { existsSync, mkdirSync, readFileSync } from "fs";
+import { existsSync, mkdirSync, readFileSync, statSync } from "fs";
 import { spawn } from "child_process";
 import { app } from "electron/main";
 import fs from "fs";
@@ -29,6 +29,29 @@ export function isSteamLibraryInstall(installPath: string): boolean {
     basename(dirname(parent)).toLowerCase() === "steamapps"
   );
 }
+interface AppManifest {
+  buildId: string;
+  /** Date de dernière mise à jour (ms) : champ LastUpdated, sinon date du fichier. */
+  updatedAt: number;
+}
+
+function readManifest(acf: string): AppManifest | null {
+  try {
+    const text = readFileSync(acf, "utf-8");
+    const build = text.match(/"buildid"\s+"(\d+)"/);
+    if (!build) return null;
+    const lastUpdated = text.match(/"LastUpdated"\s+"(\d+)"/);
+    return {
+      buildId: build[1],
+      updatedAt: lastUpdated
+        ? Number(lastUpdated[1]) * 1000
+        : statSync(acf).mtimeMs,
+    };
+  } catch {
+    return null; // absent ou illisible
+  }
+}
+
 const STEAMCMD_URL =
   "https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip";
 
@@ -149,22 +172,28 @@ export class SteamCMD {
     installPath: string,
     appId: string,
   ): string | null {
-    // SteamCMD peut écrire le manifest dans installPath/steamapps/ ou dans son propre répertoire
     const manifest = `appmanifest_${appId}.acf`;
-    const candidates = [
-      join(installPath, "steamapps", manifest),
-      join(this.steamcmdDir, "steamapps", manifest),
-    ];
-    // Bibliothèque Steam : <bibliothèque>/steamapps/appmanifest_X.acf
+    // Manifests propres à cette install : celui que SteamCMD écrit dans
+    // installPath/steamapps/ et, pour une install de la bibliothèque Steam,
+    // celui du client Steam (<bibliothèque>/steamapps/). Les deux peuvent
+    // coexister : on garde le plus récent. Avant, celui de la bibliothèque
+    // passait toujours en premier ; après une mise à jour faite depuis Nexum
+    // (SteamCMD), il restait sur l'ancien build et Nexum annonçait une mise à
+    // jour en boucle (signalé sur Discord).
+    const own = [join(installPath, "steamapps", manifest)];
     if (isSteamLibraryInstall(installPath)) {
-      candidates.unshift(join(dirname(dirname(installPath)), manifest));
+      own.push(join(dirname(dirname(installPath)), manifest));
     }
-    for (const acf of candidates) {
-      if (!existsSync(acf)) continue;
-      const match = readFileSync(acf, "utf-8").match(/"buildid"\s+"(\d+)"/);
-      if (match) return match[1];
-    }
-    return null;
+    const newest = own
+      .map(readManifest)
+      .filter((m): m is AppManifest => m !== null)
+      .sort((a, b) => b.updatedAt - a.updatedAt)[0];
+    if (newest) return newest.buildId;
+    // Dernier recours : manifest resté dans le dossier de SteamCMD.
+    return (
+      readManifest(join(this.steamcmdDir, "steamapps", manifest))?.buildId ??
+      null
+    );
   }
 
   checkForUpdate(
