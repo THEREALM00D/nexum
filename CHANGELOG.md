@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.5](https://github.com/THEREALM00D/nexum/compare/v0.12.4...v0.12.5) (2026-10-15)
+
+
+### Bug Fixes
+
+* stop announcing a server update after updating from Nexum ([#109](https://github.com/THEREALM00D/nexum/issues/109)) ([42bfcc6](https://github.com/THEREALM00D/nexum/commit/42bfcc68ad183c34a22b7f8001fefe3b41c92826))
+
 ## [0.12.4](https://github.com/THEREALM00D/nexum/compare/v0.12.3...v0.12.4) (2026-10-15)
 
 
