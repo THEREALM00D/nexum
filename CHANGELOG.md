@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.3](https://github.com/THEREALM00D/nexum/compare/v0.12.2...v0.12.3) (2026-10-15)
+
+
+### Bug Fixes
+
+* stop Nexum from pinning the CPU with background PowerShell ([#105](https://github.com/THEREALM00D/nexum/issues/105)) ([e122d0c](https://github.com/THEREALM00D/nexum/commit/e122d0c969817da6f00c9ca88242bcde10ef6140))
+
 ## [0.12.2](https://github.com/THEREALM00D/nexum/compare/v0.12.1...v0.12.2) (2026-10-14)
 
 
