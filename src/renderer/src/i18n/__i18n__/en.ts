@@ -14,6 +14,10 @@ export default {
     or: "OR",
     clearSearch: "Clear search",
   },
+  installDir: {
+    warning:
+      "This folder is inside Nexum's install folder ({{dir}}). Up to version 0.12.3, Nexum emptied that folder on every update: choose a folder outside it to keep your files safe.",
+  },
   gameUpdate: {
     available:
       "{{name}}: a server update is available (build {{build}}). Players who updated their game won't be able to join.",

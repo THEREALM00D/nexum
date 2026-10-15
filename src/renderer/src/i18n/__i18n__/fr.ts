@@ -14,6 +14,10 @@ export default {
     or: "OU",
     clearSearch: "Effacer la recherche",
   },
+  installDir: {
+    warning:
+      "Ce dossier est dans le dossier d'installation de Nexum ({{dir}}). Jusqu'à la version 0.12.3, Nexum vidait ce dossier à chaque mise à jour : choisissez un dossier en dehors pour protéger vos fichiers.",
+  },
   gameUpdate: {
     available:
       "{{name}} : une mise à jour du serveur est disponible (build {{build}}). Les joueurs qui ont mis le jeu à jour ne pourront pas se connecter.",

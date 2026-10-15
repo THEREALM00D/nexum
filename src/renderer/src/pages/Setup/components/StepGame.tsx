@@ -12,6 +12,7 @@ import type { GameType } from "@shared/types";
 import { GAMES } from "../../../games/registry";
 import { useExeDetection } from "../../Servers/hooks/useExeDetection";
 import ExeStatusHint from "../../Servers/components/ExeStatusHint";
+import InstallDirWarning from "../../../components/common/InstallDirWarning";
 import { DEFAULT_INSTALL_PATHS } from "../../Install/hooks/useInstall";
 
 export interface SetupChoice {
@@ -143,6 +144,7 @@ export default function StepGame({
       {value.mode === "existing" && (
         <ExeStatusHint status={exeStatus} gameType={value.gameType} />
       )}
+      <InstallDirWarning path={value.path} />
     </Stack>
   );
 }

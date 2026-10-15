@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import type { ValheimLaunchConfig } from "@shared/types";
 import { useExistingWorlds } from "../hooks/useExistingWorlds";
 import Section from "./Section";
+import InstallDirWarning from "../../../../../components/common/InstallDirWarning";
 
 export default function WorldSection({
   config,
@@ -53,6 +54,7 @@ export default function WorldSection({
         fullWidth
         placeholder="%LOCALAPPDATA%\..\LocalLow\IronGate\Valheim"
       />
+      <InstallDirWarning path={config.savedir} />
       <TextField
         label={t("valheimConfig.fields.worldSeed.label")}
         helperText={t("valheimConfig.fields.worldSeed.description")}

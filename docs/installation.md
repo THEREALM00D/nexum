@@ -15,6 +15,8 @@
 2. Run the installer. If Windows SmartScreen shows "Windows protected your PC", click **More info → Run anyway** (the installer is not code-signed yet; you can check its SHA256, listed in the release notes)
 3. A shortcut is created on the desktop
 
+> ⚠️ **Don't keep your servers or saves inside Nexum's install folder** (for example `H:\Nexum`). Up to version 0.12.3, every Nexum update emptied that whole folder, including files you had added to it (Valheim worlds were lost this way). Later versions only remove their own files, but still pick a separate folder, for example `H:\ValheimSaves`. Nexum shows a warning under folder fields (server, Valheim saves, backups) that point inside its install folder.
+
 ## First use
 
 ### Setup wizard
@@ -126,4 +128,4 @@ To update (the server must be stopped):
 
 Use the Windows Control Panel or run `Uninstall Nexum.exe` from the installation folder.
 
-> Palworld server files and backups are **not** removed automatically.
+> Server files and backups are **not** removed automatically. The uninstaller only removes Nexum's own files: anything you added to its install folder stays (since the version after 0.12.3).
