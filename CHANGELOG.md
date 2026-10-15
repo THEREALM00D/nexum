@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.4](https://github.com/THEREALM00D/nexum/compare/v0.12.3...v0.12.4) (2026-10-15)
+
+
+### Bug Fixes
+
+* keep user files in the install folder when updating ([#107](https://github.com/THEREALM00D/nexum/issues/107)) ([1955238](https://github.com/THEREALM00D/nexum/commit/1955238862d84c883187b74d883567272650e08b))
+
 ## [0.12.3](https://github.com/THEREALM00D/nexum/compare/v0.12.2...v0.12.3) (2026-10-15)
 
 
