@@ -4,6 +4,13 @@ import { useTranslation } from "react-i18next";
 import type { ValheimMod, ModUpdate, ModRegistry } from "@shared/types";
 import SearchField from "../../../../../components/common/SearchField";
 import InstalledModRow from "./InstalledModRow";
+import InstalledSortSelect from "./InstalledSortSelect";
+import {
+  loadInstalledSort,
+  saveInstalledSort,
+  sortInstalledMods,
+  type InstalledSort,
+} from "../utils/sortInstalledMods";
 
 // Comparaison sans casse ni espaces/tirets/soulignés, comme la recherche de
 // l'onglet Parcourir : « azu auto » trouve « Azumatt-AzuAutoStore ».
@@ -39,14 +46,32 @@ export default function InstalledModsList({
 }: Props) {
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
+  const [sort, setSort] = useState<InstalledSort>(loadInstalledSort);
 
-  const updateMap = new Map(updates.map((u) => [u.installedCode, u]));
-  const deprecatedSet = new Set(deprecatedCodes);
+  const updateMap = useMemo(
+    () => new Map(updates.map((u) => [u.installedCode, u])),
+    [updates],
+  );
+  const deprecatedSet = useMemo(
+    () => new Set(deprecatedCodes),
+    [deprecatedCodes],
+  );
 
   const visibleMods = useMemo(() => {
     const query = search.trim();
-    return query ? mods.filter((m) => matches(m, query)) : mods;
-  }, [mods, search]);
+    const filtered = query ? mods.filter((m) => matches(m, query)) : mods;
+    return sortInstalledMods(filtered, sort, {
+      hasUpdate: (m) =>
+        !!m.thunderstoreCode && updateMap.has(m.thunderstoreCode),
+      isDeprecated: (m) =>
+        !!m.thunderstoreCode && deprecatedSet.has(m.thunderstoreCode),
+    });
+  }, [mods, search, sort, updateMap, deprecatedSet]);
+
+  const handleSortChange = (next: InstalledSort) => {
+    setSort(next);
+    saveInstalledSort(next);
+  };
 
   if (mods.length === 0) {
     return (
@@ -58,13 +83,22 @@ export default function InstalledModsList({
 
   return (
     <Paper sx={{ p: 2 }}>
-      <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1 }}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: 2,
+          mb: 1,
+        }}
+      >
         <SearchField
           value={search}
           onChange={setSearch}
           placeholder={t("valheimMods.installed.search")}
-          sx={{ flex: 1 }}
+          sx={{ flex: 1, minWidth: 200 }}
         />
+        <InstalledSortSelect value={sort} onChange={handleSortChange} />
         <Typography
           variant="caption"
           sx={{ color: "text.secondary", whiteSpace: "nowrap" }}

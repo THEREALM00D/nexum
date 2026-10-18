@@ -30,6 +30,8 @@ La ligne sous le nom indique la date d'installation et la date de publication de
 
 La **barre de recherche** en haut filtre la liste par nom de mod ou par auteur, avec le nombre de mods affichés à côté. Les espaces, tirets et majuscules sont ignorés : `azu auto` trouve `Azumatt-AzuAutoStore`.
 
+Le menu **Trier par** à côté change l'ordre de la liste : nom (par défaut), mises à jour disponibles d'abord (puis les mods dépréciés), installés récemment, version publiée récemment ou auteur. Votre choix est mémorisé.
+
 ### Mises à jour
 
 **Vérifier les mises à jour** compare chaque mod à la dernière version publiée. Un badge « vX.Y dispo » apparaît quand une mise à jour existe, et **Tout mettre à jour** les installe d'un coup.
