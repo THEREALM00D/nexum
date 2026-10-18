@@ -11,13 +11,14 @@ import {
   listWorlds,
   serverSavesDir,
 } from "../worlds";
+import { AppError } from "../../../utils/appError";
 
 function requireStopped(ctx: IpcContext): string {
   const serverPath = ctx.getActiveServerPath();
-  if (!serverPath) throw new Error("Aucun chemin serveur configuré");
+  if (!serverPath) throw new AppError("NO_SERVER_PATH");
   const status = ctx.serverManagers.getActive()?.getStatus() ?? "stopped";
   if (status !== "stopped" && status !== "crashed") {
-    throw new Error("Arrêtez le serveur avant de changer de monde.");
+    throw new AppError("STOP_BEFORE_WORLD_CHANGE");
   }
   return serverPath;
 }
@@ -44,7 +45,7 @@ export function registerDragonwildsWorldHandlers(ctx: IpcContext): void {
     const known = listWorlds(serverSavesDir(serverPath)).some(
       (w) => w.worldName === worldName,
     );
-    if (!known) throw new Error(`Monde introuvable : ${worldName}`);
+    if (!known) throw new AppError("WORLD_NOT_FOUND", { name: worldName });
     writeDedicatedServerIni(serverPath, { DefaultWorldName: worldName });
   });
 

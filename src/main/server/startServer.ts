@@ -10,6 +10,7 @@ import type { Server } from "../../shared/types";
 import { ValheimModsManager } from "../games/valheim/ValheimModsManager";
 import { checkModUpdatesOnStart } from "../games/valheim/modUpdateCheck";
 import { checkGameUpdateOnStart } from "./gameUpdateCheck";
+import { appError, appErrorLogText } from "../utils/appError";
 
 // Liste les mods BepInEx actifs dans la console au démarrage — Valheim ne
 // donne aucune indication en jeu de ce qui est chargé côté serveur.
@@ -85,18 +86,10 @@ export async function startServer(
   if (gameType === "valheim") {
     const { password, name } = ctx.getServerConfig(id).valheimConfig;
     if (password && name.includes(password)) {
-      return {
-        success: false,
-        error:
-          "Le mot de passe Valheim ne doit pas apparaître dans le nom du serveur.",
-      };
+      return { success: false, error: appError("VALHEIM_PASSWORD_IN_NAME") };
     }
     if (password && password.length < 5) {
-      return {
-        success: false,
-        error:
-          "Le mot de passe Valheim doit faire au moins 5 caractères (ou être vide).",
-      };
+      return { success: false, error: appError("VALHEIM_PASSWORD_TOO_SHORT") };
     }
   }
 
@@ -182,7 +175,9 @@ export async function autoStartServers(
         .getOrCreate(server.id)
         .log("[Manager] Démarré automatiquement à l'ouverture de Nexum.");
     } else {
-      log(`[Manager] Démarrage automatique impossible : ${res.error}`);
+      log(
+        `[Manager] Démarrage automatique impossible : ${appErrorLogText(res.error ?? "")}`,
+      );
     }
   }
 }

@@ -12,6 +12,7 @@ import ConfigField from "./ConfigField";
 import ConfigPageHeader from "./ConfigPageHeader";
 import ConfigSearchBar from "./ConfigSearchBar";
 import type { ConfigSettings, FieldGroup } from "./types";
+import { appErrorMessage } from "../../utils/appErrorMessage";
 
 const SAVE_FLASH_MS = 2000;
 
@@ -81,9 +82,13 @@ export default function ConfigPage({
           markClean();
           setSaved(true);
           setTimeout(() => setSaved(false), SAVE_FLASH_MS);
-        } else notify(res.error ?? t("config.unknownError"), "error");
+        } else
+          notify(
+            appErrorMessage(t, res.error, t("config.unknownError")),
+            "error",
+          );
       } catch (e) {
-        notify((e as Error).message, "error");
+        notify(appErrorMessage(t, (e as Error).message), "error");
       }
     },
   });

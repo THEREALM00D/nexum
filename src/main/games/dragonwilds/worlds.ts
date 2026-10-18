@@ -11,6 +11,7 @@ import {
 import type { DragonwildsWorld } from "../../../shared/types";
 import { dragonwildsServerConfig } from "./serverConfig";
 import { readWorldName } from "./saveHeader";
+import { AppError } from "../../utils/appError";
 
 /** Mondes solo du client du jeu sur ce PC. */
 export const SOLO_SAVES_DIR = join(
@@ -71,9 +72,7 @@ export function importWorldToServer(
     ? readWorldName(sourcePath)
     : null;
   if (!worldName) {
-    throw new Error(
-      "Ce fichier n'est pas une sauvegarde de monde Dragonwilds.",
-    );
+    throw new AppError("NOT_A_WORLD_SAVE");
   }
   const dir = serverSavesDir(serverPath);
   const dest = join(dir, basename(sourcePath));
