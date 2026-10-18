@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.14.0](https://github.com/THEREALM00D/nexum/compare/v0.13.0...v0.14.0) (2026-10-18)
+
+
+### Features
+
+* sort installed mods ([#118](https://github.com/THEREALM00D/nexum/issues/118)) ([a778ce6](https://github.com/THEREALM00D/nexum/commit/a778ce625739001a914e5bcee60576227022b001))
+
+
+### Bug Fixes
+
+* translate main-process error messages ([#116](https://github.com/THEREALM00D/nexum/issues/116)) ([94b83f9](https://github.com/THEREALM00D/nexum/commit/94b83f9253ec137d39275a151551bb26c8242257))
+
 ## [0.13.0](https://github.com/THEREALM00D/nexum/compare/v0.12.6...v0.13.0) (2026-10-18)
 
 
