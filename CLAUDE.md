@@ -186,6 +186,7 @@ App.tsx, Sidebar, i18n/index.ts, l'assistant de démarrage, le dialogue d'ajout 
 - **Interpolation** : `t("key", { name: "Bob" })` + `"Hello {{name}}"` dans la traduction.
 - **Values vs labels** : les `value` des `<Select>` (ex: `Casual`, `ItemAndEquipment` de `Difficulty`/`DeathPenalty`) restent les valeurs INI brutes — seuls les labels UI sont traduits.
 - Ce qui n'est **pas** traduit : logs du process serveur, tokens de coloration de logs (`[Manager]`, `[ERR]`), brand « Nexum » dans la Titlebar.
+- **Erreurs renvoyées par le main** (le main n'a pas i18n) : jamais de phrase en dur, un code. `appError(code, params)` / `throw new AppError(code, params)` (`main/utils/appError.ts`, codes dans `AppErrorCode`, `shared/types.ts`) → chaîne `@app:{…}` ; le renderer l'affiche avec `appErrorMessage(t, raw, fallback)` (`utils/appErrorMessage.ts`, textes sous `appErrors` dans `i18n/__i18n__`). Fonctionne aussi pour une erreur levée dans `ipcMain.handle` (préfixe cherché n'importe où). Dans un log `[Manager]`, `appErrorLogText(raw)`. Branché sur les boutons Démarrer/Arrêter/Redémarrer, `ConfigPage` et les mondes Dragonwilds ; d'autres handlers renvoient encore des phrases françaises (backup, SteamCMD…), à migrer au fil de l'eau (BACKLOG).
 
 ### Adoption d'un processus existant
 

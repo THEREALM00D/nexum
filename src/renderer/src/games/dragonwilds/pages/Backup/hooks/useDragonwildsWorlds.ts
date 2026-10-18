@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import type { DragonwildsWorld } from "@shared/types";
 import { useServer } from "../../../../../context/ServerContext";
 import { useNotification } from "../../../../../context/NotificationContext";
+import { appErrorMessage } from "../../../../../utils/appErrorMessage";
 
 interface WorldsState {
   current: string;
@@ -41,7 +42,7 @@ export function useDragonwildsWorlds(onImported: () => Promise<void>) {
       notify(t("dragonwildsWorlds.used", { name }), "success");
       refresh();
     } catch (e) {
-      notify((e as Error).message);
+      notify(appErrorMessage(t, (e as Error).message));
     }
   };
 
@@ -54,7 +55,7 @@ export function useDragonwildsWorlds(onImported: () => Promise<void>) {
       await onImported();
       refresh();
     } catch (e) {
-      notify((e as Error).message);
+      notify(appErrorMessage(t, (e as Error).message));
     } finally {
       setBusy(false);
     }

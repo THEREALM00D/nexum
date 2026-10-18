@@ -14,6 +14,31 @@ export default {
     or: "OR",
     clearSearch: "Clear search",
   },
+  serverControls: {
+    startFailed: "Couldn't start the server",
+    stopFailed: "Couldn't stop the server",
+    restartFailed: "Couldn't restart the server",
+  },
+  appErrors: {
+    NO_SERVER_PATH: "No server folder configured.",
+    PORT_CONFLICT:
+      "Port conflict with a server that is already running: {{list}}",
+    VALHEIM_PASSWORD_IN_NAME:
+      "The Valheim password must not appear in the server name.",
+    VALHEIM_PASSWORD_TOO_SHORT:
+      "The Valheim password must be at least 5 characters long (or empty).",
+    DW_OWNER_ID_MISSING:
+      "Enter your Player ID (OwnerId) on the Configuration page: the Dragonwilds server won't start without it. It's shown at the bottom of the game's Settings menu.",
+    DW_OWNER_ID_INVALID:
+      "Invalid Player ID: copy it as is from the game's Settings menu (letters and digits only).",
+    CONFIG_LOCKED:
+      "Stop the server before changing its configuration: it rewrites this file while running.",
+    PORT_INVALID: "Invalid port (1 to 65535).",
+    PORTS_SAME: "The game port and the beacon port must be different.",
+    STOP_BEFORE_WORLD_CHANGE: "Stop the server before switching worlds.",
+    WORLD_NOT_FOUND: "World not found: {{name}}",
+    NOT_A_WORLD_SAVE: "This file is not a Dragonwilds world save.",
+  },
   installDir: {
     warning:
       "This folder is inside Nexum's install folder ({{dir}}). Up to version 0.12.3, Nexum emptied that folder on every update: choose a folder outside it to keep your files safe.",

@@ -9,6 +9,7 @@ import {
   readDedicatedServerIni,
   writeDedicatedServerIni,
 } from "../dedicatedServerIni";
+import { appError } from "../../../utils/appError";
 
 const validPort = (p: number) => Number.isInteger(p) && p >= 1 && p <= 65535;
 
@@ -38,36 +39,25 @@ export function registerDragonwildsHandlers(ctx: IpcContext): void {
     (_, settings: DragonwildsSettings) => {
       const serverPath = ctx.getActiveServerPath();
       if (!serverPath) {
-        return { success: false, error: "Aucun chemin serveur configuré" };
+        return { success: false, error: appError("NO_SERVER_PATH") };
       }
       // Le serveur réécrit DedicatedServer.ini pendant qu'il tourne : la
       // modification serait perdue (l'UI bloque aussi, voir lockWhileRunning).
       const status = ctx.serverManagers.getActive()?.getStatus() ?? "stopped";
       if (status !== "stopped" && status !== "crashed") {
-        return {
-          success: false,
-          error:
-            "Arrêtez le serveur avant de modifier sa configuration : il réécrit DedicatedServer.ini pendant qu'il tourne.",
-        };
+        return { success: false, error: appError("CONFIG_LOCKED") };
       }
       const port = Number(settings.Port);
       const beaconPort = Number(settings.BeaconPort);
       if (!validPort(port) || !validPort(beaconPort)) {
-        return { success: false, error: "Port invalide (1 à 65535)." };
+        return { success: false, error: appError("PORT_INVALID") };
       }
       if (port === beaconPort) {
-        return {
-          success: false,
-          error: "Le port de jeu et le port beacon doivent être différents.",
-        };
+        return { success: false, error: appError("PORTS_SAME") };
       }
       const ownerId = String(settings.OwnerId ?? "").trim();
       if (!/^[A-Za-z0-9]*$/.test(ownerId)) {
-        return {
-          success: false,
-          error:
-            "Player ID invalide : copiez-le tel quel depuis le menu Paramètres du jeu (lettres et chiffres).",
-        };
+        return { success: false, error: appError("DW_OWNER_ID_INVALID") };
       }
       try {
         writeDedicatedServerIni(

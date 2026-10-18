@@ -1,5 +1,6 @@
 import type { Server } from "../../shared/types";
 import type { GamePort } from "../games/ports";
+import { appError } from "../utils/appError";
 import type { ServerRegistry } from "./ServerRegistry";
 import type { ServerManagerRegistry } from "./ServerManagerRegistry";
 
@@ -61,10 +62,13 @@ export function detectPortConflicts(
   return conflicts;
 }
 
+/** Erreur traduite côté renderer (`PORT_CONFLICT`), liste technique non traduite. */
 export function formatConflictsError(conflicts: PortConflict[]): string {
-  const lines = conflicts.map(
-    (c) =>
-      `${c.label.toUpperCase()} ${c.port}/${c.protocol} (déjà utilisé par « ${c.serverName} »)`,
-  );
-  return `Conflit de ports : ${lines.join(", ")}`;
+  const list = conflicts
+    .map(
+      (c) =>
+        `${c.label.toUpperCase()} ${c.port}/${c.protocol} « ${c.serverName} »`,
+    )
+    .join(", ");
+  return appError("PORT_CONFLICT", { list });
 }

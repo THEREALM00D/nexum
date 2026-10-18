@@ -287,6 +287,24 @@ export interface AstroneerLaunchConfig {
 // --- Config INI Astroneer (Engine.ini + AstroServerSettings.ini fusionnés) ---
 export type AstroneerSettings = Record<string, string | number | boolean>;
 
+// --- Erreurs du main traduites côté renderer ---
+// Le main renvoie `@app:{"code":…,"params":…}` (main/utils/appError.ts), le
+// renderer l'affiche dans la langue de l'UI (renderer/src/utils/appErrorMessage.ts,
+// textes dans i18n/__i18n__ → `appErrors`).
+export type AppErrorCode =
+  | "NO_SERVER_PATH"
+  | "PORT_CONFLICT"
+  | "VALHEIM_PASSWORD_IN_NAME"
+  | "VALHEIM_PASSWORD_TOO_SHORT"
+  | "DW_OWNER_ID_MISSING"
+  | "DW_OWNER_ID_INVALID"
+  | "CONFIG_LOCKED"
+  | "PORT_INVALID"
+  | "PORTS_SAME"
+  | "STOP_BEFORE_WORLD_CHANGE"
+  | "WORLD_NOT_FOUND"
+  | "NOT_A_WORLD_SAVE";
+
 // --- RuneScape: Dragonwilds ---
 // Ports passés en arguments (-Port / -BeaconPort), le reste vit dans
 // DedicatedServer.ini (voir DragonwildsSettings).
