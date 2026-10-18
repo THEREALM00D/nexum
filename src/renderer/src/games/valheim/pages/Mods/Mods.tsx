@@ -118,7 +118,7 @@ export default function ValheimMods() {
   };
 
   return (
-    <Stack spacing={3}>
+    <Stack spacing={3} sx={{ height: "100%" }}>
       <Box>
         <Typography variant="h6">{t("valheimMods.title")}</Typography>
         <Typography variant="body2" sx={{ color: "text.secondary", mt: 0.5 }}>
@@ -208,7 +208,15 @@ export default function ValheimMods() {
         </Box>
       )}
 
-      <Box>
+      {/* Remplit le reste de la page : chaque liste défile seule, ses
+          filtres et ces onglets restent visibles (ScrollPanel). */}
+      <Box
+        sx={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         <Tabs
           value={mainTab}
           onChange={(_, v) => setMainTab(v as MainTab)}

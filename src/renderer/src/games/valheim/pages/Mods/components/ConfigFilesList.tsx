@@ -1,17 +1,11 @@
 import { useMemo, useState } from "react";
-import {
-  Box,
-  IconButton,
-  Paper,
-  Stack,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Box, IconButton, Stack, Tooltip, Typography } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { useTranslation } from "react-i18next";
 import type { ValheimModConfigFile } from "@shared/types";
 import { formatDate, formatSize } from "../../../../../utils/format";
 import SearchField from "../../../../../components/common/SearchField";
+import ScrollPanel from "../../../../../components/common/ScrollPanel";
 import { FONT_MONO } from "../../../../../theme";
 
 interface Props {
@@ -40,13 +34,17 @@ export default function ConfigFilesList({ files, locale, onOpen }: Props) {
   }
 
   return (
-    <Paper sx={{ p: 2 }}>
-      <SearchField
-        value={search}
-        onChange={setSearch}
-        placeholder={t("valheimMods.configs.searchFiles")}
-        sx={{ mb: 1.5, width: "100%" }}
-      />
+    <ScrollPanel
+      minHeight={280}
+      header={
+        <SearchField
+          value={search}
+          onChange={setSearch}
+          placeholder={t("valheimMods.configs.searchFiles")}
+          sx={{ width: "100%" }}
+        />
+      }
+    >
       {visibleFiles.length === 0 && (
         <Typography variant="body2" sx={{ color: "text.secondary", py: 1 }}>
           {t("valheimMods.configs.noMatch")}
@@ -96,6 +94,6 @@ export default function ConfigFilesList({ files, locale, onOpen }: Props) {
           </Box>
         ))}
       </Stack>
-    </Paper>
+    </ScrollPanel>
   );
 }

@@ -1,8 +1,9 @@
 import { useMemo, useState } from "react";
-import { Box, Divider, Paper, Stack, Typography } from "@mui/material";
+import { Box, Divider, Stack, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import type { ValheimMod, ModUpdate, ModRegistry } from "@shared/types";
 import SearchField from "../../../../../components/common/SearchField";
+import ScrollPanel from "../../../../../components/common/ScrollPanel";
 import InstalledModRow from "./InstalledModRow";
 import InstalledSortSelect from "./InstalledSortSelect";
 import {
@@ -82,35 +83,39 @@ export default function InstalledModsList({
   }
 
   return (
-    <Paper sx={{ p: 2 }}>
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: 2,
-          mb: 1,
-        }}
-      >
-        <SearchField
-          value={search}
-          onChange={setSearch}
-          placeholder={t("valheimMods.installed.search")}
-          sx={{ flex: 1, minWidth: 200 }}
-        />
-        <InstalledSortSelect value={sort} onChange={handleSortChange} />
-        <Typography
-          variant="caption"
-          sx={{ color: "text.secondary", whiteSpace: "nowrap" }}
+    <ScrollPanel
+      minHeight={280}
+      resetKey={sort}
+      header={
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: 2,
+          }}
         >
-          {search.trim()
-            ? t("valheimMods.installed.countFiltered", {
-                shown: visibleMods.length,
-                total: mods.length,
-              })
-            : t("valheimMods.installed.count", { count: mods.length })}
-        </Typography>
-      </Box>
+          <SearchField
+            value={search}
+            onChange={setSearch}
+            placeholder={t("valheimMods.installed.search")}
+            sx={{ flex: 1, minWidth: 200 }}
+          />
+          <InstalledSortSelect value={sort} onChange={handleSortChange} />
+          <Typography
+            variant="caption"
+            sx={{ color: "text.secondary", whiteSpace: "nowrap" }}
+          >
+            {search.trim()
+              ? t("valheimMods.installed.countFiltered", {
+                  shown: visibleMods.length,
+                  total: mods.length,
+                })
+              : t("valheimMods.installed.count", { count: mods.length })}
+          </Typography>
+        </Box>
+      }
+    >
       {visibleMods.length === 0 && (
         <Typography variant="body2" sx={{ color: "text.secondary", py: 1 }}>
           {t("valheimMods.installed.noMatch")}
@@ -133,6 +138,6 @@ export default function InstalledModsList({
           );
         })}
       </Stack>
-    </Paper>
+    </ScrollPanel>
   );
 }
