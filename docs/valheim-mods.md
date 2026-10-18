@@ -30,6 +30,8 @@ The line under the name shows when the mod was installed and when the installed 
 
 The **search bar** at the top filters the list by mod name or author, with the number of mods shown next to it. Spaces, dashes and case are ignored: `azu auto` finds `Azumatt-AzuAutoStore`.
 
+The **Sort by** menu next to it changes the order of the list: name (default), updates available first (then deprecated mods), recently installed, recently updated (installed version published most recently) or author. Your choice is remembered.
+
 ### Updates
 
 **Check for updates** compares each mod with the latest published version. A "vX.Y available" badge appears when an update exists, and **Update all** installs them in one go.
