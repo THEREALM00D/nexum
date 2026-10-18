@@ -1,11 +1,7 @@
 export default {
   install: {
     title: "Installation",
-    subtitle: "Installer ou mettre à jour le serveur Palworld via SteamCMD",
-    subtitleValheim:
-      "Installer ou mettre à jour le serveur Valheim via SteamCMD",
-    subtitleAstroneer:
-      "Installer ou mettre à jour le serveur Astroneer via SteamCMD",
+    subtitle: "Installer ou mettre à jour le serveur {{game}} via SteamCMD",
     steamcmd: {
       label: "SteamCMD",
       installed: "Installé",
@@ -17,9 +13,7 @@ export default {
     },
     folder: {
       title: "Dossier d'installation",
-      installPalworld: "Installer Palworld",
-      installValheim: "Installer Valheim",
-      installAstroneer: "Installer Astroneer",
+      installGame: "Installer {{game}}",
       installing: "Installation...",
       update: "Mettre à jour",
     },

@@ -35,13 +35,7 @@ export default function Install() {
       <Box>
         <Typography variant="h6">{t("install.title")}</Typography>
         <Typography variant="body2" sx={{ color: "text.secondary", mt: 0.5 }}>
-          {t(
-            gameType === "valheim"
-              ? "install.subtitleValheim"
-              : gameType === "astroneer"
-                ? "install.subtitleAstroneer"
-                : "install.subtitle",
-          )}
+          {t("install.subtitle", { game: t(`servers.games.${gameType}`) })}
         </Typography>
       </Box>
 

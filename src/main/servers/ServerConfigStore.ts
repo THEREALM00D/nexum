@@ -8,6 +8,7 @@ import type {
   ValheimLaunchConfig,
   ValheimModifiers,
   AstroneerLaunchConfig,
+  DragonwildsLaunchConfig,
 } from "../../shared/types";
 import type { AppStore } from "../ipc/context";
 
@@ -46,6 +47,13 @@ const DEFAULT_ASTRONEER_CONFIG: AstroneerLaunchConfig = {
   customArgs: "",
 };
 
+const DEFAULT_DRAGONWILDS_CONFIG: DragonwildsLaunchConfig = {
+  port: 7777,
+  beaconPort: 8888,
+  adminPassword: "",
+  customArgs: "",
+};
+
 const DEFAULT_BACKUP: BackupConfig = {
   backupDir: "",
   backupKeep: 10,
@@ -63,6 +71,7 @@ export const DEFAULT_SERVER_CONFIG: ServerConfig = {
   launchArgs: DEFAULT_LAUNCH_ARGS,
   valheimConfig: DEFAULT_VALHEIM_CONFIG,
   astroneerConfig: DEFAULT_ASTRONEER_CONFIG,
+  dragonwildsConfig: DEFAULT_DRAGONWILDS_CONFIG,
   backup: DEFAULT_BACKUP,
   restart: DEFAULT_RESTART,
 };
@@ -84,6 +93,10 @@ export class ServerConfigStore {
         ...DEFAULT_ASTRONEER_CONFIG,
         ...existing.astroneerConfig,
       },
+      dragonwildsConfig: {
+        ...DEFAULT_DRAGONWILDS_CONFIG,
+        ...existing.dragonwildsConfig,
+      },
       backup: { ...DEFAULT_BACKUP, ...existing.backup },
       restart: { ...DEFAULT_RESTART, ...existing.restart },
     };
@@ -97,6 +110,10 @@ export class ServerConfigStore {
       astroneerConfig: {
         ...current.astroneerConfig,
         ...patch.astroneerConfig,
+      },
+      dragonwildsConfig: {
+        ...current.dragonwildsConfig,
+        ...patch.dragonwildsConfig,
       },
       backup: { ...current.backup, ...patch.backup },
       restart: { ...current.restart, ...patch.restart },
@@ -149,6 +166,7 @@ export class ServerConfigStore {
       launchArgs: this.store.get("launchArgs", DEFAULT_LAUNCH_ARGS),
       valheimConfig: DEFAULT_VALHEIM_CONFIG,
       astroneerConfig: DEFAULT_ASTRONEER_CONFIG,
+      dragonwildsConfig: DEFAULT_DRAGONWILDS_CONFIG,
       backup: {
         backupDir: preservedBackupDir,
         backupKeep: this.store.get("backupKeep", 10),

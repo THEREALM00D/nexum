@@ -40,6 +40,8 @@ La vue en direct montre les **500 dernières lignes** de la session en cours. La
 
 Si un serveur tournait déjà à l'ouverture de Nexum (Nexum l'« adopte »), sa sortie n'est pas récupérable : seules les lignes `[Manager]` de Nexum sont affichées et enregistrées pour cette session. Redémarrez le serveur depuis Nexum pour retrouver son log complet.
 
+Exception : **RuneScape: Dragonwilds**. Sa sortie standard ne contient que les avertissements et les erreurs : Nexum lit donc le fichier de log du jeu (`RSDragonwilds/Saved/Logs/RSDragonwilds.log`, sans l'horodatage du moteur). Ça marche aussi pour un serveur adopté : le log reprend là où il en était à l'ouverture de Nexum.
+
 ### Champ « Fichier de log » de Valheim
 
 Dans **Configuration → Avancé** de Valheim, laissez **Fichier de log** vide. S'il est rempli, Valheim écrit sa sortie dans ce fichier au lieu de l'envoyer à Nexum : la page Logs, la console du Dashboard et les sessions enregistrées restent vides.
@@ -71,12 +73,14 @@ Tout le log est exporté, pas seulement les dernières lignes : quand un serveur
 
 **Les données personnelles sont masquées automatiquement** dans le log copié ou enregistré (pas dans l'affichage à l'écran) :
 
-| Donnée                                              | Devient                                        |
-| --------------------------------------------------- | ---------------------------------------------- |
-| Adresses IP publiques                               | `[IP]` (le port est conservé, ex. `[IP]:2456`) |
-| Identifiants Steam (de chaque joueur déjà connecté) | `[SteamID]`                                    |
-| Codes de connexion crossplay Valheim                | `join code [hidden]`                           |
-| Mot de passe du serveur (ligne `[Manager] Args:`)   | `[hidden]`                                     |
+| Donnée                                                                                | Devient                                        |
+| ------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| Adresses IP publiques                                                                 | `[IP]` (le port est conservé, ex. `[IP]:2456`) |
+| Identifiants Steam (de chaque joueur déjà connecté)                                   | `[SteamID]`                                    |
+| Codes de connexion crossplay Valheim                                                  | `join code [hidden]`                           |
+| Mot de passe du serveur (ligne `[Manager] Args:`)                                     | `[hidden]`                                     |
+| Mot de passe du monde Dragonwilds, son empreinte et le code de connexion              | `[hidden]`                                     |
+| Identifiants de 32 caractères (identifiants des joueurs Dragonwilds, GUID des mondes) | `[ID]`                                         |
 
 Les adresses locales (`127.0.0.1`, `0.0.0.0`, `192.168.x.x`, `10.x.x.x`, `172.16-31.x.x`) sont conservées : elles n'identifient personne et aident à diagnostiquer les problèmes réseau. **Les noms des joueurs sont conservés** : retirez-les vous-même au besoin. Un numéro de version en 4 parties (ex. `1.0.0.0`) peut ressembler à une adresse IP et être masqué aussi.
 

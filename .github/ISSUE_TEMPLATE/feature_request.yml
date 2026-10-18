@@ -10,6 +10,7 @@ body:
         - Palworld
         - Valheim
         - Astroneer
+        - "RuneScape: Dragonwilds"
         - Not game-specific
     validations:
       required: true

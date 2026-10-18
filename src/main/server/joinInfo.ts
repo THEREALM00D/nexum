@@ -1,6 +1,9 @@
 import { networkInterfaces } from "os";
 import type { IpcContext } from "../ipc/context";
 import type { JoinInfo } from "../../shared/types";
+import { getGamePorts } from "../games/registry";
+import { formatPortRange } from "../games/ports";
+import { readDedicatedServerIni } from "../games/dragonwilds/dedicatedServerIni";
 
 // Réseaux internes créés par les outils de virtualisation / VPN : leur IP
 // n'est jamais celle à donner aux amis. ⚠️ Pas « vEthernet » en général : un
@@ -42,23 +45,27 @@ export function getJoinInfo(ctx: IpcContext, id: string): JoinInfo {
   const server = ctx.servers.list().find((s) => s.id === id);
   const gameType = server?.gameType ?? "palworld";
   const path = ctx.getServerPath(id);
+  const cfg = ctx.getServerConfig(id);
 
-  let port: number;
-  let portRange: string;
-  let crossplay = false;
-  if (gameType === "valheim") {
-    const cfg = ctx.getValheimConfig(id);
-    port = cfg.port;
-    portRange = `${port}-${port + 2}`; // jeu + requête (+1) + crossplay (+2)
-    crossplay = cfg.crossplay;
-  } else if (gameType === "astroneer") {
-    port = Number(ctx.astroConfigParser.read(path).Port) || 8777;
-    portRange = String(port);
-  } else {
-    port = Number(ctx.configParser.read(path).PublicPort) || 8211;
-    portRange = String(port);
-  }
-  return { localIp: localIpv4(), port, portRange, crossplay };
+  // Mêmes ports que la détection de conflits ; seuls ceux à rediriger sur la
+  // box sont donnés (jamais RCON / REST).
+  const forwarded = getGamePorts(gameType, path, cfg, {
+    palworld: ctx.configParser,
+    astroneer: ctx.astroConfigParser,
+  }).filter((p) => p.forward);
+
+  return {
+    localIp: localIpv4(),
+    port: forwarded[0]?.port ?? 0,
+    portRange: formatPortRange(forwarded.map((p) => p.port)),
+    crossplay: gameType === "valheim" && cfg.valheimConfig.crossplay,
+    // Dragonwilds : les joueurs cherchent le monde par son nom (sensible à
+    // la casse) dans la liste « Mondes » du jeu.
+    searchName:
+      gameType === "dragonwilds"
+        ? readDedicatedServerIni(path).DefaultWorldName || undefined
+        : undefined,
+  };
 }
 
 let publicIpCache: { ip: string; at: number } | null = null;

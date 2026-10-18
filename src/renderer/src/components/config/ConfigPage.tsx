@@ -1,27 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState, type ReactNode } from "react";
 import { useForm } from "@tanstack/react-form";
-import {
-  Box,
-  Button,
-  InputAdornment,
-  Stack,
-  TextField,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Alert, Box, Button, Stack, Typography } from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
-import SearchIcon from "@mui/icons-material/Search";
-import ClearIcon from "@mui/icons-material/Clear";
-import FolderOpenIcon from "@mui/icons-material/FolderOpen";
-import UnfoldMoreIcon from "@mui/icons-material/UnfoldMore";
-import UnfoldLessIcon from "@mui/icons-material/UnfoldLess";
-import IconButton from "@mui/material/IconButton";
 import { useTranslation } from "react-i18next";
 import { useServer } from "../../context/ServerContext";
 import { useNotification } from "../../context/NotificationContext";
 import { useConfigGroups } from "./useConfigGroups";
+import { useConfigLoad } from "./useConfigLoad";
 import ConfigGroup from "./ConfigGroup";
 import ConfigField from "./ConfigField";
+import ConfigPageHeader from "./ConfigPageHeader";
+import ConfigSearchBar from "./ConfigSearchBar";
 import type { ConfigSettings, FieldGroup } from "./types";
 
 const SAVE_FLASH_MS = 2000;
@@ -47,13 +36,22 @@ interface ConfigPageProps {
     value: string | number | boolean,
     setFieldValue: (key: string, value: string | number | boolean) => void,
   ) => void;
+  /**
+   * Jeux qui réécrivent leur .ini pendant qu'ils tournent (Astroneer,
+   * Dragonwilds) : une modification faite serveur lancé serait perdue.
+   * Enregistrement bloqué tant que le serveur n'est pas arrêté, puis
+   * relecture du fichier à l'arrêt (le serveur a pu le modifier).
+   */
+  lockWhileRunning?: boolean;
+  /** Bloc d'information propre au jeu, affiché sous le titre. */
+  notice?: ReactNode;
 }
 
 /**
  * Page de config .ini data-driven (groupes de champs, recherche,
- * expand/collapse) — partagée entre Palworld et Astroneer, qui ne diffèrent
- * que par le service de lecture/écriture, les clés i18n et (Palworld
- * uniquement) l'application d'un preset de difficulté au changement de champ.
+ * expand/collapse) — partagée entre Palworld, Astroneer et Dragonwilds, qui
+ * ne diffèrent que par le service de lecture/écriture, les clés i18n et
+ * quelques options (preset Palworld, verrou serveur lancé).
  */
 export default function ConfigPage({
   titleKey,
@@ -64,22 +62,15 @@ export default function ConfigPage({
   readConfig,
   writeConfig,
   onFieldChange,
+  lockWhileRunning,
+  notice,
 }: ConfigPageProps) {
   const { t } = useTranslation();
   const { state } = useServer();
   const { notify } = useNotification();
   const [saved, setSaved] = useState(false);
-  const [loading, setLoading] = useState(true);
 
-  const {
-    search,
-    setSearch,
-    visibleGroups,
-    expandedGroups,
-    allExpanded,
-    toggleAll,
-    toggleGroup,
-  } = useConfigGroups(fieldGroups, i18nFieldsPrefix);
+  const groups = useConfigGroups(fieldGroups, i18nFieldsPrefix);
 
   const form = useForm({
     defaultValues: {} as ConfigSettings,
@@ -87,6 +78,7 @@ export default function ConfigPage({
       try {
         const res = await writeConfig(value);
         if (res.success) {
+          markClean();
           setSaved(true);
           setTimeout(() => setSaved(false), SAVE_FLASH_MS);
         } else notify(res.error ?? t("config.unknownError"), "error");
@@ -96,21 +88,14 @@ export default function ConfigPage({
     },
   });
 
-  useEffect(() => {
-    if (!state.serverPath) {
-      setLoading(false);
-      return;
-    }
-    readConfig()
-      .then((settings) => {
-        Object.entries(settings).forEach(([key, val]) =>
-          form.setFieldValue(key as never, val as never),
-        );
-      })
-      .catch(() => notify(t("config.loadFailed"), "error"))
-      .finally(() => setLoading(false));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.serverPath]);
+  const { loading, locked, markDirty, markClean } = useConfigLoad(
+    readConfig,
+    (settings) =>
+      Object.entries(settings).forEach(([key, val]) =>
+        form.setFieldValue(key as never, val as never),
+      ),
+    lockWhileRunning,
+  );
 
   if (!state.serverPath) {
     return (
@@ -138,65 +123,26 @@ export default function ConfigPage({
 
   return (
     <Stack spacing={3} sx={{ maxWidth: 680 }}>
-      <Box>
-        <Typography variant="h6">{t(titleKey)}</Typography>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mt: 0.5 }}>
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
-            {t(subtitleKey)}
-          </Typography>
-          <Tooltip title={t("config.openFolder")}>
-            <IconButton
-              size="small"
-              onClick={() =>
-                window.api.shell.openPath(folderPath(state.serverPath))
-              }
-            >
-              <FolderOpenIcon sx={{ fontSize: 16 }} />
-            </IconButton>
-          </Tooltip>
-        </Box>
-      </Box>
+      <ConfigPageHeader
+        titleKey={titleKey}
+        subtitleKey={subtitleKey}
+        folderPath={folderPath(state.serverPath)}
+      />
 
-      <Box sx={{ display: "flex", gap: 1 }}>
-        <TextField
-          size="small"
-          placeholder={t("config.search")}
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          sx={{ flex: 1 }}
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon fontSize="small" />
-                </InputAdornment>
-              ),
-              endAdornment: search ? (
-                <InputAdornment position="end">
-                  <IconButton
-                    size="small"
-                    onClick={() => setSearch("")}
-                    aria-label={t("config.searchClear")}
-                  >
-                    <ClearIcon fontSize="small" />
-                  </IconButton>
-                </InputAdornment>
-              ) : null,
-            },
-          }}
-        />
-        <Tooltip
-          title={allExpanded ? t("config.collapseAll") : t("config.expandAll")}
-        >
-          <IconButton size="small" onClick={toggleAll}>
-            {allExpanded ? (
-              <UnfoldLessIcon fontSize="small" />
-            ) : (
-              <UnfoldMoreIcon fontSize="small" />
-            )}
-          </IconButton>
-        </Tooltip>
-      </Box>
+      {notice}
+
+      {locked && (
+        <Alert severity="warning" sx={{ fontSize: 13 }}>
+          {t("configPage.lockedWhileRunning")}
+        </Alert>
+      )}
+
+      <ConfigSearchBar
+        search={groups.search}
+        onSearch={groups.setSearch}
+        allExpanded={groups.allExpanded}
+        onToggleAll={groups.toggleAll}
+      />
 
       <form
         onSubmit={(e) => {
@@ -205,17 +151,17 @@ export default function ConfigPage({
         }}
       >
         <Stack spacing={2}>
-          {visibleGroups.length === 0 && (
+          {groups.visibleGroups.length === 0 && (
             <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              {t("config.noResults", { query: search })}
+              {t("config.noResults", { query: groups.search })}
             </Typography>
           )}
-          {visibleGroups.map((group) => (
+          {groups.visibleGroups.map((group) => (
             <ConfigGroup
               key={group.labelKey}
               group={group}
-              expanded={expandedGroups.has(group.labelKey)}
-              onToggle={() => toggleGroup(group.labelKey)}
+              expanded={groups.expandedGroups.has(group.labelKey)}
+              onToggle={() => groups.toggleGroup(group.labelKey)}
               renderField={(field) => (
                 <form.Field name={field.key as never}>
                   {(f) => (
@@ -224,6 +170,7 @@ export default function ConfigPage({
                       value={f.state.value as string | number | boolean}
                       i18nPrefix={i18nFieldsPrefix}
                       onChange={(v) => {
+                        markDirty();
                         f.handleChange(v as never);
                         onFieldChange?.(field.key, v, (k, val) =>
                           form.setFieldValue(k as never, val as never),
@@ -241,6 +188,7 @@ export default function ConfigPage({
             size="large"
             startIcon={<SaveIcon />}
             color={saved ? "success" : "primary"}
+            disabled={locked}
           >
             {saved ? t("config.saved") : t("config.save")}
           </Button>

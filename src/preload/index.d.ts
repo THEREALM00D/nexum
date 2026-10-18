@@ -18,6 +18,9 @@ import type {
   ValheimWorldInfo,
   AstroneerLaunchConfig,
   AstroneerSettings,
+  DragonwildsLaunchConfig,
+  DragonwildsSettings,
+  DragonwildsWorld,
   ValheimMod,
   ValheimModConfigFile,
   ModRegistry,
@@ -80,18 +83,13 @@ interface API {
   steamcmd: {
     isInstalled: () => Promise<boolean>;
     install: () => Promise<{ success: boolean; error?: string }>;
-    installPalworld: (
+    /** Installe le serveur dédié du jeu dans `path` (devient le serveur actif). */
+    installGame: (
+      gameType: GameType,
       path: string,
     ) => Promise<{ success: boolean; error?: string }>;
-    updatePalworld: () => Promise<{ success: boolean; error?: string }>;
-    installValheim: (
-      path: string,
-    ) => Promise<{ success: boolean; error?: string }>;
-    updateValheim: () => Promise<{ success: boolean; error?: string }>;
-    installAstroneer: (
-      path: string,
-    ) => Promise<{ success: boolean; error?: string }>;
-    updateAstroneer: () => Promise<{ success: boolean; error?: string }>;
+    /** Met à jour le serveur actif. */
+    updateGame: () => Promise<{ success: boolean; error?: string }>;
     checkForUpdate: () => Promise<UpdateCheckResult>;
     onProgress: (cb: (msg: string) => void) => () => void;
   };
@@ -227,6 +225,7 @@ interface API {
     selectFolder: () => Promise<string | null>;
     selectFile: (
       filters?: { name: string; extensions: string[] }[],
+      defaultPath?: string,
     ) => Promise<string | null>;
   };
   valheim: {
@@ -315,6 +314,27 @@ interface API {
     write: (
       settings: AstroneerSettings,
       serverId?: string,
+    ) => Promise<{ success: boolean; error?: string }>;
+  };
+  dragonwilds: {
+    getConfig: () => Promise<DragonwildsLaunchConfig>;
+    setConfig: (patch: Partial<DragonwildsLaunchConfig>) => Promise<void>;
+    /** Mondes du serveur, mondes solo de ce PC et monde chargé au démarrage. */
+    listWorlds: () => Promise<{
+      current: string;
+      server: DragonwildsWorld[];
+      solo: DragonwildsWorld[];
+      soloDir: string;
+    }>;
+    /** Charge au prochain démarrage un monde du dossier du serveur. */
+    useWorld: (name: string) => Promise<void>;
+    /** Copie un monde dans le serveur (après une sauvegarde ZIP) et le sélectionne. */
+    importWorld: (sourcePath: string) => Promise<string>;
+  };
+  dragonwildsconfig: {
+    read: () => Promise<DragonwildsSettings>;
+    write: (
+      settings: DragonwildsSettings,
     ) => Promise<{ success: boolean; error?: string }>;
   };
   app: {

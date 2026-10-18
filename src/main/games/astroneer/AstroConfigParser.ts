@@ -2,6 +2,7 @@ import { join } from "path";
 import { readFileSync, writeFileSync, existsSync } from "fs";
 import type { AstroneerSettings } from "../../../shared/types";
 import { parseIniValue, backupBeforeWrite } from "../../utils/ini";
+import { patchIniSection } from "../../utils/iniText";
 
 const ENGINE_REL_PATH = "Astro/Saved/Config/WindowsServer/Engine.ini";
 const SETTINGS_REL_PATH =
@@ -127,59 +128,19 @@ export class AstroConfigParser {
     section: string,
     pairs: AstroneerSettings,
   ): void {
-    const exists = existsSync(iniPath);
     backupBeforeWrite(iniPath);
-
-    const original = exists ? readFileSync(iniPath, "utf-8") : "";
-    const lines = original.length > 0 ? original.split(/\r?\n/) : [];
-    const sectionHeaderRe = /^\s*\[([^\]]+)\]\s*$/;
-
-    const remainingKeys = new Set(Object.keys(pairs));
-    const flushRemaining = (result: string[]): void => {
-      for (const key of remainingKeys) {
-        result.push(`${key}=${this.serializeValue(key, pairs[key])}`);
-      }
-      remainingKeys.clear();
-    };
-
-    const result: string[] = [];
-    let inTargetSection = false;
-    let sectionFound = false;
-
-    for (const line of lines) {
-      const headerMatch = line.match(sectionHeaderRe);
-      if (headerMatch) {
-        if (inTargetSection) flushRemaining(result);
-        inTargetSection = headerMatch[1].trim() === section;
-        if (inTargetSection) sectionFound = true;
-        result.push(line);
-        continue;
-      }
-
-      if (inTargetSection) {
-        const trimmed = line.trim();
-        const eqIdx = trimmed.indexOf("=");
-        const key = eqIdx === -1 ? "" : trimmed.slice(0, eqIdx).trim();
-        if (key && remainingKeys.has(key)) {
-          result.push(`${key}=${this.serializeValue(key, pairs[key])}`);
-          remainingKeys.delete(key);
-          continue;
-        }
-      }
-      result.push(line);
-    }
-
-    if (inTargetSection) flushRemaining(result);
-
-    if (!sectionFound) {
-      if (result.length > 0 && result[result.length - 1].trim() !== "") {
-        result.push("");
-      }
-      result.push(`[${section}]`);
-      flushRemaining(result);
-    }
-
-    writeFileSync(iniPath, result.join("\n").replace(/\n*$/, "\n"), "utf-8");
+    const original = existsSync(iniPath) ? readFileSync(iniPath, "utf-8") : "";
+    const serialized = Object.fromEntries(
+      Object.entries(pairs).map(([key, val]) => [
+        key,
+        this.serializeValue(key, val),
+      ]),
+    );
+    writeFileSync(
+      iniPath,
+      patchIniSection(original, section, serialized),
+      "utf-8",
+    );
   }
 
   private serializeValue(key: string, val: string | number | boolean): string {

@@ -136,6 +136,9 @@ export default function JoinServerCard() {
         {info.crossplay && joinCode && (
           <CopyRow label={t("join.code")} value={joinCode} />
         )}
+        {info.searchName && (
+          <CopyRow label={t("join.searchName")} value={info.searchName} />
+        )}
       </Stack>
       <Box sx={{ mt: 1.5 }}>
         <Typography variant="caption" sx={{ color: "text.secondary" }}>

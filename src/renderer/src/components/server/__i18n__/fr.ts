@@ -4,6 +4,7 @@ export default {
     local: "Même réseau",
     internet: "Depuis Internet",
     code: "Code de connexion crossplay",
+    searchName: "Nom du monde à chercher",
     showPublicIp: "Afficher mon IP publique",
     publicIpTooltip:
       "Demande votre adresse IP publique au service ipify.org (seulement quand vous cliquez)",
@@ -21,13 +22,13 @@ export default {
     empty: "Aucun log — démarrez le serveur pour voir les logs.",
     copy: "Copier",
     copyTooltip:
-      "Copie tout le log, avec la version de Nexum et le jeu en tête (pratique pour un rapport de bug). Les adresses IP publiques, identifiants Steam et codes de connexion sont masqués.",
+      "Copie tout le log, avec la version de Nexum et le jeu en tête (pratique pour un rapport de bug). Les adresses IP publiques, identifiants des joueurs (Steam, EOS), mots de passe et codes de connexion sont masqués.",
     copied:
-      "Log copié. Adresses IP, identifiants Steam et codes de connexion masqués ; les noms des joueurs sont conservés.",
+      "Log copié. Adresses IP, identifiants des joueurs, mots de passe et codes de connexion masqués ; les noms des joueurs sont conservés.",
     copyError: "Impossible de copier le log dans le presse-papiers.",
     save: "Enregistrer en .txt",
     saved:
-      "Log enregistré. Adresses IP, identifiants Steam et codes de connexion masqués ; les noms des joueurs sont conservés.",
+      "Log enregistré. Adresses IP, identifiants des joueurs, mots de passe et codes de connexion masqués ; les noms des joueurs sont conservés.",
     saveError: "Impossible d'enregistrer le log : {{error}}",
     showInFolder: "Afficher dans le dossier",
     newLines: "Nouvelles lignes — revenir au direct",

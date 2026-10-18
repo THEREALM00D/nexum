@@ -29,6 +29,7 @@ export default {
       palworld: "Palworld",
       valheim: "Valheim",
       astroneer: "Astroneer",
+      dragonwilds: "RuneScape: Dragonwilds",
     },
     actions: {
       activate: "Activate",

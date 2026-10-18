@@ -105,6 +105,7 @@ export function useBackup() {
     restoring,
     serverPath: state.serverPath,
     status: state.status,
+    refresh,
     handleCreate,
     handleRestore,
     handleDelete,

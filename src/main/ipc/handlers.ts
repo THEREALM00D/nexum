@@ -10,10 +10,7 @@ import { RestartScheduler } from "../scheduler/RestartScheduler";
 import { PalworldApiClient } from "../games/palworld/PalworldApiClient";
 import { OdinEyeApiClient } from "../games/valheim/OdinEyeApiClient";
 import { ServerRegistry } from "../servers/ServerRegistry";
-import {
-  ServerConfigStore,
-  DEFAULT_SERVER_CONFIG,
-} from "../servers/ServerConfigStore";
+import { ServerConfigStore } from "../servers/ServerConfigStore";
 import { ServerManagerRegistry } from "../servers/ServerManagerRegistry";
 import { SessionLogStore } from "../logs/SessionLogStore";
 import { PlayerHistoryRegistry } from "../servers/PlayerHistoryRegistry";
@@ -21,6 +18,7 @@ import type {
   RestartConfig,
   ValheimLaunchConfig,
   AstroneerLaunchConfig,
+  DragonwildsLaunchConfig,
 } from "../../shared/types";
 import type { AppStore, IpcContext } from "./context";
 import { registerMiscHandlers } from "./handlers/misc";
@@ -37,14 +35,10 @@ import { registerPlayersHandlers } from "../games/palworld/handlers/players";
 import { registerValheimHandlers } from "../games/valheim/handlers/config";
 import { registerValheimModsHandlers } from "../games/valheim/handlers/mods";
 import { registerAstroneerHandlers } from "../games/astroneer/handlers/config";
-import {
-  getGameServerConfig,
-  getGameEnv,
-  buildGameArgs,
-  getGameStopConfig,
-  getGameSavePath,
-} from "../games/registry";
-import { autoStartServers } from "../server/startServer";
+import { registerDragonwildsHandlers } from "../games/dragonwilds/handlers/config";
+import { registerDragonwildsWorldHandlers } from "../games/dragonwilds/handlers/worlds";
+import { getGameStopConfig, getGameSavePath } from "../games/registry";
+import { autoStartServers, restartServer } from "../server/startServer";
 
 const DEFAULT_RESTART_CONFIG: RestartConfig = {
   enabled: false,
@@ -123,6 +117,15 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
   ) =>
     serverConfigs.update(resolveServerId(id), {
       astroneerConfig: patch as AstroneerLaunchConfig,
+    });
+  const getDragonwildsConfig = (id?: string) =>
+    serverConfigs.get(resolveServerId(id)).dragonwildsConfig;
+  const updateDragonwildsConfig = (
+    id: string | undefined,
+    patch: Partial<DragonwildsLaunchConfig>,
+  ) =>
+    serverConfigs.update(resolveServerId(id), {
+      dragonwildsConfig: patch as DragonwildsLaunchConfig,
     });
 
   const getModsDataDir = (id?: string): string => {
@@ -242,24 +245,17 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
   // Start daily restart scheduler
   restartScheduler.start(getRestartConfig, async () => {
     const mgr = activeManagerOrNull();
-    if (!mgr || mgr.getStatus() !== "running") return;
     const active = servers.getActive();
-    const gameType = active?.gameType ?? "palworld";
-    const serverCfg = active
-      ? serverConfigs.get(active.id)
-      : DEFAULT_SERVER_CONFIG;
-    const args = buildGameArgs(gameType, serverCfg);
-    // Sans callback réel ici, ServerManager.start() écrase son onLog interne
-    // par un no-op pour le reste de la vie du process relancé — la console
-    // restait figée après un redémarrage planifié (le manuel passe bien
-    // sendLog, voir handlers/server.ts).
-    await mgr.restart(
-      getActiveServerPath(),
-      getGameServerConfig(gameType).exeName,
-      args,
-      (line) => broadcastLog(active?.id ?? "", line),
+    if (!active || !mgr || mgr.getStatus() !== "running") return;
+    // Même chemin que le bouton Redémarrer (préparation propre au jeu,
+    // arguments, fichier de log suivi), avec l'annonce et le délai du
+    // redémarrage planifié. Toujours un vrai callback de log : sans lui, la
+    // console restait figée après un redémarrage planifié.
+    await restartServer(
+      ctx,
+      active.id,
+      (line) => broadcastLog(active.id, line),
       getStopConfigForRestart(),
-      getGameEnv(gameType),
     );
   });
 
@@ -362,6 +358,8 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
     updateValheimConfig,
     getAstroneerConfig,
     updateAstroneerConfig,
+    getDragonwildsConfig,
+    updateDragonwildsConfig,
     getModsDataDir,
   };
 
@@ -383,5 +381,7 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
   registerValheimHandlers(ctx);
   registerValheimModsHandlers(ctx);
   registerAstroneerHandlers(ctx);
+  registerDragonwildsHandlers(ctx);
+  registerDragonwildsWorldHandlers(ctx);
   return ctx;
 }

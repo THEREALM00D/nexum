@@ -1,9 +1,10 @@
 import { spawn, ChildProcess, exec } from "child_process";
 import { join } from "path";
 import { existsSync } from "fs";
-import si from "systeminformation";
 import { PalworldApiClient } from "../games/palworld/PalworldApiClient";
 import { sendCtrlC } from "./windowsCtrlC";
+import { LogFileTailer } from "../logs/LogFileTailer";
+import type { LaunchSpec } from "../games/registry";
 import type { ServerStatus } from "../../shared/types";
 import type { SessionLogSink } from "../logs/SessionLogStore";
 
@@ -53,6 +54,7 @@ export class ServerManager {
   private restartCount = 0;
   private readonly maxRestarts = 5;
   private onLog: (line: string) => void = () => {};
+  private tailer: LogFileTailer | null = null;
 
   /**
    * `sessionLog` : fichier de log persistant, un par session (démarrage →
@@ -77,37 +79,55 @@ export class ServerManager {
   }
 
   private endSession(crashed: boolean): void {
+    this.stopTailer();
     this.sessionLog?.end(crashed);
+  }
+
+  /** Suivi du fichier de log du jeu (`LaunchSpec.logFile`), à la place de stdout. */
+  private startTailer(
+    logFile: string | undefined,
+    log: (line: string) => void,
+  ): void {
+    this.stopTailer();
+    if (!logFile) return;
+    this.tailer = new LogFileTailer(logFile, log);
+    this.tailer.start();
+  }
+
+  private stopTailer(): void {
+    this.tailer?.stop();
+    this.tailer = null;
   }
 
   private getRunningPid(): number | null {
     return this.process?.pid ?? this.adoptedPid ?? null;
   }
 
-  async tryAdopt(
-    onLog: (line: string) => void,
-    processNamePrefix = "palserver",
-  ): Promise<boolean> {
-    if (this.process || this.adoptedPid) return false;
-    try {
-      const procs = await si.processes();
-      const proc = procs.list.find((p) =>
-        p.name.toLowerCase().startsWith(processNamePrefix),
-      );
-      if (!proc) return false;
+  /** PID du processus racine du serveur (lancé ou adopté), null s'il ne tourne pas. */
+  getPid(): number | null {
+    return this.getRunningPid();
+  }
 
-      this.adoptedPid = proc.pid;
-      this.status = "running";
-      const log = this.beginSession(onLog);
-      log(`[Manager] Processus existant détecté (PID ${proc.pid}).`);
-      log(
-        "[Manager] Serveur lancé avant l'ouverture de Nexum : sa sortie n'est pas récupérable, seules les lignes de Nexum sont enregistrées pour cette session.",
-      );
-      this.startAdoptedPoll();
-      return true;
-    } catch {
-      return false;
-    }
+  /**
+   * Reprend un serveur lancé avant l'ouverture de Nexum. Le processus a été
+   * identifié par `ServerManagerRegistry.tryAdoptAll` (nom ET dossier du
+   * serveur) : avant, ce scan était refait ici sur le nom seul et adoptait le
+   * premier processus venu (client du jeu, serveur d'un autre dossier).
+   */
+  adopt(pid: number, onLog: (line: string) => void, logFile?: string): boolean {
+    if (this.process || this.adoptedPid) return false;
+    this.adoptedPid = pid;
+    this.status = "running";
+    const log = this.beginSession(onLog);
+    log(`[Manager] Processus existant détecté (PID ${pid}).`);
+    log(
+      logFile
+        ? "[Manager] Serveur lancé avant l'ouverture de Nexum : suite du log lue dans le fichier de log du jeu."
+        : "[Manager] Serveur lancé avant l'ouverture de Nexum : sa sortie n'est pas récupérable, seules les lignes de Nexum sont enregistrées pour cette session.",
+    );
+    this.startTailer(logFile, log);
+    this.startAdoptedPoll();
+    return true;
   }
 
   private startAdoptedPoll(): void {
@@ -145,11 +165,10 @@ export class ServerManager {
 
   async start(
     serverPath: string,
-    exeName: string,
-    args: string[],
+    spec: LaunchSpec,
     onLog: (line: string) => void,
-    env: Record<string, string> = {},
   ): Promise<{ success: boolean; error?: string }> {
+    const { exeName, args, env, logFile } = spec;
     if (this.status === "running" || this.status === "starting") {
       return { success: false, error: "Server is already running" };
     }
@@ -157,6 +176,12 @@ export class ServerManager {
     const exe = join(serverPath, exeName);
     if (!existsSync(exe)) {
       return { success: false, error: `${exeName} not found at: ${exe}` };
+    }
+    try {
+      const refused = spec.prepare?.();
+      if (refused) return { success: false, error: refused };
+    } catch (err) {
+      return { success: false, error: (err as Error).message };
     }
 
     this.status = "starting";
@@ -179,7 +204,11 @@ export class ServerManager {
         log("[Manager] Processus démarré.");
       });
 
+      // Avec un fichier de log suivi, stdout (incomplet) est lu mais ignoré :
+      // un pipe jamais vidé finirait par bloquer le serveur.
+      this.startTailer(logFile, log);
       this.process.stdout?.on("data", (data: Buffer) => {
+        if (logFile) return;
         const lines = data.toString().split("\n").filter(Boolean);
         lines.forEach((line) => log(line));
       });
@@ -199,6 +228,7 @@ export class ServerManager {
               ? "stopped"
               : "crashed";
         this.process = null;
+        this.stopTailer(); // dernières lignes du jeu avant celle de Nexum
         log(`[Manager] Server exited with code ${code}`);
         this.endSession(this.status === "crashed");
 
@@ -213,10 +243,7 @@ export class ServerManager {
           onLog(
             `[Manager] Auto-restarting... (attempt ${this.restartCount}/${this.maxRestarts})`,
           );
-          setTimeout(
-            () => this.start(serverPath, exeName, args, onLog, env),
-            5000,
-          );
+          setTimeout(() => this.start(serverPath, spec, onLog), 5000);
         }
       });
 
@@ -398,18 +425,16 @@ export class ServerManager {
 
   async restart(
     serverPath: string,
-    exeName: string,
-    args: string[],
+    spec: LaunchSpec,
     onLog: (line: string) => void,
     cfg?: StopConfig,
-    env: Record<string, string> = {},
   ): Promise<{ success: boolean; error?: string }> {
     if (this.getRunningPid()) {
       await this.stop(cfg);
       await new Promise((r) => setTimeout(r, 1500));
     }
     this.restartCount = 0;
-    return this.start(serverPath, exeName, args, onLog, env);
+    return this.start(serverPath, spec, onLog);
   }
 
   getStatus(): ServerStatus {

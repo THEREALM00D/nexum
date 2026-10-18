@@ -58,8 +58,10 @@ export default function ConfigField({
   i18nPrefix,
 }: Props) {
   const { t } = useTranslation();
-  const { key, type, options } = field;
-  const label = t(`${i18nPrefix}.${key}.label`, { defaultValue: key });
+  const { key, type, options, required } = field;
+  const baseLabel = t(`${i18nPrefix}.${key}.label`, { defaultValue: key });
+  const label = required ? `${baseLabel} *` : baseLabel;
+  const missing = !!required && String(value ?? "").trim() === "";
   const description = t(`${i18nPrefix}.${key}.description`, {
     defaultValue: "",
   });
@@ -119,6 +121,8 @@ export default function ConfigField({
         onChange={(e) =>
           onChange(type === "number" ? Number(e.target.value) : e.target.value)
         }
+        error={missing}
+        helperText={missing ? t("configPage.required") : undefined}
         sx={{ flex: 1 }}
       />
     </Stack>

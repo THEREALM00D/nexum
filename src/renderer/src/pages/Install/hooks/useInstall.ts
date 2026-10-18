@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useServer } from "../../../context/ServerContext";
 import { useNotification } from "../../../context/NotificationContext";
-import { steamService } from "../../../games/palworld/services/steamService";
+import { steamService } from "../../../services/steamService";
 import { dialogService } from "../../../services/dialogService";
 import { DEFAULT_GAME } from "../../../games/registry";
 import type { GameType, LaunchArgsConfig } from "@shared/types";
@@ -25,6 +25,7 @@ export const DEFAULT_INSTALL_PATHS: Record<GameType, string> = {
   palworld: "C:\\PalworldServer",
   valheim: "C:\\ValheimServer",
   astroneer: "C:\\AstroneerServer",
+  dragonwilds: "C:\\DragonwildsServer",
 };
 
 export function useInstall() {
@@ -98,12 +99,7 @@ export function useInstall() {
     setRunning(true);
     setLogs([]);
     try {
-      const res =
-        gameType === "valheim"
-          ? await window.api.steamcmd.installValheim(installPath)
-          : gameType === "astroneer"
-            ? await window.api.steamcmd.installAstroneer(installPath)
-            : await steamService.installPalworld(installPath);
+      const res = await steamService.installGame(gameType, installPath);
       if (res.success) {
         await refreshServers();
         setUpdateStatus(null);
@@ -122,12 +118,7 @@ export function useInstall() {
     setRunning(true);
     setLogs([]);
     try {
-      const res =
-        gameType === "valheim"
-          ? await window.api.steamcmd.updateValheim()
-          : gameType === "astroneer"
-            ? await window.api.steamcmd.updateAstroneer()
-            : await steamService.updatePalworld();
+      const res = await steamService.updateGame();
       if (res.success) setUpdateStatus(null);
       else {
         addLog(t("install.errorPrefix", { msg: res.error }));

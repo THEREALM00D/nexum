@@ -17,6 +17,8 @@ import scheduleFr from "./pages/Schedule/__i18n__/fr";
 import scheduleEn from "./pages/Schedule/__i18n__/en";
 import logsFr from "../../components/server/__i18n__/fr";
 import logsEn from "../../components/server/__i18n__/en";
+import configPageFr from "../../components/config/__i18n__/fr";
+import configPageEn from "../../components/config/__i18n__/en";
 
 export const astroneerPlugin: GamePlugin = {
   id: "astroneer",
@@ -41,6 +43,7 @@ export const astroneerPlugin: GamePlugin = {
     fr: {
       ...dashboardFr,
       ...configFr,
+      ...configPageFr,
       ...logsFr,
       ...networkFr,
       ...backupFr,
@@ -49,6 +52,7 @@ export const astroneerPlugin: GamePlugin = {
     en: {
       ...dashboardEn,
       ...configEn,
+      ...configPageEn,
       ...logsEn,
       ...networkEn,
       ...backupEn,
