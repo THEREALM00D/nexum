@@ -68,15 +68,9 @@ const api = {
   steamcmd: {
     isInstalled: () => ipcRenderer.invoke("steamcmd:isInstalled"),
     install: () => ipcRenderer.invoke("steamcmd:install"),
-    installPalworld: (path: string) =>
-      ipcRenderer.invoke("steamcmd:installPalworld", path),
-    updatePalworld: () => ipcRenderer.invoke("steamcmd:updatePalworld"),
-    installValheim: (path: string) =>
-      ipcRenderer.invoke("steamcmd:installValheim", path),
-    updateValheim: () => ipcRenderer.invoke("steamcmd:updateValheim"),
-    installAstroneer: (path: string) =>
-      ipcRenderer.invoke("steamcmd:installAstroneer", path),
-    updateAstroneer: () => ipcRenderer.invoke("steamcmd:updateAstroneer"),
+    installGame: (gameType: GameType, path: string) =>
+      ipcRenderer.invoke("steamcmd:installGame", gameType, path),
+    updateGame: () => ipcRenderer.invoke("steamcmd:updateGame"),
     checkForUpdate: () => ipcRenderer.invoke("steamcmd:checkForUpdate"),
     onProgress: (cb: (msg: string) => void) => {
       ipcRenderer.on("steamcmd:progress", (_e, msg) => cb(msg));
@@ -236,8 +230,10 @@ const api = {
   // Dialog
   dialog: {
     selectFolder: () => ipcRenderer.invoke("dialog:selectFolder"),
-    selectFile: (filters?: { name: string; extensions: string[] }[]) =>
-      ipcRenderer.invoke("dialog:selectFile", filters),
+    selectFile: (
+      filters?: { name: string; extensions: string[] }[],
+      defaultPath?: string,
+    ) => ipcRenderer.invoke("dialog:selectFile", filters, defaultPath),
   },
   // Valheim config (serverId optionnel — par défaut actif)
   valheim: {
@@ -350,6 +346,23 @@ const api = {
       ipcRenderer.invoke("astroconfig:read", serverId),
     write: (settings: Record<string, unknown>, serverId?: string) =>
       ipcRenderer.invoke("astroconfig:write", settings, serverId),
+  },
+  // RuneScape: Dragonwilds (serveur actif) — config de lancement et mondes
+  dragonwilds: {
+    getConfig: () => ipcRenderer.invoke("dragonwilds:getConfig"),
+    setConfig: (patch: Record<string, unknown>) =>
+      ipcRenderer.invoke("dragonwilds:setConfig", patch),
+    listWorlds: () => ipcRenderer.invoke("dragonwilds:listWorlds"),
+    useWorld: (name: string) =>
+      ipcRenderer.invoke("dragonwilds:useWorld", name),
+    importWorld: (sourcePath: string) =>
+      ipcRenderer.invoke("dragonwilds:importWorld", sourcePath),
+  },
+  // DedicatedServer.ini fusionné avec ports / mot de passe admin / args
+  dragonwildsconfig: {
+    read: () => ipcRenderer.invoke("dragonwildsconfig:read"),
+    write: (settings: Record<string, unknown>) =>
+      ipcRenderer.invoke("dragonwildsconfig:write", settings),
   },
   // App
   app: {

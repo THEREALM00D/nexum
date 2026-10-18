@@ -2,7 +2,7 @@
 // Tout ce qui transite via IPC doit avoir le même type des deux côtés.
 
 // --- Serveurs ---
-export type GameType = "palworld" | "valheim" | "astroneer";
+export type GameType = "palworld" | "valheim" | "astroneer" | "dragonwilds";
 
 export interface Server {
   id: string;
@@ -28,6 +28,7 @@ export interface ServerConfig {
   launchArgs: LaunchArgsConfig;
   valheimConfig: ValheimLaunchConfig;
   astroneerConfig: AstroneerLaunchConfig;
+  dragonwildsConfig: DragonwildsLaunchConfig;
   backup: BackupConfig;
   restart: RestartConfig;
 }
@@ -175,6 +176,8 @@ export interface JoinInfo {
   portRange: string;
   /** Valheim lancé avec -crossplay : on rejoint aussi par code. */
   crossplay: boolean;
+  /** Nom à chercher dans la liste des mondes du jeu (Dragonwilds). */
+  searchName?: string;
 }
 
 // --- Mise à jour de Nexum lui-même (electron-updater, releases GitHub) ---
@@ -283,6 +286,38 @@ export interface AstroneerLaunchConfig {
 
 // --- Config INI Astroneer (Engine.ini + AstroServerSettings.ini fusionnés) ---
 export type AstroneerSettings = Record<string, string | number | boolean>;
+
+// --- RuneScape: Dragonwilds ---
+// Ports passés en arguments (-Port / -BeaconPort), le reste vit dans
+// DedicatedServer.ini (voir DragonwildsSettings).
+export interface DragonwildsLaunchConfig {
+  port: number;
+  beaconPort: number;
+  /**
+   * Le serveur retire AdminPassword de DedicatedServer.ini après l'avoir lu :
+   * Nexum le garde ici et le réécrit dans le fichier avant chaque démarrage.
+   */
+  adminPassword: string;
+  customArgs: string;
+}
+
+// Vue fusionnée de la page Config : clés de DedicatedServer.ini (chaînes
+// brutes) + Port / BeaconPort / AdminPassword / customArgs de la config de
+// lancement.
+export type DragonwildsSettings = Record<string, string | number>;
+
+/** Sauvegarde de monde (.sav) — solo (client du jeu) ou du serveur. */
+export interface DragonwildsWorld {
+  /**
+   * Nom inscrit dans la sauvegarde : c'est lui que le serveur cherche
+   * (DefaultWorldName), pas le nom du fichier.
+   */
+  worldName: string;
+  fileName: string;
+  path: string;
+  sizeBytes: number;
+  lastModified: number;
+}
 
 // --- Mods Valheim ---
 // Registres de mods supportés — Hexium expose une API "compatible Thunderstore"

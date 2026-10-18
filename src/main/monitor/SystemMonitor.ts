@@ -1,7 +1,7 @@
 import os from "os";
 import si from "systeminformation";
-import type { GameType, SystemStats } from "../../shared/types";
-import { PROCESS_NAME_PREFIXES } from "../servers/ServerManagerRegistry";
+import type { SystemStats } from "../../shared/types";
+import { processTreeStats } from "../servers/processMatch";
 
 // Sous Windows, si.processes() lance un PowerShell (Get-CimInstance
 // Win32_Process) qui coûte ~1,5 s de CPU : interrogé toutes les 2 s avec
@@ -11,7 +11,7 @@ import { PROCESS_NAME_PREFIXES } from "../servers/ServerManagerRegistry";
 const GAME_PROC_REFRESH_MS = 15_000;
 
 interface GameProcInfo {
-  prefix: string;
+  pid: number;
   memRss: number;
   started: number | null;
   fetchedAt: number;
@@ -25,10 +25,13 @@ export class SystemMonitor {
   private gameProc: GameProcInfo | null = null;
   private gameProcPending: Promise<GameProcInfo> | null = null;
 
-  async getStats(
-    gameType: GameType = "palworld",
-    serverRunning = true,
-  ): Promise<SystemStats> {
+  /**
+   * `serverPid` : PID racine du serveur actif (lancé ou adopté), null s'il
+   * ne tourne pas. On part du PID connu du ServerManager plutôt que du nom de
+   * l'exécutable : avec le client du jeu ou un 2e serveur du même jeu lancé,
+   * le nom seul affichait la RAM d'un autre programme.
+   */
+  async getStats(serverPid: number | null = null): Promise<SystemStats> {
     // currentLoad s'appuie sur os.cpus() (aucun processus lancé) ; mémoire
     // et uptime viennent directement de Node.
     const cpuLoad = await si.currentLoad();
@@ -37,8 +40,8 @@ export class SystemMonitor {
 
     // Serveur arrêté : on oublie le cache, sinon un redémarrage dans les 15 s
     // reprendrait l'heure de démarrage de l'ancien process.
-    if (!serverRunning) this.gameProc = null;
-    const proc = serverRunning ? await this.getGameProc(gameType) : null;
+    if (serverPid === null) this.gameProc = null;
+    const proc = serverPid !== null ? await this.getGameProc(serverPid) : null;
     const serverUptime = proc?.started
       ? Math.max(0, Math.floor((Date.now() - proc.started) / 1000))
       : 0;
@@ -57,47 +60,29 @@ export class SystemMonitor {
   }
 
   /** Infos du process du jeu, en cache GAME_PROC_REFRESH_MS. */
-  private async getGameProc(gameType: GameType): Promise<GameProcInfo | null> {
-    const prefix = PROCESS_NAME_PREFIXES[gameType] ?? "palserver";
+  private async getGameProc(pid: number): Promise<GameProcInfo | null> {
     const cached = this.gameProc;
     if (
       cached &&
-      cached.prefix === prefix &&
+      cached.pid === pid &&
       Date.now() - cached.fetchedAt < GAME_PROC_REFRESH_MS
     ) {
       return cached.memRss > 0 ? cached : null;
     }
     // Un seul appel en vol : getStats peut aussi venir de l'IPC monitor:getStats.
-    this.gameProcPending ??= this.fetchGameProc(prefix).finally(() => {
+    this.gameProcPending ??= this.fetchGameProc(pid).finally(() => {
       this.gameProcPending = null;
     });
     const info = await this.gameProcPending;
     this.gameProc = info;
-    return info.prefix === prefix && info.memRss > 0 ? info : null;
+    return info.pid === pid && info.memRss > 0 ? info : null;
   }
 
-  private async fetchGameProc(prefix: string): Promise<GameProcInfo> {
-    const empty = { prefix, memRss: 0, started: null, fetchedAt: Date.now() };
+  private async fetchGameProc(pid: number): Promise<GameProcInfo> {
+    const empty = { pid, memRss: 0, started: null, fetchedAt: Date.now() };
     try {
-      const procs = await si.processes();
-      // Le lanceur peut consommer peu de RAM face au vrai process serveur
-      // (ex. PalServer.exe vs PalServer-Win64-Shipping.exe) — on prend le plus
-      // gourmand des process matchant le préfixe pour couvrir les deux cas.
-      const gameProc = procs.list
-        .filter((p) => p.name.toLowerCase().startsWith(prefix))
-        .reduce<(typeof procs.list)[number] | undefined>(
-          (best, p) => (!best || p.memRss > best.memRss ? p : best),
-          undefined,
-        );
-      if (!gameProc) return empty;
-      const started = gameProc.started
-        ? new Date(gameProc.started).getTime()
-        : NaN;
-      return {
-        ...empty,
-        memRss: gameProc.memRss,
-        started: Number.isNaN(started) ? null : started,
-      };
+      const stats = processTreeStats((await si.processes()).list, pid);
+      return stats ? { ...empty, ...stats } : empty;
     } catch {
       return empty;
     }
@@ -112,8 +97,7 @@ export class SystemMonitor {
   startPolling(
     intervalMs: number,
     onStats: (stats: SystemStats) => void,
-    getGameType: () => GameType = () => "palworld",
-    isServerRunning: () => boolean = () => true,
+    getServerPid: () => number | null = () => null,
     shouldPoll: () => boolean = () => true,
   ): void {
     this.stopPolling();
@@ -121,7 +105,7 @@ export class SystemMonitor {
     const tick = async () => {
       if (shouldPoll()) {
         try {
-          onStats(await this.getStats(getGameType(), isServerRunning()));
+          onStats(await this.getStats(getServerPid()));
         } catch {
           // ignore : on réessaie au tick suivant
         }

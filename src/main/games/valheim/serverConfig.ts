@@ -1,6 +1,7 @@
 import { join } from "path";
 import { homedir } from "os";
 import type { ValheimLaunchConfig } from "../../../shared/types";
+import type { GamePort } from "../ports";
 
 export const valheimServerConfig = {
   exeName: "valheim_server.exe",
@@ -67,5 +68,20 @@ export const valheimServerConfig = {
       // sauvegarde corrompue sinon).
       gracefulSignal: true,
     };
+  },
+
+  // Jeu, requête Steam (+1) et crossplay (+2) : le guide officiel fait
+  // rediriger les trois, crossplay ou non.
+  getPorts(cfg: ValheimLaunchConfig): GamePort[] {
+    return [
+      { port: cfg.port, protocol: "UDP", label: "game", forward: true },
+      { port: cfg.port + 1, protocol: "UDP", label: "query", forward: true },
+      {
+        port: cfg.port + 2,
+        protocol: "UDP",
+        label: "crossplay",
+        forward: true,
+      },
+    ];
   },
 };

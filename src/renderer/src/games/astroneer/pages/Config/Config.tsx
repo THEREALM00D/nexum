@@ -14,6 +14,7 @@ export default function AstroneerConfig() {
       i18nFieldsPrefix="astroneerConfig.fields"
       readConfig={astroConfigService.readConfig}
       writeConfig={astroConfigService.writeConfig}
+      lockWhileRunning
     />
   );
 }

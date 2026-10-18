@@ -1,5 +1,7 @@
 import { join } from "path";
 import type { AstroneerLaunchConfig } from "../../../shared/types";
+import type { GamePort } from "../ports";
+import type { AstroConfigParser } from "./AstroConfigParser";
 
 export const astroneerServerConfig = {
   // Lanceur racine documenté ; il spawn AstroServer-Win64-Shipping.exe.
@@ -25,5 +27,11 @@ export const astroneerServerConfig = {
       shutdownWaittime: 0,
       shutdownMessage: "",
     };
+  },
+
+  // ConsolePort (RCON) volontairement absent : jamais exposé par Nexum.
+  getPorts(serverPath: string, parser: AstroConfigParser): GamePort[] {
+    const port = Number(parser.read(serverPath).Port) || 8777;
+    return [{ port, protocol: "UDP", label: "game", forward: true }];
   },
 };

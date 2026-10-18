@@ -6,15 +6,13 @@ import fs from "fs";
 import https from "https";
 import type { GameType, UpdateCheckResult } from "../../shared/types";
 
-const PALWORLD_APP_ID = "2394010";
-const VALHEIM_APP_ID = "896660";
-const ASTRONEER_APP_ID = "728470";
-
-/** AppId Steam du serveur dédié de chaque jeu. */
+/** AppId Steam du serveur dédié de chaque jeu (téléchargeable en anonyme). */
 export const STEAM_APP_IDS: Record<GameType, string> = {
-  palworld: PALWORLD_APP_ID,
-  valheim: VALHEIM_APP_ID,
-  astroneer: ASTRONEER_APP_ID,
+  palworld: "2394010",
+  valheim: "896660",
+  astroneer: "728470",
+  // « RuneScape: Dragonwilds - Dedicated Servers » (1374490 = le client).
+  dragonwilds: "4019830",
 };
 
 /**
@@ -92,25 +90,13 @@ export class SteamCMD {
     }
   }
 
-  async installPalworld(
+  /** Installe ou met à jour le serveur dédié d'un jeu dans `installPath`. */
+  async installGame(
+    gameType: GameType,
     installPath: string,
     onProgress: (msg: string) => void,
   ): Promise<{ success: boolean; error?: string }> {
-    return this.runInstall(PALWORLD_APP_ID, installPath, onProgress);
-  }
-
-  async installValheim(
-    installPath: string,
-    onProgress: (msg: string) => void,
-  ): Promise<{ success: boolean; error?: string }> {
-    return this.runInstall(VALHEIM_APP_ID, installPath, onProgress);
-  }
-
-  async installAstroneer(
-    installPath: string,
-    onProgress: (msg: string) => void,
-  ): Promise<{ success: boolean; error?: string }> {
-    return this.runInstall(ASTRONEER_APP_ID, installPath, onProgress);
+    return this.runInstall(STEAM_APP_IDS[gameType], installPath, onProgress);
   }
 
   private async runInstall(
@@ -198,7 +184,7 @@ export class SteamCMD {
 
   checkForUpdate(
     installPath: string,
-    appId: string = PALWORLD_APP_ID,
+    appId: string,
   ): Promise<UpdateCheckResult> {
     const installedBuild = this.getInstalledBuildId(installPath, appId);
     const steamLibrary = isSteamLibraryInstall(installPath);

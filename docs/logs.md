@@ -42,6 +42,8 @@ The live view shows the **last 500 lines** of the current session. The full sess
 
 If a server was already running when Nexum opened (Nexum "adopts" it), its output can't be read: only Nexum's own `[Manager]` lines are shown and saved for that session. Restart the server from Nexum to get its full log again.
 
+Exception: **RuneScape: Dragonwilds**. Its standard output only carries warnings and errors, so Nexum reads the game's own log file instead (`RSDragonwilds/Saved/Logs/RSDragonwilds.log`, the engine timestamp is removed). This works for an adopted server too: the log picks up from where it was when Nexum opened.
+
 ### Valheim "Log file" field
 
 In Valheim's **Configuration → Advanced**, leave **Log file** empty. When it's set, Valheim writes its output to that file instead of sending it to Nexum, so the Logs page, the Dashboard console and the saved sessions stay empty.
@@ -73,12 +75,14 @@ The whole log is exported, not just the last lines: when a server stops on its o
 
 **Personal data is hidden automatically** in the copied or saved log (not in the on-screen view):
 
-| Data                                            | Becomes                                     |
-| ----------------------------------------------- | ------------------------------------------- |
-| Public IP addresses                             | `[IP]` (the port is kept, e.g. `[IP]:2456`) |
-| Steam IDs (every player who joined)             | `[SteamID]`                                 |
-| Valheim crossplay join codes                    | `join code [hidden]`                        |
-| Server password (in the `[Manager] Args:` line) | `[hidden]`                                  |
+| Data                                                   | Becomes                                     |
+| ------------------------------------------------------ | ------------------------------------------- |
+| Public IP addresses                                    | `[IP]` (the port is kept, e.g. `[IP]:2456`) |
+| Steam IDs (every player who joined)                    | `[SteamID]`                                 |
+| Valheim crossplay join codes                           | `join code [hidden]`                        |
+| Server password (in the `[Manager] Args:` line)        | `[hidden]`                                  |
+| Dragonwilds world password, its hash and the join code | `[hidden]`                                  |
+| 32-character IDs (Dragonwilds player IDs, world GUIDs) | `[ID]`                                      |
 
 Local addresses (`127.0.0.1`, `0.0.0.0`, `192.168.x.x`, `10.x.x.x`, `172.16-31.x.x`) are kept: they don't identify anyone and help diagnose network issues. **Player names are kept**: remove them yourself if needed. A version number with 4 parts (e.g. `1.0.0.0`) can look like an IP address and be hidden too.
 

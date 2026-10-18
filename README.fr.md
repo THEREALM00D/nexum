@@ -7,7 +7,7 @@
 
 🇬🇧 [English](README.md) | 🇫🇷 Français
 
-Application Windows gratuite et open source pour héberger des serveurs dédiés **Valheim**, **Palworld** et **Astroneer** sans ligne de commande, avec **gestion intégrée des mods Valheim** (Thunderstore + Hexium).
+Application Windows gratuite et open source pour héberger des serveurs dédiés **Valheim**, **Palworld**, **Astroneer** et **RuneScape: Dragonwilds** sans ligne de commande, avec **gestion intégrée des mods Valheim** (Thunderstore + Hexium).
 
 ![Plateforme](https://img.shields.io/badge/platform-Windows-blue)
 ![Licence](https://img.shields.io/badge/license-GPL--3.0-blue)
@@ -19,7 +19,7 @@ Application Windows gratuite et open source pour héberger des serveurs dédiés
 
 ## Fonctionnalités
 
-- **Plusieurs serveurs, plusieurs jeux** : Palworld, Valheim et Astroneer depuis une seule app, sans ligne de commande
+- **Plusieurs serveurs, plusieurs jeux** : Palworld, Valheim, Astroneer et RuneScape: Dragonwilds depuis une seule app, sans ligne de commande, avec détection des conflits de ports avant le démarrage
 - **Installation automatique** de SteamCMD et du serveur, ou **import d'un serveur déjà installé** (jeu et mondes détectés automatiquement)
 - **Démarrage / arrêt / redémarrage** avec arrêt propre (API REST Palworld, CTRL+C Valheim) pour ne pas corrompre les sauvegardes
 - **Surveillance en temps réel** : CPU, RAM, uptime, joueurs en ligne, console du serveur
@@ -86,6 +86,7 @@ Voir [docs/installation.fr.md](docs/installation.fr.md) pour le guide complet.
 - [Logs](docs/logs.fr.md)
 - [Suivi des joueurs Valheim (Odin-Eye)](docs/valheim-players.fr.md)
 - [Mods Valheim](docs/valheim-mods.fr.md)
+- [RuneScape: Dragonwilds](docs/dragonwilds.fr.md)
 - [Politique de signature et confidentialité](docs/code-signing.fr.md)
 - [Architecture technique](CLAUDE.md)
 

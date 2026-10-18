@@ -1,5 +1,6 @@
 import { ipcMain } from "electron/main";
 import type { IpcContext } from "../context";
+import type { GameType } from "../../../shared/types";
 import { STEAM_APP_IDS } from "../../steamcmd/SteamCMD";
 
 export function registerSteamHandlers(ctx: IpcContext): void {
@@ -11,53 +12,29 @@ export function registerSteamHandlers(ctx: IpcContext): void {
     });
   });
 
+  // Un seul canal pour tous les jeux (avant : un par jeu, et un renderer qui
+  // retombait sans bruit sur Palworld pour un jeu oublié).
   ipcMain.handle(
-    "steamcmd:installPalworld",
-    async (event, installPath: string) => {
+    "steamcmd:installGame",
+    async (event, gameType: GameType, installPath: string) => {
+      if (!(gameType in STEAM_APP_IDS)) {
+        return { success: false, error: `Jeu inconnu : ${gameType}` };
+      }
       ctx.setActiveServerPath(installPath);
-      return ctx.steamcmd.installPalworld(installPath, (progress) => {
+      return ctx.steamcmd.installGame(gameType, installPath, (progress) => {
         event.sender.send("steamcmd:progress", progress);
       });
     },
   );
 
-  ipcMain.handle("steamcmd:updatePalworld", async (event) => {
+  // Mise à jour du serveur actif.
+  ipcMain.handle("steamcmd:updateGame", async (event) => {
+    const gameType = ctx.getActiveServer()?.gameType ?? "palworld";
     const installPath = ctx.getActiveServerPath();
-    return ctx.steamcmd.installPalworld(installPath, (progress) => {
-      event.sender.send("steamcmd:progress", progress);
-    });
-  });
-
-  ipcMain.handle(
-    "steamcmd:installValheim",
-    async (event, installPath: string) => {
-      ctx.setActiveServerPath(installPath);
-      return ctx.steamcmd.installValheim(installPath, (progress) => {
-        event.sender.send("steamcmd:progress", progress);
-      });
-    },
-  );
-
-  ipcMain.handle("steamcmd:updateValheim", async (event) => {
-    const installPath = ctx.getActiveServerPath();
-    return ctx.steamcmd.installValheim(installPath, (progress) => {
-      event.sender.send("steamcmd:progress", progress);
-    });
-  });
-
-  ipcMain.handle(
-    "steamcmd:installAstroneer",
-    async (event, installPath: string) => {
-      ctx.setActiveServerPath(installPath);
-      return ctx.steamcmd.installAstroneer(installPath, (progress) => {
-        event.sender.send("steamcmd:progress", progress);
-      });
-    },
-  );
-
-  ipcMain.handle("steamcmd:updateAstroneer", async (event) => {
-    const installPath = ctx.getActiveServerPath();
-    return ctx.steamcmd.installAstroneer(installPath, (progress) => {
+    if (!installPath) {
+      return { success: false, error: "Aucun chemin serveur configuré" };
+    }
+    return ctx.steamcmd.installGame(gameType, installPath, (progress) => {
       event.sender.send("steamcmd:progress", progress);
     });
   });

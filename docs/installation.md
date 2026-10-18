@@ -25,7 +25,7 @@
 
 On first launch (no server yet), Nexum opens a **setup wizard** that walks you through everything below, in order:
 
-1. **Game**: pick Palworld, Valheim or Astroneer, then **Install a new server** (choose the install folder) or **I already have a server** (choose its folder: Nexum detects the game).
+1. **Game**: pick Palworld, Valheim, Astroneer or RuneScape: Dragonwilds, then **Install a new server** (choose the install folder) or **I already have a server** (choose its folder: Nexum detects the game).
 2. **Installation** (new server only): install SteamCMD, then the server.
 3. **Configuration**: server name, password, world settings. Save before moving on.
 4. **Firewall**: apply the Windows firewall rules.
@@ -79,9 +79,9 @@ Before starting the server for the first time:
 If a dedicated server is already installed on your machine (installed by hand, with SteamCMD, or with another tool), you don't need to reinstall it:
 
 - Go to **Servers** and click **Add server**
-- Click the folder icon and pick the server folder (the one containing `PalServer.exe`, `valheim_server.exe` or `AstroServer.exe`)
+- Click the folder icon and pick the server folder (the one containing `PalServer.exe`, `valheim_server.exe`, `AstroServer.exe` or `RSDragonwildsServer.exe`)
 - The game is detected automatically, and a hint under the path confirms that the server executable was found (or warns if it wasn't — check the folder or the game)
-- Palworld and Astroneer: your existing `.ini` settings are read as they are
+- Palworld, Astroneer and Dragonwilds: your existing `.ini` settings are read as they are (Dragonwilds: see [its page](dragonwilds.md) for the Player ID and worlds)
 - Valheim: existing worlds are detected. If there is only one, it is selected automatically; otherwise pick it from the suggestions in the **World name** field of **Configuration** — the name must match exactly, or Valheim creates a new empty world
 
 ## Starting automatically
@@ -91,7 +91,7 @@ To have your servers come back on their own after a PC restart:
 1. In **Servers**, edit a server and check **Start automatically when Nexum opens**. Repeat for each server you want started.
 2. In **Settings**, turn on **Launch Nexum when Windows starts** (only available in the installed app).
 
-When you log in to Windows, Nexum starts in the background (its icon near the clock, see below) and starts the checked servers, a few seconds apart. A server that is already running is left as is. The same checks as a manual start apply (Valheim password rules, Palworld port conflicts): if a server can't start, the reason is written in its log.
+When you log in to Windows, Nexum starts in the background (its icon near the clock, see below) and starts the checked servers, a few seconds apart. A server that is already running is left as is. The same checks as a manual start apply (port conflicts, Valheim password rules, Dragonwilds Player ID): if a server can't start, the reason is written in its log.
 
 ## Running in the background (icon near the clock)
 

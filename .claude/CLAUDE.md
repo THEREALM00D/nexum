@@ -46,3 +46,6 @@
 - https://thunderstore.io/api/docs/?format=openapi
 - https://blog.astroneer.space/p/astroneer-dedicated-server-details/
 - https://sparcopt.github.io/odin-eye/ (plugin Odin-Eye, suivi joueurs Valheim — ⚠️ la doc en ligne diverge du plugin v1.0.0.0, voir CLAUDE.md « Historique des joueurs »)
+- https://dragonwilds.runescape.com/news/how-to-dedicated-servers (guide Jagex des serveurs dédiés Dragonwilds — ⚠️ plusieurs points sont faux ou périmés, voir CLAUDE.md « Config INI Dragonwilds »)
+- https://github.com/runescape/rsdw-dedicated (image Docker officielle de Jagex : modèle `DedicatedServer.ini` et arguments `-Port` / `-BeaconPort` dans `steamrt4/`)
+- https://dragonwilds.runescape.wiki/w/Dedicated_Servers (wiki officiel Dragonwilds)

@@ -21,6 +21,8 @@ This folder contains:
 
 > The `PalWorldSettings.ini` file is **not** included in the backup — it lives in `Pal/Saved/Config/WindowsServer/`.
 
+**RuneScape: Dragonwilds**: Nexum zips `{serverPath}/RSDragonwilds/Saved/SaveGames/` (every world of the server, one `.sav` file each). The same page has a **Worlds** card to pick the world loaded at startup and to import a single-player world, see [RuneScape: Dragonwilds](dragonwilds.md).
+
 ## Configuration
 
 ### Backup folder

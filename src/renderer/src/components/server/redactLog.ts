@@ -10,6 +10,19 @@ const IPV4 =
 const STEAM_ID = /7656119\d{10}(?!\d)/g;
 // Code de connexion crossplay Valheim (`with join code 123456`, `that has join code 123456`).
 const JOIN_CODE = /(join code )([A-Za-z0-9]+)/gi;
+// Identifiants de 32 caractères hexadécimaux : EOS ID des joueurs et du
+// propriétaire (Dragonwilds), GUID des mondes et des sessions.
+const HEX_ID = /\b[0-9a-f]{32}\b/gi;
+// Dragonwilds écrit le mot de passe du monde en clair
+// (`Dedicated Server WorldPassword: x`, `Password[x]`), en base64 dans les
+// demandes de connexion (`Login request: ?p=…`), son empreinte et le code
+// de connexion dans les réglages de session.
+const DRAGONWILDS_SECRETS: RegExp[] = [
+  /(WorldPassword: )(\S+)/g,
+  /(\bPassword\[)([^\]]+)/g,
+  /(Login request: \?p=)([^?\s]+)/g,
+  /(\["(?:JoinCode|PasswordHash)"\] written with key\[\w+\] value\[)([^\]]+)/g,
+];
 
 /**
  * Adresses gardées : boucle locale, « toutes interfaces » et réseaux privés
@@ -28,8 +41,13 @@ function isHarmlessIp(ip: string): boolean {
 }
 
 export function redactLog(text: string): string {
-  return text
+  const masked = text
     .replace(IPV4, (ip) => (isHarmlessIp(ip) ? ip : "[IP]"))
     .replace(STEAM_ID, "[SteamID]")
-    .replace(JOIN_CODE, "$1[hidden]");
+    .replace(JOIN_CODE, "$1[hidden]")
+    .replace(HEX_ID, "[ID]");
+  return DRAGONWILDS_SECRETS.reduce(
+    (out, re) => out.replace(re, "$1[hidden]"),
+    masked,
+  );
 }

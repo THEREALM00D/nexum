@@ -31,10 +31,15 @@ export function registerMiscHandlers(ctx: IpcContext): void {
 
   ipcMain.handle(
     "dialog:selectFile",
-    async (_, filters?: { name: string; extensions: string[] }[]) => {
+    async (
+      _,
+      filters?: { name: string; extensions: string[] }[],
+      defaultPath?: string,
+    ) => {
       const result = await dialog.showOpenDialog({
         properties: ["openFile"],
         filters,
+        defaultPath,
       });
       return result.canceled ? null : result.filePaths[0];
     },
@@ -78,17 +83,17 @@ export function registerMiscHandlers(ctx: IpcContext): void {
     ctx.setActiveServerPath(path);
   });
 
-  // System monitoring — filtré sur le process du jeu du serveur actif
-  // (chaque jeu a son propre nom d'exécutable, cf. PROCESS_NAME_PREFIXES).
-  const activeGameType = () => ctx.getActiveServer()?.gameType ?? "palworld";
-  // La liste des processus (coûteuse sous Windows) n'est lue que si le
-  // serveur actif a un process : sinon RAM du jeu et uptime serveur valent 0.
-  const activeServerRunning = () => {
-    const status = ctx.serverManagers.getActive()?.getStatus() ?? "stopped";
-    return status !== "stopped" && status !== "crashed";
+  // System monitoring — RAM et uptime du processus du serveur actif, retrouvé
+  // par son PID. La liste des processus (coûteuse sous Windows) n'est lue que
+  // si ce serveur tourne : sinon RAM du jeu et uptime serveur valent 0.
+  const activeServerPid = () => {
+    const mgr = ctx.serverManagers.getActive();
+    const status = mgr?.getStatus() ?? "stopped";
+    if (status === "stopped" || status === "crashed") return null;
+    return mgr?.getPid() ?? null;
   };
   ipcMain.handle("monitor:getStats", () =>
-    ctx.systemMonitor.getStats(activeGameType(), activeServerRunning()),
+    ctx.systemMonitor.getStats(activeServerPid()),
   );
   ipcMain.handle("monitor:startPolling", (event) => {
     const sender = event.sender;
@@ -97,8 +102,7 @@ export function registerMiscHandlers(ctx: IpcContext): void {
       (stats) => {
         if (!sender.isDestroyed()) sender.send("monitor:stats", stats);
       },
-      activeGameType,
-      activeServerRunning,
+      activeServerPid,
       // Fenêtre cachée dans la zone de notification ou réduite : personne ne
       // regarde les stats, on saute le tick.
       () => {

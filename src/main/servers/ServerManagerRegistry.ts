@@ -1,13 +1,19 @@
 import si from "systeminformation";
 import { ServerManager } from "../server/ServerManager";
-import type { GameType, ServerStatus, Server } from "../../shared/types";
+import type { GameType, ServerStatus } from "../../shared/types";
 import type { ServerRegistry } from "./ServerRegistry";
 import type { SessionLogStore } from "../logs/SessionLogStore";
+import { findServerProcess, type ProcInfo } from "./processMatch";
+import { getGameLogFile } from "../games/registry";
 
+// Préfixe du nom de processus du serveur de chaque jeu (lanceur et
+// `…-Shipping.exe`). Doit être propre au SERVEUR : Dragonwilds →
+// RSDragonwildsServer*, le client s'appelle RSDragonwilds*.
 export const PROCESS_NAME_PREFIXES: Record<GameType, string> = {
   palworld: "palserver",
   valheim: "valheim_server",
   astroneer: "astroserver",
+  dragonwilds: "rsdragonwildsserver",
 };
 
 /**
@@ -81,46 +87,42 @@ export class ServerManagerRegistry {
   }
 
   /**
-   * Détecte les processus PalServer.exe en cours et tente d'associer chacun
-   * au serveur correspondant via le chemin de l'exécutable. Si on trouve un
-   * process avec un chemin qui matche `server.path`, ce serveur passe en
-   * `running` et son manager est créé/adopté.
+   * Au démarrage de Nexum : reprend les serveurs restés lancés d'une session
+   * précédente. Une seule lecture de la liste des processus (un PowerShell
+   * sous Windows), puis chaque serveur est associé à SON processus — nom de
+   * l'exécutable ET dossier du serveur (`findServerProcess`).
    */
   async tryAdoptAll(
     onLog: (serverId: string, line: string) => void,
   ): Promise<void> {
-    let procs;
+    let procs: ProcInfo[];
     try {
-      procs = await si.processes();
+      procs = (await si.processes()).list;
     } catch {
       return;
     }
 
-    for (const server of this.servers.list()) {
-      const prefix = PROCESS_NAME_PREFIXES[server.gameType] ?? "palserver";
-      const candidates = procs.list.filter((p) =>
-        p.name.toLowerCase().startsWith(prefix),
+    const servers = this.servers.list();
+    const adopted = new Set<number>();
+    for (const server of servers) {
+      const prefix = PROCESS_NAME_PREFIXES[server.gameType];
+      // Chemin illisible (processus lancé en admin par une ancienne version) :
+      // accepté seulement s'il n'y a aucun doute sur le serveur concerné.
+      const onlyOfItsGame =
+        servers.filter((s) => s.gameType === server.gameType).length === 1;
+      const proc = findServerProcess(
+        procs.filter((p) => !adopted.has(p.pid)),
+        prefix,
+        server.path,
+        onlyOfItsGame,
       );
-      if (candidates.length === 0) continue;
-      const match = this.matchProcessToServer(candidates, server);
-      if (!match) continue;
-      const mgr = this.getOrCreate(server.id);
-      await mgr
-        .tryAdopt((line) => onLog(server.id, line), prefix)
-        .catch(() => {});
+      if (!proc) continue;
+      const adoptedNow = this.getOrCreate(server.id).adopt(
+        proc.pid,
+        (line) => onLog(server.id, line),
+        getGameLogFile(server.gameType, server.path),
+      );
+      if (adoptedNow) adopted.add(proc.pid);
     }
-  }
-
-  private matchProcessToServer(
-    procs: Array<{ name: string; path?: string; params?: string }>,
-    server: Server,
-  ): boolean {
-    const needle = server.path.toLowerCase().replace(/\\/g, "/");
-    return procs.some((p) => {
-      const haystack = `${p.path ?? ""} ${p.params ?? ""}`
-        .toLowerCase()
-        .replace(/\\/g, "/");
-      return haystack.includes(needle);
-    });
   }
 }

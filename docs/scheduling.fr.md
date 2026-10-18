@@ -62,6 +62,8 @@ Si l'API est désactivée, Nexum affiche un avertissement avec un bouton **Activ
 
 > Sans API REST, l'arrêt se fait avec `taskkill /F` sans sauvegarde — vous risquez de perdre des données récentes.
 
+**RuneScape: Dragonwilds** n'a pas d'API et ne sait pas s'arrêter proprement sous Windows : le redémarrage l'arrête immédiatement, sans avertir les joueurs en jeu. Le serveur sauvegarde le monde de lui-même toutes les 5 minutes : au pire, les 5 dernières minutes sont perdues.
+
 ## Cas d'usage
 
 ### Redémarrage de nuit (recommandé)

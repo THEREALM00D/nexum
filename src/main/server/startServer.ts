@@ -3,11 +3,10 @@ import {
   detectPortConflicts,
   formatConflictsError,
 } from "../servers/portConflicts";
-import {
-  buildGameArgs,
-  getGameEnv,
-  getGameServerConfig,
-} from "../games/registry";
+import { getGamePorts, getLaunchSpec } from "../games/registry";
+import type { GamePort } from "../games/ports";
+import type { StopConfig } from "./ServerManager";
+import type { Server } from "../../shared/types";
 import { ValheimModsManager } from "../games/valheim/ValheimModsManager";
 import { checkModUpdatesOnStart } from "../games/valheim/modUpdateCheck";
 import { checkGameUpdateOnStart } from "./gameUpdateCheck";
@@ -37,6 +36,21 @@ export function logActiveValheimMods(
   }
 }
 
+/** Ports d'un serveur d'après sa config, null si elle est illisible. */
+function readServerPorts(ctx: IpcContext, server: Server): GamePort[] | null {
+  if (!server.path) return null;
+  try {
+    return getGamePorts(
+      server.gameType,
+      server.path,
+      ctx.getServerConfig(server.id),
+      { palworld: ctx.configParser, astroneer: ctx.astroConfigParser },
+    );
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Démarre un serveur avec toutes les vérifications préalables. Point d'entrée
  * UNIQUE : bouton Démarrer (IPC `server:start`) ET démarrage automatique à
@@ -50,19 +64,18 @@ export async function startServer(
   const server = ctx.servers.list().find((s) => s.id === id);
   const gameType = server?.gameType ?? "palworld";
 
-  // Refuse de démarrer si un autre serveur déjà running utilise les mêmes
-  // ports (game/RCON/REST). Évite que PalServer.exe plante silencieusement
-  // sur EADDRINUSE et laisse l'utilisateur deviner.
-  if (gameType === "palworld") {
-    const conflicts = detectPortConflicts(
-      id,
-      ctx.servers,
-      ctx.serverManagers,
-      ctx.configParser,
-    );
-    if (conflicts.length > 0) {
-      return { success: false, error: formatConflictsError(conflicts) };
-    }
+  // Refuse de démarrer si un autre serveur déjà lancé (tous jeux confondus)
+  // utilise un des mêmes ports. Évite un serveur qui plante en silence sur
+  // EADDRINUSE — ou qui reste lancé sans être joignable — et laisse
+  // l'utilisateur deviner.
+  const conflicts = detectPortConflicts(
+    id,
+    ctx.servers,
+    ctx.serverManagers,
+    (s) => readServerPorts(ctx, s),
+  );
+  if (conflicts.length > 0) {
+    return { success: false, error: formatConflictsError(conflicts) };
   }
 
   // Valheim quitte silencieusement (code 0) quelques secondes après le
@@ -88,17 +101,10 @@ export async function startServer(
   }
 
   const serverPath = ctx.getServerPath(id);
-  const exeName = getGameServerConfig(gameType).exeName;
-  const args = buildGameArgs(gameType, ctx.getServerConfig(id));
+  const spec = getLaunchSpec(gameType, serverPath, ctx.getServerConfig(id));
 
   const mgr = ctx.serverManagers.getOrCreate(id);
-  const res = await mgr.start(
-    serverPath,
-    exeName,
-    args,
-    sendLog,
-    getGameEnv(gameType),
-  );
+  const res = await mgr.start(serverPath, spec, sendLog);
   // Après start() : le démarrage ouvre une nouvelle session de log (vue vidée,
   // nouveau fichier), la liste des mods doit y figurer.
   if (res.success && gameType === "valheim") {
@@ -118,23 +124,25 @@ export async function startServer(
 
 /**
  * Redémarre un serveur (arrêt propre puis démarrage). Partagé par l'IPC
- * `server:restart` et le menu de l'icône de la zone de notification.
+ * `server:restart`, le menu de l'icône de la zone de notification et le
+ * redémarrage planifié (qui passe sa propre config d'arrêt : annonce +
+ * délai d'avertissement).
  */
 export async function restartServer(
   ctx: IpcContext,
   id: string,
   sendLog: (line: string) => void,
+  stopConfig: StopConfig = ctx.getStopConfig(id),
 ): Promise<{ success: boolean; error?: string }> {
   const server = ctx.servers.list().find((s) => s.id === id);
   const gameType = server?.gameType ?? "palworld";
+  const serverPath = ctx.getServerPath(id);
   const mgr = ctx.serverManagers.getOrCreate(id);
   const res = await mgr.restart(
-    ctx.getServerPath(id),
-    getGameServerConfig(gameType).exeName,
-    buildGameArgs(gameType, ctx.getServerConfig(id)),
+    serverPath,
+    getLaunchSpec(gameType, serverPath, ctx.getServerConfig(id)),
     sendLog,
-    ctx.getStopConfig(id),
-    getGameEnv(gameType),
+    stopConfig,
   );
   if (res.success && gameType === "valheim") {
     logActiveValheimMods(ctx, id, (line) => mgr.log(line));

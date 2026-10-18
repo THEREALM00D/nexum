@@ -1,6 +1,6 @@
 import type { SessionLogStore } from "../logs/SessionLogStore";
 import type { BrowserWindow, App } from "electron";
-import type { ServerManager } from "../server/ServerManager";
+import type { ServerManager, StopConfig } from "../server/ServerManager";
 import type { SteamCMD } from "../steamcmd/SteamCMD";
 import type { PalConfigParser } from "../games/palworld/PalConfigParser";
 import type { AstroConfigParser } from "../games/astroneer/AstroConfigParser";
@@ -19,6 +19,7 @@ import type {
   ServerConfig,
   ValheimLaunchConfig,
   AstroneerLaunchConfig,
+  DragonwildsLaunchConfig,
 } from "../../shared/types";
 
 export interface AppStore {
@@ -74,14 +75,7 @@ export interface IpcContext {
    * Lit la config d'arrêt (REST API + creds) pour un serveur donné.
    * `serverId` est optionnel : par défaut, le serveur actif.
    */
-  getStopConfig: (serverId?: string) => {
-    restApiEnabled: boolean;
-    restApiPort: number;
-    adminPassword: string;
-    shutdownWaittime: number;
-    shutdownMessage: string;
-    gracefulSignal?: boolean;
-  };
+  getStopConfig: (serverId?: string) => StopConfig;
   /** Path d'un serveur par son id (par défaut : serveur actif). */
   getServerPath: (serverId?: string) => string;
   // Multi-serveur : helpers pour récupérer le serveur actif. Tous les handlers
@@ -115,6 +109,13 @@ export interface IpcContext {
   updateAstroneerConfig: (
     serverId: string | undefined,
     patch: Partial<AstroneerLaunchConfig>,
+  ) => void;
+
+  // Config Dragonwilds par-serveur (ports, mot de passe admin, args)
+  getDragonwildsConfig: (serverId?: string) => DragonwildsLaunchConfig;
+  updateDragonwildsConfig: (
+    serverId: string | undefined,
+    patch: Partial<DragonwildsLaunchConfig>,
   ) => void;
 
   /** Dossier userData/servers/{id}/ utilisé pour stocker mods.json et les ZIPs temp. */

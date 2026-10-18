@@ -31,6 +31,17 @@ Three pre-configured rules correspond to the Palworld ports:
 
 Ports are read from `PalWorldSettings.ini` (`PublicPort`, `RCONPort`, `RESTAPIPort`).
 
+### RuneScape: Dragonwilds
+
+Two UDP rules, with the port in their name so that several Dragonwilds servers on the same PC each have their own:
+
+| Rule                                   | Port (default) | Protocol | Purpose            |
+| -------------------------------------- | -------------- | -------- | ------------------ |
+| **Dragonwilds Server - Game (7777)**   | 7777           | UDP      | Player connections |
+| **Dragonwilds Server - Beacon (8888)** | 8888           | UDP      | Beacon             |
+
+Ports come from **Configuration → Network**. After changing a port, remove the old rule (Windows Firewall) and apply the new one. Forward both ports on your router for players outside your network. More in [RuneScape: Dragonwilds](dragonwilds.md).
+
 ## Available actions
 
 ### Toggle an individual rule

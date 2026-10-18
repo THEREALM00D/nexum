@@ -1,5 +1,6 @@
 import type { LaunchArgsConfig } from "../../../shared/types";
 import type { PalConfigParser } from "./PalConfigParser";
+import type { GamePort } from "../ports";
 
 const PERFORMANCE_FLAGS = [
   "-useperfthreads",
@@ -28,5 +29,36 @@ export const palworldServerConfig = {
       shutdownWaittime: 0,
       shutdownMessage: "",
     };
+  },
+
+  // PublicPort = port annoncé aux joueurs ; RCON et REST seulement s'ils sont
+  // activés (TCP, jamais à rediriger sur la box).
+  getPorts(serverPath: string, configParser: PalConfigParser): GamePort[] {
+    const cfg = configParser.read(serverPath);
+    const ports: GamePort[] = [
+      {
+        port: Number(cfg.PublicPort ?? 8211),
+        protocol: "UDP",
+        label: "game",
+        forward: true,
+      },
+    ];
+    if (cfg.RCONEnabled) {
+      ports.push({
+        port: Number(cfg.RCONPort ?? 25575),
+        protocol: "TCP",
+        label: "rcon",
+        forward: false,
+      });
+    }
+    if (cfg.RESTAPIEnabled) {
+      ports.push({
+        port: Number(cfg.RESTAPIPort ?? 8212),
+        protocol: "TCP",
+        label: "restapi",
+        forward: false,
+      });
+    }
+    return ports;
   },
 };

@@ -24,6 +24,7 @@ import { useExeDetection } from "../hooks/useExeDetection";
 import ExeStatusHint from "./ExeStatusHint";
 import InstallDirWarning from "../../../components/common/InstallDirWarning";
 import ColorPicker, { DEFAULT_COLORS } from "./ColorPicker";
+import { GAMES } from "../../../games/registry";
 
 export interface ServerFormValues {
   name: string;
@@ -143,13 +144,11 @@ export default function ServerDialog({
                 }))
               }
             >
-              <MenuItem value="palworld">
-                {t("servers.games.palworld")}
-              </MenuItem>
-              <MenuItem value="valheim">{t("servers.games.valheim")}</MenuItem>
-              <MenuItem value="astroneer">
-                {t("servers.games.astroneer")}
-              </MenuItem>
+              {GAMES.map((g) => (
+                <MenuItem key={g.id} value={g.id}>
+                  {t(`servers.games.${g.id}`)}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
 

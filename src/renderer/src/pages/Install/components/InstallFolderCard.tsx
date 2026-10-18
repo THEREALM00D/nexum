@@ -64,11 +64,9 @@ export default function InstallFolderCard({
         >
           {running
             ? t("install.folder.installing")
-            : gameType === "valheim"
-              ? t("install.folder.installValheim")
-              : gameType === "astroneer"
-                ? t("install.folder.installAstroneer")
-                : t("install.folder.installPalworld")}
+            : t("install.folder.installGame", {
+                game: t(`servers.games.${gameType}`),
+              })}
         </Button>
         <Button
           fullWidth
