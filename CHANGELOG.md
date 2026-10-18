@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.13.0](https://github.com/THEREALM00D/nexum/compare/v0.12.6...v0.13.0) (2026-10-18)
+
+
+### Features
+
+* add RuneScape: Dragonwilds support ([#113](https://github.com/THEREALM00D/nexum/issues/113)) ([f18a017](https://github.com/THEREALM00D/nexum/commit/f18a017fb72b3276fb12aadbcbce98534c15a25f))
+
 ## [0.12.6](https://github.com/THEREALM00D/nexum/compare/v0.12.5...v0.12.6) (2026-10-15)
 
 
