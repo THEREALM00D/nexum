@@ -30,7 +30,7 @@ export default function BackupPage({
   const backup = useBackup();
 
   return (
-    <Stack spacing={3}>
+    <Stack spacing={3} sx={{ height: "100%" }}>
       <div>
         <Typography variant="h6">{t("backup.title")}</Typography>
         <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mt: 0.5 }}>

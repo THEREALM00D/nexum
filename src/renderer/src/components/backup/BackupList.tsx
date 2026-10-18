@@ -4,7 +4,6 @@ import {
   CircularProgress,
   Divider,
   IconButton,
-  Paper,
   Stack,
   Tooltip,
   Typography,
@@ -15,6 +14,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useTranslation } from "react-i18next";
 import type { BackupEntry, ServerStatus } from "@shared/types";
 import { formatSize, formatDate } from "../../utils/format";
+import ScrollPanel from "../common/ScrollPanel";
 
 interface Props {
   backups: BackupEntry[];
@@ -41,29 +41,39 @@ export default function BackupList({
   const locale = i18n.resolvedLanguage ?? "fr";
 
   return (
-    <Paper sx={{ p: 2.5 }}>
-      <Stack
-        direction="row"
-        sx={{
-          alignItems: "center",
-          justifyContent: "space-between",
-          mb: 1.5,
-        }}
-      >
-        <Typography variant="subtitle2">
-          {t("backup.list.title", { count: backups.length })}
-        </Typography>
-        <Button
-          variant="contained"
-          size="small"
-          startIcon={creating ? <CircularProgress size={14} /> : <BackupIcon />}
-          disabled={!serverPath || creating}
-          onClick={onCreate}
-        >
-          {creating ? t("backup.list.creating") : t("backup.list.create")}
-        </Button>
-      </Stack>
-      <Divider sx={{ mb: 1 }} />
+    <ScrollPanel
+      padding={2.5}
+      grow={false}
+      minHeight={160}
+      header={
+        <>
+          <Stack
+            direction="row"
+            sx={{
+              alignItems: "center",
+              justifyContent: "space-between",
+              mb: 1.5,
+            }}
+          >
+            <Typography variant="subtitle2">
+              {t("backup.list.title", { count: backups.length })}
+            </Typography>
+            <Button
+              variant="contained"
+              size="small"
+              startIcon={
+                creating ? <CircularProgress size={14} /> : <BackupIcon />
+              }
+              disabled={!serverPath || creating}
+              onClick={onCreate}
+            >
+              {creating ? t("backup.list.creating") : t("backup.list.create")}
+            </Button>
+          </Stack>
+          <Divider />
+        </>
+      }
+    >
       {backups.length === 0 ? (
         <Typography variant="body2" sx={{ color: "text.secondary" }}>
           {t("backup.list.none")}
@@ -123,6 +133,6 @@ export default function BackupList({
           ))}
         </Stack>
       )}
-    </Paper>
+    </ScrollPanel>
   );
 }

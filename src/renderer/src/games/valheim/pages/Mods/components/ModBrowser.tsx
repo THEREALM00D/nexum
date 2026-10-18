@@ -32,6 +32,7 @@ import type {
   ModRegistry,
 } from "@shared/types";
 import { REGISTRY_LABEL, modPageUrl } from "../utils/modPageUrl";
+import ScrollPanel from "../../../../../components/common/ScrollPanel";
 import ModUpdatedDate from "./ModUpdatedDate";
 import DeprecatedChip from "./DeprecatedChip";
 
@@ -98,75 +99,100 @@ export default function ModBrowser({
   };
 
   return (
-    <Stack spacing={2}>
-      {/* Sélecteur de registre — Thunderstore ou Hexium, listes indépendantes */}
-      <ToggleButtonGroup
-        value={registry}
-        exclusive
-        size="small"
-        onChange={(_, v) => v && onRegistryChange(v as ModRegistry)}
-      >
-        <ToggleButton value="thunderstore">
-          {REGISTRY_LABEL.thunderstore}
-        </ToggleButton>
-        <ToggleButton value="hexium">{REGISTRY_LABEL.hexium}</ToggleButton>
-      </ToggleButtonGroup>
-
-      {/* Champ de recherche — soumet via Entrée ou bouton */}
-      <Stack direction="row" spacing={1} sx={{ alignItems: "flex-start" }}>
-        <TextField
-          size="small"
-          placeholder={t("valheimMods.browse.search")}
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          onKeyDown={handleSearchKeyDown}
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon sx={{ fontSize: 18, color: "text.disabled" }} />
-                </InputAdornment>
-              ),
-            },
-          }}
-          sx={{ flex: 1, maxWidth: 320 }}
-        />
-        <Button
-          size="small"
-          variant="outlined"
-          onClick={handleSearchSubmit}
-          sx={{ height: 40 }}
-        >
-          {t("valheimMods.browse.searchBtn")}
-        </Button>
-        {search && (
-          <Button
-            size="small"
-            onClick={() => {
-              setSearch("");
-              onSearch("");
-            }}
-            sx={{ height: 40 }}
+    <ScrollPanel
+      paper={false}
+      minHeight={280}
+      resetKey={mods}
+      header={
+        <Stack spacing={1}>
+          {/* Registre et recherche sur une ligne : l'en-tête reste compact
+              pour laisser de la place à la liste. */}
+          <Stack
+            direction="row"
+            sx={{ alignItems: "center", flexWrap: "wrap", gap: 1.5 }}
           >
-            {t("valheimMods.browse.clearSearch")}
-          </Button>
-        )}
-      </Stack>
+            {/* Sélecteur de registre — Thunderstore ou Hexium, listes indépendantes */}
+            <ToggleButtonGroup
+              value={registry}
+              exclusive
+              size="small"
+              onChange={(_, v) => v && onRegistryChange(v as ModRegistry)}
+            >
+              <ToggleButton value="thunderstore">
+                {REGISTRY_LABEL.thunderstore}
+              </ToggleButton>
+              <ToggleButton value="hexium">
+                {REGISTRY_LABEL.hexium}
+              </ToggleButton>
+            </ToggleButtonGroup>
 
-      <Tabs
-        value={tab}
-        onChange={(_, v) => {
-          setSearch("");
-          onTabChange(v as BrowseTab);
-        }}
-        textColor="primary"
-        indicatorColor="primary"
-      >
-        <Tab value="trending" label={t("valheimMods.browse.tabs.trending")} />
-        <Tab value="latest" label={t("valheimMods.browse.tabs.latest")} />
-        <Tab value="updated" label={t("valheimMods.browse.tabs.updated")} />
-      </Tabs>
+            {/* Champ de recherche — soumet via Entrée ou bouton */}
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{ alignItems: "flex-start", flex: 1, minWidth: 280 }}
+            >
+              <TextField
+                size="small"
+                placeholder={t("valheimMods.browse.search")}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                onKeyDown={handleSearchKeyDown}
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SearchIcon
+                          sx={{ fontSize: 18, color: "text.disabled" }}
+                        />
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+                sx={{ flex: 1, maxWidth: 320 }}
+              />
+              <Button
+                size="small"
+                variant="outlined"
+                onClick={handleSearchSubmit}
+                sx={{ height: 40 }}
+              >
+                {t("valheimMods.browse.searchBtn")}
+              </Button>
+              {search && (
+                <Button
+                  size="small"
+                  onClick={() => {
+                    setSearch("");
+                    onSearch("");
+                  }}
+                  sx={{ height: 40 }}
+                >
+                  {t("valheimMods.browse.clearSearch")}
+                </Button>
+              )}
+            </Stack>
+          </Stack>
 
+          <Tabs
+            value={tab}
+            onChange={(_, v) => {
+              setSearch("");
+              onTabChange(v as BrowseTab);
+            }}
+            textColor="primary"
+            indicatorColor="primary"
+          >
+            <Tab
+              value="trending"
+              label={t("valheimMods.browse.tabs.trending")}
+            />
+            <Tab value="latest" label={t("valheimMods.browse.tabs.latest")} />
+            <Tab value="updated" label={t("valheimMods.browse.tabs.updated")} />
+          </Tabs>
+        </Stack>
+      }
+    >
       {loading && (
         <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
           <CircularProgress size={32} />
@@ -371,6 +397,6 @@ export default function ModBrowser({
           </DialogActions>
         </Dialog>
       )}
-    </Stack>
+    </ScrollPanel>
   );
 }

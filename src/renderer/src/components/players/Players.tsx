@@ -3,12 +3,10 @@ import {
   Box,
   Button,
   InputAdornment,
-  Paper,
   Stack,
   Table,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
   TableRow,
   TextField,
@@ -21,6 +19,7 @@ import DeleteSweepIcon from "@mui/icons-material/DeleteSweep";
 import { useTranslation } from "react-i18next";
 import type { PlayerHistoryEntry } from "@shared/types";
 import { useNotification } from "../../context/NotificationContext";
+import ScrollPanel from "../common/ScrollPanel";
 import PlayerRow from "./PlayerRow";
 
 const REFRESH_INTERVAL_MS = 10_000;
@@ -93,7 +92,7 @@ export default function Players() {
   };
 
   return (
-    <Stack spacing={3}>
+    <Stack spacing={3} sx={{ height: "100%" }}>
       <Box>
         <Typography variant="h6">{t("players.title")}</Typography>
         <Typography variant="body2" sx={{ color: "text.secondary", mt: 0.5 }}>
@@ -143,7 +142,13 @@ export default function Players() {
         </Button>
       </Stack>
 
-      <Paper sx={{ overflow: "hidden" }}>
+      {/* Message seul (aucun joueur / aucun résultat) : pas de grand
+          panneau vide étiré jusqu'en bas. */}
+      <ScrollPanel
+        padding={0}
+        grow={filtered.length > 0}
+        minHeight={filtered.length > 0 ? 240 : 0}
+      >
         {entries.length === 0 ? (
           <Box sx={{ p: 4, textAlign: "center" }}>
             <Typography variant="body2" sx={{ color: "text.secondary" }}>
@@ -157,32 +162,30 @@ export default function Players() {
             </Typography>
           </Box>
         ) : (
-          <TableContainer>
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell>{t("players.columns.name")}</TableCell>
-                  <TableCell>{t("players.columns.status")}</TableCell>
-                  <TableCell>{t("players.columns.lastSeen")}</TableCell>
-                  <TableCell>{t("players.columns.playtime")}</TableCell>
-                  <TableCell>{t("players.columns.sessions")}</TableCell>
-                  <TableCell>{t("players.columns.ip")}</TableCell>
-                  <TableCell />
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {filtered.map((entry) => (
-                  <PlayerRow
-                    key={entry.userId}
-                    entry={entry}
-                    onRemove={handleRemove}
-                  />
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          <Table size="small" stickyHeader>
+            <TableHead>
+              <TableRow>
+                <TableCell>{t("players.columns.name")}</TableCell>
+                <TableCell>{t("players.columns.status")}</TableCell>
+                <TableCell>{t("players.columns.lastSeen")}</TableCell>
+                <TableCell>{t("players.columns.playtime")}</TableCell>
+                <TableCell>{t("players.columns.sessions")}</TableCell>
+                <TableCell>{t("players.columns.ip")}</TableCell>
+                <TableCell />
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filtered.map((entry) => (
+                <PlayerRow
+                  key={entry.userId}
+                  entry={entry}
+                  onRemove={handleRemove}
+                />
+              ))}
+            </TableBody>
+          </Table>
         )}
-      </Paper>
+      </ScrollPanel>
     </Stack>
   );
 }
