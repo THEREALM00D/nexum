@@ -41,6 +41,8 @@ export default function ServerControls({
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
+        flexWrap: "wrap",
+        gap: 1.5,
       }}
     >
       <Chip

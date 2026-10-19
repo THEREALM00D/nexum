@@ -12,6 +12,7 @@ import {
 import SettingsSection from "./components/SettingsSection";
 import LaunchAtLoginSwitch from "./components/LaunchAtLoginSwitch";
 import CloseToTraySwitch from "./components/CloseToTraySwitch";
+import FormPage from "../../components/common/FormPage";
 
 const REPO = "https://github.com/THEREALM00D/nexum";
 const open = (url: string) => window.api.shell.openExternal(url);
@@ -23,7 +24,7 @@ export default function Settings() {
   const docsSuffix = i18n.resolvedLanguage === "en" ? "" : ".fr";
 
   return (
-    <Stack spacing={3} sx={{ maxWidth: 720 }}>
+    <FormPage>
       <Box>
         <Typography variant="h6">{t("settings.title")}</Typography>
         <Typography variant="body2" sx={{ color: "text.secondary", mt: 0.5 }}>
@@ -86,6 +87,6 @@ export default function Settings() {
           {t("settings.help.license")}
         </Typography>
       </SettingsSection>
-    </Stack>
+    </FormPage>
   );
 }

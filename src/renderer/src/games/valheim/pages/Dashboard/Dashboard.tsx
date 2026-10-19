@@ -57,7 +57,9 @@ export default function ValheimDashboard() {
         {t("valheimDashboard.noApi")}
       </Alert>
 
-      <Box sx={{ height: 400 }}>
+      {/* Hauteur suivant la fenêtre : 400 px fixes poussaient le bas du
+          log hors de l'écran sur un portable (768 px de haut). */}
+      <Box sx={{ height: "clamp(220px, 40vh, 400px)" }}>
         <Logs />
       </Box>
     </Stack>

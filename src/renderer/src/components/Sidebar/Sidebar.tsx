@@ -1,5 +1,12 @@
-import { useState } from "react";
-import { Box, Chip, Divider, IconButton, List, Tooltip } from "@mui/material";
+import {
+  Box,
+  Chip,
+  Divider,
+  IconButton,
+  List,
+  Tooltip,
+  useMediaQuery,
+} from "@mui/material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import DownloadIcon from "@mui/icons-material/Download";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -17,6 +24,8 @@ import { GLOBAL_PAGES, type Page } from "../../App";
 import { useServer } from "../../context/ServerContext";
 import { DEFAULT_GAME, getGamePlugin } from "../../games/registry";
 import { STATUS_COLOR } from "../../utils/status";
+import { SHORT_WINDOW_QUERY } from "../../theme";
+import { useSidebarCollapsed } from "./useSidebarCollapsed";
 import ServerSwitcher from "./ServerSwitcher";
 import UpdateIndicator from "./UpdateIndicator";
 import DiscordButton from "./DiscordButton";
@@ -94,7 +103,10 @@ export default function Sidebar({ currentPage, onNavigate }: SidebarProps) {
   const { state } = useServer();
   const { t } = useTranslation();
   const plugin = getGamePlugin(state.activeServer?.gameType ?? DEFAULT_GAME);
-  const [collapsed, setCollapsed] = useState(false);
+  // Écran de portable (≤ 820 px de haut) : le choix de langue, aussi dans
+  // Paramètres, est retiré d'ici pour que le bas de la barre reste visible.
+  const short = useMediaQuery(SHORT_WINDOW_QUERY);
+  const [collapsed, toggleCollapsed] = useSidebarCollapsed();
 
   const renderItem = ({ id, labelKey, icon }: (typeof navItems)[number]) => (
     <SidebarNavItem
@@ -133,7 +145,7 @@ export default function Sidebar({ currentPage, onNavigate }: SidebarProps) {
           title={collapsed ? t("sidebar.expand") : t("sidebar.collapse")}
           placement="right"
         >
-          <IconButton size="small" onClick={() => setCollapsed((v) => !v)}>
+          <IconButton size="small" onClick={toggleCollapsed}>
             {collapsed ? (
               <ChevronRightIcon fontSize="small" />
             ) : (
@@ -147,18 +159,22 @@ export default function Sidebar({ currentPage, onNavigate }: SidebarProps) {
 
       <Divider sx={{ mx: collapsed ? 0.5 : 1.5, mb: 1 }} />
 
-      {/* Pages du jeu / du serveur actif */}
-      <List dense sx={{ py: 1, px: collapsed ? 0.5 : 1 }}>
-        {navItems
-          .filter(
-            ({ id }) =>
-              !GLOBAL_PAGES.includes(id) && plugin?.supportedPages.includes(id),
-          )
-          .map(renderItem)}
-      </List>
+      {/* Pages du jeu / du serveur actif — seule zone qui défile si la
+          fenêtre est trop basse : le bas de la barre reste toujours visible. */}
+      <Box sx={{ flex: 1, minHeight: 0, overflowY: "auto" }}>
+        <List dense sx={{ py: 1, px: collapsed ? 0.5 : 1 }}>
+          {navItems
+            .filter(
+              ({ id }) =>
+                !GLOBAL_PAGES.includes(id) &&
+                plugin?.supportedPages.includes(id),
+            )
+            .map(renderItem)}
+        </List>
+      </Box>
 
       {/* Pages globales, indépendantes du serveur actif */}
-      <Box sx={{ mt: "auto" }}>
+      <Box sx={{ flexShrink: 0 }}>
         <Divider sx={{ mx: collapsed ? 0.5 : 1.5 }} />
         <List dense sx={{ py: 1, px: collapsed ? 0.5 : 1 }}>
           {navItems
@@ -167,11 +183,15 @@ export default function Sidebar({ currentPage, onNavigate }: SidebarProps) {
         </List>
       </Box>
 
-      <Box sx={{ p: collapsed ? 0.5 : 2, pt: 0 }}>
+      <Box sx={{ p: collapsed ? 0.5 : 2, pt: 0, flexShrink: 0 }}>
         {!collapsed && (
           <>
-            <LanguageToggle sx={{ mb: 1.5 }} />
-            <Divider sx={{ mb: 1.5 }} />
+            {!short && (
+              <>
+                <LanguageToggle sx={{ mb: 1.5 }} />
+                <Divider sx={{ mb: 1.5 }} />
+              </>
+            )}
             <Chip
               label={t(`status.${state.status}`, {
                 defaultValue: state.status,

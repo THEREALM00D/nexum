@@ -62,20 +62,21 @@ export default function ConfigFileEditorDialog({
         fullWidth
       >
         <DialogTitle sx={{ fontFamily: FONT_MONO }}>{fileName}</DialogTitle>
-        <DialogContent>
-          <Box sx={{ mt: 1 }}>
-            <SearchField
-              value={search}
-              onChange={setSearch}
-              placeholder={t("valheimMods.configs.searchSettings")}
-              sx={{ mb: 2, width: "100%" }}
-            />
-            <CfgStructuredEditor
-              entries={entries}
-              search={deferredSearch}
-              onChange={onChange}
-            />
-          </Box>
+        {/* Hors de DialogContent : la recherche reste visible au défilement */}
+        <Box sx={{ px: 3, pt: 1, pb: 2 }}>
+          <SearchField
+            value={search}
+            onChange={setSearch}
+            placeholder={t("valheimMods.configs.searchSettings")}
+            sx={{ width: "100%" }}
+          />
+        </Box>
+        <DialogContent sx={{ pt: 0 }}>
+          <CfgStructuredEditor
+            entries={entries}
+            search={deferredSearch}
+            onChange={onChange}
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={requestClose}>

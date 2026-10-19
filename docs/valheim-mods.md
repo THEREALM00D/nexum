@@ -14,7 +14,7 @@ Most Valheim mods require **BepInEx**. If Nexum doesn't find it in the server fo
 
 ## Server and players
 
-Nexum installs mods **on the server only**. Most mods must **also be installed by each player**, with a client mod manager such as [Gale](https://github.com/Kesomannen/gale), r2modman or the [Hexium mod manager](https://hexium.gg/mod-manager). The mod's page on its registry says whether it's needed on the client, on the server, or both. A mod installed on the server only will usually seem to do nothing.
+Nexum installs mods **on the server only**. Most mods must **also be installed by each player**, with a client mod manager such as [Gale](https://github.com/Kesomannen/gale), r2modman or the [Hexium mod manager](https://hexium.gg/mod-manager). The mod's page on its registry says whether it's needed on the client, on the server, or both. A mod installed on the server only will usually seem to do nothing. Nexum shows this reminder on the Mods page; once you know it, **Hide reminder** shrinks it to a one-line link (your choice is remembered).
 
 Tip: build your modpack in Gale, export the profile code, and import it in Nexum (see below) so the server and players get the same mods.
 

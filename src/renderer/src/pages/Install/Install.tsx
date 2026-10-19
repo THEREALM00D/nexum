@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useInstall } from "./hooks/useInstall";
 import SteamCmdCard from "./components/SteamCmdCard";
@@ -6,6 +6,7 @@ import InstallFolderCard from "./components/InstallFolderCard";
 import LaunchArgsCard from "./components/LaunchArgsCard";
 import UpdateStatusCard from "./components/UpdateStatusCard";
 import InstallLogs from "./components/InstallLogs";
+import FormPage from "../../components/common/FormPage";
 
 export default function Install() {
   const { t } = useTranslation();
@@ -31,7 +32,7 @@ export default function Install() {
   } = useInstall();
 
   return (
-    <Stack spacing={3} sx={{ maxWidth: 640 }}>
+    <FormPage>
       <Box>
         <Typography variant="h6">{t("install.title")}</Typography>
         <Typography variant="body2" sx={{ color: "text.secondary", mt: 0.5 }}>
@@ -80,6 +81,6 @@ export default function Install() {
       )}
 
       {logs.length > 0 && <InstallLogs logs={logs} />}
-    </Stack>
+    </FormPage>
   );
 }

@@ -141,13 +141,19 @@ export default function ServersTable({
                       {t(`servers.games.${srv.gameType}`)}
                     </Typography>
                   </TableCell>
-                  <TableCell>
-                    <Typography
-                      variant="caption"
-                      sx={{ fontFamily: FONT_MONO, color: "text.secondary" }}
-                    >
-                      {srv.path}
-                    </Typography>
+                  {/* Chemin tronqué (complet au survol) : un long chemin
+                      élargissait le tableau au-delà de la fenêtre. */}
+                  <TableCell sx={{ maxWidth: 280 }}>
+                    <Tooltip title={srv.path}>
+                      <Typography
+                        variant="caption"
+                        noWrap
+                        component="div"
+                        sx={{ fontFamily: FONT_MONO, color: "text.secondary" }}
+                      >
+                        {srv.path}
+                      </Typography>
+                    </Tooltip>
                   </TableCell>
                   <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
                     <Tooltip title={t("servers.serverActions.start")}>

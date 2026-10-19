@@ -1,10 +1,11 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useServer } from "../../../../context/ServerContext";
 import { useFirewall } from "./hooks/useFirewall";
 import AdminBanner from "../../../../components/firewall/AdminBanner";
 import StandardRules from "../../../../components/firewall/StandardRules";
 import CustomRules from "../../../../components/firewall/CustomRules";
+import FormPage from "../../../../components/common/FormPage";
 
 export default function Network() {
   const { t } = useTranslation();
@@ -21,7 +22,7 @@ export default function Network() {
   } = useFirewall(state.serverPath);
 
   return (
-    <Stack spacing={3} sx={{ maxWidth: 680 }}>
+    <FormPage>
       <Box>
         <Typography variant="h6">{t("network.title")}</Typography>
         <Typography variant="body2" sx={{ color: "text.secondary", mt: 0.5 }}>
@@ -41,6 +42,6 @@ export default function Network() {
       />
 
       <CustomRules rules={customRules} onRefresh={refresh} />
-    </Stack>
+    </FormPage>
   );
 }

@@ -9,6 +9,8 @@ export default {
     },
     clientHint:
       'Nexum installs mods on the server only. Most mods must also be installed by each player, with a mod manager such as Gale, r2modman or the Hexium mod manager (the mod page says whether it\'s needed on the client). Use "Share modpack" to give them the same mods in one code.',
+    clientHintShow: "Reminder: most mods must also be installed by each player",
+    clientHintHide: "Hide reminder",
     share: {
       button: "Share modpack",
       title: "Share the modpack with your players",

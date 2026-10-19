@@ -45,7 +45,8 @@ export default function Dashboard() {
       <JoinServerCard />
 
       {serverInfo && (
-        <Box sx={{ display: "flex", gap: 2 }}>
+        // Côte à côte sur grand écran, l'un sous l'autre sur un portable
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
           <ServerInfoPanel serverInfo={serverInfo} metrics={metrics} />
           <PlayersPanel players={players} setPlayers={setPlayers} />
         </Box>

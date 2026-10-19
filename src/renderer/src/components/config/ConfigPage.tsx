@@ -13,6 +13,7 @@ import ConfigPageHeader from "./ConfigPageHeader";
 import ConfigSearchBar from "./ConfigSearchBar";
 import type { ConfigSettings, FieldGroup } from "./types";
 import { appErrorMessage } from "../../utils/appErrorMessage";
+import FormPage from "../common/FormPage";
 
 const SAVE_FLASH_MS = 2000;
 
@@ -127,7 +128,7 @@ export default function ConfigPage({
     );
 
   return (
-    <Stack spacing={3} sx={{ maxWidth: 680 }}>
+    <FormPage>
       <ConfigPageHeader
         titleKey={titleKey}
         subtitleKey={subtitleKey}
@@ -199,6 +200,6 @@ export default function ConfigPage({
           </Button>
         </Stack>
       </form>
-    </Stack>
+    </FormPage>
   );
 }

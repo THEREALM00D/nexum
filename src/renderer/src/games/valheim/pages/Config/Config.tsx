@@ -1,11 +1,4 @@
-import {
-  Box,
-  Button,
-  IconButton,
-  Stack,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Box, Button, IconButton, Tooltip, Typography } from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import { useTranslation } from "react-i18next";
@@ -18,6 +11,7 @@ import ModifiersSection from "./components/ModifiersSection";
 import NetworkSection from "./components/NetworkSection";
 import AdvancedSection from "./components/AdvancedSection";
 import AdministrationSection from "./components/AdministrationSection";
+import FormPage from "../../../../components/common/FormPage";
 
 export default function ValheimConfig() {
   const { t } = useTranslation();
@@ -52,7 +46,7 @@ export default function ValheimConfig() {
   }
 
   return (
-    <Stack spacing={3} sx={{ maxWidth: 680 }}>
+    <FormPage>
       <Box>
         <Typography variant="h6">{t("valheimConfig.title")}</Typography>
         <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mt: 0.5 }}>
@@ -92,6 +86,6 @@ export default function ValheimConfig() {
         bannedList={bannedList}
         permittedList={permittedList}
       />
-    </Stack>
+    </FormPage>
   );
 }

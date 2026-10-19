@@ -20,6 +20,11 @@ import { FONT_MONO } from "../../theme";
 // (« … with join code 123456 and IP … »).
 const JOIN_CODE = /join code ([A-Za-z0-9]+)/i;
 
+// Libellé à gauche, valeur à droite ; passe à la ligne dans une fenêtre
+// étroite plutôt que de déborder de la carte.
+const ROW_SX = { alignItems: "center", flexWrap: "wrap", columnGap: 1 };
+const LABEL_SX = { color: "text.secondary", minWidth: { xs: 120, md: 170 } };
+
 function CopyRow({ label, value }: { label: string; value: string }) {
   const { t } = useTranslation();
   const { notify } = useNotification();
@@ -32,11 +37,8 @@ function CopyRow({ label, value }: { label: string; value: string }) {
     }
   };
   return (
-    <Stack direction="row" sx={{ alignItems: "center", gap: 1 }}>
-      <Typography
-        variant="body2"
-        sx={{ color: "text.secondary", minWidth: 170 }}
-      >
+    <Stack direction="row" sx={ROW_SX}>
+      <Typography variant="body2" sx={LABEL_SX}>
         {label}
       </Typography>
       <Typography sx={{ fontFamily: FONT_MONO, fontSize: 14 }}>
@@ -112,11 +114,8 @@ export default function JoinServerCard() {
             value={`${publicIp}:${info.port}`}
           />
         ) : (
-          <Stack direction="row" sx={{ alignItems: "center", gap: 1 }}>
-            <Typography
-              variant="body2"
-              sx={{ color: "text.secondary", minWidth: 170 }}
-            >
+          <Stack direction="row" sx={ROW_SX}>
+            <Typography variant="body2" sx={LABEL_SX}>
               {t("join.internet")}
             </Typography>
             <Tooltip title={t("join.publicIpTooltip")}>
