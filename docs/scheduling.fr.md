@@ -39,12 +39,24 @@ Texte envoyé à tous les joueurs via l'API REST. Le placeholder `{minutes}` est
 
 Exemple : `"Le serveur va redémarrer dans {minutes} minutes"` devient `"Le serveur va redémarrer dans 5 minutes"`.
 
+### Mettre à jour le jeu au moment du redémarrage
+
+Option désactivée par défaut. Au moment du redémarrage, Nexum vérifie si une mise à jour du serveur est disponible sur Steam :
+
+- **Mise à jour disponible** : arrêt du serveur (avec l'annonce et le délai ci-dessus), [sauvegarde du monde](backups.fr.md#sauvegarde-avant-chaque-mise-à-jour), mise à jour avec SteamCMD, puis démarrage. Le résultat (build installé, nom de la sauvegarde) est écrit dans les logs de la nouvelle session.
+- **Serveur à jour**, ou Steam ne répond pas : simple redémarrage, comme sans l'option.
+- Si la sauvegarde ou la mise à jour échoue, le serveur redémarre sur la version déjà installée et les logs disent pourquoi.
+
+Utile pour que le serveur suive les patchs du jeu sans intervention : un serveur en retard d'une version refuse les joueurs qui ont mis leur jeu à jour. Sans effet pour un serveur installé via la **bibliothèque Steam** (c'est Steam qui le met à jour) ou si SteamCMD n'est pas installé. Les mods Valheim ne sont pas mis à jour automatiquement.
+
 ## Comment ça fonctionne
+
+Chaque serveur a sa propre planification : tous les serveurs lancés dont le redémarrage est activé sont redémarrés à leur heure, qu'ils soient sélectionnés dans Nexum ou non (jusqu'à la 0.14, seul le serveur sélectionné l'était).
 
 Le scheduler côté main :
 
 1. Vérifie l'heure actuelle toutes les 30 secondes
-2. Quand l'heure correspond, déclenche le processus de redémarrage **une seule fois par jour** à cette heure
+2. Quand l'heure correspond, déclenche le processus de redémarrage **une seule fois par jour** à cette heure (uniquement si le serveur est lancé)
 
 Le processus de redémarrage :
 

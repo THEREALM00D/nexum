@@ -37,14 +37,17 @@ import { registerValheimModsHandlers } from "../games/valheim/handlers/mods";
 import { registerAstroneerHandlers } from "../games/astroneer/handlers/config";
 import { registerDragonwildsHandlers } from "../games/dragonwilds/handlers/config";
 import { registerDragonwildsWorldHandlers } from "../games/dragonwilds/handlers/worlds";
-import { getGameStopConfig, getGameSavePath } from "../games/registry";
-import { autoStartServers, restartServer } from "../server/startServer";
+import { getGameStopConfig } from "../games/registry";
+import { autoStartServers } from "../server/startServer";
+import { runScheduledRestart } from "../scheduler/scheduledRestart";
+import { backupServer } from "../backup/serverBackup";
 
 const DEFAULT_RESTART_CONFIG: RestartConfig = {
   enabled: false,
   time: "04:00",
   warningMinutes: 5,
   message: "Le serveur va redémarrer dans {minutes} minutes",
+  updateGame: false,
 };
 
 export async function registerIpcHandlers(): Promise<IpcContext> {
@@ -174,13 +177,12 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
     );
   };
 
-  const getBackupDir = (): string => {
-    const active = servers.getActive();
-    if (!active) return backup.getDefaultBackupDir(app.getPath("userData"));
-    const stored = serverConfigs.get(active.id).backup.backupDir;
+  const getBackupDir = (serverId?: string): string => {
+    const id = serverId ?? servers.getActive()?.id;
+    if (!id) return backup.getDefaultBackupDir(app.getPath("userData"));
+    const stored = serverConfigs.get(id).backup.backupDir;
     return (
-      stored ||
-      backup.getDefaultBackupDirForServer(app.getPath("userData"), active.id)
+      stored || backup.getDefaultBackupDirForServer(app.getPath("userData"), id)
     );
   };
 
@@ -203,61 +205,31 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
     return getGameStopConfig(gameType, getServerPath(serverId), configParser);
   };
 
-  const getStopConfigForRestart = () => {
-    const base = getStopConfig();
-    const restart = getRestartConfig();
-    return {
-      ...base,
-      shutdownWaittime: restart.warningMinutes * 60,
-      shutdownMessage: restart.message.replace(
-        "{minutes}",
-        String(restart.warningMinutes),
-      ),
-    };
-  };
-
   const applyBackupScheduler = (): void => {
     const active = servers.getActive();
-    const cfg = active ? serverConfigs.get(active.id).backup : null;
-    const minutes = cfg?.backupIntervalMinutes ?? 0;
+    const minutes = active
+      ? serverConfigs.get(active.id).backup.backupIntervalMinutes
+      : 0;
     backup.startScheduler(minutes, async () => {
       const mgr = activeManagerOrNull();
-      if (!mgr || mgr.getStatus() !== "running") return;
-      const serverPath = getActiveServerPath();
-      if (!serverPath) return;
-      // Résout le vrai dossier de sauvegarde par jeu (ex: Valheim stocke ses
-      // mondes hors de serverPath) — sans ça, l'auto-backup zippait toujours
-      // le dossier Palworld par défaut, introuvable pour les autres jeux.
       const currentActive = getActiveServer();
-      const sourcePath = currentActive
-        ? getGameSavePath(
-            currentActive.gameType,
-            serverPath,
-            serverConfigs.get(currentActive.id),
-          )
-        : undefined;
-      const dir = getBackupDir();
-      await backup.create(serverPath, dir, sourcePath);
-      backup.rotate(dir, cfg?.backupKeep ?? 10);
+      if (!currentActive || !mgr || mgr.getStatus() !== "running") return;
+      // Dossier des mondes résolu par jeu (Valheim les range hors de
+      // serverPath) : avant, l'auto-backup zippait toujours celui de Palworld.
+      await backupServer(ctx, currentActive.id);
     });
   };
 
-  // Start daily restart scheduler
-  restartScheduler.start(getRestartConfig, async () => {
-    const mgr = activeManagerOrNull();
-    const active = servers.getActive();
-    if (!active || !mgr || mgr.getStatus() !== "running") return;
-    // Même chemin que le bouton Redémarrer (préparation propre au jeu,
-    // arguments, fichier de log suivi), avec l'annonce et le délai du
-    // redémarrage planifié. Toujours un vrai callback de log : sans lui, la
-    // console restait figée après un redémarrage planifié.
-    await restartServer(
-      ctx,
-      active.id,
-      (line) => broadcastLog(active.id, line),
-      getStopConfigForRestart(),
-    );
-  });
+  // Redémarrage quotidien de chaque serveur, à son heure (mise à jour du jeu
+  // comprise si l'option est cochée).
+  const getRestartSchedules = () =>
+    servers.list().map((s) => ({
+      serverId: s.id,
+      config: serverConfigs.get(s.id).restart,
+    }));
+  restartScheduler.start(getRestartSchedules, (serverId) =>
+    runScheduledRestart(ctx, serverId),
+  );
 
   applyBackupScheduler();
 

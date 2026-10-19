@@ -38,6 +38,8 @@ The **Backups to keep** field defines how many backups are retained. Once the co
 - `0`: no rotation, everything is kept
 - `10` (default): keeps the 10 most recent
 
+Backups made **before an update** (see below) are counted separately: with `10`, Nexum keeps the last 10 regular backups **and** the last 10 pre-update backups. A series of automatic backups can therefore never remove the copy of the world from before the patch.
+
 ### Automatic backup
 
 Interval selector:
@@ -54,6 +56,19 @@ Interval selector:
 | 1 day    | Once a day       |
 
 > Automatic backup only runs **while the server is running**.
+
+### Backup before every update
+
+**Back up the world before every update** option, on by default. A game or mod patch that breaks the world no longer costs you any progress. Nexum backs up the world:
+
+- before every game update from the **Install** page (and the setup wizard);
+- before the game update done by the [scheduled restart](scheduling.md);
+- before **Update** and **Update all** on the Mods page (Valheim), with a single backup for the whole batch.
+
+These backups are named `backup-YYYY-MM-DD_HH-MM-SS-before-update.zip` and are tagged **Before update** in the list. To roll back, restore it while the server is stopped (and reinstall the older mod versions if needed).
+
+- Nothing is backed up for a **first install** (no world yet) or if the world folder doesn't exist yet.
+- If the backup **fails** (backup folder unreachable, disk full…), the update **does not run** and a message explains why. Fix the folder, or turn the option off to update anyway.
 
 ## Actions
 
@@ -89,7 +104,7 @@ Creating a backup can take from a few seconds to several minutes depending on th
 - **Check periodically** that backups are being created correctly (check the logs and timestamps)
 - **Store backups on a different drive** than the server's (in case of a disk failure)
 - **Test a restore** at least once to make sure the process works
-- Before a **major Palworld update**, make a manual backup so you can roll back if needed
+- Keep **Back up the world before every update** on: you can roll back if a game or mod update breaks the world
 
 ## Recovering from a problem
 

@@ -2,6 +2,26 @@ import { ipcMain } from "electron/main";
 import type { IpcContext } from "../context";
 import type { GameType } from "../../../shared/types";
 import { STEAM_APP_IDS } from "../../steamcmd/SteamCMD";
+import { backupBeforeUpdate } from "../../backup/serverBackup";
+
+/**
+ * Sauvegarde le monde du serveur actif avant de lancer SteamCMD (rien pour
+ * une première installation). Renvoie l'erreur à afficher si la sauvegarde
+ * échoue : la mise à jour n'est alors pas lancée.
+ */
+async function backupActiveServer(
+  ctx: IpcContext,
+  onProgress: (msg: string) => void,
+): Promise<string | null> {
+  const server = ctx.getActiveServer();
+  if (!server) return null;
+  try {
+    await backupBeforeUpdate(ctx, server.id, onProgress);
+    return null;
+  } catch (e) {
+    return (e as Error).message;
+  }
+}
 
 export function registerSteamHandlers(ctx: IpcContext): void {
   ipcMain.handle("steamcmd:isInstalled", () => ctx.steamcmd.isInstalled());
@@ -21,9 +41,12 @@ export function registerSteamHandlers(ctx: IpcContext): void {
         return { success: false, error: `Jeu inconnu : ${gameType}` };
       }
       ctx.setActiveServerPath(installPath);
-      return ctx.steamcmd.installGame(gameType, installPath, (progress) => {
-        event.sender.send("steamcmd:progress", progress);
-      });
+      const onProgress = (msg: string) =>
+        event.sender.send("steamcmd:progress", msg);
+      // Dossier qui contient déjà le serveur : c'est une mise à jour.
+      const backupError = await backupActiveServer(ctx, onProgress);
+      if (backupError) return { success: false, error: backupError };
+      return ctx.steamcmd.installGame(gameType, installPath, onProgress);
     },
   );
 
@@ -34,9 +57,11 @@ export function registerSteamHandlers(ctx: IpcContext): void {
     if (!installPath) {
       return { success: false, error: "Aucun chemin serveur configuré" };
     }
-    return ctx.steamcmd.installGame(gameType, installPath, (progress) => {
-      event.sender.send("steamcmd:progress", progress);
-    });
+    const onProgress = (msg: string) =>
+      event.sender.send("steamcmd:progress", msg);
+    const backupError = await backupActiveServer(ctx, onProgress);
+    if (backupError) return { success: false, error: backupError };
+    return ctx.steamcmd.installGame(gameType, installPath, onProgress);
   });
 
   ipcMain.handle("steamcmd:checkForUpdate", async () => {

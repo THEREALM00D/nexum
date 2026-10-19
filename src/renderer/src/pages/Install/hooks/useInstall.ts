@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useServer } from "../../../context/ServerContext";
 import { useNotification } from "../../../context/NotificationContext";
 import { steamService } from "../../../services/steamService";
+import { appErrorMessage } from "../../../utils/appErrorMessage";
 import { dialogService } from "../../../services/dialogService";
 import { DEFAULT_GAME } from "../../../games/registry";
 import type { GameType, LaunchArgsConfig } from "@shared/types";
@@ -104,8 +105,11 @@ export function useInstall() {
         await refreshServers();
         setUpdateStatus(null);
       } else {
-        addLog(t("install.errorPrefix", { msg: res.error }));
-        notify(t("install.errorPrefix", { msg: res.error }), "error");
+        const msg = t("install.errorPrefix", {
+          msg: appErrorMessage(t, res.error),
+        });
+        addLog(msg);
+        notify(msg, "error");
       }
     } catch (e) {
       notify((e as Error).message, "error");
@@ -121,8 +125,11 @@ export function useInstall() {
       const res = await steamService.updateGame();
       if (res.success) setUpdateStatus(null);
       else {
-        addLog(t("install.errorPrefix", { msg: res.error }));
-        notify(t("install.errorPrefix", { msg: res.error }), "error");
+        const msg = t("install.errorPrefix", {
+          msg: appErrorMessage(t, res.error),
+        });
+        addLog(msg);
+        notify(msg, "error");
       }
     } catch (e) {
       notify((e as Error).message, "error");

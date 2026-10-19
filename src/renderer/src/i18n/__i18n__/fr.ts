@@ -38,6 +38,8 @@ export default {
     WORLD_NOT_FOUND: "Monde introuvable : {{name}}",
     NOT_A_WORLD_SAVE:
       "Ce fichier n'est pas une sauvegarde de monde Dragonwilds.",
+    BACKUP_BEFORE_UPDATE_FAILED:
+      "Mise à jour annulée : la sauvegarde du monde a échoué ({{msg}}). Vérifiez le dossier de sauvegarde, ou désactivez « Sauvegarder le monde avant chaque mise à jour » dans la page Sauvegardes.",
   },
   installDir: {
     warning:
@@ -75,7 +77,8 @@ export default {
       dirTooltip: "Choisir un dossier",
       dirOpen: "Ouvrir dans l'explorateur",
       keep: "Sauvegardes à conserver (rotation)",
-      keepHelper: "0 = pas de rotation",
+      keepHelper:
+        "0 = pas de rotation. Les sauvegardes d'avant mise à jour sont comptées à part.",
       auto: "Sauvegarde automatique",
       autoOff: "Désactivée",
       auto15: "Toutes les 15 minutes",
@@ -85,6 +88,9 @@ export default {
       auto360: "Toutes les 6 heures",
       auto720: "Toutes les 12 heures",
       auto1440: "Une fois par jour",
+      beforeUpdate: "Sauvegarder le monde avant chaque mise à jour",
+      beforeUpdateHelper:
+        "Avant de mettre à jour le jeu (page Installation, redémarrage planifié) ou les mods. Si la sauvegarde échoue, la mise à jour n'est pas lancée.",
     },
     list: {
       title: "Sauvegardes ({{count}})",
@@ -96,6 +102,7 @@ export default {
       restoreConfirm:
         "Restaurer {{name}} ?\nLa sauvegarde actuelle sera écrasée.",
       deleteConfirm: "Supprimer {{name}} ?",
+      beforeUpdate: "Avant mise à jour",
     },
     notify: {
       cannotLoad: "Impossible de charger les sauvegardes",
@@ -106,6 +113,7 @@ export default {
       deleted: "Sauvegarde supprimée",
       deleteFailed: "Impossible de supprimer la sauvegarde",
       configFailed: "Impossible d'enregistrer la configuration de sauvegarde",
+      beforeUpdate: "Monde sauvegardé avant la mise à jour : {{name}}",
     },
   },
   schedule: {
@@ -117,6 +125,9 @@ export default {
     warningHelper: "Délai entre l'annonce et l'arrêt (0 = immédiat)",
     message: "Message d'annonce",
     messageHelper: "{minutes} sera remplacé par le délai",
+    updateGame: "Mettre à jour le jeu au moment du redémarrage",
+    updateGameHelper:
+      "Si une mise à jour du serveur est disponible : arrêt, sauvegarde du monde, mise à jour avec SteamCMD, puis démarrage. Sans effet pour un serveur installé via la bibliothèque Steam.",
     save: "Enregistrer",
     notify: {
       saved: "Planification enregistrée",

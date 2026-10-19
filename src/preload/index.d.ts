@@ -198,6 +198,11 @@ interface API {
     setConfig: (cfg: BackupConfig) => Promise<void>;
     list: () => Promise<BackupEntry[]>;
     create: () => Promise<BackupEntry>;
+    /**
+     * Sauvegarde le monde avant une mise à jour des mods (option du serveur).
+     * null : option désactivée ou aucun monde à sauvegarder.
+     */
+    beforeUpdate: (serverId?: string) => Promise<BackupEntry | null>;
     restore: (backupPath: string) => Promise<void>;
     delete: (backupPath: string) => Promise<void>;
   };

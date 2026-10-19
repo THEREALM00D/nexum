@@ -1,11 +1,13 @@
 import { contextBridge, ipcRenderer, type IpcRendererEvent } from "electron";
 import type {
   AppUpdateStatus,
+  BackupConfig,
   FirewallNamedRule,
   GameType,
   GameUpdateNotice,
   ModUpdateNotice,
   ModRegistry,
+  RestartConfig,
 } from "../shared/types";
 
 const api = {
@@ -189,10 +191,12 @@ const api = {
   // Backups
   backup: {
     getConfig: () => ipcRenderer.invoke("backup:getConfig"),
-    setConfig: (cfg: { backupDir: string; backupKeep: number }) =>
+    setConfig: (cfg: BackupConfig) =>
       ipcRenderer.invoke("backup:setConfig", cfg),
     list: () => ipcRenderer.invoke("backup:list"),
     create: () => ipcRenderer.invoke("backup:create"),
+    beforeUpdate: (serverId?: string) =>
+      ipcRenderer.invoke("backup:beforeUpdate", serverId),
     restore: (backupPath: string) =>
       ipcRenderer.invoke("backup:restore", backupPath),
     delete: (backupPath: string) =>
@@ -201,12 +205,8 @@ const api = {
   // Scheduler
   schedule: {
     getRestart: () => ipcRenderer.invoke("schedule:getRestart"),
-    setRestart: (cfg: {
-      enabled: boolean;
-      time: string;
-      warningMinutes: number;
-      message: string;
-    }) => ipcRenderer.invoke("schedule:setRestart", cfg),
+    setRestart: (cfg: RestartConfig) =>
+      ipcRenderer.invoke("schedule:setRestart", cfg),
   },
   // Shell
   shell: {

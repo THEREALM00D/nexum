@@ -118,6 +118,8 @@ Pour mettre à jour (le serveur doit être arrêté) :
 - Cliquez sur **Vérifier** pour comparer la version installée et la version Steam
 - Si une mise à jour est disponible, cliquez sur **Mettre à jour**
 
+Avant de lancer SteamCMD, Nexum sauvegarde le monde (option **Sauvegarder le monde avant chaque mise à jour** de la page **Sauvegardes**, activée par défaut, voir [Sauvegardes](backups.fr.md#sauvegarde-avant-chaque-mise-à-jour)). Pour que le serveur se mette à jour tout seul, activez **Mettre à jour le jeu au moment du redémarrage** dans la page [Planification](scheduling.fr.md).
+
 ## Dépannage
 
 ### Le serveur Valheim s'arrête quelques secondes après le démarrage

@@ -38,6 +38,8 @@ export default {
     STOP_BEFORE_WORLD_CHANGE: "Stop the server before switching worlds.",
     WORLD_NOT_FOUND: "World not found: {{name}}",
     NOT_A_WORLD_SAVE: "This file is not a Dragonwilds world save.",
+    BACKUP_BEFORE_UPDATE_FAILED:
+      'Update cancelled: the world backup failed ({{msg}}). Check the backup folder, or turn off "Back up the world before every update" on the Backups page.',
   },
   installDir: {
     warning:
@@ -75,7 +77,7 @@ export default {
       dirTooltip: "Choose a folder",
       dirOpen: "Open in explorer",
       keep: "Backups to keep (rotation)",
-      keepHelper: "0 = no rotation",
+      keepHelper: "0 = no rotation. Pre-update backups are counted separately.",
       auto: "Automatic backup",
       autoOff: "Disabled",
       auto15: "Every 15 minutes",
@@ -85,6 +87,9 @@ export default {
       auto360: "Every 6 hours",
       auto720: "Every 12 hours",
       auto1440: "Once a day",
+      beforeUpdate: "Back up the world before every update",
+      beforeUpdateHelper:
+        "Before updating the game (Installation page, scheduled restart) or the mods. If the backup fails, the update does not run.",
     },
     list: {
       title: "Backups ({{count}})",
@@ -96,6 +101,7 @@ export default {
       restoreConfirm:
         "Restore {{name}}?\nThe current save will be overwritten.",
       deleteConfirm: "Delete {{name}}?",
+      beforeUpdate: "Before update",
     },
     notify: {
       cannotLoad: "Unable to load backups",
@@ -106,6 +112,7 @@ export default {
       deleted: "Backup deleted",
       deleteFailed: "Unable to delete the backup",
       configFailed: "Unable to save the backup configuration",
+      beforeUpdate: "World backed up before the update: {{name}}",
     },
   },
   schedule: {
@@ -118,6 +125,9 @@ export default {
       "Delay between the announcement and the shutdown (0 = immediate)",
     message: "Announcement message",
     messageHelper: "{minutes} will be replaced by the delay",
+    updateGame: "Update the game at restart time",
+    updateGameHelper:
+      "If a server update is available: shutdown, world backup, update with SteamCMD, then start. No effect for a server installed through the Steam library.",
     save: "Save",
     notify: {
       saved: "Schedule saved",

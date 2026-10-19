@@ -42,6 +42,8 @@ Each installed mod is checked directly with its registry, so an update published
 
 Nexum also checks automatically **every time the server starts**: if active mods have an update or were deprecated, it's written in the server log and a notification offers to open the Mods page. Update mods while the server is stopped.
 
+Before **Update** or **Update all**, Nexum backs up the world (a single backup for the whole batch), unless the option is turned off on the Backups page: see [Backups](backups.md#backup-before-every-update). If a mod update breaks the world, restore that backup and reinstall the older version of the mod.
+
 If the new version is on the **other** registry (e.g. an author who moved from Thunderstore to Hexium), the badge says so ("available on Hexium") and the button spells out the source change before installing.
 
 ### Deprecated mods

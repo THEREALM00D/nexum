@@ -39,12 +39,24 @@ Text sent to all players via the REST API. The `{minutes}` placeholder is replac
 
 Example: `"The server will restart in {minutes} minutes"` becomes `"The server will restart in 5 minutes"`.
 
+### Update the game at restart time
+
+Off by default. At restart time, Nexum checks whether a server update is available on Steam:
+
+- **Update available**: server shutdown (with the announcement and delay above), [world backup](backups.md#backup-before-every-update), update with SteamCMD, then start. The result (installed build, backup name) is written in the log of the new session.
+- **Server up to date**, or Steam doesn't answer: plain restart, as without the option.
+- If the backup or the update fails, the server restarts on the version already installed and the log says why.
+
+Handy to keep the server in step with game patches without doing anything: a server that is one version behind refuses players who updated their game. No effect for a server installed through the **Steam library** (Steam updates it) or if SteamCMD isn't installed. Valheim mods are not updated automatically.
+
 ## How it works
+
+Each server has its own schedule: every running server with the restart enabled is restarted at its own time, whether or not it is selected in Nexum (up to 0.14, only the selected server was).
 
 The main-process scheduler:
 
 1. Checks the current time every 30 seconds
-2. When the time matches, triggers the restart process **once per day** at that time
+2. When the time matches, triggers the restart process **once per day** at that time (only if the server is running)
 
 The restart process:
 

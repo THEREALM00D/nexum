@@ -11,15 +11,22 @@ import {
   Typography,
 } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { useRestartSchedule } from "./useRestartSchedule";
 
+interface Props {
+  /** Texte d'information du jeu (comment se passe l'arrêt). */
+  infoKey?: string;
+  /** Bloc propre au jeu affiché au-dessus du formulaire (Palworld : API REST). */
+  notice?: ReactNode;
+}
+
 /**
- * Page « Planification » des jeux sans API d'administration (Valheim,
- * Astroneer, Dragonwilds) : seul le texte d'information change d'un jeu à
- * l'autre (comment se passe l'arrêt au moment du redémarrage).
+ * Page « Planification » de tous les jeux : seuls le texte d'information et
+ * un éventuel bloc propre au jeu changent d'un jeu à l'autre.
  */
-export default function RestartSchedulePage({ infoKey }: { infoKey: string }) {
+export default function RestartSchedulePage({ infoKey, notice }: Props) {
   const { t } = useTranslation();
   const { cfg, dirty, update, save } = useRestartSchedule();
 
@@ -32,13 +39,16 @@ export default function RestartSchedulePage({ infoKey }: { infoKey: string }) {
         </Typography>
       </Box>
 
-      <Alert
-        severity="info"
-        icon={<InfoOutlinedIcon fontSize="inherit" />}
-        sx={{ fontSize: 13 }}
-      >
-        {t(infoKey)}
-      </Alert>
+      {infoKey && (
+        <Alert
+          severity="info"
+          icon={<InfoOutlinedIcon fontSize="inherit" />}
+          sx={{ fontSize: 13 }}
+        >
+          {t(infoKey)}
+        </Alert>
+      )}
+      {notice}
 
       <Paper sx={{ p: 2.5 }}>
         <FormControlLabel
@@ -86,6 +96,25 @@ export default function RestartSchedulePage({ infoKey }: { infoKey: string }) {
             disabled={!cfg.enabled}
             helperText={t("schedule.messageHelper")}
             fullWidth
+          />
+          <FormControlLabel
+            control={
+              <Switch
+                checked={cfg.updateGame}
+                onChange={(e) => update({ updateGame: e.target.checked })}
+                disabled={!cfg.enabled}
+              />
+            }
+            label={
+              <Stack>
+                <Typography variant="body2">
+                  {t("schedule.updateGame")}
+                </Typography>
+                <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                  {t("schedule.updateGameHelper")}
+                </Typography>
+              </Stack>
+            }
           />
         </Stack>
 

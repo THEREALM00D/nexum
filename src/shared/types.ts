@@ -106,12 +106,16 @@ export interface BackupEntry {
   path: string;
   size: number;
   createdAt: number;
+  /** Faite automatiquement avant une mise à jour du jeu ou des mods. */
+  beforeUpdate: boolean;
 }
 
 export interface BackupConfig {
   backupDir: string;
   backupKeep: number;
   backupIntervalMinutes: number;
+  /** Sauvegarde du monde avant chaque mise à jour du jeu ou des mods. */
+  backupBeforeUpdate: boolean;
 }
 
 // --- Scheduler ---
@@ -120,6 +124,8 @@ export interface RestartConfig {
   time: string; // "HH:MM" 24h
   warningMinutes: number;
   message: string;
+  /** Met le jeu à jour (SteamCMD) au moment du redémarrage s'il y a une mise à jour. */
+  updateGame: boolean;
 }
 
 // --- Firewall ---
@@ -303,7 +309,8 @@ export type AppErrorCode =
   | "PORTS_SAME"
   | "STOP_BEFORE_WORLD_CHANGE"
   | "WORLD_NOT_FOUND"
-  | "NOT_A_WORLD_SAVE";
+  | "NOT_A_WORLD_SAVE"
+  | "BACKUP_BEFORE_UPDATE_FAILED";
 
 // --- RuneScape: Dragonwilds ---
 // Ports passés en arguments (-Port / -BeaconPort), le reste vit dans

@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import type { BackupEntry, BackupConfig } from "@shared/types";
 import { useServer } from "../context/ServerContext";
 import { useNotification } from "../context/NotificationContext";
+import { appErrorMessage } from "../utils/appErrorMessage";
 
 export function useBackup() {
   const { t } = useTranslation();
@@ -14,6 +15,7 @@ export function useBackup() {
     backupDir: "",
     backupKeep: 10,
     backupIntervalMinutes: 0,
+    backupBeforeUpdate: true,
   });
   const [creating, setCreating] = useState(false);
   const [restoring, setRestoring] = useState<string | null>(null);
@@ -42,7 +44,13 @@ export function useBackup() {
       notify(t("backup.notify.created", { name: entry.name }), "success");
       await refresh();
     } catch (e) {
-      notify((e as Error).message || t("backup.notify.createFailed"));
+      notify(
+        appErrorMessage(
+          t,
+          (e as Error).message,
+          t("backup.notify.createFailed"),
+        ),
+      );
     } finally {
       setCreating(false);
     }

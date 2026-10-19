@@ -42,6 +42,8 @@ Chaque mod installé est vérifié directement auprès de son registre : une mis
 
 Nexum vérifie aussi automatiquement **à chaque démarrage du serveur** : si des mods actifs ont une mise à jour ou sont dépréciés, c'est écrit dans les logs du serveur et une notification propose d'ouvrir la page Mods. Mettez les mods à jour serveur arrêté.
 
+Avant **Mettre à jour** ou **Tout mettre à jour**, Nexum sauvegarde le monde (une seule sauvegarde pour toute la série), sauf si l'option est désactivée dans la page Sauvegardes : voir [Sauvegardes](backups.fr.md#sauvegarde-avant-chaque-mise-à-jour). Si une mise à jour de mod casse le monde, restaurez cette sauvegarde et réinstallez l'ancienne version du mod.
+
 Si la nouvelle version se trouve sur l'**autre** registre (un auteur qui a quitté Thunderstore pour Hexium, par exemple), le badge l'indique (« dispo sur Hexium ») et le bouton précise le changement de source avant l'installation.
 
 ### Mods dépréciés

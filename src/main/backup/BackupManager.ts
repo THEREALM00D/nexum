@@ -15,6 +15,12 @@ import {
 import extractZip from "extract-zip";
 import type { BackupEntry } from "../../shared/types";
 
+// Suffixe des sauvegardes faites avant une mise à jour du jeu ou des mods :
+// reconnues dans la liste et comptées à part par la rotation, pour qu'une
+// série de sauvegardes automatiques ne fasse pas disparaître la seule copie
+// du monde d'avant le patch.
+const BEFORE_UPDATE_SUFFIX = "-before-update.zip";
+
 // Signature de l'EOCD (End of Central Directory) : "PK\x05\x06"
 const EOCD_SIGNATURE = Buffer.from([0x50, 0x4b, 0x05, 0x06]);
 
@@ -78,6 +84,7 @@ export class BackupManager {
           path: full,
           size: s.size,
           createdAt: s.mtimeMs,
+          beforeUpdate: f.endsWith(BEFORE_UPDATE_SUFFIX),
         };
       })
       .sort((a, b) => b.createdAt - a.createdAt);
@@ -87,6 +94,7 @@ export class BackupManager {
     serverPath: string,
     backupDir: string,
     sourcePath?: string,
+    beforeUpdate = false,
   ): Promise<BackupEntry> {
     // archiver est en ESM pur depuis la v8 (plus de build CommonJS) — notre
     // process main est en CJS, donc un `require()`/import statique planterait
@@ -118,7 +126,9 @@ export class BackupManager {
         .replace(/[:.]/g, "-")
         .replace("T", "_")
         .slice(0, 19);
-      const filename = `backup-${ts}.zip`;
+      const filename = beforeUpdate
+        ? `backup-${ts}${BEFORE_UPDATE_SUFFIX}`
+        : `backup-${ts}.zip`;
       const outputPath = join(backupDir, filename);
       // Écrit dans un .tmp.zip puis rename à la fin pour rendre la création atomique :
       // un crash pendant le zip laisse un .tmp.zip (ignoré par list()) mais jamais
@@ -174,6 +184,7 @@ export class BackupManager {
             path: outputPath,
             size: s.size,
             createdAt: s.mtimeMs,
+            beforeUpdate,
           });
         });
       };
@@ -264,10 +275,19 @@ export class BackupManager {
     if (existsSync(backupPath)) unlinkSync(backupPath);
   }
 
+  /**
+   * Garde les `keep` plus récentes, en comptant séparément les sauvegardes
+   * d'avant mise à jour et les autres (manuelles, automatiques).
+   */
   rotate(backupDir: string, keep: number): void {
     if (keep <= 0) return;
     const list = this.list(backupDir);
-    list.slice(keep).forEach((b) => this.delete(b.path));
+    for (const beforeUpdate of [false, true]) {
+      list
+        .filter((b) => b.beforeUpdate === beforeUpdate)
+        .slice(keep)
+        .forEach((b) => this.delete(b.path));
+    }
   }
 
   getDefaultBackupDir(userDataPath: string): string {
