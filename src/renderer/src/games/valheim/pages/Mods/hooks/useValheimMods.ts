@@ -9,6 +9,7 @@ import type {
   ModRegistry,
 } from "@shared/types";
 import { REGISTRY_LABEL } from "../utils/modPageUrl";
+import { useBackupBeforeUpdate } from "../../../../../hooks/useBackupBeforeUpdate";
 
 type BrowseTab = "trending" | "latest" | "updated";
 
@@ -16,6 +17,7 @@ export function useValheimMods() {
   const { t, i18n } = useTranslation();
   const { notify } = useNotification();
   const { state } = useServer();
+  const backupBeforeUpdate = useBackupBeforeUpdate();
   const locale = i18n.resolvedLanguage ?? "fr";
 
   // BepInEx ne scanne les plugins qu'au démarrage du process — un mod
@@ -230,6 +232,17 @@ export function useValheimMods() {
     [notify, t, refreshUpdates, checkDepsAfterInstall],
   );
 
+  // Mise à jour d'un mod : sauvegarde du monde d'abord (option du serveur).
+  const handleUpdateMod = useCallback(
+    async (registry: ModRegistry, code: string) => {
+      setInstalling(true);
+      const ok = await backupBeforeUpdate();
+      setInstalling(false);
+      if (ok) await handleInstallMod(registry, code);
+    },
+    [backupBeforeUpdate, handleInstallMod],
+  );
+
   const handleInstallImportProfile = useCallback(
     async (base64Code: string) => {
       setInstalling(true);
@@ -357,6 +370,8 @@ export function useValheimMods() {
     let successCount = 0;
     let errorCount = 0;
     try {
+      // Une seule sauvegarde pour toute la série.
+      if (!(await backupBeforeUpdate())) return;
       for (const update of updates) {
         try {
           await window.api.valheim.mods.installMod(
@@ -386,7 +401,7 @@ export function useValheimMods() {
     } finally {
       setInstalling(false);
     }
-  }, [updates, notify, t, refreshUpdates]);
+  }, [updates, notify, t, refreshUpdates, backupBeforeUpdate]);
 
   const handleInstallAllDeps = useCallback(async () => {
     if (!pendingDeps) return;
@@ -426,6 +441,7 @@ export function useValheimMods() {
     handleImportProfileFile,
     handleRefreshUpdates,
     handleUpdateAll,
+    handleUpdateMod,
     handleInstallAllDeps,
     handleDismissDeps: () => setPendingDeps(null),
   };

@@ -1,41 +1,36 @@
 import { ipcMain } from "electron/main";
 import type { IpcContext } from "../context";
+import type { BackupConfig } from "../../../shared/types";
 import { getGameSavePath } from "../../games/registry";
-
-interface BackupCfgInput {
-  backupDir: string;
-  backupKeep: number;
-  backupIntervalMinutes: number;
-}
+import { backupBeforeUpdate, backupServer } from "../../backup/serverBackup";
+import { AppError } from "../../utils/appError";
 
 export function registerBackupHandlers(ctx: IpcContext): void {
-  ipcMain.handle("backup:getConfig", () => {
+  ipcMain.handle("backup:getConfig", (): BackupConfig => {
     const cfg = ctx.getServerConfig().backup;
-    return {
-      backupDir: ctx.getBackupDir(),
-      backupKeep: cfg.backupKeep,
-      backupIntervalMinutes: cfg.backupIntervalMinutes,
-    };
+    return { ...cfg, backupDir: ctx.getBackupDir() };
   });
 
-  ipcMain.handle("backup:setConfig", (_, cfg: BackupCfgInput) => {
+  ipcMain.handle("backup:setConfig", (_, cfg: BackupConfig) => {
     ctx.updateServerConfig(undefined, { backup: cfg });
     ctx.applyBackupScheduler();
   });
 
   ipcMain.handle("backup:list", () => ctx.backup.list(ctx.getBackupDir()));
 
-  ipcMain.handle("backup:create", async () => {
-    const serverPath = ctx.getActiveServerPath();
-    if (!serverPath) throw new Error("Aucun chemin serveur configuré");
-    const dir = ctx.getBackupDir();
+  ipcMain.handle("backup:create", () => {
     const server = ctx.getActiveServer();
-    const sourcePath = server
-      ? getGameSavePath(server.gameType, serverPath, ctx.getServerConfig())
-      : undefined;
-    const entry = await ctx.backup.create(serverPath, dir, sourcePath);
-    ctx.backup.rotate(dir, ctx.getServerConfig().backup.backupKeep);
-    return entry;
+    if (!server) throw new AppError("NO_SERVER_PATH");
+    return backupServer(ctx, server.id);
+  });
+
+  // Avant une mise à jour des mods (le renderer sait seul si une
+  // installation est une mise à jour). null = rien à sauvegarder.
+  ipcMain.handle("backup:beforeUpdate", (_, serverId?: string) => {
+    const id = serverId ?? ctx.getActiveServer()?.id;
+    if (!id) return null;
+    const mgr = ctx.serverManagers.getOrCreate(id);
+    return backupBeforeUpdate(ctx, id, (line) => mgr.log(line));
   });
 
   ipcMain.handle("backup:restore", async (_, backupPath: string) => {

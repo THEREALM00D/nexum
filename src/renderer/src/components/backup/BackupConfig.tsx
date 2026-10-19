@@ -1,11 +1,13 @@
 import {
   FormControl,
+  FormControlLabel,
   IconButton,
   InputLabel,
   MenuItem,
   Paper,
   Select,
   Stack,
+  Switch,
   TextField,
   Tooltip,
   Typography,
@@ -95,6 +97,27 @@ export default function BackupConfigPanel({
             <MenuItem value={1440}>{t("backup.config.auto1440")}</MenuItem>
           </Select>
         </FormControl>
+
+        <FormControlLabel
+          control={
+            <Switch
+              checked={config.backupBeforeUpdate}
+              onChange={(e) =>
+                onConfigChange({ backupBeforeUpdate: e.target.checked })
+              }
+            />
+          }
+          label={
+            <Stack>
+              <Typography variant="body2">
+                {t("backup.config.beforeUpdate")}
+              </Typography>
+              <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                {t("backup.config.beforeUpdateHelper")}
+              </Typography>
+            </Stack>
+          }
+        />
       </Stack>
     </Paper>
   );

@@ -58,6 +58,7 @@ const DEFAULT_BACKUP: BackupConfig = {
   backupDir: "",
   backupKeep: 10,
   backupIntervalMinutes: 0,
+  backupBeforeUpdate: true,
 };
 
 const DEFAULT_RESTART: RestartConfig = {
@@ -65,6 +66,7 @@ const DEFAULT_RESTART: RestartConfig = {
   time: "04:00",
   warningMinutes: 5,
   message: "Le serveur va redémarrer dans {minutes} minutes",
+  updateGame: false,
 };
 
 export const DEFAULT_SERVER_CONFIG: ServerConfig = {
@@ -171,8 +173,12 @@ export class ServerConfigStore {
         backupDir: preservedBackupDir,
         backupKeep: this.store.get("backupKeep", 10),
         backupIntervalMinutes: this.store.get("backupIntervalMinutes", 0),
+        backupBeforeUpdate: DEFAULT_BACKUP.backupBeforeUpdate,
       },
-      restart: this.store.get("restartSchedule", DEFAULT_RESTART),
+      restart: {
+        ...DEFAULT_RESTART,
+        ...this.store.get("restartSchedule", DEFAULT_RESTART),
+      },
     };
     this.store.set("serversConfig", { ...all, [firstServerId]: legacy });
   }

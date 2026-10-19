@@ -1,3 +1,4 @@
+import { join } from "path";
 import type { GameType, ServerConfig } from "../../shared/types";
 import { palworldServerConfig } from "./palworld/serverConfig";
 import { valheimServerConfig } from "./valheim/serverConfig";
@@ -103,10 +104,9 @@ export function getLaunchSpec(
 
 const SAVE_PATHS: Record<
   GameType,
-  (serverPath: string, cfg: ServerConfig) => string | undefined
+  (serverPath: string, cfg: ServerConfig) => string
 > = {
-  // undefined = défaut de BackupManager (Pal/Saved/SaveGames)
-  palworld: () => undefined,
+  palworld: (p) => join(p, "Pal", "Saved", "SaveGames"),
   valheim: (_, cfg) => valheimServerConfig.getSavePath(cfg.valheimConfig),
   astroneer: (p) => astroneerServerConfig.getSavePath(p),
   dragonwilds: (p) => dragonwildsServerConfig.getSavePath(p),
@@ -117,7 +117,7 @@ export function getGameSavePath(
   gameType: GameType,
   serverPath: string,
   cfg: ServerConfig,
-): string | undefined {
+): string {
   return SAVE_PATHS[gameType](serverPath, cfg);
 }
 

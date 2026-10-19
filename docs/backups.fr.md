@@ -38,6 +38,8 @@ Le champ **Sauvegardes à conserver** définit combien de backups sont gardés. 
 - `0` : pas de rotation, tout est conservé
 - `10` (défaut) : garde les 10 plus récentes
 
+Les sauvegardes faites **avant une mise à jour** (voir plus bas) sont comptées à part : avec `10`, Nexum garde les 10 dernières sauvegardes normales **et** les 10 dernières d'avant mise à jour. Une série de sauvegardes automatiques ne fait donc jamais disparaître la copie du monde d'avant le patch.
+
 ### Sauvegarde automatique
 
 Sélecteur d'intervalle :
@@ -54,6 +56,19 @@ Sélecteur d'intervalle :
 | 1 jour     | Une fois par jour      |
 
 > La sauvegarde automatique tourne **uniquement quand le serveur est en cours d'exécution**.
+
+### Sauvegarde avant chaque mise à jour
+
+Option **Sauvegarder le monde avant chaque mise à jour**, activée par défaut. Un patch du jeu ou d'un mod qui casse le monde ne fait plus perdre de progression. Nexum sauvegarde le monde :
+
+- avant chaque mise à jour du jeu depuis la page **Installation** (et l'assistant de démarrage) ;
+- avant la mise à jour du jeu faite par le [redémarrage planifié](scheduling.fr.md) ;
+- avant **Mettre à jour** et **Tout mettre à jour** sur la page Mods (Valheim), une seule sauvegarde pour toute la série.
+
+Ces sauvegardes s'appellent `backup-YYYY-MM-DD_HH-MM-SS-before-update.zip` et portent la mention **Avant mise à jour** dans la liste. Pour revenir en arrière, restaurez-la serveur arrêté (et réinstallez l'ancienne version des mods si besoin).
+
+- Rien n'est sauvegardé pour une **première installation** (pas encore de monde) ni si le dossier des mondes n'existe pas encore.
+- Si la sauvegarde **échoue** (dossier de sauvegarde inaccessible, disque plein…), la mise à jour **n'est pas lancée** et un message l'explique. Corrigez le dossier, ou désactivez l'option pour mettre à jour quand même.
 
 ## Actions
 
@@ -89,7 +104,7 @@ Bouton **Supprimer** sur chaque sauvegarde — confirmation requise.
 - **Vérifiez périodiquement** que les sauvegardes se créent correctement (regardez les logs et les dates)
 - **Stockez les sauvegardes sur un autre disque** que celui du serveur (en cas de panne disque)
 - **Testez la restauration** au moins une fois pour vérifier que le processus fonctionne
-- Avant une **mise à jour majeure** de Palworld, faites une sauvegarde manuelle pour pouvoir rollback
+- Laissez **Sauvegarder le monde avant chaque mise à jour** activé : vous pourrez revenir en arrière si une mise à jour du jeu ou d'un mod casse le monde
 
 ## Récupération en cas de problème
 

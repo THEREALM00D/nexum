@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Chip,
   CircularProgress,
   Divider,
   IconButton,
@@ -81,9 +82,22 @@ export default function BackupList({
               }}
             >
               <Box sx={{ minWidth: 0, flex: 1 }}>
-                <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                  {b.name}
-                </Typography>
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  sx={{ alignItems: "center" }}
+                >
+                  <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                    {b.name}
+                  </Typography>
+                  {b.beforeUpdate && (
+                    <Chip
+                      size="small"
+                      variant="outlined"
+                      label={t("backup.list.beforeUpdate")}
+                    />
+                  )}
+                </Stack>
                 <Typography variant="caption" sx={{ color: "text.secondary" }}>
                   {formatDate(b.createdAt, locale)} — {formatSize(b.size)}
                 </Typography>

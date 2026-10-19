@@ -118,6 +118,8 @@ To update (the server must be stopped):
 - Click **Check** to compare the installed version against the Steam version
 - If an update is available, click **Update**
 
+Before running SteamCMD, Nexum backs up the world (**Back up the world before every update** option on the **Backups** page, on by default, see [Backups](backups.md#backup-before-every-update)). To have the server update itself, turn on **Update the game at restart time** on the [Schedule](scheduling.md) page.
+
 ## Troubleshooting
 
 ### The Valheim server stops a few seconds after starting

@@ -77,6 +77,7 @@ export default function ValheimMods() {
     handleImportProfileFile,
     handleRefreshUpdates,
     handleUpdateAll,
+    handleUpdateMod,
     handleInstallAllDeps,
     handleDismissDeps,
   } = useValheimMods();
@@ -241,7 +242,7 @@ export default function ValheimMods() {
             deprecatedCodes={deprecatedCodes}
             onRemove={handleRemoveMod}
             onToggle={handleToggleMod}
-            onUpdate={handleInstallMod}
+            onUpdate={handleUpdateMod}
           />
         )}
 
