@@ -12,11 +12,41 @@ const RULE_KEYS: Record<string, "game" | "rcon" | "restapi"> = {
   "Palworld Server - REST API": "restapi",
 };
 
+// Mêmes noms que FirewallManager.getStatus (main), ports par défaut
+const PLACEHOLDER_RULES: FirewallRuleStatus[] = [
+  {
+    name: "Palworld Server - Game UDP",
+    port: 8211,
+    protocol: "UDP",
+    active: false,
+  },
+  {
+    name: "Palworld Server - Game TCP",
+    port: 8211,
+    protocol: "TCP",
+    active: false,
+  },
+  {
+    name: "Palworld Server - RCON",
+    port: 25575,
+    protocol: "TCP",
+    active: false,
+  },
+  {
+    name: "Palworld Server - REST API",
+    port: 8212,
+    protocol: "TCP",
+    active: false,
+  },
+];
+
 export function useFirewall(serverPath: string) {
   const { t } = useTranslation();
   const { notify } = useNotification();
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
-  const [rules, setRules] = useState<FirewallRuleStatus[]>([]);
+  // Les 3 règles Palworld (ports par défaut) affichées tout de suite, état
+  // en skeleton pendant la vérification, plutôt qu'un tableau vide.
+  const [rules, setRules] = useState<FirewallRuleStatus[]>(PLACEHOLDER_RULES);
   const [customRules, setCustomRules] = useState<FirewallRuleStatus[]>([]);
   const [loading, setLoading] = useState(true);
 

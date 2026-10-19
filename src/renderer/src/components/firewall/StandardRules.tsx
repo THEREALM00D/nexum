@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Chip,
   CircularProgress,
@@ -20,6 +19,7 @@ import { useTranslation } from "react-i18next";
 import type { FirewallRuleStatus } from "@shared/types";
 import { useState } from "react";
 import RuleStatus from "./RuleStatus";
+import LoadingSkeleton from "../common/LoadingSkeleton";
 import { FONT_MONO } from "../../theme";
 
 const HEAD_SX = {
@@ -129,56 +129,63 @@ export default function StandardRules({
         </Stack>
       </Stack>
 
-      {loading ? (
-        <Box sx={{ display: "flex", justifyContent: "center", py: 3 }}>
-          <CircularProgress size={28} />
-        </Box>
-      ) : (
-        <TableContainer>
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell sx={HEAD_SX}>
-                  {t("network.standard.colRule")}
-                </TableCell>
-                <TableCell sx={HEAD_SX}>
-                  {t("network.standard.colPort")}
-                </TableCell>
-                <TableCell sx={HEAD_SX}>
-                  {t("network.standard.colProto")}
-                </TableCell>
-                <TableCell sx={HEAD_SX}>
-                  {t("network.standard.colState")}
-                </TableCell>
-                <TableCell align="right" />
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rules.map((rule) => (
-                <TableRow
-                  key={rule.name}
-                  sx={{ "&:last-child td": { border: 0 } }}
-                >
-                  <TableCell>
+      {/* Nombre de règles connu d'avance (lignes à leur hauteur finale),
+          mais pas encore leurs ports (config du serveur) ni leur état :
+          toutes les cellules passent en skeleton pendant le chargement */}
+      <TableContainer>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell sx={HEAD_SX}>
+                {t("network.standard.colRule")}
+              </TableCell>
+              <TableCell sx={HEAD_SX}>
+                {t("network.standard.colPort")}
+              </TableCell>
+              <TableCell sx={HEAD_SX}>
+                {t("network.standard.colProto")}
+              </TableCell>
+              <TableCell sx={HEAD_SX}>
+                {t("network.standard.colState")}
+              </TableCell>
+              <TableCell align="right" />
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rules.map((rule) => (
+              <TableRow
+                key={rule.name}
+                sx={{ "&:last-child td": { border: 0 } }}
+              >
+                <TableCell>
+                  <LoadingSkeleton loading={loading}>
                     <Typography variant="body2">{rule.name}</Typography>
-                  </TableCell>
-                  <TableCell>
+                  </LoadingSkeleton>
+                </TableCell>
+                <TableCell>
+                  <LoadingSkeleton loading={loading}>
                     <Typography variant="body2" sx={{ fontFamily: FONT_MONO }}>
                       {rule.port}
                     </Typography>
-                  </TableCell>
-                  <TableCell>
+                  </LoadingSkeleton>
+                </TableCell>
+                <TableCell>
+                  <LoadingSkeleton loading={loading}>
                     <Chip
                       label={rule.protocol}
                       size="small"
                       variant="outlined"
                       sx={{ fontSize: 10 }}
                     />
-                  </TableCell>
-                  <TableCell>
+                  </LoadingSkeleton>
+                </TableCell>
+                <TableCell>
+                  <LoadingSkeleton loading={loading}>
                     <RuleStatus active={rule.active} />
-                  </TableCell>
-                  <TableCell align="right">
+                  </LoadingSkeleton>
+                </TableCell>
+                <TableCell align="right">
+                  <LoadingSkeleton loading={loading} sx={{ ml: "auto" }}>
                     <Button
                       size="small"
                       variant={rule.active ? "outlined" : "contained"}
@@ -195,13 +202,13 @@ export default function StandardRules({
                         t("network.standard.enable")
                       )}
                     </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      )}
+                  </LoadingSkeleton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Paper>
   );
 }

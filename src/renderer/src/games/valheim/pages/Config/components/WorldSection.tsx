@@ -15,14 +15,16 @@ import InstallDirWarning from "../../../../../components/common/InstallDirWarnin
 export default function WorldSection({
   config,
   onChange,
+  loading,
 }: {
   config: ValheimLaunchConfig;
+  loading: boolean;
   onChange: (patch: Partial<ValheimLaunchConfig>) => void;
 }) {
   const { t } = useTranslation();
   const existingWorlds = useExistingWorlds(config.savedir);
   return (
-    <Section label={t("valheimConfig.sections.world")}>
+    <Section label={t("valheimConfig.sections.world")} loading={loading}>
       <Autocomplete
         freeSolo
         options={existingWorlds.map((w) => w.name)}

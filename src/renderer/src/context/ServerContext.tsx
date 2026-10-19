@@ -27,6 +27,13 @@ interface ServerState {
   logs: string[];
 
   stats: SystemStats | null;
+
+  /**
+   * Faux tant que la liste des serveurs, le serveur actif et leurs statuts
+   * ne sont pas lus : le shell affiche des skeletons plutôt que les pages du
+   * jeu par défaut et des serveurs « Arrêté ».
+   */
+  loaded: boolean;
 }
 
 type Action =
@@ -39,7 +46,8 @@ type Action =
     }
   | { type: "SET_STATS"; payload: SystemStats }
   | { type: "ADD_LOG"; payload: { serverId: string; line: string } }
-  | { type: "CLEAR_LOGS"; payload?: { serverId?: string } };
+  | { type: "CLEAR_LOGS"; payload?: { serverId?: string } }
+  | { type: "SET_LOADED" };
 
 const initialState: ServerState = {
   servers: [],
@@ -51,6 +59,7 @@ const initialState: ServerState = {
   logsByServer: {},
   logs: [],
   stats: null,
+  loaded: false,
 };
 
 function resolveActive(
@@ -140,6 +149,8 @@ function reducer(state: ServerState, action: Action): ServerState {
         logs: targetId === state.activeServerId ? [] : state.logs,
       };
     }
+    case "SET_LOADED":
+      return { ...state, loaded: true };
     default:
       return state;
   }
@@ -177,8 +188,21 @@ export function ServerProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "SET_ACTIVE", payload: { id, servers: list } });
   };
 
+  const refreshStatuses = async () => {
+    try {
+      const statuses = await serverService.getStatuses();
+      dispatch({ type: "SET_STATUSES", payload: statuses });
+    } catch {
+      // ignore — main peut être indisponible au boot
+    }
+  };
+
   useEffect(() => {
-    refreshServers();
+    // Statuts lus tout de suite (pas au 1er tick du polling, 3 s plus tard :
+    // un serveur lancé s'affichait « Arrêté » avec Démarrer actif).
+    Promise.all([refreshServers(), refreshStatuses()])
+      .catch(() => {})
+      .finally(() => dispatch({ type: "SET_LOADED" }));
 
     monitorService.startPolling();
     const stopMonitor = monitorService.onStats((stats) => {
@@ -198,14 +222,7 @@ export function ServerProvider({ children }: { children: ReactNode }) {
 
     // Polling des statuses agrégés (3s) : récupère le status de tous les
     // serveurs en une seule IPC call.
-    const statusInterval = setInterval(async () => {
-      try {
-        const statuses = await serverService.getStatuses();
-        dispatch({ type: "SET_STATUSES", payload: statuses });
-      } catch {
-        // ignore — main peut être indisponible au boot
-      }
-    }, 3000);
+    const statusInterval = setInterval(refreshStatuses, 3000);
 
     return () => {
       stopMonitor();

@@ -2,24 +2,21 @@ import { useEffect, useMemo, useState } from "react";
 import {
   Box,
   Button,
-  InputAdornment,
   Stack,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-  TextField,
   Typography,
 } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import ClearIcon from "@mui/icons-material/Clear";
-import IconButton from "@mui/material/IconButton";
 import DeleteSweepIcon from "@mui/icons-material/DeleteSweep";
 import { useTranslation } from "react-i18next";
 import type { PlayerHistoryEntry } from "@shared/types";
 import { useNotification } from "../../context/NotificationContext";
 import ScrollPanel from "../common/ScrollPanel";
+import SearchField from "../common/SearchField";
+import LoadingSkeleton, { skeletonTableRows } from "../common/LoadingSkeleton";
 import PlayerRow from "./PlayerRow";
 
 const REFRESH_INTERVAL_MS = 10_000;
@@ -29,6 +26,9 @@ export default function Players() {
   const { notify } = useNotification();
   const [entries, setEntries] = useState<PlayerHistoryEntry[]>([]);
   const [search, setSearch] = useState("");
+  // Premier chargement seulement (le rafraîchissement toutes les 10 s garde
+  // l'affichage en place)
+  const [loading, setLoading] = useState(true);
 
   const refresh = async () => {
     try {
@@ -44,6 +44,8 @@ export default function Players() {
     } catch (e) {
       console.error("getHistory failed:", e);
       notify(t("players.notify.cannotLoad"));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -106,34 +108,19 @@ export default function Players() {
         useFlexGap
         sx={{ alignItems: "center", flexWrap: "wrap" }}
       >
-        <TextField
-          size="small"
-          placeholder={t("players.search")}
+        <SearchField
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={setSearch}
+          placeholder={t("players.search")}
           sx={{ flex: 1, maxWidth: 420 }}
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon fontSize="small" />
-                </InputAdornment>
-              ),
-              endAdornment: search ? (
-                <InputAdornment position="end">
-                  <IconButton size="small" onClick={() => setSearch("")}>
-                    <ClearIcon fontSize="small" />
-                  </IconButton>
-                </InputAdornment>
-              ) : null,
-            },
-          }}
         />
-        <Typography variant="body2" sx={{ color: "text.secondary" }}>
-          {t("players.summary.total", { count: entries.length })}
-          {" — "}
-          {t("players.summary.online", { count: onlineCount })}
-        </Typography>
+        <LoadingSkeleton loading={loading}>
+          <Typography variant="body2" sx={{ color: "text.secondary" }}>
+            {t("players.summary.total", { count: entries.length })}
+            {" — "}
+            {t("players.summary.online", { count: onlineCount })}
+          </Typography>
+        </LoadingSkeleton>
         <Box sx={{ flex: 1 }} />
         <Button
           variant="outlined"
@@ -151,16 +138,16 @@ export default function Players() {
           panneau vide étiré jusqu'en bas. */}
       <ScrollPanel
         padding={0}
-        grow={filtered.length > 0}
-        minHeight={filtered.length > 0 ? 240 : 0}
+        grow={loading || filtered.length > 0}
+        minHeight={loading || filtered.length > 0 ? 240 : 0}
       >
-        {entries.length === 0 ? (
+        {!loading && entries.length === 0 ? (
           <Box sx={{ p: 4, textAlign: "center" }}>
             <Typography variant="body2" sx={{ color: "text.secondary" }}>
               {t("players.none")}
             </Typography>
           </Box>
-        ) : filtered.length === 0 ? (
+        ) : !loading && filtered.length === 0 ? (
           <Box sx={{ p: 4, textAlign: "center" }}>
             <Typography variant="body2" sx={{ color: "text.secondary" }}>
               {t("players.noResults", { query: search })}
@@ -180,6 +167,7 @@ export default function Players() {
               </TableRow>
             </TableHead>
             <TableBody>
+              {loading && skeletonTableRows(7)}
               {filtered.map((entry) => (
                 <PlayerRow
                   key={entry.userId}

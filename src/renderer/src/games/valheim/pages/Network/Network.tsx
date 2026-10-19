@@ -9,7 +9,7 @@ import FormPage from "../../../../components/common/FormPage";
 
 export default function ValheimNetwork() {
   const { t } = useTranslation();
-  const { config } = useValheimConfig();
+  const { config, loading: configLoading } = useValheimConfig();
   const gamePort = config.port || 2456;
   const {
     isAdmin,
@@ -20,7 +20,7 @@ export default function ValheimNetwork() {
     onToggle,
     onApplyAll,
     onRemoveAll,
-  } = useValheimFirewall(gamePort);
+  } = useValheimFirewall(gamePort, !configLoading);
 
   return (
     <FormPage>
@@ -42,7 +42,7 @@ export default function ValheimNetwork() {
         onRemoveAll={onRemoveAll}
       />
 
-      <CustomRules rules={customRules} onRefresh={refresh} />
+      <CustomRules rules={customRules} loading={loading} onRefresh={refresh} />
     </FormPage>
   );
 }

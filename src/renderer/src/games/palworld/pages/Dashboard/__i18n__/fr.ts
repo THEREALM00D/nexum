@@ -2,7 +2,6 @@ export default {
   dashboard: {
     title: "Dashboard",
     noServerPath: "Aucun chemin serveur — configurez dans Installation",
-    waitingStats: "En attente des statistiques système...",
     stats: {
       cpu: "CPU",
       ram: "RAM",

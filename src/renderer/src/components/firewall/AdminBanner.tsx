@@ -1,14 +1,7 @@
-import {
-  Alert,
-  Box,
-  Chip,
-  CircularProgress,
-  Paper,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Alert, Box, Chip, Paper, Stack, Typography } from "@mui/material";
 import ShieldIcon from "@mui/icons-material/Shield";
 import { useTranslation } from "react-i18next";
+import LoadingSkeleton from "../common/LoadingSkeleton";
 
 export default function AdminBanner({ isAdmin }: { isAdmin: boolean | null }) {
   const { t } = useTranslation();
@@ -31,9 +24,8 @@ export default function AdminBanner({ isAdmin }: { isAdmin: boolean | null }) {
             </Typography>
           </Box>
         </Stack>
-        {isAdmin === null ? (
-          <CircularProgress size={20} />
-        ) : (
+        {/* flex : pas de hauteur de ligne autour de la pastille (décalage de 1 px) */}
+        <LoadingSkeleton loading={isAdmin === null} sx={{ display: "flex" }}>
           <Chip
             label={
               isAdmin ? t("network.admin.isAdmin") : t("network.admin.notAdmin")
@@ -42,12 +34,16 @@ export default function AdminBanner({ isAdmin }: { isAdmin: boolean | null }) {
             size="small"
             variant="outlined"
           />
-        )}
+        </LoadingSkeleton>
       </Stack>
-      {isAdmin === false && (
-        <Alert severity="info" sx={{ mt: 2 }}>
-          {t("network.admin.warning")}
-        </Alert>
+      {/* Cas courant (Nexum tourne sans droits admin) : le bloc est réservé
+          en skeleton pendant la vérification, pour ne pas apparaître après */}
+      {isAdmin !== true && (
+        <LoadingSkeleton loading={isAdmin === null} fullWidth sx={{ mt: 2 }}>
+          <Alert severity="info" sx={{ mt: isAdmin === null ? 0 : 2 }}>
+            {t("network.admin.warning")}
+          </Alert>
+        </LoadingSkeleton>
       )}
     </Paper>
   );

@@ -6,8 +6,10 @@ import Section from "./Section";
 export default function GeneralSection({
   config,
   onChange,
+  loading,
 }: {
   config: ValheimLaunchConfig;
+  loading: boolean;
   onChange: (patch: Partial<ValheimLaunchConfig>) => void;
 }) {
   const { t } = useTranslation();
@@ -16,7 +18,7 @@ export default function GeneralSection({
   const passwordTooShort =
     config.password.length > 0 && config.password.length < 5;
   return (
-    <Section label={t("valheimConfig.sections.general")}>
+    <Section label={t("valheimConfig.sections.general")} loading={loading}>
       <TextField
         label={t("valheimConfig.fields.name.label")}
         helperText={t("valheimConfig.fields.name.description")}

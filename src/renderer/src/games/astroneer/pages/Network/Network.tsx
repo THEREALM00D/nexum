@@ -11,12 +11,14 @@ import FormPage from "../../../../components/common/FormPage";
 export default function AstroneerNetwork() {
   const { t } = useTranslation();
   const [gamePort, setGamePort] = useState(8777);
+  const [portReady, setPortReady] = useState(false);
 
   useEffect(() => {
     astroConfigService
       .readConfig()
       .then((cfg) => setGamePort(Number(cfg.Port) || 8777))
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setPortReady(true));
   }, []);
 
   const {
@@ -28,7 +30,7 @@ export default function AstroneerNetwork() {
     onToggle,
     onApplyAll,
     onRemoveAll,
-  } = useAstroneerFirewall(gamePort);
+  } = useAstroneerFirewall(gamePort, portReady);
 
   return (
     <FormPage>
@@ -50,7 +52,7 @@ export default function AstroneerNetwork() {
         onRemoveAll={onRemoveAll}
       />
 
-      <CustomRules rules={customRules} onRefresh={refresh} />
+      <CustomRules rules={customRules} loading={loading} onRefresh={refresh} />
     </FormPage>
   );
 }

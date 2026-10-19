@@ -34,13 +34,7 @@ export default function Dashboard() {
         onRestart={restart}
       />
 
-      {stats ? (
-        <StatsGrid stats={stats} />
-      ) : (
-        <Typography variant="body2" sx={{ color: "text.secondary" }}>
-          {t("dashboard.waitingStats")}
-        </Typography>
-      )}
+      <StatsGrid stats={stats} />
 
       <JoinServerCard />
 

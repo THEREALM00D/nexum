@@ -17,12 +17,16 @@ export function useRestartSchedule() {
   const { notify } = useNotification();
   const [cfg, setCfg] = useState<RestartConfig>(DEFAULT_RESTART);
   const [dirty, setDirty] = useState(false);
+  // Vrai tant que la config n'est pas lue : la page affiche des skeletons
+  // plutôt que DEFAULT_RESTART (l'interrupteur passait de OFF à ON).
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     window.api.schedule
       .getRestart()
       .then(setCfg)
-      .catch((e) => notify((e as Error).message, "error"));
+      .catch((e) => notify((e as Error).message, "error"))
+      .finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -41,5 +45,5 @@ export function useRestartSchedule() {
     }
   };
 
-  return { cfg, dirty, update, save };
+  return { cfg, loading, dirty, update, save };
 }

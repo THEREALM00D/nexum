@@ -14,6 +14,7 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { useRestartSchedule } from "./useRestartSchedule";
+import LoadingSkeleton from "../common/LoadingSkeleton";
 
 interface Props {
   /** Texte d'information du jeu (comment se passe l'arrêt). */
@@ -28,7 +29,7 @@ interface Props {
  */
 export default function RestartSchedulePage({ infoKey, notice }: Props) {
   const { t } = useTranslation();
-  const { cfg, dirty, update, save } = useRestartSchedule();
+  const { cfg, loading, dirty, update, save } = useRestartSchedule();
 
   return (
     <Stack spacing={3}>
@@ -51,75 +52,95 @@ export default function RestartSchedulePage({ infoKey, notice }: Props) {
       {notice}
 
       <Paper sx={{ p: 2.5 }}>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={cfg.enabled}
-              onChange={(e) => update({ enabled: e.target.checked })}
-            />
-          }
-          label={t("schedule.enabled")}
-        />
-        <Divider sx={{ my: 2 }} />
-
-        <Stack spacing={2}>
-          <TextField
-            label={t("schedule.time")}
-            type="time"
-            size="small"
-            value={cfg.time}
-            onChange={(e) => update({ time: e.target.value })}
-            disabled={!cfg.enabled}
-            sx={{ maxWidth: 200 }}
-            slotProps={{ inputLabel: { shrink: true } }}
-          />
-          <TextField
-            label={t("schedule.warning")}
-            type="number"
-            size="small"
-            value={cfg.warningMinutes}
-            onChange={(e) =>
-              update({
-                warningMinutes: Math.max(0, parseInt(e.target.value, 10) || 0),
-              })
-            }
-            disabled={!cfg.enabled}
-            sx={{ maxWidth: 280 }}
-            slotProps={{ htmlInput: { min: 0 } }}
-            helperText={t("schedule.warningHelper")}
-          />
-          <TextField
-            label={t("schedule.message")}
-            size="small"
-            value={cfg.message}
-            onChange={(e) => update({ message: e.target.value })}
-            disabled={!cfg.enabled}
-            helperText={t("schedule.messageHelper")}
-            fullWidth
-          />
+        <LoadingSkeleton loading={loading}>
           <FormControlLabel
             control={
               <Switch
-                checked={cfg.updateGame}
-                onChange={(e) => update({ updateGame: e.target.checked })}
-                disabled={!cfg.enabled}
+                checked={cfg.enabled}
+                onChange={(e) => update({ enabled: e.target.checked })}
               />
             }
-            label={
-              <Stack>
-                <Typography variant="body2">
-                  {t("schedule.updateGame")}
-                </Typography>
-                <Typography variant="caption" sx={{ color: "text.secondary" }}>
-                  {t("schedule.updateGameHelper")}
-                </Typography>
-              </Stack>
-            }
+            label={t("schedule.enabled")}
           />
+        </LoadingSkeleton>
+        <Divider sx={{ my: 2 }} />
+
+        <Stack spacing={2}>
+          <LoadingSkeleton loading={loading} fullWidth sx={{ maxWidth: 200 }}>
+            <TextField
+              label={t("schedule.time")}
+              type="time"
+              size="small"
+              value={cfg.time}
+              onChange={(e) => update({ time: e.target.value })}
+              disabled={!cfg.enabled}
+              sx={{ maxWidth: 200 }}
+              slotProps={{ inputLabel: { shrink: true } }}
+            />
+          </LoadingSkeleton>
+          <LoadingSkeleton loading={loading} fullWidth sx={{ maxWidth: 280 }}>
+            <TextField
+              label={t("schedule.warning")}
+              type="number"
+              size="small"
+              value={cfg.warningMinutes}
+              onChange={(e) =>
+                update({
+                  warningMinutes: Math.max(
+                    0,
+                    parseInt(e.target.value, 10) || 0,
+                  ),
+                })
+              }
+              disabled={!cfg.enabled}
+              sx={{ maxWidth: 280 }}
+              slotProps={{ htmlInput: { min: 0 } }}
+              helperText={t("schedule.warningHelper")}
+            />
+          </LoadingSkeleton>
+          <LoadingSkeleton loading={loading} fullWidth>
+            <TextField
+              label={t("schedule.message")}
+              size="small"
+              value={cfg.message}
+              onChange={(e) => update({ message: e.target.value })}
+              disabled={!cfg.enabled}
+              helperText={t("schedule.messageHelper")}
+              fullWidth
+            />
+          </LoadingSkeleton>
+          <LoadingSkeleton loading={loading}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={cfg.updateGame}
+                  onChange={(e) => update({ updateGame: e.target.checked })}
+                  disabled={!cfg.enabled}
+                />
+              }
+              label={
+                <Stack>
+                  <Typography variant="body2">
+                    {t("schedule.updateGame")}
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    sx={{ color: "text.secondary" }}
+                  >
+                    {t("schedule.updateGameHelper")}
+                  </Typography>
+                </Stack>
+              }
+            />
+          </LoadingSkeleton>
         </Stack>
 
         <Box sx={{ mt: 2, display: "flex", justifyContent: "flex-end" }}>
-          <Button variant="contained" disabled={!dirty} onClick={save}>
+          <Button
+            variant="contained"
+            disabled={loading || !dirty}
+            onClick={save}
+          >
             {t("schedule.save")}
           </Button>
         </Box>

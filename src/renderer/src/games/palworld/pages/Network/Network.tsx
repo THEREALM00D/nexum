@@ -41,7 +41,7 @@ export default function Network() {
         onRemoveAll={onRemoveAll}
       />
 
-      <CustomRules rules={customRules} onRefresh={refresh} />
+      <CustomRules rules={customRules} loading={loading} onRefresh={refresh} />
     </FormPage>
   );
 }

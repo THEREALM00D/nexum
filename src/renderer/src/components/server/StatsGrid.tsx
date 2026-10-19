@@ -2,17 +2,32 @@ import { Box, Paper, Typography, LinearProgress } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import type { SystemStats } from "@shared/types";
 import { formatDuration } from "../../utils/format";
+import LoadingSkeleton from "../common/LoadingSkeleton";
+
+// Valeurs de forme réaliste, affichées masquées sous les skeletons tant que
+// les premières statistiques ne sont pas arrivées (même taille de cartes).
+const PLACEHOLDER: SystemStats = {
+  cpu: 0,
+  ram: 0,
+  ramUsed: 10.5,
+  ramTotal: 31.92,
+  ramUsedByGame: 0,
+  serverUptime: 0,
+  uptime: 5 * 86400,
+};
 
 function StatCard({
   label,
   value,
   unit,
   progress,
+  loading,
 }: {
   label: string;
   value: string | number;
   unit?: string;
   progress?: number;
+  loading: boolean;
 }) {
   const color =
     (progress ?? 0) > 85
@@ -34,39 +49,53 @@ function StatCard({
       >
         {label}
       </Typography>
-      <Box sx={{ display: "flex", alignItems: "baseline", gap: 0.5, mt: 0.5 }}>
-        {/* 6 cartes par ligne (xl) : un peu plus petit pour que
-            « 13.57 / 31.92 » tienne sur une ligne */}
-        <Typography
-          variant="h5"
+      <LoadingSkeleton loading={loading} sx={{ mt: 0.5 }}>
+        <Box
           sx={{
-            fontWeight: 700,
-            whiteSpace: "nowrap",
-            fontSize: { xl: "1.25rem" },
+            display: "flex",
+            alignItems: "baseline",
+            gap: 0.5,
+            mt: loading ? 0 : 0.5,
           }}
         >
-          {value}
-        </Typography>
-        {unit && (
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
-            {unit}
+          {/* 6 cartes par ligne (xl) : un peu plus petit pour que
+            « 13.57 / 31.92 » tienne sur une ligne */}
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: 700,
+              whiteSpace: "nowrap",
+              fontSize: { xl: "1.25rem" },
+            }}
+          >
+            {value}
           </Typography>
-        )}
-      </Box>
+          {unit && (
+            <Typography variant="body2" sx={{ color: "text.secondary" }}>
+              {unit}
+            </Typography>
+          )}
+        </Box>
+      </LoadingSkeleton>
       {progress !== undefined && (
-        <LinearProgress
-          variant="determinate"
-          value={Math.min(100, progress)}
-          color={color}
-          sx={{ mt: 1.5, height: 4, borderRadius: 2 }}
-        />
+        <LoadingSkeleton loading={loading} fullWidth sx={{ mt: 1.5 }}>
+          <LinearProgress
+            variant="determinate"
+            value={Math.min(100, progress)}
+            color={color}
+            sx={{ mt: loading ? 0 : 1.5, height: 4, borderRadius: 2 }}
+          />
+        </LoadingSkeleton>
       )}
     </Paper>
   );
 }
 
-export default function StatsGrid({ stats }: { stats: SystemStats }) {
+/** `stats` null : premières statistiques pas encore reçues → skeletons. */
+export default function StatsGrid({ stats }: { stats: SystemStats | null }) {
   const { t, i18n } = useTranslation();
+  const loading = stats === null;
+  const s = stats ?? PLACEHOLDER;
   return (
     // 6 cartes sur une ligne seulement sur grand écran (xl, ≥ 1536 px) ; en
     // dessous 3×2 : sur un portable, six cartes écrasaient les valeurs
@@ -81,46 +110,49 @@ export default function StatsGrid({ stats }: { stats: SystemStats }) {
       <Box>
         <StatCard
           label={t("dashboard.stats.cpu")}
-          value={stats.cpu}
+          value={s.cpu}
           unit="%"
-          progress={stats.cpu}
+          progress={s.cpu}
+          loading={loading}
         />
       </Box>
       <Box>
         <StatCard
           label={t("dashboard.stats.ram")}
-          value={stats.ram}
+          value={s.ram}
           unit="%"
-          progress={stats.ram}
+          progress={s.ram}
+          loading={loading}
         />
       </Box>
       <Box>
         <StatCard
           label={t("dashboard.stats.ramUsed")}
-          value={`${stats.ramUsed} / ${stats.ramTotal}`}
+          value={`${s.ramUsed} / ${s.ramTotal}`}
           unit="GB"
+          loading={loading}
         />
       </Box>
       <Box>
         <StatCard
           label={t("dashboard.stats.ramServer")}
-          value={`${stats.ramUsedByGame} / ${stats.ramTotal}`}
+          value={`${s.ramUsedByGame} / ${s.ramTotal}`}
           unit="GB"
+          loading={loading}
         />
       </Box>
       <Box>
         <StatCard
           label={t("dashboard.stats.uptimeSystem")}
-          value={formatDuration(stats.uptime, i18n.resolvedLanguage ?? "fr")}
+          value={formatDuration(s.uptime, i18n.resolvedLanguage ?? "fr")}
+          loading={loading}
         />
       </Box>
       <Box>
         <StatCard
           label={t("dashboard.stats.uptimeServer")}
-          value={formatDuration(
-            stats.serverUptime,
-            i18n.resolvedLanguage ?? "fr",
-          )}
+          value={formatDuration(s.serverUptime, i18n.resolvedLanguage ?? "fr")}
+          loading={loading}
         />
       </Box>
     </Box>

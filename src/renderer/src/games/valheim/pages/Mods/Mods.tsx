@@ -54,6 +54,7 @@ export default function ValheimMods() {
   const {
     bepInEx,
     installedMods,
+    installedLoading,
     browseTab,
     browseRegistry,
     browseMods,
@@ -84,6 +85,7 @@ export default function ValheimMods() {
 
   const {
     files: configFiles,
+    loading: configsLoading,
     editing: editingConfig,
     entries: configEntries,
     saving: savingConfig,
@@ -248,6 +250,7 @@ export default function ValheimMods() {
         {mainTab === "installed" && (
           <InstalledModsList
             mods={installedMods}
+            loading={installedLoading}
             locale={locale}
             updates={updates}
             deprecatedCodes={deprecatedCodes}
@@ -274,6 +277,7 @@ export default function ValheimMods() {
         {mainTab === "configs" && (
           <ConfigFilesList
             files={configFiles}
+            loading={configsLoading}
             locale={locale}
             onOpen={openConfigFile}
           />

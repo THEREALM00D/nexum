@@ -4,6 +4,9 @@ import { useTranslation } from "react-i18next";
 import type { ValheimMod, ModUpdate, ModRegistry } from "@shared/types";
 import SearchField from "../../../../../components/common/SearchField";
 import ScrollPanel from "../../../../../components/common/ScrollPanel";
+import LoadingSkeleton, {
+  skeletonRows,
+} from "../../../../../components/common/LoadingSkeleton";
 import InstalledModRow from "./InstalledModRow";
 import InstalledSortSelect from "./InstalledSortSelect";
 import {
@@ -26,8 +29,25 @@ function matches(mod: ValheimMod, query: string): boolean {
     .every((word) => haystack.includes(normalize(word)));
 }
 
+// Mod d'exemple des lignes en skeleton (jamais affiché)
+const PLACEHOLDER_MOD: ValheimMod = {
+  modId: 0,
+  fileId: 0,
+  name: "ModName",
+  version: "1.0.0",
+  author: "Author",
+  summary: "",
+  installedAt: 0,
+  enabled: true,
+  installDir: "",
+  source: "thunderstore",
+  publishedAt: 0,
+};
+
 interface Props {
   mods: ValheimMod[];
+  /** Liste pas encore lue : compteur et lignes en skeleton. */
+  loading: boolean;
   locale: string;
   updates: ModUpdate[];
   deprecatedCodes: string[];
@@ -38,6 +58,7 @@ interface Props {
 
 export default function InstalledModsList({
   mods,
+  loading,
   locale,
   updates,
   deprecatedCodes,
@@ -74,7 +95,7 @@ export default function InstalledModsList({
     saveInstalledSort(next);
   };
 
-  if (mods.length === 0) {
+  if (!loading && mods.length === 0) {
     return (
       <Typography variant="body2" sx={{ color: "text.secondary", py: 2 }}>
         {t("valheimMods.installed.empty")}
@@ -102,26 +123,41 @@ export default function InstalledModsList({
             sx={{ flex: 1, minWidth: 200 }}
           />
           <InstalledSortSelect value={sort} onChange={handleSortChange} />
-          <Typography
-            variant="caption"
-            sx={{ color: "text.secondary", whiteSpace: "nowrap" }}
-          >
-            {search.trim()
-              ? t("valheimMods.installed.countFiltered", {
-                  shown: visibleMods.length,
-                  total: mods.length,
-                })
-              : t("valheimMods.installed.count", { count: mods.length })}
-          </Typography>
+          <LoadingSkeleton loading={loading}>
+            <Typography
+              variant="caption"
+              sx={{ color: "text.secondary", whiteSpace: "nowrap" }}
+            >
+              {search.trim()
+                ? t("valheimMods.installed.countFiltered", {
+                    shown: visibleMods.length,
+                    total: mods.length,
+                  })
+                : t("valheimMods.installed.count", { count: mods.length })}
+            </Typography>
+          </LoadingSkeleton>
         </Box>
       }
     >
-      {visibleMods.length === 0 && (
+      {!loading && visibleMods.length === 0 && (
         <Typography variant="body2" sx={{ color: "text.secondary", py: 1 }}>
           {t("valheimMods.installed.noMatch")}
         </Typography>
       )}
       <Stack divider={<Divider />} spacing={0}>
+        {loading &&
+          skeletonRows(
+            <InstalledModRow
+              mod={PLACEHOLDER_MOD}
+              locale={locale}
+              update={undefined}
+              deprecated={false}
+              onRemove={() => {}}
+              onToggle={() => {}}
+              onUpdate={() => {}}
+            />,
+            6,
+          )}
         {visibleMods.map((mod) => {
           const code = mod.thunderstoreCode;
           return (

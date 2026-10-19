@@ -6,13 +6,15 @@ import Section from "./Section";
 export default function AdvancedSection({
   config,
   onChange,
+  loading,
 }: {
   config: ValheimLaunchConfig;
+  loading: boolean;
   onChange: (patch: Partial<ValheimLaunchConfig>) => void;
 }) {
   const { t } = useTranslation();
   return (
-    <Section label={t("valheimConfig.sections.advanced")}>
+    <Section label={t("valheimConfig.sections.advanced")} loading={loading}>
       <TextField
         label={t("valheimConfig.fields.logFile.label")}
         helperText={t("valheimConfig.fields.logFile.description")}

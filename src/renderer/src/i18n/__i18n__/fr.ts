@@ -5,7 +5,6 @@ export default {
     delete: "Supprimer",
     confirm: "Confirmer",
     browse: "Parcourir",
-    loading: "Chargement...",
     error: "Erreur",
     success: "Succès",
     language: "Langue",

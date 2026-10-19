@@ -9,8 +9,21 @@ import {
 } from "@mui/material";
 import FileOpenIcon from "@mui/icons-material/FileOpen";
 import { useTranslation } from "react-i18next";
+import type { DragonwildsWorld } from "@shared/types";
 import { useDragonwildsWorlds } from "../hooks/useDragonwildsWorlds";
 import WorldRow from "./WorldRow";
+import LoadingSkeleton, {
+  skeletonRows,
+} from "../../../../../components/common/LoadingSkeleton";
+
+// Monde d'exemple des lignes en skeleton (jamais affiché)
+const PLACEHOLDER_WORLD: DragonwildsWorld = {
+  worldName: "World",
+  fileName: "World.sav",
+  path: "",
+  sizeBytes: 250_000,
+  lastModified: 0,
+};
 
 /**
  * Mondes Dragonwilds : celui que le serveur charge au démarrage
@@ -25,19 +38,35 @@ export default function WorldsCard({
   const { t } = useTranslation();
   const { worlds, busy, stopped, loadWorld, importWorld, importFromFile } =
     useDragonwildsWorlds(onImported);
-  if (!worlds) return null;
-  const disabled = !stopped || busy;
+  // Pas encore lus : la carte garde sa forme, contenu en skeleton
+  const loading = worlds === null;
+  const disabled = loading || !stopped || busy;
+  const placeholderRow = (
+    <WorldRow
+      world={PLACEHOLDER_WORLD}
+      actionLabel={t("dragonwildsWorlds.load")}
+      disabled
+      onAction={() => {}}
+    />
+  );
 
   return (
     <Paper sx={{ p: 2.5 }}>
       <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
         {t("dragonwildsWorlds.title")}
       </Typography>
-      <Typography variant="body2" sx={{ color: "text.secondary", mb: 1.5 }}>
-        {worlds.current
-          ? t("dragonwildsWorlds.currentHint", { name: worlds.current })
-          : t("dragonwildsWorlds.noCurrent")}
-      </Typography>
+      <LoadingSkeleton loading={loading} sx={{ mb: 1.5 }}>
+        <Typography
+          variant="body2"
+          sx={{ color: "text.secondary", mb: loading ? 0 : 1.5 }}
+        >
+          {worlds?.current || loading
+            ? t("dragonwildsWorlds.currentHint", {
+                name: worlds?.current ?? "World",
+              })
+            : t("dragonwildsWorlds.noCurrent")}
+        </Typography>
+      </LoadingSkeleton>
 
       {!stopped && (
         <Alert severity="warning" sx={{ fontSize: 13, mb: 1.5 }}>
@@ -46,18 +75,19 @@ export default function WorldsCard({
       )}
 
       <Stack divider={<Divider flexItem />}>
-        {worlds.server.map((w) => (
+        {loading && skeletonRows(placeholderRow, 2)}
+        {worlds?.server.map((w) => (
           <WorldRow
             key={w.path}
             world={w}
-            current={w.worldName === worlds.current}
+            current={w.worldName === worlds?.current}
             actionLabel={t("dragonwildsWorlds.load")}
             disabled={disabled}
             onAction={() => loadWorld(w.worldName)}
           />
         ))}
       </Stack>
-      {worlds.server.length === 0 && (
+      {worlds?.server.length === 0 && (
         <Typography variant="body2" sx={{ color: "text.secondary" }}>
           {t("dragonwildsWorlds.noServerWorlds")}
         </Typography>
@@ -70,7 +100,8 @@ export default function WorldsCard({
         {t("dragonwildsWorlds.importHint")}
       </Typography>
       <Stack divider={<Divider flexItem />} sx={{ mt: 1 }}>
-        {worlds.solo.map((w) => (
+        {loading && skeletonRows(placeholderRow, 1)}
+        {worlds?.solo.map((w) => (
           <WorldRow
             key={w.path}
             world={w}
@@ -80,7 +111,7 @@ export default function WorldsCard({
           />
         ))}
       </Stack>
-      {worlds.solo.length === 0 && (
+      {worlds?.solo.length === 0 && (
         <Typography variant="body2" sx={{ color: "text.secondary" }}>
           {t("dragonwildsWorlds.noSoloWorlds", { dir: worlds.soloDir })}
         </Typography>

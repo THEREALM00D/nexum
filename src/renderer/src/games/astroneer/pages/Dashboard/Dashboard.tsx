@@ -31,13 +31,7 @@ export default function AstroneerDashboard() {
         onRestart={restart}
       />
 
-      {stats ? (
-        <StatsGrid stats={stats} />
-      ) : (
-        <Typography variant="body2" sx={{ color: "text.secondary" }}>
-          {t("astroneerDashboard.waitingStats")}
-        </Typography>
-      )}
+      <StatsGrid stats={stats} />
 
       <JoinServerCard />
 

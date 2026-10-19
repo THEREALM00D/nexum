@@ -6,6 +6,7 @@ import AdminListField from "./AdminListField";
 interface AdminListState {
   value: string;
   saved: boolean;
+  loading: boolean;
   handleChange: (v: string) => void;
   handleSave: () => void;
 }
@@ -21,7 +22,10 @@ export default function AdministrationSection({
 }) {
   const { t } = useTranslation();
   return (
-    <Section label={t("valheimConfig.sections.administration")}>
+    <Section
+      label={t("valheimConfig.sections.administration")}
+      loading={adminList.loading || bannedList.loading || permittedList.loading}
+    >
       <Typography variant="body2" sx={{ color: "text.secondary" }}>
         {t("valheimConfig.administration.description")}
       </Typography>

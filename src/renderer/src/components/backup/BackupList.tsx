@@ -1,24 +1,30 @@
 import {
-  Box,
   Button,
-  Chip,
   CircularProgress,
   Divider,
-  IconButton,
   Stack,
-  Tooltip,
   Typography,
 } from "@mui/material";
 import BackupIcon from "@mui/icons-material/Backup";
-import RestoreIcon from "@mui/icons-material/Restore";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { useTranslation } from "react-i18next";
 import type { BackupEntry, ServerStatus } from "@shared/types";
-import { formatSize, formatDate } from "../../utils/format";
 import ScrollPanel from "../common/ScrollPanel";
+import LoadingSkeleton, { skeletonRows } from "../common/LoadingSkeleton";
+import BackupRow from "./BackupRow";
+
+// Ligne d'exemple des skeletons (forme d'une vraie sauvegarde, jamais affichée)
+const PLACEHOLDER: BackupEntry = {
+  name: "backup-2026-01-01_00-00-00.zip",
+  path: "",
+  size: 20_000_000,
+  createdAt: 0,
+  beforeUpdate: false,
+};
 
 interface Props {
   backups: BackupEntry[];
+  /** Liste pas encore lue : titre et lignes en skeleton. */
+  loading: boolean;
   creating: boolean;
   restoring: string | null;
   serverPath: string;
@@ -30,6 +36,7 @@ interface Props {
 
 export default function BackupList({
   backups,
+  loading,
   creating,
   restoring,
   serverPath,
@@ -38,8 +45,8 @@ export default function BackupList({
   onRestore,
   onDelete,
 }: Props) {
-  const { t, i18n } = useTranslation();
-  const locale = i18n.resolvedLanguage ?? "fr";
+  const { t } = useTranslation();
+  const noop = () => {};
 
   return (
     <ScrollPanel
@@ -56,9 +63,11 @@ export default function BackupList({
               mb: 1.5,
             }}
           >
-            <Typography variant="subtitle2">
-              {t("backup.list.title", { count: backups.length })}
-            </Typography>
+            <LoadingSkeleton loading={loading}>
+              <Typography variant="subtitle2">
+                {t("backup.list.title", { count: backups.length })}
+              </Typography>
+            </LoadingSkeleton>
             <Button
               variant="contained"
               size="small"
@@ -75,75 +84,33 @@ export default function BackupList({
         </>
       }
     >
-      {backups.length === 0 ? (
+      {loading ? (
+        <Stack spacing={1}>
+          {skeletonRows(
+            <BackupRow
+              entry={PLACEHOLDER}
+              restoring={false}
+              restoreDisabled
+              onRestore={noop}
+              onDelete={noop}
+            />,
+          )}
+        </Stack>
+      ) : backups.length === 0 ? (
         <Typography variant="body2" sx={{ color: "text.secondary" }}>
           {t("backup.list.none")}
         </Typography>
       ) : (
         <Stack spacing={1}>
           {backups.map((b) => (
-            <Box
+            <BackupRow
               key={b.path}
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                py: 0.75,
-              }}
-            >
-              <Box sx={{ minWidth: 0, flex: 1 }}>
-                <Stack
-                  direction="row"
-                  spacing={1}
-                  sx={{ alignItems: "center" }}
-                >
-                  <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                    {b.name}
-                  </Typography>
-                  {b.beforeUpdate && (
-                    <Chip
-                      size="small"
-                      variant="outlined"
-                      label={t("backup.list.beforeUpdate")}
-                    />
-                  )}
-                </Stack>
-                <Typography variant="caption" sx={{ color: "text.secondary" }}>
-                  {formatDate(b.createdAt, locale)} — {formatSize(b.size)}
-                </Typography>
-              </Box>
-              <Stack
-                direction="row"
-                spacing={0.5}
-                sx={{ alignItems: "center" }}
-              >
-                <Tooltip title={t("backup.list.restoreTooltip")}>
-                  <span>
-                    <IconButton
-                      size="small"
-                      color="primary"
-                      disabled={status === "running" || restoring !== null}
-                      onClick={() => onRestore(b)}
-                    >
-                      {restoring === b.path ? (
-                        <CircularProgress size={18} />
-                      ) : (
-                        <RestoreIcon fontSize="small" />
-                      )}
-                    </IconButton>
-                  </span>
-                </Tooltip>
-                <Tooltip title={t("backup.list.deleteTooltip")}>
-                  <IconButton
-                    size="small"
-                    color="error"
-                    onClick={() => onDelete(b)}
-                  >
-                    <DeleteIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              </Stack>
-            </Box>
+              entry={b}
+              restoring={restoring === b.path}
+              restoreDisabled={status === "running" || restoring !== null}
+              onRestore={onRestore}
+              onDelete={onDelete}
+            />
           ))}
         </Stack>
       )}

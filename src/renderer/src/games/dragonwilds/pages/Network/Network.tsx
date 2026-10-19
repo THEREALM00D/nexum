@@ -10,12 +10,14 @@ import FormPage from "../../../../components/common/FormPage";
 export default function DragonwildsNetwork() {
   const { t } = useTranslation();
   const [ports, setPorts] = useState({ game: 7777, beacon: 8888 });
+  const [portsReady, setPortsReady] = useState(false);
 
   useEffect(() => {
     window.api.dragonwilds
       .getConfig()
       .then((cfg) => setPorts({ game: cfg.port, beacon: cfg.beaconPort }))
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setPortsReady(true));
   }, []);
 
   const {
@@ -27,7 +29,7 @@ export default function DragonwildsNetwork() {
     onToggle,
     onApplyAll,
     onRemoveAll,
-  } = useDragonwildsFirewall(ports.game, ports.beacon);
+  } = useDragonwildsFirewall(ports.game, ports.beacon, portsReady);
 
   return (
     <FormPage>
@@ -49,7 +51,7 @@ export default function DragonwildsNetwork() {
         onRemoveAll={onRemoveAll}
       />
 
-      <CustomRules rules={customRules} onRefresh={refresh} />
+      <CustomRules rules={customRules} loading={loading} onRefresh={refresh} />
     </FormPage>
   );
 }

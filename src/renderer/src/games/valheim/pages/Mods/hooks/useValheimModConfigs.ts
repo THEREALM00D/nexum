@@ -9,7 +9,8 @@ export function useValheimModConfigs() {
   const { notify } = useNotification();
 
   const [files, setFiles] = useState<ValheimModConfigFile[]>([]);
-  const [loading, setLoading] = useState(false);
+  // Vrai dès le départ : la 1re lecture de la liste est un chargement
+  const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<string | null>(null);
   const [lines, setLines] = useState<string[]>([]);
   const [entries, setEntries] = useState<CfgEntry[]>([]);

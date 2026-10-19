@@ -28,11 +28,23 @@ export function firewallErrorMessage(
  * opération groupée : l'app ne tourne pas en admin, Windows ne demande donc
  * qu'UNE confirmation (UAC) pour tout le lot.
  */
-export function useNamedRulesFirewall(rules: FirewallNamedRule[]) {
+export function useNamedRulesFirewall(
+  rules: FirewallNamedRule[],
+  /**
+   * Faux tant que les ports viennent encore de la config du serveur : on
+   * reste en chargement au lieu de vérifier (et d'afficher) des règles aux
+   * ports par défaut.
+   */
+  ready = true,
+) {
   const { t } = useTranslation();
   const { notify } = useNotification();
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
-  const [statuses, setStatuses] = useState<FirewallRuleStatus[]>([]);
+  // Règles connues d'avance : affichées tout de suite (état en skeleton
+  // pendant la vérification) plutôt qu'un tableau vide.
+  const [statuses, setStatuses] = useState<FirewallRuleStatus[]>(() =>
+    rules.map((r) => ({ ...r, active: false })),
+  );
   const [customRules, setCustomRules] = useState<FirewallRuleStatus[]>([]);
   const [loading, setLoading] = useState(true);
   // Clé stable : `rules` est recalculé à chaque rendu par l'appelant
@@ -64,8 +76,8 @@ export function useNamedRulesFirewall(rules: FirewallNamedRule[]) {
   }, [rulesKey, notify]);
 
   useEffect(() => {
-    refresh();
-  }, [refresh]);
+    if (ready) refresh();
+  }, [refresh, ready]);
 
   const report = useCallback(
     (res: { success: boolean; error?: string }, okMsg: string) => {

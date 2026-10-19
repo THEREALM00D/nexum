@@ -12,13 +12,15 @@ import Section from "./Section";
 export default function NetworkSection({
   config,
   onChange,
+  loading,
 }: {
   config: ValheimLaunchConfig;
+  loading: boolean;
   onChange: (patch: Partial<ValheimLaunchConfig>) => void;
 }) {
   const { t } = useTranslation();
   return (
-    <Section label={t("valheimConfig.sections.network")}>
+    <Section label={t("valheimConfig.sections.network")} loading={loading}>
       <TextField
         label={t("valheimConfig.fields.port.label")}
         helperText={t("valheimConfig.fields.port.description")}

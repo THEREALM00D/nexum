@@ -45,6 +45,7 @@ export function useInstall() {
   const [updateStatus, setUpdateStatus] = useState<UpdateStatus | null>(null);
   const [launchArgs, setLaunchArgs] =
     useState<LaunchArgsConfig>(DEFAULT_LAUNCH_ARGS);
+  const [launchArgsLoading, setLaunchArgsLoading] = useState(true);
 
   useEffect(() => {
     steamService.isInstalled().then(setSteamInstalled);
@@ -52,7 +53,11 @@ export function useInstall() {
   }, [state.serverPath]);
 
   useEffect(() => {
-    window.api.server.getLaunchArgs().then(setLaunchArgs);
+    window.api.server
+      .getLaunchArgs()
+      .then(setLaunchArgs)
+      .catch(() => {})
+      .finally(() => setLaunchArgsLoading(false));
   }, []);
 
   useEffect(() => {
@@ -151,6 +156,7 @@ export function useInstall() {
   };
 
   return {
+    launchArgsLoading,
     state,
     gameType,
     steamInstalled,

@@ -32,6 +32,7 @@ import DiscordButton from "./DiscordButton";
 import TuneIcon from "@mui/icons-material/Tune";
 import LanguageToggle from "../common/LanguageToggle";
 import SidebarNavItem from "./SidebarNavItem";
+import LoadingSkeleton from "../common/LoadingSkeleton";
 
 const EXPANDED_WIDTH = 220;
 const COLLAPSED_WIDTH = 56;
@@ -163,13 +164,24 @@ export default function Sidebar({ currentPage, onNavigate }: SidebarProps) {
           fenêtre est trop basse : le bas de la barre reste toujours visible. */}
       <Box sx={{ flex: 1, minHeight: 0, overflowY: "auto" }}>
         <List dense sx={{ py: 1, px: collapsed ? 0.5 : 1 }}>
-          {navItems
-            .filter(
-              ({ id }) =>
-                !GLOBAL_PAGES.includes(id) &&
-                plugin?.supportedPages.includes(id),
-            )
-            .map(renderItem)}
+          {/* Jeu du serveur actif pas encore connu : entrées en skeleton
+              plutôt que celles du jeu par défaut */}
+          {state.loaded
+            ? navItems
+                .filter(
+                  ({ id }) =>
+                    !GLOBAL_PAGES.includes(id) &&
+                    plugin?.supportedPages.includes(id),
+                )
+                .map(renderItem)
+            : navItems
+                .filter(({ id }) => !GLOBAL_PAGES.includes(id))
+                .slice(0, 7)
+                .map((item) => (
+                  <LoadingSkeleton key={item.id} loading fullWidth>
+                    {renderItem(item)}
+                  </LoadingSkeleton>
+                ))}
         </List>
       </Box>
 
@@ -192,15 +204,17 @@ export default function Sidebar({ currentPage, onNavigate }: SidebarProps) {
                 <Divider sx={{ mb: 1.5 }} />
               </>
             )}
-            <Chip
-              label={t(`status.${state.status}`, {
-                defaultValue: state.status,
-              })}
-              color={STATUS_COLOR[state.status] ?? "default"}
-              size="small"
-              variant="outlined"
-              sx={{ width: "100%", fontSize: 11, mb: 1 }}
-            />
+            <LoadingSkeleton loading={!state.loaded} fullWidth sx={{ mb: 1 }}>
+              <Chip
+                label={t(`status.${state.status}`, {
+                  defaultValue: state.status,
+                })}
+                color={STATUS_COLOR[state.status] ?? "default"}
+                size="small"
+                variant="outlined"
+                sx={{ width: "100%", fontSize: 11, mb: state.loaded ? 1 : 0 }}
+              />
+            </LoadingSkeleton>
             <DiscordButton collapsed={false} />
             <UpdateIndicator />
           </>
