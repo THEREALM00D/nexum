@@ -6,12 +6,6 @@ import { useNotification } from "../../../../../context/NotificationContext";
 import type { FirewallRuleStatus } from "@shared/types";
 import { firewallErrorMessage } from "../../../../../components/firewall/useNamedRulesFirewall";
 
-const RULE_KEYS: Record<string, "game" | "rcon" | "restapi"> = {
-  "Palworld Server - Game": "game",
-  "Palworld Server - RCON": "rcon",
-  "Palworld Server - REST API": "restapi",
-};
-
 // Mêmes noms que FirewallManager.getStatus (main), ports par défaut
 const PLACEHOLDER_RULES: FirewallRuleStatus[] = [
   {
@@ -83,10 +77,8 @@ export function useFirewall(serverPath: string) {
 
   const onToggle = useCallback(
     async (rule: FirewallRuleStatus) => {
-      const key = RULE_KEYS[rule.name];
-      if (!key) return;
       if (rule.active) {
-        const res = await firewallService.disableRule(key);
+        const res = await firewallService.disableRule(rule);
         if (!res.success) notify(firewallErrorMessage(t, res.error), "error");
         else
           notify(
@@ -94,11 +86,7 @@ export function useFirewall(serverPath: string) {
             "success",
           );
       } else {
-        const res = await firewallService.enableRule(
-          key,
-          rule.port,
-          rule.protocol,
-        );
+        const res = await firewallService.enableRule(rule);
         if (!res.success) notify(firewallErrorMessage(t, res.error), "error");
         else
           notify(

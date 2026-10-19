@@ -141,13 +141,6 @@ const api = {
     isAdmin: () => ipcRenderer.invoke("firewall:isAdmin"),
     getStatus: (gamePort: number, rconPort: number, restApiPort: number) =>
       ipcRenderer.invoke("firewall:getStatus", gamePort, rconPort, restApiPort),
-    enableRule: (
-      key: "game" | "rcon" | "restapi",
-      port: number,
-      protocol: "TCP" | "UDP",
-    ) => ipcRenderer.invoke("firewall:enableRule", key, port, protocol),
-    disableRule: (key: "game" | "rcon" | "restapi") =>
-      ipcRenderer.invoke("firewall:disableRule", key),
     applyAll: (gamePort: number, rconPort: number, restApiPort: number) =>
       ipcRenderer.invoke("firewall:applyAll", gamePort, rconPort, restApiPort),
     removeAll: () => ipcRenderer.invoke("firewall:removeAll"),

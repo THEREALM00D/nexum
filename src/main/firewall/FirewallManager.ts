@@ -196,27 +196,6 @@ export class FirewallManager {
     }
   }
 
-  async enableRule(
-    key: "game" | "rcon" | "restapi",
-    port: number,
-    protocol: "TCP" | "UDP",
-  ): Promise<Result> {
-    return this.applyNamedRules([
-      { name: getRuleName(key, protocol), port, protocol },
-    ]);
-  }
-
-  async disableRule(key: "game" | "rcon" | "restapi"): Promise<Result> {
-    const names =
-      key === "game"
-        ? [getRuleName("game", "UDP"), getRuleName("game", "TCP")]
-        : [RULE_NAMES[key]];
-    return this.apply(
-      names.map((n) => deleteCmd(n)),
-      names.map((name) => ({ name, exists: false })),
-    );
-  }
-
   async applyAll(
     gamePort: number,
     rconPort: number,
