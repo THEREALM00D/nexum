@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.0](https://github.com/THEREALM00D/nexum/compare/v0.15.0...v0.16.0) (2026-10-19)
+
+
+### Features
+
+* responsive layout for small screens ([#125](https://github.com/THEREALM00D/nexum/issues/125)) ([cc09635](https://github.com/THEREALM00D/nexum/commit/cc09635ca6ddb862d8dcb1a0d70de49dc7296162))
+
 ## [0.15.0](https://github.com/THEREALM00D/nexum/compare/v0.14.0...v0.15.0) (2026-10-19)
 
 
