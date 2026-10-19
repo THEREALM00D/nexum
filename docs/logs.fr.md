@@ -53,7 +53,7 @@ Chaque démarrage du serveur ouvre une **nouvelle session** : la vue repart de z
 - **Sélecteur de session** (à côté des boutons) : **Session en cours (direct)**, ou n'importe quelle session précédente pour la relire. Les sessions marquées ⚠ **plantée** sont celles où le serveur s'est arrêté seul avec une erreur : c'est le fichier à partager dans un rapport de bug.
 - **Bouton dossier** : ouvre le dossier des fichiers de log, `%APPDATA%\Nexum\servers\<id du serveur>\logs\` (`%APPDATA%\server-forge\…` pour les installations d'origine ServerForge).
 - Chaque ligne du fichier commence par l'heure, ex. `[14:32:07]`.
-- Nexum garde les **20 dernières sessions** par serveur et supprime les plus anciennes. Un fichier de session s'arrête à **20 Mo** (une note l'indique), pour qu'un serveur bloqué dans une boucle d'erreurs ne remplisse pas le disque.
+- Nexum garde les **20 dernières sessions** par serveur et supprime les plus anciennes. Un fichier de session est limité à **20 Mo** : une session plus longue (un serveur Dragonwilds bien rempli en écrit autant en 11 h environ) continue dans un nouveau fichier, qui apparaît comme une entrée à part dans la liste des sessions. Une ligne à la fin de l'un et au début de l'autre relie les deux. La place prise sur le disque reste limitée, même pour un serveur bloqué dans une boucle d'erreurs.
 - Les fichiers gardent le log brut (IP, identifiants Steam) : ils restent sur votre PC. Les données personnelles ne sont masquées que quand vous utilisez **Copier** ou **Enregistrer en .txt** (voir plus bas).
 
 ## Actions
