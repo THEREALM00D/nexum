@@ -8,14 +8,12 @@ export const firewallService = {
     restApiPort: number,
   ): Promise<FirewallRuleStatus[]> =>
     window.api.firewall.getStatus(gamePort, rconPort, restApiPort),
-  enableRule: (
-    key: "game" | "rcon" | "restapi",
-    port: number,
-    protocol: "TCP" | "UDP",
-  ): Promise<OperationResult> =>
-    window.api.firewall.enableRule(key, port, protocol),
-  disableRule: (key: "game" | "rcon" | "restapi"): Promise<OperationResult> =>
-    window.api.firewall.disableRule(key),
+  // Une règle précise (nom exact : « Palworld Server - Game UDP »…), comme
+  // les autres jeux — pas de clé « game » qui en couvrait deux.
+  enableRule: (rule: FirewallRuleStatus): Promise<OperationResult> =>
+    window.api.firewall.enableNamedRule(rule.name, rule.port, rule.protocol),
+  disableRule: (rule: FirewallRuleStatus): Promise<OperationResult> =>
+    window.api.firewall.disableNamedRule(rule.name, rule.protocol),
   applyAll: (
     gamePort: number,
     rconPort: number,

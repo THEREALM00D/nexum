@@ -137,14 +137,6 @@ interface API {
       rconPort: number,
       restApiPort: number,
     ) => Promise<FirewallRuleStatus[]>;
-    enableRule: (
-      key: "game" | "rcon" | "restapi",
-      port: number,
-      protocol: "TCP" | "UDP",
-    ) => Promise<{ success: boolean; error?: string }>;
-    disableRule: (
-      key: "game" | "rcon" | "restapi",
-    ) => Promise<{ success: boolean; error?: string }>;
     applyAll: (
       gamePort: number,
       rconPort: number,

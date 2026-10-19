@@ -2,7 +2,6 @@ import { ipcMain } from "electron/main";
 import type { IpcContext } from "../context";
 import type { FirewallNamedRule } from "../../../shared/types";
 
-type RuleKey = "game" | "rcon" | "restapi";
 type Protocol = "TCP" | "UDP";
 
 export function registerFirewallHandlers(ctx: IpcContext): void {
@@ -12,16 +11,6 @@ export function registerFirewallHandlers(ctx: IpcContext): void {
     "firewall:getStatus",
     (_, gamePort: number, rconPort: number, restApiPort: number) =>
       ctx.firewall.getStatus(gamePort, rconPort, restApiPort),
-  );
-
-  ipcMain.handle(
-    "firewall:enableRule",
-    (_, key: RuleKey, port: number, protocol: Protocol) =>
-      ctx.firewall.enableRule(key, port, protocol),
-  );
-
-  ipcMain.handle("firewall:disableRule", (_, key: RuleKey) =>
-    ctx.firewall.disableRule(key),
   );
 
   ipcMain.handle(
