@@ -49,6 +49,7 @@ export default function BackupPage({
 
       <BackupConfigPanel
         config={backup.config}
+        loading={backup.loading}
         onSelectDir={backup.handleSelectDir}
         onConfigChange={backup.handleConfigChange}
       />
@@ -57,6 +58,7 @@ export default function BackupPage({
 
       <BackupList
         backups={backup.backups}
+        loading={backup.loading}
         creating={backup.creating}
         restoring={backup.restoring}
         serverPath={backup.serverPath}

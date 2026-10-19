@@ -21,6 +21,7 @@ export default function Install() {
     checkingUpdate,
     updateStatus,
     launchArgs,
+    launchArgsLoading,
     setLaunchArgs,
     updateLaunchArgs,
     handleBrowse,
@@ -62,6 +63,7 @@ export default function Install() {
       {gameType === "palworld" && (
         <LaunchArgsCard
           launchArgs={launchArgs}
+          loading={launchArgsLoading}
           onCustomArgsChange={(v) =>
             setLaunchArgs({ ...launchArgs, customArgs: v })
           }

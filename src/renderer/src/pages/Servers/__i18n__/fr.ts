@@ -60,7 +60,6 @@ export default {
       exeFound: "Serveur {{game}} détecté dans ce dossier",
       exeMissing:
         "Aucun exécutable de serveur connu trouvé dans ce dossier — vérifiez le chemin ou le jeu sélectionné",
-      exeChecking: "Vérification…",
     },
     notify: {
       created: "Serveur « {{name}} » ajouté.",

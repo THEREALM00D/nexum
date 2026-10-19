@@ -6,7 +6,6 @@ export default {
       label: "SteamCMD",
       installed: "Installé",
       notInstalled: "Non installé",
-      checking: "Vérification...",
       statusOk: "OK",
       statusMissing: "Manquant",
       install: "Installer SteamCMD",

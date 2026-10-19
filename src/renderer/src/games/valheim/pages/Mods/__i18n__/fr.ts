@@ -105,7 +105,6 @@ export default {
       updatedOn: "Mis à jour le {{date}}",
       staleTooltip:
         "Pas mis à jour depuis plus d'un an : il ne fonctionne peut-être plus avec la version actuelle de Valheim. Consultez les commentaires sur sa page avant de l'installer.",
-      loading: "Chargement…",
       error: "Impossible de charger les mods {{registry}}",
     },
     folders: {

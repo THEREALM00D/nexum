@@ -29,6 +29,7 @@ import { useNotification } from "../../context/NotificationContext";
 import RuleStatus from "./RuleStatus";
 import { FONT_MONO } from "../../theme";
 import { firewallErrorMessage } from "./useNamedRulesFirewall";
+import LoadingSkeleton from "../common/LoadingSkeleton";
 
 const HEAD_SX = {
   color: "text.secondary",
@@ -39,10 +40,16 @@ const HEAD_SX = {
 
 interface Props {
   rules: FirewallRuleStatus[];
+  /** Liste pas encore lue : le texte « aucune règle » passe en skeleton. */
+  loading?: boolean;
   onRefresh: () => Promise<void>;
 }
 
-export default function CustomRules({ rules, onRefresh }: Props) {
+export default function CustomRules({
+  rules,
+  loading = false,
+  onRefresh,
+}: Props) {
   const { t } = useTranslation();
   const { notify } = useNotification();
   const [newName, setNewName] = useState("");
@@ -234,9 +241,11 @@ export default function CustomRules({ rules, onRefresh }: Props) {
           </TableContainer>
         </>
       ) : (
-        <Typography variant="caption" sx={{ color: "text.disabled" }}>
-          {t("network.custom.none")}
-        </Typography>
+        <LoadingSkeleton loading={loading}>
+          <Typography variant="caption" sx={{ color: "text.disabled" }}>
+            {t("network.custom.none")}
+          </Typography>
+        </LoadingSkeleton>
       )}
     </Paper>
   );

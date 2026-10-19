@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { ThemeProvider, CssBaseline, Box } from "@mui/material";
 import { COMPACT_MEDIA, CONTENT_MAX_WIDTH, darkTheme } from "./theme";
 import { ServerProvider, useServer } from "./context/ServerContext";
@@ -9,6 +9,7 @@ import Settings from "./pages/Settings/Settings";
 import SetupWizard from "./pages/Setup/SetupWizard";
 import Titlebar from "./components/Titlebar/Titlebar";
 import Sidebar from "./components/Sidebar/Sidebar";
+import PageSkeleton from "./components/common/PageSkeleton";
 import { DEFAULT_GAME, getGamePlugin } from "./games/registry";
 import { useUpdateNotices } from "./hooks/useUpdateNotices";
 
@@ -35,19 +36,18 @@ const FULL_WIDTH_PAGES: Page[] = ["logs"];
 
 function AppShell() {
   const [page, setPage] = useState<Page>("dashboard");
-  const { state, refreshServers } = useServer();
+  const { state } = useServer();
   useUpdateNotices({
     openInstallPage: () => setPage("install"),
     openModsPage: () => setPage("mods"),
   });
 
-  // Premier lancement (aucun serveur) : l'assistant plutôt qu'une app vide
-  useEffect(() => {
-    refreshServers()
-      .then((list) => list.length === 0 && setPage("setup"))
-      .catch(() => {});
+  // Premier lancement (aucun serveur) : l'assistant plutôt qu'une app vide.
+  // Layout effect : décidé avant l'affichage, le dashboard ne clignote pas.
+  useLayoutEffect(() => {
+    if (state.loaded && state.servers.length === 0) setPage("setup");
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [state.loaded]);
 
   const gameType = state.activeServer?.gameType ?? DEFAULT_GAME;
 
@@ -136,7 +136,8 @@ function AppShell() {
               },
             }}
           >
-            {renderPage()}
+            {/* Serveurs pas encore lus : on ne sait pas quel jeu afficher */}
+            {state.loaded ? renderPage() : <PageSkeleton />}
           </Box>
         </Box>
       </Box>

@@ -14,13 +14,15 @@ function useList(
   const { t } = useTranslation();
   const { notify } = useNotification();
   const [state, setState] = useState<ListState>({ value: "", saved: false });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     getter()
       .then((list) => setState({ value: list.join("\n"), saved: false }))
       .catch(() =>
         notify(t("valheimConfig.administration.loadFailed"), "error"),
-      );
+      )
+      .finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -42,7 +44,13 @@ function useList(
     }
   };
 
-  return { value: state.value, saved: state.saved, handleChange, handleSave };
+  return {
+    value: state.value,
+    saved: state.saved,
+    loading,
+    handleChange,
+    handleSave,
+  };
 }
 
 export function useValheimAdminLists() {

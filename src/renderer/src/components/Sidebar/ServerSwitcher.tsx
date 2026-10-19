@@ -16,6 +16,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import { useTranslation } from "react-i18next";
 import { useServer } from "../../context/ServerContext";
 import type { Page } from "../../App";
+import LoadingSkeleton from "../common/LoadingSkeleton";
 import { NEXUM } from "../../theme";
 
 interface Props {
@@ -106,21 +107,23 @@ export default function ServerSwitcher({ onManage, collapsed }: Props) {
   if (collapsed) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", py: 1.5 }}>
-        <Tooltip title={activeName} placement="right">
-          <Box
-            onClick={handleOpen}
-            sx={{
-              width: 28,
-              height: 28,
-              borderRadius: "50%",
-              bgcolor: activeColor,
-              cursor: "pointer",
-              border: "2px solid",
-              borderColor: "divider",
-              "&:hover": { opacity: 0.85 },
-            }}
-          />
-        </Tooltip>
+        <LoadingSkeleton loading={!state.loaded} variant="circular">
+          <Tooltip title={activeName} placement="right">
+            <Box
+              onClick={handleOpen}
+              sx={{
+                width: 28,
+                height: 28,
+                borderRadius: "50%",
+                bgcolor: activeColor,
+                cursor: "pointer",
+                border: "2px solid",
+                borderColor: "divider",
+                "&:hover": { opacity: 0.85 },
+              }}
+            />
+          </Tooltip>
+        </LoadingSkeleton>
         {menu}
       </Box>
     );
@@ -128,38 +131,40 @@ export default function ServerSwitcher({ onManage, collapsed }: Props) {
 
   return (
     <Box sx={{ p: 1.5 }}>
-      <Button
-        onClick={handleOpen}
-        fullWidth
-        endIcon={<ExpandMoreIcon fontSize="small" />}
-        sx={{
-          justifyContent: "space-between",
-          textTransform: "none",
-          bgcolor: "rgba(255,255,255,0.05)",
-          color: "text.primary",
-          py: 1,
-          px: 1.5,
-          borderRadius: 2,
-          "&:hover": { bgcolor: "rgba(255,255,255,0.08)" },
-        }}
-      >
-        <Box
-          sx={{ display: "flex", alignItems: "center", gap: 1, minWidth: 0 }}
+      <LoadingSkeleton loading={!state.loaded} fullWidth>
+        <Button
+          onClick={handleOpen}
+          fullWidth
+          endIcon={<ExpandMoreIcon fontSize="small" />}
+          sx={{
+            justifyContent: "space-between",
+            textTransform: "none",
+            bgcolor: "rgba(255,255,255,0.05)",
+            color: "text.primary",
+            py: 1,
+            px: 1.5,
+            borderRadius: 2,
+            "&:hover": { bgcolor: "rgba(255,255,255,0.08)" },
+          }}
         >
-          {colorDot}
-          <Typography
-            variant="body2"
-            sx={{
-              fontWeight: 500,
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
+          <Box
+            sx={{ display: "flex", alignItems: "center", gap: 1, minWidth: 0 }}
           >
-            {activeName}
-          </Typography>
-        </Box>
-      </Button>
+            {colorDot}
+            <Typography
+              variant="body2"
+              sx={{
+                fontWeight: 500,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {activeName}
+            </Typography>
+          </Box>
+        </Button>
+      </LoadingSkeleton>
       {menu}
     </Box>
   );

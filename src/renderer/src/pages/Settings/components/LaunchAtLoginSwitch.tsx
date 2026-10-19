@@ -3,6 +3,7 @@ import { Box, FormControlLabel, Switch, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import type { LaunchAtLoginState } from "@shared/types";
 import { useNotification } from "../../../context/NotificationContext";
+import LoadingSkeleton from "../../../components/common/LoadingSkeleton";
 
 /**
  * « Lancer Nexum au démarrage de Windows ». Combiné à la case « Démarrer
@@ -14,12 +15,14 @@ export default function LaunchAtLoginSwitch() {
   const { t } = useTranslation();
   const { notify } = useNotification();
   const [state, setState] = useState<LaunchAtLoginState | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     window.api.app
       .getLaunchAtLogin()
       .then(setState)
-      .catch(() => setState(null));
+      .catch(() => setState(null))
+      .finally(() => setLoading(false));
   }, []);
 
   const toggle = async (enabled: boolean) => {
@@ -40,30 +43,34 @@ export default function LaunchAtLoginSwitch() {
   };
 
   const supported = state?.supported ?? false;
+  // Pendant le chargement, le skeleton prend la taille du texte du cas
+  // courant (app installée) pour ne pas changer de hauteur ensuite.
+  const helperKey =
+    supported || loading
+      ? "settings.startup.launchAtLogin.helper"
+      : "settings.startup.launchAtLogin.unsupported";
 
   return (
-    <FormControlLabel
-      disabled={!supported}
-      control={
-        <Switch
-          checked={state?.enabled ?? false}
-          onChange={(e) => toggle(e.target.checked)}
-        />
-      }
-      label={
-        <Box>
-          <Typography variant="body2">
-            {t("settings.startup.launchAtLogin.label")}
-          </Typography>
-          <Typography variant="caption" sx={{ color: "text.secondary" }}>
-            {t(
-              supported
-                ? "settings.startup.launchAtLogin.helper"
-                : "settings.startup.launchAtLogin.unsupported",
-            )}
-          </Typography>
-        </Box>
-      }
-    />
+    <LoadingSkeleton loading={loading}>
+      <FormControlLabel
+        disabled={!supported}
+        control={
+          <Switch
+            checked={state?.enabled ?? false}
+            onChange={(e) => toggle(e.target.checked)}
+          />
+        }
+        label={
+          <Box>
+            <Typography variant="body2">
+              {t("settings.startup.launchAtLogin.label")}
+            </Typography>
+            <Typography variant="caption" sx={{ color: "text.secondary" }}>
+              {t(helperKey)}
+            </Typography>
+          </Box>
+        }
+      />
+    </LoadingSkeleton>
   );
 }

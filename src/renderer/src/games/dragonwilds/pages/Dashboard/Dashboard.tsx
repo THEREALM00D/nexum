@@ -50,13 +50,7 @@ export default function DragonwildsDashboard() {
         onRestart={restart}
       />
 
-      {stats ? (
-        <StatsGrid stats={stats} />
-      ) : (
-        <Typography variant="body2" sx={{ color: "text.secondary" }}>
-          {t("dragonwildsDashboard.waitingStats")}
-        </Typography>
-      )}
+      <StatsGrid stats={stats} />
 
       <JoinServerCard />
 

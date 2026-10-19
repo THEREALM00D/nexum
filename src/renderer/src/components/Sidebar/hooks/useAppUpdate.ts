@@ -16,16 +16,23 @@ const MIN_CHECKING_MS = 700;
 export function useAppUpdate() {
   const [currentVersion, setCurrentVersion] = useState("");
   const [status, setStatus] = useState<AppUpdateStatus>({ state: "idle" });
+  // Vrai tant que la version et le statut du main ne sont pas lus : sinon
+  // « v » vide et l'état « idle » s'affichent avant les vraies valeurs.
+  const [loading, setLoading] = useState(true);
   const checkClickedAt = useRef(0);
   const latest = useRef<AppUpdateStatus>(status);
 
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout> | undefined;
-    window.api.update.getCurrentVersion().then(setCurrentVersion);
-    window.api.update.getStatus().then((s) => {
-      latest.current = s;
-      setStatus(s);
-    });
+    Promise.all([
+      window.api.update.getCurrentVersion().then(setCurrentVersion),
+      window.api.update.getStatus().then((s) => {
+        latest.current = s;
+        setStatus(s);
+      }),
+    ])
+      .catch(() => {})
+      .finally(() => setLoading(false));
     const unsubscribe = window.api.update.onStatus((s) => {
       latest.current = s;
       const wait = checkClickedAt.current + MIN_CHECKING_MS - Date.now();
@@ -50,6 +57,7 @@ export function useAppUpdate() {
   return {
     currentVersion,
     status,
+    loading,
     check,
     // Les échecs remontent par le statut "error" (envoyé par le main).
     download: () => void window.api.update.download().catch(() => {}),

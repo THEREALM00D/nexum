@@ -1,6 +1,7 @@
 import { Box, Button, Chip, Paper, Stack, Typography } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
 import { useTranslation } from "react-i18next";
+import LoadingSkeleton from "../../../components/common/LoadingSkeleton";
 
 export default function SteamCmdCard({
   steamInstalled,
@@ -12,6 +13,8 @@ export default function SteamCmdCard({
   onInstall: () => void;
 }) {
   const { t } = useTranslation();
+  // Vérification en cours : skeletons à la forme du cas courant (installé)
+  const loading = steamInstalled === null;
   return (
     <Paper sx={{ p: 2.5 }}>
       <Stack
@@ -22,27 +25,28 @@ export default function SteamCmdCard({
           <Typography variant="subtitle2">
             {t("install.steamcmd.label")}
           </Typography>
-          <Typography variant="caption" sx={{ color: "text.secondary" }}>
-            {steamInstalled === null
-              ? t("install.steamcmd.checking")
-              : steamInstalled
-                ? t("install.steamcmd.installed")
-                : t("install.steamcmd.notInstalled")}
-          </Typography>
+          <LoadingSkeleton loading={loading}>
+            <Typography variant="caption" sx={{ color: "text.secondary" }}>
+              {steamInstalled === false
+                ? t("install.steamcmd.notInstalled")
+                : t("install.steamcmd.installed")}
+            </Typography>
+          </LoadingSkeleton>
         </Box>
-        <Chip
-          label={
-            steamInstalled
-              ? t("install.steamcmd.statusOk")
-              : steamInstalled === null
-                ? "..."
-                : t("install.steamcmd.statusMissing")
-          }
-          color={steamInstalled ? "success" : "default"}
-          size="small"
-        />
+        {/* flex : pas de hauteur de ligne autour de la pastille (décalage de 1 px) */}
+        <LoadingSkeleton loading={loading} sx={{ display: "flex" }}>
+          <Chip
+            label={
+              steamInstalled === false
+                ? t("install.steamcmd.statusMissing")
+                : t("install.steamcmd.statusOk")
+            }
+            color={steamInstalled ? "success" : "default"}
+            size="small"
+          />
+        </LoadingSkeleton>
       </Stack>
-      {!steamInstalled && (
+      {steamInstalled === false && (
         <Button
           fullWidth
           variant="outlined"

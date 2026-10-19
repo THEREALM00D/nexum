@@ -31,6 +31,8 @@ export function useValheimMods() {
 
   const [bepInEx, setBepInEx] = useState<boolean | null>(null);
   const [installedMods, setInstalledMods] = useState<ValheimMod[]>([]);
+  // Liste des mods installés pas encore lue (skeletons dans l'onglet)
+  const [installedLoading, setInstalledLoading] = useState(true);
   const [browseTab, setBrowseTab] = useState<BrowseTab>("trending");
   const [browseRegistry, setBrowseRegistry] =
     useState<ModRegistry>("thunderstore");
@@ -128,7 +130,8 @@ export function useValheimMods() {
         setInstalledMods(mods);
         refreshUpdates(mods);
       })
-      .catch(() => notify(t("valheimMods.installed.loadFailed"), "error"));
+      .catch(() => notify(t("valheimMods.installed.loadFailed"), "error"))
+      .finally(() => setInstalledLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -418,6 +421,7 @@ export function useValheimMods() {
   return {
     bepInEx,
     installedMods,
+    installedLoading,
     browseTab,
     browseRegistry,
     browseMods,

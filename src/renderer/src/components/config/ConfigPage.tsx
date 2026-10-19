@@ -13,6 +13,7 @@ import ConfigPageHeader from "./ConfigPageHeader";
 import ConfigSearchBar from "./ConfigSearchBar";
 import type { ConfigSettings, FieldGroup } from "./types";
 import { appErrorMessage } from "../../utils/appErrorMessage";
+import LoadingSkeleton from "../common/LoadingSkeleton";
 import FormPage from "../common/FormPage";
 
 const SAVE_FLASH_MS = 2000;
@@ -120,13 +121,6 @@ export default function ConfigPage({
     );
   }
 
-  if (loading)
-    return (
-      <Typography sx={{ color: "text.secondary" }}>
-        {t("common.loading")}
-      </Typography>
-    );
-
   return (
     <FormPage>
       <ConfigPageHeader
@@ -143,12 +137,15 @@ export default function ConfigPage({
         </Alert>
       )}
 
-      <ConfigSearchBar
-        search={groups.search}
-        onSearch={groups.setSearch}
-        allExpanded={groups.allExpanded}
-        onToggleAll={groups.toggleAll}
-      />
+      {/* Chargement : la page garde sa forme, chaque bloc en skeleton */}
+      <LoadingSkeleton loading={loading} fullWidth>
+        <ConfigSearchBar
+          search={groups.search}
+          onSearch={groups.setSearch}
+          allExpanded={groups.allExpanded}
+          onToggleAll={groups.toggleAll}
+        />
+      </LoadingSkeleton>
 
       <form
         onSubmit={(e) => {
@@ -163,41 +160,44 @@ export default function ConfigPage({
             </Typography>
           )}
           {groups.visibleGroups.map((group) => (
-            <ConfigGroup
-              key={group.labelKey}
-              group={group}
-              expanded={groups.expandedGroups.has(group.labelKey)}
-              onToggle={() => groups.toggleGroup(group.labelKey)}
-              renderField={(field) => (
-                <form.Field name={field.key as never}>
-                  {(f) => (
-                    <ConfigField
-                      field={field}
-                      value={f.state.value as string | number | boolean}
-                      i18nPrefix={i18nFieldsPrefix}
-                      onChange={(v) => {
-                        markDirty();
-                        f.handleChange(v as never);
-                        onFieldChange?.(field.key, v, (k, val) =>
-                          form.setFieldValue(k as never, val as never),
-                        );
-                      }}
-                    />
-                  )}
-                </form.Field>
-              )}
-            />
+            <LoadingSkeleton key={group.labelKey} loading={loading} fullWidth>
+              <ConfigGroup
+                group={group}
+                expanded={groups.expandedGroups.has(group.labelKey)}
+                onToggle={() => groups.toggleGroup(group.labelKey)}
+                renderField={(field) => (
+                  <form.Field name={field.key as never}>
+                    {(f) => (
+                      <ConfigField
+                        field={field}
+                        value={f.state.value as string | number | boolean}
+                        i18nPrefix={i18nFieldsPrefix}
+                        onChange={(v) => {
+                          markDirty();
+                          f.handleChange(v as never);
+                          onFieldChange?.(field.key, v, (k, val) =>
+                            form.setFieldValue(k as never, val as never),
+                          );
+                        }}
+                      />
+                    )}
+                  </form.Field>
+                )}
+              />
+            </LoadingSkeleton>
           ))}
-          <Button
-            type="submit"
-            variant="contained"
-            size="large"
-            startIcon={<SaveIcon />}
-            color={saved ? "success" : "primary"}
-            disabled={locked}
-          >
-            {saved ? t("config.saved") : t("config.save")}
-          </Button>
+          <LoadingSkeleton loading={loading} fullWidth>
+            <Button
+              type="submit"
+              variant="contained"
+              size="large"
+              startIcon={<SaveIcon />}
+              color={saved ? "success" : "primary"}
+              disabled={locked}
+            >
+              {saved ? t("config.saved") : t("config.save")}
+            </Button>
+          </LoadingSkeleton>
         </Stack>
       </form>
     </FormPage>

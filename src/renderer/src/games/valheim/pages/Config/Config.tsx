@@ -12,6 +12,7 @@ import NetworkSection from "./components/NetworkSection";
 import AdvancedSection from "./components/AdvancedSection";
 import AdministrationSection from "./components/AdministrationSection";
 import FormPage from "../../../../components/common/FormPage";
+import LoadingSkeleton from "../../../../components/common/LoadingSkeleton";
 
 export default function ValheimConfig() {
   const { t } = useTranslation();
@@ -37,14 +38,6 @@ export default function ValheimConfig() {
     );
   }
 
-  if (loading) {
-    return (
-      <Typography sx={{ color: "text.secondary" }}>
-        {t("common.loading")}
-      </Typography>
-    );
-  }
-
   return (
     <FormPage>
       <Box>
@@ -64,22 +57,40 @@ export default function ValheimConfig() {
         </Box>
       </Box>
 
-      <GeneralSection config={config} onChange={handleChange} />
-      <WorldSection config={config} onChange={handleChange} />
-      <ModifiersSection config={config} onChange={handleChange} />
-      <NetworkSection config={config} onChange={handleChange} />
-      <AdvancedSection config={config} onChange={handleChange} />
+      <GeneralSection
+        config={config}
+        onChange={handleChange}
+        loading={loading}
+      />
+      <WorldSection config={config} onChange={handleChange} loading={loading} />
+      <ModifiersSection
+        config={config}
+        onChange={handleChange}
+        loading={loading}
+      />
+      <NetworkSection
+        config={config}
+        onChange={handleChange}
+        loading={loading}
+      />
+      <AdvancedSection
+        config={config}
+        onChange={handleChange}
+        loading={loading}
+      />
 
-      <Button
-        variant="contained"
-        size="large"
-        startIcon={<SaveIcon />}
-        color={saved ? "success" : "primary"}
-        onClick={handleSave}
-        sx={{ alignSelf: "flex-start" }}
-      >
-        {saved ? t("valheimConfig.saved") : t("valheimConfig.save")}
-      </Button>
+      <LoadingSkeleton loading={loading} sx={{ alignSelf: "flex-start" }}>
+        <Button
+          variant="contained"
+          size="large"
+          startIcon={<SaveIcon />}
+          color={saved ? "success" : "primary"}
+          onClick={handleSave}
+          sx={{ alignSelf: "flex-start" }}
+        >
+          {saved ? t("valheimConfig.saved") : t("valheimConfig.save")}
+        </Button>
+      </LoadingSkeleton>
 
       <AdministrationSection
         adminList={adminList}

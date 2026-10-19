@@ -16,15 +16,17 @@ const DEFAULT_MODIFIERS: ValheimModifiers = {
 export default function ModifiersSection({
   config,
   onChange,
+  loading,
 }: {
   config: ValheimLaunchConfig;
+  loading: boolean;
   onChange: (patch: Partial<ValheimLaunchConfig>) => void;
 }) {
   const { t } = useTranslation();
   const modifiers = config.modifiers ?? DEFAULT_MODIFIERS;
 
   return (
-    <Section label={t("valheimConfig.sections.modifiers")}>
+    <Section label={t("valheimConfig.sections.modifiers")} loading={loading}>
       <Typography variant="body2" sx={{ color: "text.secondary" }}>
         {t("valheimConfig.modifiers.description")}
       </Typography>

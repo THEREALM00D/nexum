@@ -2,7 +2,6 @@ export default {
   dragonwildsDashboard: {
     title: "RuneScape: Dragonwilds Dashboard",
     noServerPath: "No path configured",
-    waitingStats: "Waiting for system statistics...",
     ownerMissing:
       "Player ID missing: enter it on the Configuration page (it's shown at the bottom of the game's Settings menu). The server can't start without it.",
     noApi:

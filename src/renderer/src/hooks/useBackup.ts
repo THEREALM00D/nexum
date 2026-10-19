@@ -17,6 +17,8 @@ export function useBackup() {
     backupIntervalMinutes: 0,
     backupBeforeUpdate: true,
   });
+  // Premier chargement seulement (les rafraîchissements gardent l'affichage)
+  const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const [restoring, setRestoring] = useState<string | null>(null);
 
@@ -30,6 +32,8 @@ export function useBackup() {
       setConfig(cfg);
     } catch {
       notify(t("backup.notify.cannotLoad"));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -109,6 +113,7 @@ export function useBackup() {
   return {
     backups,
     config,
+    loading,
     creating,
     restoring,
     serverPath: state.serverPath,
