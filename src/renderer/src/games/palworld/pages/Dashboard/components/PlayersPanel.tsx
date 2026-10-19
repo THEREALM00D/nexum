@@ -60,7 +60,7 @@ export default function PlayersPanel({ players, setPlayers }: Props) {
   };
 
   return (
-    <Paper sx={{ p: 2.5, flex: 1 }}>
+    <Paper sx={{ p: 2.5, flex: "1 1 360px", minWidth: 0 }}>
       <Typography variant="subtitle2" sx={{ mb: 1 }}>
         {t("dashboard.players.title", { count: players.length })}
       </Typography>

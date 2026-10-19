@@ -31,6 +31,7 @@ export default function Servers({ onOpenSetup }: { onOpenSetup: () => void }) {
         sx={{
           display: "flex",
           alignItems: "flex-start",
+          flexWrap: "wrap",
           justifyContent: "space-between",
           gap: 2,
         }}
@@ -41,7 +42,11 @@ export default function Servers({ onOpenSetup }: { onOpenSetup: () => void }) {
             {t("servers.subtitle")}
           </Typography>
         </Box>
-        <Stack direction="row" spacing={1}>
+        <Stack
+          direction="row"
+          spacing={1}
+          sx={{ flexShrink: 0, "& .MuiButton-root": { whiteSpace: "nowrap" } }}
+        >
           <Button
             variant="outlined"
             startIcon={<AutoFixHighIcon />}

@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { astroConfigService } from "../../services/configService";
 import { useAstroneerFirewall } from "./hooks/useAstroneerFirewall";
 import AdminBanner from "../../../../components/firewall/AdminBanner";
 import StandardRules from "../../../../components/firewall/StandardRules";
 import CustomRules from "../../../../components/firewall/CustomRules";
+import FormPage from "../../../../components/common/FormPage";
 
 export default function AstroneerNetwork() {
   const { t } = useTranslation();
@@ -30,7 +31,7 @@ export default function AstroneerNetwork() {
   } = useAstroneerFirewall(gamePort);
 
   return (
-    <Stack spacing={3} sx={{ maxWidth: 680 }}>
+    <FormPage>
       <Box>
         <Typography variant="h6">{t("astroneerNetwork.title")}</Typography>
         <Typography variant="body2" sx={{ color: "text.secondary", mt: 0.5 }}>
@@ -50,6 +51,6 @@ export default function AstroneerNetwork() {
       />
 
       <CustomRules rules={customRules} onRefresh={refresh} />
-    </Stack>
+    </FormPage>
   );
 }

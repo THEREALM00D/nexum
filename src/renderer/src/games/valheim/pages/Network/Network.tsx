@@ -1,10 +1,11 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useValheimConfig } from "../Config/hooks/useValheimConfig";
 import { useValheimFirewall } from "./hooks/useValheimFirewall";
 import AdminBanner from "../../../../components/firewall/AdminBanner";
 import StandardRules from "../../../../components/firewall/StandardRules";
 import CustomRules from "../../../../components/firewall/CustomRules";
+import FormPage from "../../../../components/common/FormPage";
 
 export default function ValheimNetwork() {
   const { t } = useTranslation();
@@ -22,7 +23,7 @@ export default function ValheimNetwork() {
   } = useValheimFirewall(gamePort);
 
   return (
-    <Stack spacing={3} sx={{ maxWidth: 680 }}>
+    <FormPage>
       <Box>
         <Typography variant="h6">{t("valheimNetwork.title")}</Typography>
         <Typography variant="body2" sx={{ color: "text.secondary", mt: 0.5 }}>
@@ -42,6 +43,6 @@ export default function ValheimNetwork() {
       />
 
       <CustomRules rules={customRules} onRefresh={refresh} />
-    </Stack>
+    </FormPage>
   );
 }

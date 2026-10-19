@@ -12,6 +12,7 @@ import {
   Select,
   Stack,
   Table,
+  TableContainer,
   TableBody,
   TableCell,
   TableHead,
@@ -113,7 +114,8 @@ export default function CustomRules({ rules, onRefresh }: Props) {
       <Stack
         direction="row"
         spacing={1.5}
-        sx={{ alignItems: "flex-start", mb: 2 }}
+        useFlexGap
+        sx={{ alignItems: "flex-start", flexWrap: "wrap", mb: 2 }}
       >
         <TextField
           label={t("network.custom.name")}
@@ -121,7 +123,7 @@ export default function CustomRules({ rules, onRefresh }: Props) {
           value={newName}
           onChange={(e) => setNewName(e.target.value)}
           disabled={creating}
-          sx={{ flex: 2 }}
+          sx={{ flex: 2, minWidth: 180 }}
         />
         <TextField
           label={t("network.custom.port")}
@@ -164,65 +166,72 @@ export default function CustomRules({ rules, onRefresh }: Props) {
       {rules.length > 0 ? (
         <>
           <Divider sx={{ mb: 1.5 }} />
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell sx={HEAD_SX}>{t("network.custom.name")}</TableCell>
-                <TableCell sx={HEAD_SX}>{t("network.custom.port")}</TableCell>
-                <TableCell sx={HEAD_SX}>{t("network.custom.proto")}</TableCell>
-                <TableCell sx={HEAD_SX}>
-                  {t("network.standard.colState")}
-                </TableCell>
-                <TableCell align="right" />
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rules.map((rule) => (
-                <TableRow
-                  key={`${rule.name}-${rule.protocol}`}
-                  sx={{ "&:last-child td": { border: 0 } }}
-                >
-                  <TableCell>
-                    <Typography variant="body2">{rule.name}</Typography>
+          <TableContainer>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={HEAD_SX}>{t("network.custom.name")}</TableCell>
+                  <TableCell sx={HEAD_SX}>{t("network.custom.port")}</TableCell>
+                  <TableCell sx={HEAD_SX}>
+                    {t("network.custom.proto")}
                   </TableCell>
-                  <TableCell>
-                    <Typography variant="body2" sx={{ fontFamily: FONT_MONO }}>
-                      {rule.port}
-                    </Typography>
+                  <TableCell sx={HEAD_SX}>
+                    {t("network.standard.colState")}
                   </TableCell>
-                  <TableCell>
-                    <Chip
-                      label={rule.protocol}
-                      size="small"
-                      variant="outlined"
-                      sx={{ fontSize: 10 }}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <RuleStatus active={rule.active} />
-                  </TableCell>
-                  <TableCell align="right">
-                    <Tooltip title={t("network.custom.delete")}>
-                      <span>
-                        <IconButton
-                          size="small"
-                          color="error"
-                          disabled={deleting !== null}
-                          onClick={() => handleDelete(rule)}
-                        >
-                          {deleting === `${rule.name}-${rule.protocol}` ? (
-                            <CircularProgress size={16} color="inherit" />
-                          ) : (
-                            <DeleteIcon fontSize="small" />
-                          )}
-                        </IconButton>
-                      </span>
-                    </Tooltip>
-                  </TableCell>
+                  <TableCell align="right" />
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHead>
+              <TableBody>
+                {rules.map((rule) => (
+                  <TableRow
+                    key={`${rule.name}-${rule.protocol}`}
+                    sx={{ "&:last-child td": { border: 0 } }}
+                  >
+                    <TableCell>
+                      <Typography variant="body2">{rule.name}</Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography
+                        variant="body2"
+                        sx={{ fontFamily: FONT_MONO }}
+                      >
+                        {rule.port}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Chip
+                        label={rule.protocol}
+                        size="small"
+                        variant="outlined"
+                        sx={{ fontSize: 10 }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <RuleStatus active={rule.active} />
+                    </TableCell>
+                    <TableCell align="right">
+                      <Tooltip title={t("network.custom.delete")}>
+                        <span>
+                          <IconButton
+                            size="small"
+                            color="error"
+                            disabled={deleting !== null}
+                            onClick={() => handleDelete(rule)}
+                          >
+                            {deleting === `${rule.name}-${rule.protocol}` ? (
+                              <CircularProgress size={16} color="inherit" />
+                            ) : (
+                              <DeleteIcon fontSize="small" />
+                            )}
+                          </IconButton>
+                        </span>
+                      </Tooltip>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </>
       ) : (
         <Typography variant="caption" sx={{ color: "text.disabled" }}>

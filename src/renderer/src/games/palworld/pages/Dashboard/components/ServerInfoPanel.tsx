@@ -38,7 +38,7 @@ interface Props {
 export default function ServerInfoPanel({ serverInfo, metrics }: Props) {
   const { t } = useTranslation();
   return (
-    <Paper sx={{ p: 2.5, flex: 1 }}>
+    <Paper sx={{ p: 2.5, flex: "1 1 360px", minWidth: 0 }}>
       <Typography variant="subtitle2" sx={{ mb: 1 }}>
         {t("dashboard.info.title")}
       </Typography>

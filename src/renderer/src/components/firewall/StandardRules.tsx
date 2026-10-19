@@ -6,6 +6,7 @@ import {
   Paper,
   Stack,
   Table,
+  TableContainer,
   TableBody,
   TableCell,
   TableHead,
@@ -133,71 +134,73 @@ export default function StandardRules({
           <CircularProgress size={28} />
         </Box>
       ) : (
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell sx={HEAD_SX}>
-                {t("network.standard.colRule")}
-              </TableCell>
-              <TableCell sx={HEAD_SX}>
-                {t("network.standard.colPort")}
-              </TableCell>
-              <TableCell sx={HEAD_SX}>
-                {t("network.standard.colProto")}
-              </TableCell>
-              <TableCell sx={HEAD_SX}>
-                {t("network.standard.colState")}
-              </TableCell>
-              <TableCell align="right" />
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rules.map((rule) => (
-              <TableRow
-                key={rule.name}
-                sx={{ "&:last-child td": { border: 0 } }}
-              >
-                <TableCell>
-                  <Typography variant="body2">{rule.name}</Typography>
+        <TableContainer>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell sx={HEAD_SX}>
+                  {t("network.standard.colRule")}
                 </TableCell>
-                <TableCell>
-                  <Typography variant="body2" sx={{ fontFamily: FONT_MONO }}>
-                    {rule.port}
-                  </Typography>
+                <TableCell sx={HEAD_SX}>
+                  {t("network.standard.colPort")}
                 </TableCell>
-                <TableCell>
-                  <Chip
-                    label={rule.protocol}
-                    size="small"
-                    variant="outlined"
-                    sx={{ fontSize: 10 }}
-                  />
+                <TableCell sx={HEAD_SX}>
+                  {t("network.standard.colProto")}
                 </TableCell>
-                <TableCell>
-                  <RuleStatus active={rule.active} />
+                <TableCell sx={HEAD_SX}>
+                  {t("network.standard.colState")}
                 </TableCell>
-                <TableCell align="right">
-                  <Button
-                    size="small"
-                    variant={rule.active ? "outlined" : "contained"}
-                    color={rule.active ? "error" : "success"}
-                    disabled={busy !== null}
-                    onClick={() => handleToggle(rule)}
-                    sx={{ minWidth: 90 }}
-                  >
-                    {busy === rule.name ? (
-                      <CircularProgress size={14} color="inherit" />
-                    ) : rule.active ? (
-                      t("network.standard.disable")
-                    ) : (
-                      t("network.standard.enable")
-                    )}
-                  </Button>
-                </TableCell>
+                <TableCell align="right" />
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHead>
+            <TableBody>
+              {rules.map((rule) => (
+                <TableRow
+                  key={rule.name}
+                  sx={{ "&:last-child td": { border: 0 } }}
+                >
+                  <TableCell>
+                    <Typography variant="body2">{rule.name}</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="body2" sx={{ fontFamily: FONT_MONO }}>
+                      {rule.port}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Chip
+                      label={rule.protocol}
+                      size="small"
+                      variant="outlined"
+                      sx={{ fontSize: 10 }}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <RuleStatus active={rule.active} />
+                  </TableCell>
+                  <TableCell align="right">
+                    <Button
+                      size="small"
+                      variant={rule.active ? "outlined" : "contained"}
+                      color={rule.active ? "error" : "success"}
+                      disabled={busy !== null}
+                      onClick={() => handleToggle(rule)}
+                      sx={{ minWidth: 90 }}
+                    >
+                      {busy === rule.name ? (
+                        <CircularProgress size={14} color="inherit" />
+                      ) : rule.active ? (
+                        t("network.standard.disable")
+                      ) : (
+                        t("network.standard.enable")
+                      )}
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       )}
     </Paper>
   );

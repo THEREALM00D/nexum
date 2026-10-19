@@ -100,7 +100,12 @@ export default function Players() {
         </Typography>
       </Box>
 
-      <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
+      <Stack
+        direction="row"
+        spacing={2}
+        useFlexGap
+        sx={{ alignItems: "center", flexWrap: "wrap" }}
+      >
         <TextField
           size="small"
           placeholder={t("players.search")}

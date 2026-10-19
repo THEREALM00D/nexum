@@ -134,9 +134,12 @@ export default function ValheimMods() {
       <ClientModsHint />
 
       {/* Boutons Thunderstore */}
+      {/* useFlexGap : sinon la 2e ligne (fenêtre étroite) est décalée par
+          la marge gauche que `spacing` met sur chaque bouton. */}
       <Stack
         direction="row"
         spacing={1}
+        useFlexGap
         sx={{ alignItems: "flex-start", flexWrap: "wrap" }}
       >
         <Button

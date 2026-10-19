@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { ThemeProvider, CssBaseline, Box } from "@mui/material";
-import { darkTheme } from "./theme";
+import { COMPACT_MEDIA, CONTENT_MAX_WIDTH, darkTheme } from "./theme";
 import { ServerProvider, useServer } from "./context/ServerContext";
 import { NotificationProvider } from "./context/NotificationContext";
 import Install from "./pages/Install/Install";
@@ -29,6 +29,9 @@ export type Page =
 
 // Pages indépendantes du jeu / du serveur actif (toujours affichées)
 export const GLOBAL_PAGES: Page[] = ["servers", "settings"];
+
+// Pages qui gardent toute la largeur de la fenêtre (lignes de log longues)
+const FULL_WIDTH_PAGES: Page[] = ["logs"];
 
 function AppShell() {
   const [page, setPage] = useState<Page>("dashboard");
@@ -89,11 +92,50 @@ function AppShell() {
       <Titlebar />
       <Box sx={{ display: "flex", flex: 1, overflow: "hidden" }}>
         <Sidebar currentPage={page} onNavigate={setPage} />
-        <Box component="main" sx={{ flex: 1, overflow: "auto", p: 3 }}>
+        <Box
+          component="main"
+          // Pas de marge basse ici : elle se placerait sous le wrapper
+          // (height: 100%), pas sous le contenu qui en déborde → le bas des
+          // pages longues touchait le bord. Elle est portée par la page.
+          sx={{
+            flex: 1,
+            overflow: "auto",
+            px: 3,
+            pt: 3,
+            [COMPACT_MEDIA]: { px: 2, pt: 2 },
+          }}
+        >
           {/* Hauteur définie : une page peut remplir l'écran (Logs) et ne faire
               défiler que sa zone de log. Les pages plus hautes débordent et
               la zone principale défile comme avant. */}
-          <Box key={pageKey} sx={{ height: "100%" }}>
+          {/* Contenu centré, largeur bornée : sur un grand écran la page ne
+              s'étire pas d'un bord à l'autre (sauf les logs, où chaque
+              colonne compte). */}
+          <Box
+            key={pageKey}
+            sx={{
+              height: "100%",
+              maxWidth: FULL_WIDTH_PAGES.includes(page)
+                ? undefined
+                : CONTENT_MAX_WIDTH,
+              mx: "auto",
+              // Marge basse = pseudo-élément en fin de page, pas un padding :
+              // une page à hauteur 100 % (Sauvegardes, Joueurs, Logs) trop
+              // haute pour la fenêtre déborde de sa propre boîte, et son
+              // padding resterait avant le débordement. Le ::after, lui, se
+              // place toujours après le dernier élément (bloc ou colonne
+              // flex), même débordant. Ne pas le remplacer par
+              // `minHeight: min-content` : les listes à défilement interne
+              // (ScrollPanel) s'étireraient sur toute leur longueur.
+              "& > :last-child::after": {
+                content: '""',
+                display: "block",
+                flexShrink: 0,
+                height: 24,
+                [COMPACT_MEDIA]: { height: 16 },
+              },
+            }}
+          >
             {renderPage()}
           </Box>
         </Box>

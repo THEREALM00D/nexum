@@ -1,4 +1,4 @@
-import { app, BrowserWindow, session } from "electron/main";
+import { app, BrowserWindow, screen, session } from "electron/main";
 import { shell } from "electron";
 import { join } from "path";
 import { existsSync } from "fs";
@@ -54,9 +54,13 @@ let ipcCtx: IpcContext | null = null;
 app.on("second-instance", () => showWindow(mainWindow));
 
 function createWindow(): void {
+  // Taille de départ bornée à la zone utile de l'écran : sur un portable
+  // 1366×768 (~728 px sous la barre des tâches), 800 px de haut faisaient
+  // passer le bas de la fenêtre sous la barre des tâches.
+  const { workAreaSize } = screen.getPrimaryDisplay();
   mainWindow = new BrowserWindow({
-    width: 1280,
-    height: 800,
+    width: Math.min(1280, workAreaSize.width),
+    height: Math.min(800, workAreaSize.height),
     minWidth: 900,
     minHeight: 600,
     show: false,

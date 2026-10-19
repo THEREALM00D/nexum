@@ -35,7 +35,16 @@ function StatCard({
         {label}
       </Typography>
       <Box sx={{ display: "flex", alignItems: "baseline", gap: 0.5, mt: 0.5 }}>
-        <Typography variant="h5" sx={{ fontWeight: 700 }}>
+        {/* 6 cartes par ligne (xl) : un peu plus petit pour que
+            « 13.57 / 31.92 » tienne sur une ligne */}
+        <Typography
+          variant="h5"
+          sx={{
+            fontWeight: 700,
+            whiteSpace: "nowrap",
+            fontSize: { xl: "1.25rem" },
+          }}
+        >
           {value}
         </Typography>
         {unit && (
@@ -59,8 +68,17 @@ function StatCard({
 export default function StatsGrid({ stats }: { stats: SystemStats }) {
   const { t, i18n } = useTranslation();
   return (
-    <Box sx={{ display: "flex", gap: 2 }}>
-      <Box sx={{ flex: 1 }}>
+    // 6 cartes sur une ligne seulement sur grand écran (xl, ≥ 1536 px) ; en
+    // dessous 3×2 : sur un portable, six cartes écrasaient les valeurs
+    // (« 13.57 / 31.92 GB » sur deux lignes).
+    <Box
+      sx={{
+        display: "grid",
+        gridTemplateColumns: { xs: "repeat(3, 1fr)", xl: "repeat(6, 1fr)" },
+        gap: 2,
+      }}
+    >
+      <Box>
         <StatCard
           label={t("dashboard.stats.cpu")}
           value={stats.cpu}
@@ -68,7 +86,7 @@ export default function StatsGrid({ stats }: { stats: SystemStats }) {
           progress={stats.cpu}
         />
       </Box>
-      <Box sx={{ flex: 1 }}>
+      <Box>
         <StatCard
           label={t("dashboard.stats.ram")}
           value={stats.ram}
@@ -76,27 +94,27 @@ export default function StatsGrid({ stats }: { stats: SystemStats }) {
           progress={stats.ram}
         />
       </Box>
-      <Box sx={{ flex: 1 }}>
+      <Box>
         <StatCard
           label={t("dashboard.stats.ramUsed")}
           value={`${stats.ramUsed} / ${stats.ramTotal}`}
           unit="GB"
         />
       </Box>
-      <Box sx={{ flex: 1 }}>
+      <Box>
         <StatCard
           label={t("dashboard.stats.ramServer")}
           value={`${stats.ramUsedByGame} / ${stats.ramTotal}`}
           unit="GB"
         />
       </Box>
-      <Box sx={{ flex: 1 }}>
+      <Box>
         <StatCard
           label={t("dashboard.stats.uptimeSystem")}
           value={formatDuration(stats.uptime, i18n.resolvedLanguage ?? "fr")}
         />
       </Box>
-      <Box sx={{ flex: 1 }}>
+      <Box>
         <StatCard
           label={t("dashboard.stats.uptimeServer")}
           value={formatDuration(

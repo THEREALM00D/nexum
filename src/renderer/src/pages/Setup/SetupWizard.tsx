@@ -20,6 +20,7 @@ import StepGame, {
   type SetupChoice,
 } from "./components/StepGame";
 import StepStart from "./components/StepStart";
+import FormPage from "../../components/common/FormPage";
 
 type StepId = "game" | "install" | "config" | "network" | "start";
 
@@ -86,7 +87,7 @@ export default function SetupWizard({ onFinish }: { onFinish: () => void }) {
   };
 
   return (
-    <Stack spacing={3} sx={{ maxWidth: 960 }}>
+    <FormPage width={960}>
       <Box>
         <Typography variant="h6">{t("setup.title")}</Typography>
         <Typography variant="body2" sx={{ color: "text.secondary", mt: 0.5 }}>
@@ -129,6 +130,6 @@ export default function SetupWizard({ onFinish }: { onFinish: () => void }) {
               : t("setup.next")}
         </Button>
       </Stack>
-    </Stack>
+    </FormPage>
   );
 }
