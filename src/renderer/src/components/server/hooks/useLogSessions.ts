@@ -3,7 +3,8 @@ import type { LogSession } from "@shared/types";
 import { useServer } from "../../../context/ServerContext";
 
 // Au-delà, une session passée n'affiche que ses dernières lignes (un fichier
-// peut faire 20 Mo) ; Copier / Enregistrer exportent toujours le fichier entier.
+// peut faire 20 Mo) ; Copier / Enregistrer exportent toujours le fichier entier
+// (une session plus longue est découpée en plusieurs fichiers de 20 Mo).
 export const MAX_DISPLAYED_LINES = 2000;
 
 /**
@@ -41,11 +42,19 @@ export function useLogSessions() {
   }, [selected, serverId]);
 
   /** Texte complet à exporter : fichier de la session choisie ou en cours. */
+  // Session en cours : liste relue à chaque export, car une longue session
+  // change de fichier tous les 20 Mo (l'ancienne liste pointerait sur le
+  // fichier précédent).
   const loadFullLog = useCallback(async (): Promise<string> => {
-    const file = selected ?? sessions.find((s) => s.current)?.name;
-    if (file && serverId) return window.api.logs.readSession(file, serverId);
+    if (!serverId) return state.logs.join("\n");
+    const file =
+      selected ??
+      (await window.api.logs.listSessions(serverId).catch(() => [])).find(
+        (s) => s.current,
+      )?.name;
+    if (file) return window.api.logs.readSession(file, serverId);
     return state.logs.join("\n");
-  }, [selected, sessions, serverId, state.logs]);
+  }, [selected, serverId, state.logs]);
 
   const displayed = selected
     ? pastLines.slice(-MAX_DISPLAYED_LINES)

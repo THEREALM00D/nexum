@@ -13,8 +13,10 @@ import type { LogSession } from "../../shared/types";
 
 // Sessions gardées par serveur (les plus anciennes sont supprimées).
 const KEEP_SESSIONS = 20;
-// Plafond par fichier : un serveur qui boucle sur une erreur ne doit pas
-// remplir le disque.
+// Plafond par fichier : au-delà, la session continue dans un nouveau fichier
+// (rotation comprise, donc au plus KEEP_SESSIONS × 20 Mo sur le disque). Un
+// serveur Dragonwilds en pleine partie écrit ~20 Mo en 11 h : avant, la fin de
+// la session (la plus utile en cas de plantage) n'était plus enregistrée.
 const MAX_FILE_BYTES = 20 * 1024 * 1024;
 // Les lignes sont regroupées puis écrites toutes les FLUSH_MS (un serveur
 // Valheim écrit des centaines de lignes au démarrage).
@@ -32,7 +34,6 @@ interface OpenSession {
   file: string;
   buffer: string[];
   bytes: number;
-  truncated: boolean;
   timer: NodeJS.Timeout | null;
 }
 
@@ -72,41 +73,65 @@ export class SessionLogStore {
     // Une session encore ouverte (ex. relance auto après crash) est close
     // comme plantée : le serveur n'est pas passé par un arrêt normal.
     if (this.open.has(serverId)) this.end(serverId, true);
-    const dir = this.dir(serverId);
-    mkdirSync(dir, { recursive: true });
-    const file = join(dir, `${fileStamp(new Date())}.log`);
-    // Créé tout de suite (vide) : la session en cours doit apparaître dans
-    // la liste avant la première écriture groupée.
-    try {
-      appendFileSync(file, "", "utf-8");
-    } catch {
-      // disque indisponible : la session continue sans fichier
-    }
     this.open.set(serverId, {
-      file,
+      file: this.newFile(serverId),
       buffer: [],
       bytes: 0,
-      truncated: false,
       timer: null,
     });
     this.rotate(serverId);
     this.onSessionStart(serverId);
   }
 
+  /** Crée (vide) le fichier d'une session ou de sa suite et renvoie son chemin. */
+  private newFile(serverId: string): string {
+    const dir = this.dir(serverId);
+    mkdirSync(dir, { recursive: true });
+    const file = join(dir, `${fileStamp(new Date())}.log`);
+    // Créé tout de suite : la session en cours doit apparaître dans la liste
+    // avant la première écriture groupée.
+    try {
+      appendFileSync(file, "", "utf-8");
+    } catch {
+      // disque indisponible : la session continue sans fichier
+    }
+    return file;
+  }
+
   private line(serverId: string, text: string): void {
     const s = this.open.get(serverId);
-    if (!s || s.truncated) return;
+    if (!s) return;
     const entry = `[${timeStamp(new Date())}] ${text}\n`;
-    s.bytes += Buffer.byteLength(entry);
-    if (s.bytes > MAX_FILE_BYTES) {
-      s.truncated = true;
-      s.buffer.push(
-        `[${timeStamp(new Date())}] [Manager] Taille maximale du fichier atteinte (20 Mo) : la suite de cette session n'est pas enregistrée.\n`,
-      );
-    } else {
-      s.buffer.push(entry);
+    const size = Buffer.byteLength(entry);
+    if (s.bytes > 0 && s.bytes + size > MAX_FILE_BYTES) {
+      this.continueInNewFile(serverId, s);
     }
+    s.bytes += size;
+    s.buffer.push(entry);
     if (!s.timer) s.timer = setTimeout(() => this.flush(serverId), FLUSH_MS);
+  }
+
+  /**
+   * Fichier plein : la même session continue dans un nouveau fichier. Pas
+   * d'`onSessionStart` (la vue en direct ne doit pas être vidée) ; une ligne
+   * dans chacun des deux fichiers renvoie vers l'autre.
+   */
+  private continueInNewFile(serverId: string, s: OpenSession): void {
+    const previous = basename(s.file);
+    const file = this.newFile(serverId);
+    // Même seconde que le fichier plein (nom horodaté identique) : nouvel
+    // essai à la ligne suivante.
+    if (file === s.file) return;
+    const now = timeStamp(new Date());
+    s.buffer.push(
+      `[${now}] [Manager] Taille maximale du fichier atteinte (20 Mo) : la session continue dans ${basename(file)}.\n`,
+    );
+    this.flush(serverId);
+    s.file = file;
+    const header = `[${now}] [Manager] Suite de la session (fichier précédent : ${previous}).\n`;
+    s.buffer.push(header);
+    s.bytes = Buffer.byteLength(header);
+    this.rotate(serverId);
   }
 
   private end(serverId: string, crashed: boolean): void {

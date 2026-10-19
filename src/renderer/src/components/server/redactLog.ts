@@ -14,13 +14,14 @@ const JOIN_CODE = /(join code )([A-Za-z0-9]+)/gi;
 // propriétaire (Dragonwilds), GUID des mondes et des sessions.
 const HEX_ID = /\b[0-9a-f]{32}\b/gi;
 // Dragonwilds écrit le mot de passe du monde en clair
-// (`Dedicated Server WorldPassword: x`, `Password[x]`), en base64 dans les
-// demandes de connexion (`Login request: ?p=…`), son empreinte et le code
-// de connexion dans les réglages de session.
+// (`Dedicated Server WorldPassword: x`, `Password[x]`), en base64 dans le
+// paramètre `?p=` des demandes de connexion (`Login request: ?p=…` puis
+// `Join request: /Game/Maps/…?p=…`, d'où un motif sans préfixe), son
+// empreinte et le code de connexion dans les réglages de session.
 const DRAGONWILDS_SECRETS: RegExp[] = [
   /(WorldPassword: )(\S+)/g,
   /(\bPassword\[)([^\]]+)/g,
-  /(Login request: \?p=)([^?\s]+)/g,
+  /(\?p=)([^?\s]+)/g,
   /(\["(?:JoinCode|PasswordHash)"\] written with key\[\w+\] value\[)([^\]]+)/g,
 ];
 
