@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.15.0](https://github.com/THEREALM00D/nexum/compare/v0.14.0...v0.15.0) (2026-10-19)
+
+
+### Features
+
+* back up the world before updates and optionally update the game at scheduled restart ([#124](https://github.com/THEREALM00D/nexum/issues/124)) ([59c8ef0](https://github.com/THEREALM00D/nexum/commit/59c8ef052be140de5279f47969ec5c924d0ee5f7))
+
+
+### Bug Fixes
+
+* hide Dragonwilds world password in exported logs and keep logging past 20 MB ([#122](https://github.com/THEREALM00D/nexum/issues/122)) ([0eea024](https://github.com/THEREALM00D/nexum/commit/0eea0247eb140d0962a2f5930c96503dc24f5a84))
+
 ## [0.14.0](https://github.com/THEREALM00D/nexum/compare/v0.13.0...v0.14.0) (2026-10-18)
 
 
