@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.16.1](https://github.com/THEREALM00D/nexum/compare/v0.16.0...v0.16.1) (2026-10-19)
+
+
+### Bug Fixes
+
+* Palworld firewall game rules could not be toggled ([#129](https://github.com/THEREALM00D/nexum/issues/129)) ([274e938](https://github.com/THEREALM00D/nexum/commit/274e938f04fd99a7b51207df7e11e8e685dc2357))
+* replace loading texts and default values with skeletons ([#127](https://github.com/THEREALM00D/nexum/issues/127)) ([47d7cbc](https://github.com/THEREALM00D/nexum/commit/47d7cbca5e4ca0174afb039c889a91926c9a0ee0))
+
 ## [0.16.0](https://github.com/THEREALM00D/nexum/compare/v0.15.0...v0.16.0) (2026-10-19)
 
 
