@@ -4,6 +4,7 @@ import type {
   PalPlayer,
   PalMetrics,
 } from "../../../shared/types";
+import { AppError } from "../../utils/appError";
 
 export class PalworldApiClient {
   private auth: string;
@@ -50,15 +51,17 @@ export class PalworldApiClient {
                 resolve(undefined as T);
               }
             } else {
-              reject(new Error(`HTTP ${res.statusCode}`));
+              reject(
+                new AppError("PAL_API_HTTP", { status: res.statusCode ?? 0 }),
+              );
             }
           });
         },
       );
-      req.on("error", reject);
+      req.on("error", () => reject(new AppError("PAL_API_UNREACHABLE")));
       req.on("timeout", () => {
         req.destroy();
-        reject(new Error("Timeout"));
+        reject(new AppError("PAL_API_TIMEOUT"));
       });
       if (payload) req.write(payload);
       req.end();

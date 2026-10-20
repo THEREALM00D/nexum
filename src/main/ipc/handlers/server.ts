@@ -3,12 +3,13 @@ import type { IpcContext } from "../context";
 import type { LaunchArgsConfig, ServerStatus } from "../../../shared/types";
 import { restartServer, startServer } from "../../server/startServer";
 import { getJoinInfo, getPublicIp } from "../../server/joinInfo";
+import { AppError } from "../../utils/appError";
 
 export function registerServerHandlers(ctx: IpcContext): void {
   // Résout un serverId argumenté en serveur du registre. Fallback : actif.
   const resolveId = (id: string | undefined): string => {
     const resolved = id ?? ctx.getActiveServer()?.id ?? null;
-    if (!resolved) throw new Error("Aucun serveur actif configuré");
+    if (!resolved) throw new AppError("NO_ACTIVE_SERVER");
     return resolved;
   };
 

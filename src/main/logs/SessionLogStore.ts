@@ -10,6 +10,7 @@ import {
 } from "fs";
 import { basename, join } from "path";
 import type { LogSession } from "../../shared/types";
+import { AppError } from "../utils/appError";
 
 // Sessions gardées par serveur (les plus anciennes sont supprimées).
 const KEEP_SESSIONS = 20;
@@ -191,7 +192,7 @@ export class SessionLogStore {
   read(serverId: string, name: string): string {
     // Nom venu du renderer : refuser tout chemin (`..`, séparateurs).
     if (basename(name) !== name || !name.endsWith(".log")) {
-      throw new Error("Nom de fichier de log invalide");
+      throw new AppError("INVALID_FILE_NAME");
     }
     if (this.open.get(serverId)?.file === join(this.dir(serverId), name)) {
       this.flush(serverId);

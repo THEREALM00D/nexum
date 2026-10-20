@@ -27,7 +27,6 @@ export default {
       copy: "Copy code",
       copied: "Code copied",
       close: "Close",
-      noMods: "No active mod to share.",
       error: "Couldn't create the profile code: {{error}}",
     },
     bepinex: {

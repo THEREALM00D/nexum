@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import type { LaunchAtLoginState } from "@shared/types";
 import { useNotification } from "../../../context/NotificationContext";
 import LoadingSkeleton from "../../../components/common/LoadingSkeleton";
+import { errorMessage } from "../../../utils/appErrorMessage";
 
 /**
  * « Lancer Nexum au démarrage de Windows ». Combiné à la case « Démarrer
@@ -38,7 +39,7 @@ export default function LaunchAtLoginSwitch() {
         "success",
       );
     } catch (e) {
-      notify((e as Error).message, "error");
+      notify(errorMessage(t, e), "error");
     }
   };
 

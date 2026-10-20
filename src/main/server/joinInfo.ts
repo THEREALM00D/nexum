@@ -4,6 +4,7 @@ import type { JoinInfo } from "../../shared/types";
 import { getGamePorts } from "../games/registry";
 import { formatPortRange } from "../games/ports";
 import { readDedicatedServerIni } from "../games/dragonwilds/dedicatedServerIni";
+import { AppError, networkError } from "../utils/appError";
 
 // Réseaux internes créés par les outils de virtualisation / VPN : leur IP
 // n'est jamais celle à donner aux amis. ⚠️ Pas « vEthernet » en général : un
@@ -81,10 +82,13 @@ export async function getPublicIp(): Promise<string> {
   }
   const res = await fetch("https://api.ipify.org?format=json", {
     signal: AbortSignal.timeout(5000),
+  }).catch((e: unknown) => {
+    throw networkError("https://api.ipify.org", (e as Error).cause ?? e);
   });
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  if (!res.ok)
+    throw new AppError("PUBLIC_IP_FAILED", { detail: `HTTP ${res.status}` });
   const { ip } = (await res.json()) as { ip?: string };
-  if (!ip) throw new Error("Réponse inattendue");
+  if (!ip) throw new AppError("PUBLIC_IP_FAILED", { detail: "?" });
   publicIpCache = { ip, at: Date.now() };
   return ip;
 }

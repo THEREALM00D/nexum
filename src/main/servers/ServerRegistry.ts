@@ -2,6 +2,7 @@ import { randomUUID } from "crypto";
 import type Store from "electron-store";
 import type { Server } from "../../shared/types";
 import type { AppStore } from "../ipc/context";
+import { AppError } from "../utils/appError";
 
 const DEFAULT_COLORS = [
   "#3b82f6",
@@ -59,7 +60,7 @@ export class ServerRegistry {
 
   setActive(id: string | null): void {
     if (id !== null && !this.list().some((s) => s.id === id)) {
-      throw new Error(`Serveur introuvable : ${id}`);
+      throw new AppError("SERVER_NOT_FOUND", { id });
     }
     this.store.set("activeServerId", id);
   }
@@ -90,7 +91,7 @@ export class ServerRegistry {
   update(id: string, patch: Partial<Omit<Server, "id" | "createdAt">>): Server {
     const servers = this.list();
     const idx = servers.findIndex((s) => s.id === id);
-    if (idx === -1) throw new Error(`Serveur introuvable : ${id}`);
+    if (idx === -1) throw new AppError("SERVER_NOT_FOUND", { id });
     const updated = { ...servers[idx], ...patch };
     const next = [...servers];
     next[idx] = updated;

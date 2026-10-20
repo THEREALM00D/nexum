@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useServer } from "../../../context/ServerContext";
 import { useNotification } from "../../../context/NotificationContext";
 import { steamService } from "../../../services/steamService";
-import { appErrorMessage } from "../../../utils/appErrorMessage";
+import { appErrorMessage, errorMessage } from "../../../utils/appErrorMessage";
 import { dialogService } from "../../../services/dialogService";
 import { DEFAULT_GAME } from "../../../games/registry";
 import type { GameType, LaunchArgsConfig } from "@shared/types";
@@ -72,7 +72,7 @@ export function useInstall() {
       await window.api.server.setLaunchArgs(next);
       notify(t("install.launchArgs.saved"), "info");
     } catch (e) {
-      notify((e as Error).message, "error");
+      notify(errorMessage(t, e), "error");
     }
   };
 
@@ -90,11 +90,12 @@ export function useInstall() {
       const res = await steamService.install();
       setSteamInstalled(res.success);
       if (!res.success) {
-        addLog(t("install.errorPrefix", { msg: res.error }));
-        notify(t("install.errorPrefix", { msg: res.error }), "error");
+        const msg = appErrorMessage(t, res.error);
+        addLog(t("install.errorPrefix", { msg }));
+        notify(t("install.errorPrefix", { msg }), "error");
       }
     } catch (e) {
-      notify((e as Error).message, "error");
+      notify(errorMessage(t, e), "error");
     } finally {
       setRunning(false);
     }
@@ -117,7 +118,7 @@ export function useInstall() {
         notify(msg, "error");
       }
     } catch (e) {
-      notify((e as Error).message, "error");
+      notify(errorMessage(t, e), "error");
     } finally {
       setRunning(false);
     }
@@ -137,7 +138,7 @@ export function useInstall() {
         notify(msg, "error");
       }
     } catch (e) {
-      notify((e as Error).message, "error");
+      notify(errorMessage(t, e), "error");
     } finally {
       setRunning(false);
     }
@@ -149,7 +150,7 @@ export function useInstall() {
       const result = await steamService.checkForUpdate();
       setUpdateStatus({ checked: true, ...result });
     } catch (e) {
-      notify((e as Error).message, "error");
+      notify(errorMessage(t, e), "error");
     } finally {
       setCheckingUpdate(false);
     }

@@ -1,12 +1,13 @@
 import { ipcMain } from "electron/main";
 import { PalworldApiClient } from "../PalworldApiClient";
 import type { IpcContext } from "../../../ipc/context";
+import { AppError } from "../../../utils/appError";
 
 export function registerPalapiHandlers(ctx: IpcContext): void {
   const getClient = (): PalworldApiClient => {
     const serverPath = ctx.getActiveServerPath();
     const cfg = ctx.configParser.read(serverPath);
-    if (!cfg.RESTAPIEnabled) throw new Error("REST API non configurée");
+    if (!cfg.RESTAPIEnabled) throw new AppError("PAL_API_DISABLED");
     return new PalworldApiClient(
       Number(cfg.RESTAPIPort ?? 8212),
       String(cfg.AdminPassword ?? ""),

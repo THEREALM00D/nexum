@@ -19,6 +19,7 @@ import type {
   PackageVersionExperimental,
   PackageExperimental,
 } from "./thunderstore-api";
+import { AppError, networkError } from "../../utils/appError";
 
 // Le endpoint v1 /c/valheim/api/v1/package/ retourne les versions avec file_size,
 // champ présent dans la réponse réelle mais absent du spec (erreur du spec).
@@ -69,7 +70,7 @@ export class ModRegistryClient {
   >();
 
   private static fetchJson<T>(url: string, depth = 0): Promise<T> {
-    if (depth > 5) return Promise.reject(new Error("Trop de redirections"));
+    if (depth > 5) return Promise.reject(new AppError("TOO_MANY_REDIRECTS"));
     return new Promise((resolve, reject) => {
       const parsed = new URL(url);
       const mod = parsed.protocol === "https:" ? https : http;
@@ -98,7 +99,12 @@ export class ModRegistryClient {
             }
             if (res.statusCode && res.statusCode >= 400) {
               res.resume();
-              reject(new Error(`Erreur API registre ${res.statusCode}`));
+              reject(
+                new AppError("HTTP_ERROR", {
+                  host: parsed.host,
+                  status: res.statusCode,
+                }),
+              );
               return;
             }
             let data = "";
@@ -108,15 +114,16 @@ export class ModRegistryClient {
                 resolve(JSON.parse(data) as T);
               } catch {
                 reject(
-                  new Error(
-                    `Réponse JSON invalide (${res.statusCode}): ${data.slice(0, 120)}`,
-                  ),
+                  new AppError("INVALID_RESPONSE", {
+                    host: parsed.host,
+                    status: res.statusCode ?? 0,
+                  }),
                 );
               }
             });
           },
         )
-        .on("error", reject);
+        .on("error", (err) => reject(networkError(url, err)));
     });
   }
 
@@ -177,7 +184,8 @@ export class ModRegistryClient {
   ): Promise<RegistryPackage> {
     const pkgs = await ModRegistryClient.listPackages(registry);
     const pkg = pkgs.find((p) => p.owner === namespace && p.name === name);
-    if (!pkg) throw new Error(`Package ${namespace}-${name} introuvable`);
+    if (!pkg)
+      throw new AppError("MOD_NOT_FOUND", { name: `${namespace}-${name}` });
     return pkg;
   }
 
@@ -211,7 +219,10 @@ export class ModRegistryClient {
       }
     }
     if (deprecatedHit) return deprecatedHit;
-    throw lastError ?? new Error(`Package ${namespace}-${name} introuvable`);
+    throw (
+      lastError ??
+      new AppError("MOD_NOT_FOUND", { name: `${namespace}-${name}` })
+    );
   }
 
   static toModInfo(

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNotification } from "../../context/NotificationContext";
 import type { RestartConfig } from "@shared/types";
+import { errorMessage } from "../../utils/appErrorMessage";
 
 const DEFAULT_RESTART: RestartConfig = {
   enabled: false,
@@ -25,7 +26,7 @@ export function useRestartSchedule() {
     window.api.schedule
       .getRestart()
       .then(setCfg)
-      .catch((e) => notify((e as Error).message, "error"))
+      .catch((e) => notify(errorMessage(t, e), "error"))
       .finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -41,7 +42,7 @@ export function useRestartSchedule() {
       setDirty(false);
       notify(t("schedule.notify.saved"), "success");
     } catch (e) {
-      notify((e as Error).message || t("schedule.notify.saveFailed"), "error");
+      notify(errorMessage(t, e, t("schedule.notify.saveFailed")), "error");
     }
   };
 

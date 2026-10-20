@@ -5,6 +5,7 @@ import { app } from "electron/main";
 import fs from "fs";
 import https from "https";
 import type { GameType, UpdateCheckResult } from "../../shared/types";
+import { AppError, appError, networkError } from "../utils/appError";
 
 /** AppId Steam du serveur dédié de chaque jeu (téléchargeable en anonyme). */
 export const STEAM_APP_IDS: Record<GameType, string> = {
@@ -143,13 +144,16 @@ export class SteamCMD {
         } else {
           resolve({
             success: false,
-            error: `SteamCMD exited with code ${code}`,
+            error: appError("STEAMCMD_FAILED", { code: String(code) }),
           });
         }
       });
 
       proc.on("error", (err) =>
-        resolve({ success: false, error: err.message }),
+        resolve({
+          success: false,
+          error: appError("STEAMCMD_FAILED", { code: err.message }),
+        }),
       );
     });
   }
@@ -267,7 +271,7 @@ export class SteamCMD {
         })
         .on("error", (err) => {
           fs.unlink(dest, () => {});
-          reject(err);
+          reject(networkError(url, err));
         });
     });
   }
@@ -280,7 +284,10 @@ export class SteamCMD {
       ]);
       proc.on("close", (code) => {
         if (code === 0) resolve();
-        else reject(new Error(`Extraction failed with code ${code}`));
+        else
+          reject(
+            new AppError("STEAMCMD_EXTRACT_FAILED", { code: String(code) }),
+          );
       });
       proc.on("error", reject);
     });

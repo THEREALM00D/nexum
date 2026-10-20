@@ -21,6 +21,7 @@ import StepGame, {
 } from "./components/StepGame";
 import StepStart from "./components/StepStart";
 import FormPage from "../../components/common/FormPage";
+import { errorMessage } from "../../utils/appErrorMessage";
 
 type StepId = "game" | "install" | "config" | "network" | "start";
 
@@ -63,7 +64,7 @@ export default function SetupWizard({ onFinish }: { onFinish: () => void }) {
       setCreatedId(created.id);
       setIndex(1);
     } catch (e) {
-      notify((e as Error).message, "error");
+      notify(errorMessage(t, e), "error");
     } finally {
       setBusy(false);
     }
