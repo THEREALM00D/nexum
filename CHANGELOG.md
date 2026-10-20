@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.16.2](https://github.com/THEREALM00D/nexum/compare/v0.16.1...v0.16.2) (2026-10-20)
+
+
+### Bug Fixes
+
+* show Odin-Eye connection status and explain why it fails ([#130](https://github.com/THEREALM00D/nexum/issues/130)) ([7ca9e16](https://github.com/THEREALM00D/nexum/commit/7ca9e162c62cd51e533ba091e498661b7767b06c))
+* translate all error messages (FR/EN) ([#132](https://github.com/THEREALM00D/nexum/issues/132)) ([943c9e6](https://github.com/THEREALM00D/nexum/commit/943c9e60adcf4dc84db66d09ec080c2a8413e2d2))
+* write Nexum log lines in the app language ([#133](https://github.com/THEREALM00D/nexum/issues/133)) ([6e8bb77](https://github.com/THEREALM00D/nexum/commit/6e8bb77d5d9a2c6a5d14d5f014bccaa112979b83))
+
 ## [0.16.1](https://github.com/THEREALM00D/nexum/compare/v0.16.0...v0.16.1) (2026-10-19)
 
 
