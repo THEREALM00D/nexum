@@ -17,6 +17,7 @@ import { useTranslation } from "react-i18next";
 import type { ModpackShare } from "@shared/types";
 import { useNotification } from "../../../../../context/NotificationContext";
 import { FONT_MONO } from "../../../../../theme";
+import { errorMessage } from "../../../../../utils/appErrorMessage";
 
 /**
  * « Partager le modpack » : crée un code de profil r2modman/Gale avec les
@@ -42,12 +43,7 @@ export default function ShareModpackButton({
       setResult(await window.api.valheim.mods.shareModpack());
     } catch (e) {
       setOpen(false);
-      const msg = (e as Error).message;
-      notify(
-        msg.includes("NO_MODS")
-          ? t("valheimMods.share.noMods")
-          : t("valheimMods.share.error", { error: msg }),
-      );
+      notify(t("valheimMods.share.error", { error: errorMessage(t, e) }));
     } finally {
       setLoading(false);
     }

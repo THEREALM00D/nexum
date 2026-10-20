@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
 import { useNotification } from "../../context/NotificationContext";
 import type { FirewallNamedRule, FirewallRuleStatus } from "@shared/types";
+import { appErrorMessage, errorMessage } from "../../utils/appErrorMessage";
 
 // Traduit les codes d'erreur du FirewallManager (main/firewall/FirewallManager.ts,
 // FW_ERROR). Tout autre texte est une erreur brute, affichée telle quelle.
@@ -18,7 +19,7 @@ export function firewallErrorMessage(
     case "NOT_APPLIED":
       return t("network.errors.notApplied");
     default:
-      return error || t("common.error");
+      return appErrorMessage(t, error);
   }
 }
 
@@ -69,11 +70,11 @@ export function useNamedRulesFirewall(
       );
       setCustomRules(custom);
     } catch (e) {
-      notify((e as Error).message, "error");
+      notify(errorMessage(t, e), "error");
     } finally {
       setLoading(false);
     }
-  }, [rulesKey, notify]);
+  }, [rulesKey, notify, t]);
 
   useEffect(() => {
     if (ready) refresh();
@@ -109,7 +110,7 @@ export function useNamedRulesFirewall(
           );
         }
       } catch (e) {
-        notify((e as Error).message, "error");
+        notify(errorMessage(t, e), "error");
       }
     },
     [notify, report, t],
@@ -122,7 +123,7 @@ export function useNamedRulesFirewall(
         t("network.standard.allApplied"),
       );
     } catch (e) {
-      notify((e as Error).message, "error");
+      notify(errorMessage(t, e), "error");
     }
   }, [rulesKey, notify, report, t]);
 
@@ -136,7 +137,7 @@ export function useNamedRulesFirewall(
         t("network.standard.allRemoved"),
       );
     } catch (e) {
-      notify((e as Error).message, "error");
+      notify(errorMessage(t, e), "error");
     }
   }, [rulesKey, notify, report, t]);
 

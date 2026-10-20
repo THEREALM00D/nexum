@@ -1,6 +1,7 @@
 import type { ModpackShare, ValheimMod } from "../../../shared/types";
 import { ModRegistryClient } from "./ModRegistryClient";
 import { REGISTRY_API_BASE, USER_AGENT } from "./registries";
+import { AppError } from "../../utils/appError";
 
 const BEPINEX_PACK = "denikson-BepInExPack_Valheim";
 
@@ -90,7 +91,7 @@ export async function shareModpack(
     }
   }
 
-  if (refs.length === 0) throw new Error("NO_MODS");
+  if (refs.length === 0) throw new AppError("MODPACK_NO_MODS");
 
   const zip = await zipR2x(buildR2x(profileName, refs));
   const res = await fetch(
@@ -105,9 +106,13 @@ export async function shareModpack(
       signal: AbortSignal.timeout(20_000),
     },
   );
-  if (!res.ok) throw new Error(`Thunderstore HTTP ${res.status}`);
+  if (!res.ok)
+    throw new AppError("HTTP_ERROR", {
+      host: "thunderstore.io",
+      status: res.status,
+    });
   const { key } = (await res.json()) as { key?: string };
-  if (!key) throw new Error("Thunderstore n'a pas renvoyé de code");
+  if (!key) throw new AppError("MODPACK_NO_CODE");
 
   return {
     code: key,

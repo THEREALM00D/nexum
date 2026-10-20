@@ -6,6 +6,8 @@ import { useNotification } from "../../../context/NotificationContext";
 import { serverService } from "../../../services/serverService";
 import type { ServerFormValues } from "../components/ServerDialog";
 import { importValheimWorld } from "../utils/importValheimWorld";
+import { errorMessage } from "../../../utils/appErrorMessage";
+import { appErrorMessage } from "../../../utils/appErrorMessage";
 
 export function useServers() {
   const { t } = useTranslation();
@@ -42,7 +44,7 @@ export function useServers() {
       await refreshServers();
       setDialogOpen(false);
     } catch (e) {
-      notify((e as Error).message, "error");
+      notify(errorMessage(t, e), "error");
     }
   };
 
@@ -56,7 +58,7 @@ export function useServers() {
       notify(t("servers.notify.deleted"), "success");
       await refreshServers();
     } catch (e) {
-      notify((e as Error).message, "error");
+      notify(errorMessage(t, e), "error");
     } finally {
       setDeletingServer(null);
     }
@@ -67,7 +69,7 @@ export function useServers() {
       await switchActive(server.id);
       notify(t("servers.notify.activated", { name: server.name }), "success");
     } catch (e) {
-      notify((e as Error).message, "error");
+      notify(errorMessage(t, e), "error");
     }
   };
 
@@ -84,10 +86,10 @@ export function useServers() {
             : action === "restart"
               ? "servers.notify.restartFailed"
               : "servers.notify.startFailed";
-        notify(t(key, { error: res.error ?? "?" }), "error");
+        notify(t(key, { error: appErrorMessage(t, res.error, "?") }), "error");
       }
     } catch (e) {
-      notify((e as Error).message, "error");
+      notify(errorMessage(t, e), "error");
     }
   };
 

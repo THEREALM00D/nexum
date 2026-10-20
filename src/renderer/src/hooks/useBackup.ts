@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import type { BackupEntry, BackupConfig } from "@shared/types";
 import { useServer } from "../context/ServerContext";
 import { useNotification } from "../context/NotificationContext";
-import { appErrorMessage } from "../utils/appErrorMessage";
+import { appErrorMessage, errorMessage } from "../utils/appErrorMessage";
 
 export function useBackup() {
   const { t } = useTranslation();
@@ -68,7 +68,7 @@ export function useBackup() {
       await window.api.backup.restore(entry.path);
       notify(t("backup.notify.restored", { name: entry.name }), "success");
     } catch (e) {
-      notify((e as Error).message || t("backup.notify.restoreFailed"));
+      notify(errorMessage(t, e, t("backup.notify.restoreFailed")));
     } finally {
       setRestoring(null);
     }

@@ -29,7 +29,6 @@ export default {
       copy: "Copier le code",
       copied: "Code copié",
       close: "Fermer",
-      noMods: "Aucun mod actif à partager.",
       error: "Impossible de créer le code de profil : {{error}}",
     },
     bepinex: {

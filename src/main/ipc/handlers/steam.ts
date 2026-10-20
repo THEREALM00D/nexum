@@ -3,6 +3,7 @@ import type { IpcContext } from "../context";
 import type { GameType } from "../../../shared/types";
 import { STEAM_APP_IDS } from "../../steamcmd/SteamCMD";
 import { backupBeforeUpdate } from "../../backup/serverBackup";
+import { appError } from "../../utils/appError";
 
 /**
  * Sauvegarde le monde du serveur actif avant de lancer SteamCMD (rien pour
@@ -38,7 +39,10 @@ export function registerSteamHandlers(ctx: IpcContext): void {
     "steamcmd:installGame",
     async (event, gameType: GameType, installPath: string) => {
       if (!(gameType in STEAM_APP_IDS)) {
-        return { success: false, error: `Jeu inconnu : ${gameType}` };
+        return {
+          success: false,
+          error: appError("UNKNOWN_GAME", { game: String(gameType) }),
+        };
       }
       ctx.setActiveServerPath(installPath);
       const onProgress = (msg: string) =>
@@ -55,7 +59,7 @@ export function registerSteamHandlers(ctx: IpcContext): void {
     const gameType = ctx.getActiveServer()?.gameType ?? "palworld";
     const installPath = ctx.getActiveServerPath();
     if (!installPath) {
-      return { success: false, error: "Aucun chemin serveur configuré" };
+      return { success: false, error: appError("NO_SERVER_PATH") };
     }
     const onProgress = (msg: string) =>
       event.sender.send("steamcmd:progress", msg);

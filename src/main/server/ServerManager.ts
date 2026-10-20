@@ -7,6 +7,7 @@ import { LogFileTailer } from "../logs/LogFileTailer";
 import type { LaunchSpec } from "../games/registry";
 import type { ServerStatus } from "../../shared/types";
 import type { SessionLogSink } from "../logs/SessionLogStore";
+import { appError, appErrorLogText } from "../utils/appError";
 
 export interface StopConfig {
   restApiEnabled?: boolean;
@@ -170,12 +171,18 @@ export class ServerManager {
   ): Promise<{ success: boolean; error?: string }> {
     const { exeName, args, env, logFile } = spec;
     if (this.status === "running" || this.status === "starting") {
-      return { success: false, error: "Server is already running" };
+      return { success: false, error: appError("SERVER_ALREADY_RUNNING") };
     }
 
     const exe = join(serverPath, exeName);
     if (!existsSync(exe)) {
-      return { success: false, error: `${exeName} not found at: ${exe}` };
+      return {
+        success: false,
+        error: appError("SERVER_EXE_NOT_FOUND", {
+          exe: exeName,
+          path: serverPath,
+        }),
+      };
     }
     try {
       const refused = spec.prepare?.();
@@ -279,7 +286,9 @@ export class ServerManager {
       this.onLog(`[Manager] Shutdown API envoyé (attente ${waittime}s).`);
       return true;
     } catch (err) {
-      this.onLog(`[Manager] API indisponible: ${(err as Error).message}`);
+      this.onLog(
+        `[Manager] API indisponible: ${appErrorLogText((err as Error).message)}`,
+      );
       return false;
     }
   }
@@ -331,7 +340,7 @@ export class ServerManager {
   async stop(cfg?: StopConfig): Promise<{ success: boolean; error?: string }> {
     const pid = this.getRunningPid();
     if (!pid || this.status === "stopped") {
-      return { success: false, error: "Server is not running" };
+      return { success: false, error: appError("SERVER_NOT_RUNNING") };
     }
 
     this.autoRestart = false;
@@ -383,7 +392,7 @@ export class ServerManager {
       const stopped = await this.ensureStopped(pid);
       return stopped
         ? { success: true }
-        : { success: false, error: "Le serveur ne répond pas à l'arrêt" };
+        : { success: false, error: appError("SERVER_STOP_TIMEOUT") };
     };
 
     if (cfg?.restApiEnabled && cfg.restApiPort && cfg.adminPassword) {

@@ -3,6 +3,7 @@ import { Box, FormControlLabel, Switch, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useNotification } from "../../../context/NotificationContext";
 import LoadingSkeleton from "../../../components/common/LoadingSkeleton";
+import { errorMessage } from "../../../utils/appErrorMessage";
 
 /**
  * « Garder Nexum dans la zone de notification à la fermeture ». Actif par
@@ -35,7 +36,7 @@ export default function CloseToTraySwitch() {
         "success",
       );
     } catch (e) {
-      notify((e as Error).message, "error");
+      notify(errorMessage(t, e), "error");
     }
   };
 

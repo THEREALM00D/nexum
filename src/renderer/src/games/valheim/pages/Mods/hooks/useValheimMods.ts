@@ -10,6 +10,7 @@ import type {
 } from "@shared/types";
 import { REGISTRY_LABEL } from "../utils/modPageUrl";
 import { useBackupBeforeUpdate } from "../../../../../hooks/useBackupBeforeUpdate";
+import { errorMessage } from "../../../../../utils/appErrorMessage";
 
 type BrowseTab = "trending" | "latest" | "updated";
 
@@ -82,10 +83,10 @@ export function useValheimMods() {
         setUpdates(found.updates);
         setDeprecatedCodes(found.deprecatedCodes);
       } catch (e) {
-        notify((e as Error).message, "error");
+        notify(errorMessage(t, e), "error");
       }
     },
-    [notify],
+    [notify, t],
   );
 
   const loadBrowse = useCallback(
@@ -166,7 +167,7 @@ export function useValheimMods() {
       setBepInEx(detected);
       notify(t("valheimMods.bepinex.success"), "success");
     } catch (e) {
-      notify((e as Error).message, "error");
+      notify(errorMessage(t, e), "error");
     } finally {
       setInstallingBepInEx(false);
     }
@@ -196,10 +197,10 @@ export function useValheimMods() {
         );
         if (deps.length > 0) setPendingDeps({ modName, deps });
       } catch (e) {
-        notify((e as Error).message, "warning");
+        notify(errorMessage(t, e), "warning");
       }
     },
-    [notify],
+    [notify, t],
   );
 
   const handleInstallMod = useCallback(
@@ -227,7 +228,7 @@ export function useValheimMods() {
           "success",
         );
       } catch (e) {
-        notify((e as Error).message, "error");
+        notify(errorMessage(t, e), "error");
       } finally {
         setInstalling(false);
       }
@@ -270,7 +271,7 @@ export function useValheimMods() {
             "warning",
           );
       } catch (e) {
-        notify((e as Error).message, "error");
+        notify(errorMessage(t, e), "error");
       } finally {
         setInstalling(false);
       }
@@ -302,7 +303,7 @@ export function useValheimMods() {
             "warning",
           );
       } catch (e) {
-        notify((e as Error).message, "error");
+        notify(errorMessage(t, e), "error");
       } finally {
         setInstalling(false);
       }
@@ -323,7 +324,7 @@ export function useValheimMods() {
         });
         notifyRestartNeeded();
       } catch (e) {
-        notify((e as Error).message, "error");
+        notify(errorMessage(t, e), "error");
       }
     },
     [notify, t, refreshUpdates, notifyRestartNeeded],
@@ -338,10 +339,10 @@ export function useValheimMods() {
         );
         notifyRestartNeeded();
       } catch (e) {
-        notify((e as Error).message, "error");
+        notify(errorMessage(t, e), "error");
       }
     },
-    [notify, notifyRestartNeeded],
+    [notify, notifyRestartNeeded, t],
   );
 
   const handleRefreshUpdates = useCallback(async () => {
@@ -361,7 +362,7 @@ export function useValheimMods() {
         found.length > 0 ? "info" : "success",
       );
     } catch (e) {
-      notify((e as Error).message, "error");
+      notify(errorMessage(t, e), "error");
     } finally {
       setCheckingUpdates(false);
     }

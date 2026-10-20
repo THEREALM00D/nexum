@@ -19,8 +19,29 @@ export class AppError extends Error {
 }
 
 /**
+ * Erreur réseau de Node (ECONNREFUSED, ENOTFOUND, ECONNRESET…) → code
+ * traduisible. On garde l'hôte et le code système, utiles dans un rapport
+ * de bug, sans le message anglais brut de Node.
+ */
+export function networkError(url: string | URL, err: unknown): AppError {
+  let host = String(url);
+  try {
+    host = new URL(url).host;
+  } catch {
+    // URL illisible : affichée telle quelle
+  }
+  const e = err as NodeJS.ErrnoException | undefined;
+  return new AppError("NETWORK_ERROR", {
+    host,
+    detail: e?.code ?? e?.message ?? "",
+  });
+}
+
+/**
  * Version lisible pour les logs du serveur (non traduits, comme toutes les
- * lignes `[Manager]`) : le code suivi de ses paramètres.
+ * lignes `[Manager]`) : le code suivi de ses paramètres. Un paramètre qui
+ * est lui-même une erreur codée (ex. `msg` de BACKUP_BEFORE_UPDATE_FAILED)
+ * est déplié de la même façon.
  */
 export function appErrorLogText(raw: string): string {
   const i = raw.indexOf(PREFIX);
@@ -30,7 +51,11 @@ export function appErrorLogText(raw: string): string {
       code: string;
       params?: Params;
     };
-    const values = params ? Object.values(params).join(", ") : "";
+    const values = params
+      ? Object.values(params)
+          .map((v) => appErrorLogText(String(v)))
+          .join(", ")
+      : "";
     return values ? `${code} (${values})` : code;
   } catch {
     return raw;

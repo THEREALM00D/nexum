@@ -8,6 +8,7 @@ import { format } from "date-fns";
 import { useServer } from "../../context/ServerContext";
 import { useNotification } from "../../context/NotificationContext";
 import { redactLog } from "./redactLog";
+import { errorMessage } from "../../utils/appErrorMessage";
 
 /**
  * Copier / enregistrer le log du serveur actif pour un rapport de bug.
@@ -58,7 +59,7 @@ export default function LogExportButtons({
       setSavedPath(path);
       notify(t("logs.saved"), "success");
     } catch (err) {
-      notify(t("logs.saveError", { error: (err as Error).message }));
+      notify(t("logs.saveError", { error: errorMessage(t, err) }));
     }
   };
 

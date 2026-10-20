@@ -45,7 +45,7 @@ async function installCodes(
       }
     }
     if (!installed) {
-      const message = (lastError as Error)?.message ?? "erreur inconnue";
+      const message = (lastError as Error)?.message ?? "?";
       errors.push(`${code}: ${message}`);
       event.sender.send("valheim:mods:progress", `⚠ ${code} — ${message}`);
     }

@@ -4,11 +4,12 @@ import { mkdirSync } from "fs";
 import { writeFile } from "fs/promises";
 import { basename, join } from "path";
 import type { IpcContext } from "../context";
+import { AppError } from "../../utils/appError";
 
 export function registerLogsHandlers(ctx: IpcContext): void {
   const resolveId = (id: string | undefined): string => {
     const resolved = id ?? ctx.getActiveServer()?.id;
-    if (!resolved) throw new Error("Aucun serveur actif configuré");
+    if (!resolved) throw new AppError("NO_ACTIVE_SERVER");
     return resolved;
   };
 

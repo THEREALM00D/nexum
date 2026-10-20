@@ -20,6 +20,58 @@ export default {
   },
   appErrors: {
     NO_SERVER_PATH: "No server folder configured.",
+    NO_ACTIVE_SERVER: "No server selected. Pick one in the sidebar.",
+    SERVER_NOT_FOUND: "This server no longer exists ({{id}}).",
+    UNKNOWN_GAME: "Unknown game: {{game}}",
+    SERVER_ALREADY_RUNNING: "The server is already running.",
+    SERVER_NOT_RUNNING: "The server is not running.",
+    SERVER_EXE_NOT_FOUND:
+      "{{exe}} not found in {{path}}. Install the server from the Installation page, or check the server folder.",
+    SERVER_STOP_TIMEOUT: "The server did not respond to the stop request.",
+    STOP_BEFORE_RESTORE: "Stop the server before restoring a backup.",
+    BACKUP_SOURCE_NOT_FOUND:
+      "Nothing to back up: the world folder doesn't exist ({{path}}). Start the server once so it creates its world.",
+    BACKUP_TIMEOUT:
+      "The backup took too long and was cancelled (files locked by another program?).",
+    BACKUP_FILE_NOT_FOUND: "Backup file not found: {{path}}",
+    BACKUP_CORRUPTED:
+      "{{name}} is corrupted or incomplete: the backup was probably interrupted while it was being created. Try opening it with 7-Zip to recover what can be.",
+    PAL_API_DISABLED:
+      "The Palworld REST API is off. Enable it on the Configuration page (RESTAPIEnabled), then restart the server.",
+    PAL_API_HTTP:
+      "The Palworld REST API answered with an error (HTTP {{status}}). A 401 means the admin password doesn't match.",
+    PAL_API_TIMEOUT: "The Palworld REST API did not answer within 8 seconds.",
+    PAL_API_UNREACHABLE:
+      "Can't reach the Palworld REST API. Check that the server is running and the API port matches the configuration.",
+    NETWORK_ERROR:
+      "Can't reach {{host}} ({{detail}}). Check your Internet connection.",
+    HTTP_ERROR: "{{host}} answered with an error (HTTP {{status}}).",
+    INVALID_RESPONSE: "Unexpected response from {{host}} (HTTP {{status}}).",
+    TOO_MANY_REDIRECTS: "Too many redirects: download cancelled.",
+    DOWNLOAD_TIMEOUT: "The download stalled and was cancelled. Try again.",
+    PUBLIC_IP_FAILED: "Couldn't get your public IP ({{detail}}).",
+    STEAMCMD_FAILED:
+      "SteamCMD failed (code {{code}}). The installation log above shows why.",
+    STEAMCMD_EXTRACT_FAILED: "Couldn't extract SteamCMD (code {{code}}).",
+    FILE_NOT_FOUND: "File not found: {{path}}",
+    INVALID_FILE_NAME: "Invalid file name.",
+    MOD_NOT_FOUND: "Mod {{name}} not found on the mod registries.",
+    MOD_CODE_INVALID:
+      "Invalid format. Expected: Author-ModName-Version (e.g. denikson-BepInExPack_Valheim-5.4.2202).",
+    BEPINEX_VERSION_UNAVAILABLE:
+      "Couldn't get the BepInExPack_Valheim version from Thunderstore.",
+    BEPINEX_ZIP_INVALID:
+      "Unexpected BepInEx archive: BepInEx/core/BepInEx.dll is missing.",
+    PROFILE_NO_R2X:
+      "This profile has no export.r2x file: it's not an r2modman/Gale profile.",
+    PROFILE_EMPTY: "This profile contains no mods.",
+    PROFILE_UNRESOLVED:
+      "Couldn't find this profile code on Thunderstore or Hexium. It may have expired: ask for a new one.",
+    PROFILE_UNEXPECTED_RESPONSE: "Unexpected answer from the profile service.",
+    PROFILE_INVALID_CODE: "Invalid profile code.",
+    PROFILE_UNKNOWN_FORMAT: "Unknown profile format.",
+    MODPACK_NO_MODS: "No active mod to share.",
+    MODPACK_NO_CODE: "Thunderstore didn't return a profile code. Try again.",
     PORT_CONFLICT:
       "Port conflict with a server that is already running: {{list}}",
     VALHEIM_PASSWORD_IN_NAME:

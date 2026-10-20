@@ -14,6 +14,7 @@ import {
 } from "fs";
 import extractZip from "extract-zip";
 import type { BackupEntry } from "../../shared/types";
+import { AppError } from "../utils/appError";
 
 // Suffixe des sauvegardes faites avant une mise à jour du jeu ou des mods :
 // reconnues dans la liste et comptées à part par la rotation, pour qu'une
@@ -103,7 +104,7 @@ export class BackupManager {
     return new Promise((resolve, reject) => {
       const sourceDir = sourcePath ?? this.getSavePath(serverPath);
       if (!existsSync(sourceDir)) {
-        reject(new Error(`Dossier de sauvegarde introuvable : ${sourceDir}`));
+        reject(new AppError("BACKUP_SOURCE_NOT_FOUND", { path: sourceDir }));
         return;
       }
 
@@ -158,11 +159,7 @@ export class BackupManager {
         () => {
           settle(() => {
             cleanup();
-            reject(
-              new Error(
-                "Timeout : la sauvegarde a pris trop longtemps (fichiers verrouillés ?)",
-              ),
-            );
+            reject(new AppError("BACKUP_TIMEOUT"));
           });
         },
         10 * 60 * 1000,
@@ -213,14 +210,10 @@ export class BackupManager {
     saveDir?: string,
   ): Promise<void> {
     if (!existsSync(backupPath)) {
-      throw new Error(`Fichier de backup introuvable : ${backupPath}`);
+      throw new AppError("BACKUP_FILE_NOT_FOUND", { path: backupPath });
     }
     if (!isValidZip(backupPath)) {
-      throw new Error(
-        `Fichier ZIP corrompu ou incomplet : ${basename(backupPath)}. ` +
-          `Le backup a probablement été interrompu pendant sa création. ` +
-          `Essayez de l'ouvrir avec 7-Zip pour tenter une récupération manuelle.`,
-      );
+      throw new AppError("BACKUP_CORRUPTED", { name: basename(backupPath) });
     }
 
     const targetDir = saveDir ?? this.getSavePath(serverPath);

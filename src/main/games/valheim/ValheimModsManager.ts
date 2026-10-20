@@ -23,6 +23,7 @@ import type {
 import { ModRegistryClient } from "./ModRegistryClient";
 import { REGISTRIES, REGISTRY_API_BASE, USER_AGENT } from "./registries";
 import { backupBeforeWrite } from "../../utils/ini";
+import { AppError, networkError } from "../../utils/appError";
 
 interface TSVersion {
   version_number: string;
@@ -96,7 +97,7 @@ export class ValheimModsManager {
     // Nom de fichier plat uniquement (pas de séparateur) — évite toute
     // traversée de chemin hors de BepInEx/config/.
     if (!/^[^/\\]+\.cfg$/i.test(fileName))
-      throw new Error("Nom de fichier de config invalide");
+      throw new AppError("INVALID_FILE_NAME");
     return join(this.configPath, fileName);
   }
 
@@ -203,7 +204,7 @@ export class ValheimModsManager {
     headers: Record<string, string>,
     depth = 0,
   ): Promise<{ statusCode: number; body: string }> {
-    if (depth > 5) return Promise.reject(new Error("Trop de redirections"));
+    if (depth > 5) return Promise.reject(new AppError("TOO_MANY_REDIRECTS"));
     return new Promise((resolve, reject) => {
       const parsed = new URL(url);
       const mod = parsed.protocol === "https:" ? https : http;
@@ -234,7 +235,12 @@ export class ValheimModsManager {
             }
             if (res.statusCode && res.statusCode >= 400) {
               res.resume();
-              reject(new Error(`Thunderstore API erreur ${res.statusCode}`));
+              reject(
+                new AppError("HTTP_ERROR", {
+                  host: parsed.host,
+                  status: res.statusCode,
+                }),
+              );
               return;
             }
             let data = "";
@@ -244,7 +250,7 @@ export class ValheimModsManager {
             );
           },
         )
-        .on("error", reject);
+        .on("error", (err) => reject(networkError(url, err)));
     });
   }
 
@@ -256,9 +262,10 @@ export class ValheimModsManager {
     try {
       return JSON.parse(body) as T;
     } catch {
-      throw new Error(
-        `Réponse JSON invalide (${statusCode}): ${body.slice(0, 120)}`,
-      );
+      throw new AppError("INVALID_RESPONSE", {
+        host: new URL(url).host,
+        status: statusCode,
+      });
     }
   }
 
@@ -281,9 +288,7 @@ export class ValheimModsManager {
     // L'API peut retourner soit versions[], soit un objet latest
     const latest = pkg.versions?.[0] ?? pkg.latest;
     if (!latest?.version_number || !latest?.download_url)
-      throw new Error(
-        "Impossible d'obtenir la version de BepInExPack_Valheim depuis Thunderstore",
-      );
+      throw new AppError("BEPINEX_VERSION_UNAVAILABLE");
 
     onProgress(
       `Téléchargement de BepInExPack_Valheim v${latest.version_number}…`,
@@ -306,10 +311,7 @@ export class ValheimModsManager {
       // Les ZIPs Thunderstore peuvent avoir manifest.json + icon.png à la racine
       // ET les fichiers du mod dans un sous-dossier (ex: BepInExPack_Valheim/).
       const srcDir = this.findBepInExRoot(tempExtract);
-      if (!srcDir)
-        throw new Error(
-          "Structure BepInEx non reconnue dans le ZIP Thunderstore — BepInEx/core/BepInEx.dll introuvable",
-        );
+      if (!srcDir) throw new AppError("BEPINEX_ZIP_INVALID");
 
       for (const item of readdirSync(srcDir)) {
         const src = join(srcDir, item);
@@ -337,10 +339,7 @@ export class ValheimModsManager {
     onProgress: (msg: string) => void,
   ): Promise<ValheimMod> {
     const parts = packageCode.trim().split("-");
-    if (parts.length < 3)
-      throw new Error(
-        "Format invalide. Attendu : Auteur-NomDuMod-Version (ex: denikson-BepInExPack_Valheim-5.4.2202)",
-      );
+    if (parts.length < 3) throw new AppError("MOD_CODE_INVALID");
     const version = parts[parts.length - 1];
     const name = parts[parts.length - 2];
     const namespace = parts.slice(0, parts.length - 2).join("-");
@@ -462,13 +461,11 @@ export class ValheimModsManager {
       await extractZip(zipPath, { dir: tempExtract });
 
       const r2xPath = join(tempExtract, "export.r2x");
-      if (!existsSync(r2xPath))
-        throw new Error("export.r2x introuvable dans le profil");
+      if (!existsSync(r2xPath)) throw new AppError("PROFILE_NO_R2X");
       const codes = ValheimModsManager.extractModRefsFromR2x(
         readFileSync(r2xPath, "utf-8"),
       );
-      if (codes.length === 0)
-        throw new Error("Aucun mod trouvé dans le profil (export.r2x vide)");
+      if (codes.length === 0) throw new AppError("PROFILE_EMPTY");
       return codes;
     } finally {
       try {
@@ -499,11 +496,11 @@ export class ValheimModsManager {
       }
     }
     if (raw === undefined)
-      throw lastError ?? new Error("Impossible de résoudre le profil");
+      throw lastError ?? new AppError("PROFILE_UNRESOLVED");
 
     const PREFIX = "#r2modman";
     if (!raw.startsWith(PREFIX))
-      throw new Error("Réponse de profil inattendue");
+      throw new AppError("PROFILE_UNEXPECTED_RESPONSE");
     const zipBuf = Buffer.from(raw.slice(PREFIX.length).trim(), "base64");
 
     mkdirSync(this.dataDir, { recursive: true });
@@ -527,7 +524,8 @@ export class ValheimModsManager {
    * ex: via Discord).
    */
   async parseThunderstoreProfileFile(filePath: string): Promise<string[]> {
-    if (!existsSync(filePath)) throw new Error("Fichier introuvable");
+    if (!existsSync(filePath))
+      throw new AppError("FILE_NOT_FOUND", { path: filePath });
     return this.extractModRefsFromZipFile(filePath);
   }
 
@@ -568,7 +566,7 @@ export class ValheimModsManager {
       }
       decoded = buf.toString("utf-8");
     } catch {
-      throw new Error("Code de profil invalide (base64 incorrect)");
+      throw new AppError("PROFILE_INVALID_CODE");
     }
 
     // Format 1: JSON { mods: [{ modRef: "Author-Name-Version", ... }] }
@@ -618,9 +616,7 @@ export class ValheimModsManager {
       );
     if (lines.length > 0) return lines;
 
-    throw new Error(
-      `Format de profil Thunderstore non reconnu.\nContenu décodé (${decoded.length} car.) : ${decoded.slice(0, 300)}`,
-    );
+    throw new AppError("PROFILE_UNKNOWN_FORMAT");
   }
 
   remove(modId: number): void {
@@ -732,12 +728,12 @@ export class ValheimModsManager {
         } catch {
           /* ignore */
         }
-        reject(err);
+        reject(networkError(url, err));
       });
 
       request.setTimeout(60000, () => {
         request.destroy();
-        reject(new Error("Timeout du téléchargement"));
+        reject(new AppError("DOWNLOAD_TIMEOUT"));
       });
     });
   }

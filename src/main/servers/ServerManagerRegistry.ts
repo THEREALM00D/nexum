@@ -5,6 +5,7 @@ import type { ServerRegistry } from "./ServerRegistry";
 import type { SessionLogStore } from "../logs/SessionLogStore";
 import { findServerProcess, type ProcInfo } from "./processMatch";
 import { getGameLogFile } from "../games/registry";
+import { AppError } from "../utils/appError";
 
 // Préfixe du nom de processus du serveur de chaque jeu (lanceur et
 // `…-Shipping.exe`). Doit être propre au SERVEUR : Dragonwilds →
@@ -36,7 +37,7 @@ export class ServerManagerRegistry {
    */
   getOrCreate(serverId: string): ServerManager {
     if (!this.servers.list().some((s) => s.id === serverId)) {
-      throw new Error(`Serveur introuvable : ${serverId}`);
+      throw new AppError("SERVER_NOT_FOUND", { id: serverId });
     }
     let mgr = this.managers.get(serverId);
     if (!mgr) {

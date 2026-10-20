@@ -92,7 +92,7 @@ async function updateStoppedServer(
   report.push(
     res.success
       ? `[Manager] Jeu mis à jour par le redémarrage planifié (build ${update.installedBuild} → ${update.latestBuild}).`
-      : `[Manager] Échec de la mise à jour du jeu (${res.error ?? "SteamCMD"}) : le serveur a redémarré sur la version installée.`,
+      : `[Manager] Échec de la mise à jour du jeu (${appErrorLogText(res.error ?? "SteamCMD")}) : le serveur a redémarré sur la version installée.`,
   );
   return report;
 }
@@ -128,7 +128,7 @@ export async function runScheduledRestart(
   const stopped = await mgr.stop(stopConfig);
   if (!stopped.success) {
     mgr.log(
-      `[Manager] Mise à jour annulée, le serveur ne s'est pas arrêté : ${stopped.error ?? ""}`,
+      `[Manager] Mise à jour annulée, le serveur ne s'est pas arrêté : ${appErrorLogText(stopped.error ?? "")}`,
     );
     return;
   }

@@ -41,6 +41,7 @@ import { getGameStopConfig } from "../games/registry";
 import { autoStartServers } from "../server/startServer";
 import { runScheduledRestart } from "../scheduler/scheduledRestart";
 import { backupServer } from "../backup/serverBackup";
+import { AppError } from "../utils/appError";
 
 const DEFAULT_RESTART_CONFIG: RestartConfig = {
   enabled: false,
@@ -93,7 +94,7 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
   // Phase 2a : helpers pour la config par-serveur.
   const resolveServerId = (id: string | undefined): string => {
     const resolved = id ?? servers.getActiveId();
-    if (!resolved) throw new Error("Aucun serveur actif configuré");
+    if (!resolved) throw new AppError("NO_ACTIVE_SERVER");
     return resolved;
   };
   const getServerConfig = (id?: string) =>
@@ -149,7 +150,7 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
   const serverManagers = new ServerManagerRegistry(servers, sessionLogs);
   const requireActiveManager = () => {
     const mgr = serverManagers.getActive();
-    if (!mgr) throw new Error("Aucun serveur actif configuré");
+    if (!mgr) throw new AppError("NO_ACTIVE_SERVER");
     return mgr;
   };
   // Helper local pour les boucles internes : retourne le manager actif ou

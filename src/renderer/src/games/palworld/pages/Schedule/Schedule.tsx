@@ -3,6 +3,7 @@ import { Alert, Button } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useNotification } from "../../../../context/NotificationContext";
 import RestartSchedulePage from "../../../../components/schedule/RestartSchedulePage";
+import { appErrorMessage } from "../../../../utils/appErrorMessage";
 
 /**
  * Planification Palworld : la page partagée, plus un avertissement quand
@@ -38,7 +39,13 @@ export default function Schedule() {
         notify(t("palworldSchedule.notify.apiEnabled"), "success");
         await checkApi();
       } else {
-        notify(res.error || t("palworldSchedule.notify.apiEnableFailed"));
+        notify(
+          appErrorMessage(
+            t,
+            res.error,
+            t("palworldSchedule.notify.apiEnableFailed"),
+          ),
+        );
       }
     } catch {
       notify(t("palworldSchedule.notify.apiCannotWrite"));
