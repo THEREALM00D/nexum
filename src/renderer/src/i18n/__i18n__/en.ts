@@ -39,6 +39,17 @@ export default {
     NOT_A_WORLD_SAVE: "This file is not a Dragonwilds world save.",
     BACKUP_BEFORE_UPDATE_FAILED:
       'Update cancelled: the world backup failed ({{msg}}). Check the backup folder, or turn off "Back up the world before every update" on the Backups page.',
+    ODIN_EYE_NO_URL: "Enter the Odin-Eye address first.",
+    ODIN_EYE_INVALID_URL:
+      'Invalid Odin-Eye address "{{url}}". Expected format: http://127.0.0.1:21618',
+    ODIN_EYE_UNREACHABLE:
+      'Nothing answers at {{url}}. Check that the server is running and its world is loaded, that the BepInEx log contains "OdinEye running!", and that this address matches HttpServerAddress in BepInEx/config/org.bepinex.plugins.odineye.cfg.',
+    ODIN_EYE_TIMEOUT:
+      "{{url}} did not answer within 8 seconds. Check the address and that nothing (firewall, other program) blocks this port.",
+    ODIN_EYE_HTTP:
+      "{{url}} answered with an error (HTTP {{status}}). Check that this address is Odin-Eye's.",
+    ODIN_EYE_NO_ENDPOINT:
+      "Something answers at {{url}}, but it's not the Odin-Eye players API. Check the port, and that the plugin is up to date.",
   },
   installDir: {
     warning:

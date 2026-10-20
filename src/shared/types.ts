@@ -310,7 +310,13 @@ export type AppErrorCode =
   | "STOP_BEFORE_WORLD_CHANGE"
   | "WORLD_NOT_FOUND"
   | "NOT_A_WORLD_SAVE"
-  | "BACKUP_BEFORE_UPDATE_FAILED";
+  | "BACKUP_BEFORE_UPDATE_FAILED"
+  | "ODIN_EYE_NO_URL"
+  | "ODIN_EYE_INVALID_URL"
+  | "ODIN_EYE_UNREACHABLE"
+  | "ODIN_EYE_TIMEOUT"
+  | "ODIN_EYE_HTTP"
+  | "ODIN_EYE_NO_ENDPOINT";
 
 // --- RuneScape: Dragonwilds ---
 // Ports passés en arguments (-Port / -BeaconPort), le reste vit dans

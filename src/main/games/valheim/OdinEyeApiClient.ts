@@ -1,11 +1,35 @@
 import http from "http";
+import https from "https";
 import { URL } from "url";
 import type { OdinEyePlayer } from "../../../shared/types";
+import { AppError } from "../../utils/appError";
+
+/**
+ * URL saisie par l'utilisateur → URL exploitable. Le schéma est ajouté s'il
+ * manque : « 127.0.0.1:21618 » faisait échouer `new URL` et le suivi restait
+ * muet (erreurs avalées par le tracker), sans aucun indice dans l'UI.
+ */
+export function parseOdinEyeUrl(raw: string): URL {
+  const trimmed = raw.trim();
+  if (!trimmed) throw new AppError("ODIN_EYE_NO_URL");
+  const withScheme = /^[a-z][a-z\d+.-]*:\/\//i.test(trimmed)
+    ? trimmed
+    : `http://${trimmed}`;
+  try {
+    const url = new URL(withScheme);
+    if (url.protocol === "http:" || url.protocol === "https:") return url;
+  } catch {
+    // traité ci-dessous
+  }
+  throw new AppError("ODIN_EYE_INVALID_URL", { url: trimmed });
+}
 
 // Client pour le plugin BepInEx tiers Odin-Eye (https://sparcopt.github.io/odin-eye/),
 // qui expose les données du serveur Valheim via une API REST JSON. Pas d'auth à
 // ce jour côté plugin — `baseUrl` doit pointer sur 127.0.0.1 (jamais exposé
 // publiquement), même logique que l'avertissement Palworld.
+// Erreurs levées en `AppError` (codes `ODIN_EYE_*`) : affichées telles quelles
+// par le bouton « Tester » et le bandeau du Dashboard.
 export class OdinEyeApiClient {
   constructor(private baseUrl: string) {}
 
@@ -13,15 +37,17 @@ export class OdinEyeApiClient {
     return new Promise((resolve, reject) => {
       let url: URL;
       try {
-        url = new URL(path, this.baseUrl);
+        url = new URL(path, parseOdinEyeUrl(this.baseUrl));
       } catch (e) {
         reject(e as Error);
         return;
       }
-      const req = http.request(
+      const shown = url.host;
+      const client = url.protocol === "https:" ? https : http;
+      const req = client.request(
         {
           hostname: url.hostname,
-          port: url.port || 80,
+          port: url.port || (url.protocol === "https:" ? 443 : 80),
           path: `${url.pathname}${url.search}`,
           method: "GET",
           timeout: 8000,
@@ -38,18 +64,26 @@ export class OdinEyeApiClient {
               try {
                 resolve(data ? (JSON.parse(data) as T) : (undefined as T));
               } catch {
-                reject(new Error("Réponse Odin-Eye invalide"));
+                // Autre chose qu'Odin-Eye répond sur ce port (page HTML…).
+                reject(new AppError("ODIN_EYE_NO_ENDPOINT", { url: shown }));
               }
             } else {
-              reject(new Error(`HTTP ${res.statusCode}`));
+              reject(
+                new AppError("ODIN_EYE_HTTP", {
+                  url: shown,
+                  status: res.statusCode ?? 0,
+                }),
+              );
             }
           });
         },
       );
-      req.on("error", reject);
+      req.on("error", () =>
+        reject(new AppError("ODIN_EYE_UNREACHABLE", { url: shown })),
+      );
       req.on("timeout", () => {
         req.destroy();
-        reject(new Error("Timeout"));
+        reject(new AppError("ODIN_EYE_TIMEOUT", { url: shown }));
       });
       req.end();
     });
@@ -70,7 +104,9 @@ export class OdinEyeApiClient {
       if (Array.isArray(res)) return res;
       if (res && Array.isArray(res.entries)) return res.entries;
     }
-    throw new Error("Odin-Eye : endpoint joueurs introuvable");
+    throw new AppError("ODIN_EYE_NO_ENDPOINT", {
+      url: parseOdinEyeUrl(this.baseUrl).host,
+    });
   }
 
   // Adapte les champs Odin-Eye au format attendu par PlayerHistoryTracker

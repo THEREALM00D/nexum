@@ -11,6 +11,7 @@ import {
 } from "fs";
 import { shell } from "electron";
 import type { IpcContext } from "../../../ipc/context";
+import { OdinEyeApiClient } from "../OdinEyeApiClient";
 import type {
   ValheimLaunchConfig,
   ValheimWorldInfo,
@@ -83,6 +84,19 @@ export function registerValheimHandlers(ctx: IpcContext): void {
     "valheim:setConfig",
     (_, cfg: Partial<ValheimLaunchConfig>, serverId?: string) => {
       ctx.updateValheimConfig(serverId, cfg);
+    },
+  );
+
+  // Interroge Odin-Eye et renvoie le nombre de joueurs en ligne. `url` absente
+  // = celle enregistrée pour le serveur (bandeau du Dashboard) ; fournie = la
+  // valeur du champ, pas encore enregistrée (bouton « Tester »). Erreurs en
+  // `AppError` (ODIN_EYE_*), traduites par le renderer.
+  ipcMain.handle(
+    "valheim:testOdinEye",
+    async (_, url?: string, serverId?: string) => {
+      const target = url ?? ctx.getValheimConfig(serverId).odinEyeUrl;
+      const { players } = await new OdinEyeApiClient(target).getPlayers();
+      return players.length;
     },
   );
 
