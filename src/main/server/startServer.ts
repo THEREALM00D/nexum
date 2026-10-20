@@ -11,6 +11,7 @@ import { ValheimModsManager } from "../games/valheim/ValheimModsManager";
 import { checkModUpdatesOnStart } from "../games/valheim/modUpdateCheck";
 import { checkGameUpdateOnStart } from "./gameUpdateCheck";
 import { appError, appErrorLogText } from "../utils/appError";
+import { lt, managerLine } from "../i18n/logStrings";
 
 // Liste les mods BepInEx actifs dans la console au démarrage — Valheim ne
 // donne aucune indication en jeu de ce qui est chargé côté serveur.
@@ -27,10 +28,13 @@ export function logActiveValheimMods(
     const active = manager.list().filter((m) => m.enabled);
     send(
       active.length > 0
-        ? `[Manager] Mods actifs (${active.length}) : ${active
-            .map((m) => `${m.name} v${m.version}`)
-            .join(", ")}`
-        : "[Manager] Aucun mod actif.",
+        ? managerLine(
+            lt().activeMods(
+              active.length,
+              active.map((m) => `${m.name} v${m.version}`).join(", "),
+            ),
+          )
+        : managerLine(lt().noActiveMods),
     );
   } catch {
     // best-effort — ne doit jamais empêcher le démarrage du serveur
@@ -173,11 +177,9 @@ export async function autoStartServers(
     if (res.success) {
       ctx.serverManagers
         .getOrCreate(server.id)
-        .log("[Manager] Démarré automatiquement à l'ouverture de Nexum.");
+        .log(managerLine(lt().autoStarted));
     } else {
-      log(
-        `[Manager] Démarrage automatique impossible : ${appErrorLogText(res.error ?? "")}`,
-      );
+      log(managerLine(lt().autoStartFailed(appErrorLogText(res.error ?? ""))));
     }
   }
 }

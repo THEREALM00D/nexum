@@ -6,6 +6,7 @@ import fs from "fs";
 import https from "https";
 import type { GameType, UpdateCheckResult } from "../../shared/types";
 import { AppError, appError, networkError } from "../utils/appError";
+import { lt } from "../i18n/logStrings";
 
 /** AppId Steam du serveur dédié de chaque jeu (téléchargeable en anonyme). */
 export const STEAM_APP_IDS: Record<GameType, string> = {
@@ -71,20 +72,20 @@ export class SteamCMD {
     onProgress: (msg: string) => void,
   ): Promise<{ success: boolean; error?: string }> {
     if (this.isInstalled()) {
-      onProgress("SteamCMD already installed.");
+      onProgress(lt().steamCmdAlreadyInstalled);
       return { success: true };
     }
 
     mkdirSync(this.steamcmdDir, { recursive: true });
     const zipPath = join(this.steamcmdDir, "steamcmd.zip");
 
-    onProgress("Downloading SteamCMD...");
+    onProgress(lt().steamCmdDownloading);
 
     try {
       await this.downloadFile(STEAMCMD_URL, zipPath);
-      onProgress("Extracting SteamCMD...");
+      onProgress(lt().steamCmdExtracting);
       await this.extractZip(zipPath, this.steamcmdDir);
-      onProgress("SteamCMD installed successfully.");
+      onProgress(lt().steamCmdInstalled);
       return { success: true };
     } catch (err) {
       return { success: false, error: String(err) };
@@ -111,7 +112,7 @@ export class SteamCMD {
     }
 
     mkdirSync(installPath, { recursive: true });
-    onProgress(`Installing app ${appId} to: ${installPath}`);
+    onProgress(lt().installingApp(appId, installPath));
 
     return new Promise((resolve) => {
       const args = [
@@ -139,7 +140,7 @@ export class SteamCMD {
 
       proc.on("close", (code) => {
         if (code === 0) {
-          onProgress("Server installed/updated successfully!");
+          onProgress(lt().serverInstalled);
           resolve({ success: true });
         } else {
           resolve({

@@ -1,4 +1,5 @@
 import { ipcMain, BrowserWindow, dialog } from "electron/main";
+import { setLanguage } from "../../i18n/language";
 import { shell } from "electron";
 import type { IpcContext } from "../context";
 import {
@@ -65,9 +66,11 @@ export function registerMiscHandlers(ctx: IpcContext): void {
     ctx.store.set("closeToTray", enabled);
     return enabled;
   });
-  // Langue de l'UI, pour les textes du menu de l'icône (le main n'a pas i18n)
+  // Langue de l'UI, pour les textes écrits par le main (menu de l'icône,
+  // lignes [Manager] des logs, progression de SteamCMD) : le main n'a pas i18n.
   ipcMain.handle("app:setLanguage", (_, lang: string) => {
     if (lang === "fr" || lang === "en") ctx.store.set("language", lang);
+    setLanguage(lang);
   });
   ipcMain.handle("app:setLaunchAtLogin", (_, enabled: boolean) =>
     setLaunchAtLogin(enabled),

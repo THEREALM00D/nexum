@@ -4,6 +4,7 @@ import type { BackupEntry } from "../../shared/types";
 import { getGameSavePath } from "../games/registry";
 import { hasExpectedExe } from "../servers/detectGameType";
 import { AppError } from "../utils/appError";
+import { lt, managerLine } from "../i18n/logStrings";
 
 /**
  * Sauvegarde le monde d'un serveur dans son dossier de sauvegarde, puis
@@ -51,14 +52,14 @@ export async function backupBeforeUpdate(
   if (!cfg.backup.backupBeforeUpdate) return null;
   if (!hasExpectedExe(server.path, server.gameType)) return null;
   if (!existsSync(getGameSavePath(server.gameType, server.path, cfg))) {
-    log("[Manager] Aucun monde à sauvegarder avant la mise à jour.");
+    log(managerLine(lt().backupNoWorld));
     return null;
   }
 
-  log("[Manager] Sauvegarde du monde avant la mise à jour...");
+  log(managerLine(lt().backupBeforeUpdate));
   try {
     const entry = await backupServer(ctx, serverId, true);
-    log(`[Manager] Sauvegarde créée : ${entry.name}`);
+    log(managerLine(lt().backupCreated(entry.name)));
     return entry;
   } catch (e) {
     throw new AppError("BACKUP_BEFORE_UPDATE_FAILED", {

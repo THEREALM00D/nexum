@@ -1,4 +1,5 @@
 import { app, BrowserWindow, Notification } from "electron/main";
+import { getLanguage } from "../i18n/language";
 import type { IpcContext } from "../ipc/context";
 import { createAppTray } from "./AppTray";
 import { trayStrings } from "./trayStrings";
@@ -37,7 +38,7 @@ export function attachCloseToTray(
     win.hide();
     if (ctx && !ctx.store.get("trayHintShown", false)) {
       ctx.store.set("trayHintShown", true);
-      const s = trayStrings(ctx.store.get("language", "fr"));
+      const s = trayStrings(getLanguage());
       if (Notification.isSupported()) {
         new Notification({ title: s.hintTitle, body: s.hintBody }).show();
       }
@@ -55,6 +56,6 @@ export function setupTray(
       isQuitting = true;
       app.quit();
     },
-    getLanguage: () => ctx.store.get("language", "fr"),
+    getLanguage,
   });
 }

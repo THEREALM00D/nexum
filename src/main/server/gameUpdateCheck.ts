@@ -2,6 +2,7 @@ import { BrowserWindow } from "electron/main";
 import type { IpcContext } from "../ipc/context";
 import type { GameUpdateNotice } from "../../shared/types";
 import { STEAM_APP_IDS } from "../steamcmd/SteamCMD";
+import { lt, managerLine } from "../i18n/logStrings";
 
 /**
  * Vérifie, en arrière-plan, si le serveur qui vient de démarrer est à jour
@@ -31,7 +32,7 @@ export async function checkGameUpdateOnStart(
   const mgr = ctx.serverManagers.getOrCreate(id);
 
   if (result.upToDate && result.installedBuild) {
-    mgr.log(`[Manager] Serveur à jour (build ${result.installedBuild}).`);
+    mgr.log(managerLine(lt().gameUpToDate(result.installedBuild)));
     return;
   }
   // Échec de la vérification (Steam injoignable, manifest introuvable) :
@@ -39,10 +40,12 @@ export async function checkGameUpdateOnStart(
   if (!result.installedBuild || !result.requiredBuild) return;
 
   mgr.log(
-    `[Manager] Mise à jour du serveur disponible (build installé ${result.installedBuild}, dernier build ${result.requiredBuild}) : les joueurs qui ont mis le jeu à jour ne pourront pas se connecter. ` +
-      (result.steamLibrary
-        ? "Serveur installé via la bibliothèque Steam : mettez-le à jour depuis Steam."
-        : "Mettez-le à jour depuis la page Installation de Nexum."),
+    managerLine(
+      lt().gameUpdateAvailable(result.installedBuild, result.requiredBuild) +
+        (result.steamLibrary
+          ? lt().gameUpdateHowSteam
+          : lt().gameUpdateHowNexum),
+    ),
   );
 
   const notice: GameUpdateNotice = {

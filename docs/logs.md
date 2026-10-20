@@ -14,7 +14,7 @@ Three sources are merged into the same view:
 | `[ERR]`     | Error output (stderr) from the server process      |
 | _(none)_    | Standard output (stdout) from the server process   |
 
-> Note: `[Manager]` messages are currently emitted in French only, regardless of the app's display language (see [CLAUDE.md](../CLAUDE.md)).
+`[Manager]` messages are written in the app's language (French or English) at the time they're logged: a session saved before you switch languages keeps the previous one.
 
 ## Colors
 
@@ -95,8 +95,9 @@ Local addresses (`127.0.0.1`, `0.0.0.0`, `192.168.x.x`, `10.x.x.x`, `172.16-31.x
 ### On startup
 
 ```
-[Manager] Starting Palworld server...
-[Manager] Processus démarré.
+[Manager] Starting server (PalServer.exe)...
+[Manager] Args: -port=8211 -players=32
+[Manager] Process started.
 LogPalNetServer: Server starting on port 8211
 LogWorld: Bringing World up for play
 ```
@@ -108,18 +109,19 @@ Very little output as long as there's no connection or error.
 ### On graceful shutdown (with API)
 
 ```
-[Manager] Annonce envoyée: Le serveur va redémarrer...
-[Manager] Sauvegarde en cours...
-[Manager] Sauvegarde terminée.
-[Manager] Shutdown API envoyé (attente 0s).
-[Manager] Server exited with code 0
+[Manager] Announcement sent: The server will restart in 5 minutes
+[Manager] Saving...
+[Manager] Save complete.
+[Manager] Shutdown requested through the API (waiting 0 s).
+[Manager] Server exited with code 0.
 ```
 
 ### On forced shutdown (without API)
 
 ```
-[Manager] API indisponible: Timeout
-[Manager] Server exited with code 1
+[Manager] API unavailable: PAL_API_TIMEOUT
+[Manager] Forcing the stop (taskkill)...
+[Manager] Server exited with code 1.
 ```
 
 ## Diagnostics

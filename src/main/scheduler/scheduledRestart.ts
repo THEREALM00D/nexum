@@ -4,6 +4,7 @@ import { restartServer, startServer } from "../server/startServer";
 import { isSteamLibraryInstall, STEAM_APP_IDS } from "../steamcmd/SteamCMD";
 import { backupBeforeUpdate } from "../backup/serverBackup";
 import { appErrorLogText } from "../utils/appError";
+import { lt, managerLine } from "../i18n/logStrings";
 
 interface PendingUpdate {
   installedBuild: string;
@@ -36,15 +37,11 @@ async function findPendingUpdate(
   const server = ctx.servers.list().find((s) => s.id === serverId);
   if (!server?.path) return null;
   if (isSteamLibraryInstall(server.path)) {
-    log(
-      "[Manager] Mise à jour automatique ignorée : serveur installé via la bibliothèque Steam, c'est Steam qui le met à jour.",
-    );
+    log(managerLine(lt().autoUpdateSkippedSteam));
     return null;
   }
   if (!ctx.steamcmd.isInstalled()) {
-    log(
-      "[Manager] Mise à jour automatique ignorée : SteamCMD n'est pas installé.",
-    );
+    log(managerLine(lt().autoUpdateSkippedNoSteamCmd));
     return null;
   }
   const result = await ctx.steamcmd.checkForUpdate(
@@ -52,7 +49,7 @@ async function findPendingUpdate(
     STEAM_APP_IDS[server.gameType],
   );
   if (!result.installedBuild || !result.requiredBuild) {
-    if (result.upToDate) log("[Manager] Jeu à jour : simple redémarrage.");
+    if (result.upToDate) log(managerLine(lt().gameUpToDateRestart));
     return null;
   }
   return {
@@ -76,7 +73,9 @@ async function updateStoppedServer(
     await backupBeforeUpdate(ctx, serverId, (line) => report.push(line));
   } catch (e) {
     report.push(
-      `[Manager] Mise à jour du jeu annulée, la sauvegarde a échoué : ${appErrorLogText((e as Error).message)}. Le serveur a redémarré sur la version installée.`,
+      managerLine(
+        lt().updateBackupFailed(appErrorLogText((e as Error).message)),
+      ),
     );
     return report;
   }
@@ -91,8 +90,15 @@ async function updateStoppedServer(
   );
   report.push(
     res.success
-      ? `[Manager] Jeu mis à jour par le redémarrage planifié (build ${update.installedBuild} → ${update.latestBuild}).`
-      : `[Manager] Échec de la mise à jour du jeu (${appErrorLogText(res.error ?? "SteamCMD")}) : le serveur a redémarré sur la version installée.`,
+      ? managerLine(
+          lt().updatedByScheduledRestart(
+            update.installedBuild,
+            update.latestBuild,
+          ),
+        )
+      : managerLine(
+          lt().updateFailed(appErrorLogText(res.error ?? "SteamCMD")),
+        ),
   );
   return report;
 }
@@ -123,12 +129,19 @@ export async function runScheduledRestart(
   }
 
   mgr.log(
-    `[Manager] Redémarrage planifié avec mise à jour du jeu (build ${update.installedBuild} → ${update.latestBuild}).`,
+    managerLine(
+      lt().scheduledRestartWithUpdate(
+        update.installedBuild,
+        update.latestBuild,
+      ),
+    ),
   );
   const stopped = await mgr.stop(stopConfig);
   if (!stopped.success) {
     mgr.log(
-      `[Manager] Mise à jour annulée, le serveur ne s'est pas arrêté : ${appErrorLogText(stopped.error ?? "")}`,
+      managerLine(
+        lt().updateCancelledNotStopped(appErrorLogText(stopped.error ?? "")),
+      ),
     );
     return;
   }
@@ -141,7 +154,9 @@ export async function runScheduledRestart(
   } else {
     [
       ...report,
-      `[Manager] Démarrage impossible après la mise à jour : ${appErrorLogText(res.error ?? "")}`,
+      managerLine(
+        lt().startFailedAfterUpdate(appErrorLogText(res.error ?? "")),
+      ),
     ].forEach(log);
   }
 }

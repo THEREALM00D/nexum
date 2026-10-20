@@ -1,9 +1,10 @@
 import type { ServerStatus } from "../../shared/types";
+import type { AppLanguage } from "../i18n/language";
 
 // Le main n'a pas react-i18next : textes du menu de l'icône et de la
 // notification « Nexum continue en arrière-plan », en FR et EN. La langue
 // vient du renderer (IPC `app:setLanguage`), mémorisée dans le store.
-export type TrayLanguage = "fr" | "en";
+export type TrayLanguage = AppLanguage;
 
 const STRINGS = {
   fr: {

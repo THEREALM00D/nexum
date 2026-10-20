@@ -14,6 +14,8 @@ Trois sources sont fusionnées dans la même vue :
 | `[ERR]`     | Sortie d'erreur (stderr) du processus serveur            |
 | _(aucun)_   | Sortie standard (stdout) du processus serveur            |
 
+Les messages `[Manager]` sont écrits dans la langue de l'application (français ou anglais) au moment où ils sont enregistrés : une session enregistrée avant un changement de langue garde la précédente.
+
 ## Couleurs
 
 - **Rouge** : lignes commençant par `[ERR]`
@@ -78,7 +80,7 @@ Tout le log est exporté, pas seulement les dernières lignes : quand un serveur
 | Adresses IP publiques                                                                 | `[IP]` (le port est conservé, ex. `[IP]:2456`) |
 | Identifiants Steam (de chaque joueur déjà connecté)                                   | `[SteamID]`                                    |
 | Codes de connexion crossplay Valheim                                                  | `join code [hidden]`                           |
-| Mot de passe du serveur (ligne `[Manager] Args:`)                                     | `[hidden]`                                     |
+| Mot de passe du serveur (ligne `[Manager] Arguments :`)                               | `[hidden]`                                     |
 | Mot de passe du monde Dragonwilds, son empreinte et le code de connexion              | `[hidden]`                                     |
 | Identifiants de 32 caractères (identifiants des joueurs Dragonwilds, GUID des mondes) | `[ID]`                                         |
 
@@ -93,7 +95,8 @@ Bouton **Effacer** : vide la vue en direct. Ne supprime **pas** le fichier de la
 ### Au démarrage
 
 ```
-[Manager] Starting Palworld server...
+[Manager] Démarrage du serveur (PalServer.exe)...
+[Manager] Arguments : -port=8211 -players=32
 [Manager] Processus démarré.
 LogPalNetServer: Server starting on port 8211
 LogWorld: Bringing World up for play
@@ -106,18 +109,19 @@ Très peu de sortie tant qu'il n'y a pas de connexion ou d'erreur.
 ### À l'arrêt gracieux (avec API)
 
 ```
-[Manager] Annonce envoyée: Le serveur va redémarrer...
+[Manager] Annonce envoyée : Le serveur va redémarrer dans 5 minutes
 [Manager] Sauvegarde en cours...
 [Manager] Sauvegarde terminée.
-[Manager] Shutdown API envoyé (attente 0s).
-[Manager] Server exited with code 0
+[Manager] Arrêt demandé à l'API (attente 0 s).
+[Manager] Le serveur s'est arrêté (code 0).
 ```
 
 ### À l'arrêt forcé (sans API)
 
 ```
-[Manager] API indisponible: Timeout
-[Manager] Server exited with code 1
+[Manager] API indisponible : PAL_API_TIMEOUT
+[Manager] Arrêt forcé via taskkill...
+[Manager] Le serveur s'est arrêté (code 1).
 ```
 
 ## Diagnostic
