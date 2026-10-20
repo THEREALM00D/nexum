@@ -2,12 +2,14 @@ import {
   Box,
   Checkbox,
   FormControlLabel,
+  Stack,
   TextField,
   Typography,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import type { ValheimLaunchConfig } from "@shared/types";
 import Section from "./Section";
+import OdinEyeTestButton from "./OdinEyeTestButton";
 
 export default function NetworkSection({
   config,
@@ -69,15 +71,23 @@ export default function NetworkSection({
           </Box>
         }
       />
-      <TextField
-        label={t("valheimConfig.fields.odinEyeUrl.label")}
-        helperText={t("valheimConfig.fields.odinEyeUrl.description")}
-        value={config.odinEyeUrl}
-        onChange={(e) => onChange({ odinEyeUrl: e.target.value })}
-        size="small"
-        placeholder="http://127.0.0.1:21618"
-        fullWidth
-      />
+      <Stack
+        direction="row"
+        spacing={1}
+        useFlexGap
+        sx={{ flexWrap: "wrap", alignItems: "flex-start" }}
+      >
+        <TextField
+          label={t("valheimConfig.fields.odinEyeUrl.label")}
+          helperText={t("valheimConfig.fields.odinEyeUrl.description")}
+          value={config.odinEyeUrl}
+          onChange={(e) => onChange({ odinEyeUrl: e.target.value })}
+          size="small"
+          placeholder="http://127.0.0.1:21618"
+          sx={{ flex: "1 1 320px" }}
+        />
+        <OdinEyeTestButton url={config.odinEyeUrl} />
+      </Stack>
     </Section>
   );
 }

@@ -127,8 +127,13 @@ export default {
       odinEyeUrl: {
         label: "Odin-Eye URL (player tracking)",
         description:
-          "Requires the Odin-Eye BepInEx plugin installed on the server (see sparcopt.github.io/odin-eye). Enter the address configured in HttpServerAddress, e.g. http://127.0.0.1:21618. Empty = player tracking disabled. Never expose this port publicly (no authentication on the plugin side).",
+          "Requires the Odin-Eye BepInEx plugin installed on the server (see sparcopt.github.io/odin-eye). Enter the address configured in HttpServerAddress, e.g. http://127.0.0.1:21618. Click Test to check it (server running). Empty = player tracking disabled. Never expose this port publicly (no authentication on the plugin side).",
       },
+    },
+    odinEyeTest: {
+      button: "Test",
+      success_one: "Odin-Eye responds: {{count}} player online.",
+      success_other: "Odin-Eye responds: {{count}} players online.",
     },
     administration: {
       description:

@@ -233,6 +233,8 @@ interface API {
     ) => Promise<void>;
     openSaveFolder: (customSavedir: string) => Promise<void>;
     listExistingWorlds: (customSavedir: string) => Promise<ValheimWorldInfo[]>;
+    /** Nombre de joueurs en ligne selon Odin-Eye ; rejette avec un code ODIN_EYE_*. */
+    testOdinEye: (url?: string, serverId?: string) => Promise<number>;
     mods: {
       getTrending: (registry: ModRegistry) => Promise<ThunderstoreModInfo[]>;
       getLatestAdded: (registry: ModRegistry) => Promise<ThunderstoreModInfo[]>;

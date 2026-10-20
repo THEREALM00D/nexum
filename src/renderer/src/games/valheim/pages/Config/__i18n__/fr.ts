@@ -130,8 +130,13 @@ export default {
       odinEyeUrl: {
         label: "URL Odin-Eye (suivi des joueurs)",
         description:
-          "Nécessite le plugin BepInEx Odin-Eye installé sur le serveur (voir sparcopt.github.io/odin-eye). Renseignez l'adresse configurée dans HttpServerAddress, ex: http://127.0.0.1:21618. Vide = suivi des joueurs désactivé. Ne jamais exposer ce port publiquement (pas d'authentification côté plugin).",
+          "Nécessite le plugin BepInEx Odin-Eye installé sur le serveur (voir sparcopt.github.io/odin-eye). Renseignez l'adresse configurée dans HttpServerAddress, ex: http://127.0.0.1:21618. Cliquez sur Tester pour la vérifier (serveur lancé). Vide = suivi des joueurs désactivé. Ne jamais exposer ce port publiquement (pas d'authentification côté plugin).",
       },
+    },
+    odinEyeTest: {
+      button: "Tester",
+      success_one: "Odin-Eye répond : {{count}} joueur en ligne.",
+      success_other: "Odin-Eye répond : {{count}} joueurs en ligne.",
     },
     administration: {
       description:

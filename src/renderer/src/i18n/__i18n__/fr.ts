@@ -39,6 +39,17 @@ export default {
       "Ce fichier n'est pas une sauvegarde de monde Dragonwilds.",
     BACKUP_BEFORE_UPDATE_FAILED:
       "Mise à jour annulée : la sauvegarde du monde a échoué ({{msg}}). Vérifiez le dossier de sauvegarde, ou désactivez « Sauvegarder le monde avant chaque mise à jour » dans la page Sauvegardes.",
+    ODIN_EYE_NO_URL: "Renseignez d'abord l'adresse d'Odin-Eye.",
+    ODIN_EYE_INVALID_URL:
+      "Adresse Odin-Eye invalide « {{url}} ». Format attendu : http://127.0.0.1:21618",
+    ODIN_EYE_UNREACHABLE:
+      "Rien ne répond à {{url}}. Vérifiez que le serveur tourne et que son monde est chargé, que le log BepInEx contient « OdinEye running! », et que cette adresse correspond à HttpServerAddress dans BepInEx/config/org.bepinex.plugins.odineye.cfg.",
+    ODIN_EYE_TIMEOUT:
+      "{{url}} n'a pas répondu en 8 secondes. Vérifiez l'adresse et que rien (pare-feu, autre programme) ne bloque ce port.",
+    ODIN_EYE_HTTP:
+      "{{url}} a répondu par une erreur (HTTP {{status}}). Vérifiez que cette adresse est bien celle d'Odin-Eye.",
+    ODIN_EYE_NO_ENDPOINT:
+      "Quelque chose répond à {{url}}, mais ce n'est pas l'API joueurs d'Odin-Eye. Vérifiez le port, et que le plugin est à jour.",
   },
   installDir: {
     warning:

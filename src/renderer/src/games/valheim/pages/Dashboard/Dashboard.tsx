@@ -1,5 +1,4 @@
-import { Alert, Box, Stack, Typography } from "@mui/material";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { Box, Stack, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useServer } from "../../../../context/ServerContext";
 import { useServerControls } from "../../../../hooks/useServerControls";
@@ -8,16 +7,18 @@ import StatsGrid from "../../../../components/server/StatsGrid";
 import JoinServerCard from "../../../../components/server/JoinServerCard";
 import Logs from "../../../../components/server/Logs";
 import { useValheimPlayerCount } from "./hooks/useValheimPlayerCount";
-import { useOdinEyeOnlineCount } from "./hooks/useOdinEyeOnlineCount";
+import { useOdinEyeStatus } from "./hooks/useOdinEyeStatus";
 import PlayerCountCard from "./components/PlayerCountCard";
+import OdinEyeStatusAlert from "./components/OdinEyeStatusAlert";
 
 export default function ValheimDashboard() {
   const { t } = useTranslation();
   const { state } = useServer();
   const { start, stop, restart, canStart, canStop } = useServerControls();
   const { status, stats, serverPath } = state;
-  const odinEyeCount = useOdinEyeOnlineCount();
-  const playerCount = useValheimPlayerCount(state.logs, odinEyeCount);
+  const running = status === "running";
+  const odinEye = useOdinEyeStatus(running, stats?.serverUptime ?? 0);
+  const playerCount = useValheimPlayerCount(state.logs, odinEye.count);
 
   return (
     <Stack spacing={3}>
@@ -41,15 +42,9 @@ export default function ValheimDashboard() {
 
       <JoinServerCard />
 
-      {status === "running" && <PlayerCountCard count={playerCount} />}
+      {running && <PlayerCountCard count={playerCount} />}
 
-      <Alert
-        severity="info"
-        icon={<InfoOutlinedIcon fontSize="inherit" />}
-        sx={{ fontSize: 13 }}
-      >
-        {t("valheimDashboard.noApi")}
-      </Alert>
+      <OdinEyeStatusAlert status={odinEye} running={running} />
 
       {/* Hauteur suivant la fenêtre : 400 px fixes poussaient le bas du
           log hors de l'écran sur un portable (768 px de haut). */}

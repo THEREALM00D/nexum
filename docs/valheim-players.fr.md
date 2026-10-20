@@ -25,7 +25,8 @@ Prérequis : BepInEx installé sur le serveur Valheim (5.4.22 recommandé).
 
 1. Ouvrez **Configuration → Réseau** pour votre serveur Valheim.
 2. Renseignez **URL Odin-Eye** avec la même adresse, par exemple `http://127.0.0.1:21618`.
-3. Cliquez sur **Sauvegarder** en bas de la page.
+3. Serveur lancé, cliquez sur **Tester** à côté du champ : Nexum interroge le plugin et affiche le nombre de joueurs en ligne, ou ce qui ne va pas.
+4. Cliquez sur **Sauvegarder** en bas de la page.
 
 Laissez le champ vide pour désactiver le suivi des joueurs.
 
@@ -33,6 +34,19 @@ Laissez le champ vide pour désactiver le suivi des joueurs.
 
 - **Page Joueurs** : historique de tous les joueurs vus, avec statut en ligne, dernière connexion, temps de jeu total et nombre de sessions. Le suivi tourne toutes les 30 secondes **tant que le serveur est en cours d'exécution**.
 - **Dashboard** : le compteur « Joueurs connectés » utilise Odin-Eye, avec ou sans crossplay. Sans Odin-Eye, le compteur ne peut être lu dans les logs de la console **que si le crossplay est activé** (Valheim n'écrit le nombre de joueurs que pour les sessions crossplay) ; sinon il affiche « — ». Il peut aussi rester faux pour un serveur déjà lancé avant Nexum (ses logs sont perdus).
+
+Le bandeau du **Dashboard** indique l'état du suivi : désactivé (pas d'adresse), en attente du démarrage du serveur, en attente du plugin (il ne démarre qu'une fois le monde chargé, ce qui peut prendre une ou deux minutes), connecté, ou sans réponse avec la raison. « Ne répond pas » n'apparaît que si le plugin ne répond toujours pas 3 minutes après le démarrage du serveur.
+
+## Dépannage
+
+Si **Tester** ou le Dashboard indique qu'Odin-Eye ne répond pas :
+
+- **« Rien ne répond à… »** : le plugin n'écoute pas à cette adresse.
+  - Odin-Eye tourne dans le serveur Valheim : le serveur doit être lancé, et son monde chargé (le plugin démarre quelques secondes après le serveur).
+  - Ouvrez le log BepInEx (`Valheim/BepInEx/LogOutput.log`) et cherchez `OdinEye running!`. S'il manque, le plugin ne s'est pas chargé : vérifiez que BepInEx fonctionne et que tous les `.dll` d'Odin-Eye sont dans `BepInEx/plugins/`. Si vous voyez `Starting Http Server at …` suivi d'une erreur, l'adresse de `HttpServerAddress` est invalide ou son port est déjà pris.
+  - L'adresse dans Nexum doit correspondre exactement à `HttpServerAddress` (même port). Le fichier `.cfg` n'est lu qu'au démarrage du serveur : redémarrez-le après l'avoir modifié.
+- **« Quelque chose répond à…, mais ce n'est pas l'API joueurs d'Odin-Eye »** : un autre programme utilise ce port, ou la version du plugin n'expose pas la liste des joueurs. Choisissez un autre port aux deux endroits.
+- **« Adresse Odin-Eye invalide »** : utilisez la forme `http://127.0.0.1:21618`.
 
 ## Limitations
 

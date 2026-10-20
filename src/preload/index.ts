@@ -238,6 +238,8 @@ const api = {
       ipcRenderer.invoke("valheim:openSaveFolder", customSavedir),
     listExistingWorlds: (customSavedir: string) =>
       ipcRenderer.invoke("valheim:listExistingWorlds", customSavedir),
+    testOdinEye: (url?: string, serverId?: string) =>
+      ipcRenderer.invoke("valheim:testOdinEye", url, serverId),
     mods: {
       // Parcourir un registre (public, sans clé API)
       getTrending: (registry: ModRegistry) =>
