@@ -8,6 +8,7 @@ import type { LaunchSpec } from "../games/registry";
 import type { ServerStatus } from "../../shared/types";
 import type { SessionLogSink } from "../logs/SessionLogStore";
 import { appError, appErrorLogText } from "../utils/appError";
+import { lt, managerLine } from "../i18n/logStrings";
 
 export interface StopConfig {
   restApiEnabled?: boolean;
@@ -120,11 +121,11 @@ export class ServerManager {
     this.adoptedPid = pid;
     this.status = "running";
     const log = this.beginSession(onLog);
-    log(`[Manager] Processus existant détecté (PID ${pid}).`);
+    log(managerLine(lt().adoptedDetected(pid)));
     log(
       logFile
-        ? "[Manager] Serveur lancé avant l'ouverture de Nexum : suite du log lue dans le fichier de log du jeu."
-        : "[Manager] Serveur lancé avant l'ouverture de Nexum : sa sortie n'est pas récupérable, seules les lignes de Nexum sont enregistrées pour cette session.",
+        ? managerLine(lt().adoptedWithLogFile)
+        : managerLine(lt().adoptedNoOutput),
     );
     this.startTailer(logFile, log);
     this.startAdoptedPoll();
@@ -135,9 +136,7 @@ export class ServerManager {
     if (this.adoptedPollInterval) clearInterval(this.adoptedPollInterval);
     this.adoptedPollInterval = setInterval(() => {
       if (!this.adoptedPid || pidExists(this.adoptedPid)) return;
-      this.onLog(
-        `[Manager] Processus adopté (PID ${this.adoptedPid}) disparu.`,
-      );
+      this.onLog(managerLine(lt().adoptedGone(this.adoptedPid)));
       this.adoptedPid = null;
       this.status = this.status === "stopping" ? "stopped" : "crashed";
       this.stopAdoptedPoll();
@@ -195,8 +194,8 @@ export class ServerManager {
     // Nouvelle session à chaque démarrage (manuel, planifié, relance auto) :
     // un fichier neuf, et la vue de l'app repart de zéro.
     const log = this.beginSession(onLog);
-    log(`[Manager] Starting server (${exeName})...`);
-    log(`[Manager] Args: ${redactArgs(args).join(" ")}`);
+    log(managerLine(lt().starting(exeName)));
+    log(managerLine(lt().args(redactArgs(args).join(" "))));
 
     try {
       this.process = spawn(exe, args, {
@@ -208,7 +207,7 @@ export class ServerManager {
 
       this.process.on("spawn", () => {
         if (this.status === "starting") this.status = "running";
-        log("[Manager] Processus démarré.");
+        log(managerLine(lt().processStarted));
       });
 
       // Avec un fichier de log suivi, stdout (incomplet) est lu mais ignoré :
@@ -236,7 +235,7 @@ export class ServerManager {
               : "crashed";
         this.process = null;
         this.stopTailer(); // dernières lignes du jeu avant celle de Nexum
-        log(`[Manager] Server exited with code ${code}`);
+        log(managerLine(lt().exited(code)));
         this.endSession(this.status === "crashed");
 
         if (
@@ -248,7 +247,9 @@ export class ServerManager {
           // Écrit dans la console seulement : la session plantée est déjà
           // close, la relance ouvre la sienne.
           onLog(
-            `[Manager] Auto-restarting... (attempt ${this.restartCount}/${this.maxRestarts})`,
+            managerLine(
+              lt().autoRestarting(this.restartCount, this.maxRestarts),
+            ),
           );
           setTimeout(() => this.start(serverPath, spec, onLog), 5000);
         }
@@ -257,7 +258,7 @@ export class ServerManager {
       this.process.on("error", (err) => {
         this.status = "crashed";
         this.process = null;
-        log(`[Manager] Process error: ${err.message}`);
+        log(managerLine(lt().processError(err.message)));
         this.endSession(true);
       });
 
@@ -277,17 +278,19 @@ export class ServerManager {
     try {
       if (message) {
         await client.announce(message);
-        this.onLog(`[Manager] Annonce envoyée: ${message}`);
+        this.onLog(managerLine(lt().announceSent(message)));
       }
-      this.onLog("[Manager] Sauvegarde en cours...");
+      this.onLog(managerLine(lt().saving));
       await client.save();
-      this.onLog("[Manager] Sauvegarde terminée.");
+      this.onLog(managerLine(lt().saved));
       await client.shutdown(waittime, "");
-      this.onLog(`[Manager] Shutdown API envoyé (attente ${waittime}s).`);
+      this.onLog(managerLine(lt().shutdownSent(waittime)));
       return true;
     } catch (err) {
       this.onLog(
-        `[Manager] API indisponible: ${appErrorLogText((err as Error).message)}`,
+        managerLine(
+          lt().apiUnavailable(appErrorLogText((err as Error).message)),
+        ),
       );
       return false;
     }
@@ -316,9 +319,7 @@ export class ServerManager {
    */
   private async ensureStopped(pid: number): Promise<boolean> {
     if (!pidExists(pid)) return true;
-    this.onLog(
-      "[Manager] Le processus ne répond pas, arrêt forcé via taskkill...",
-    );
+    this.onLog(managerLine(lt().notResponding));
     this.forceKill(pid);
     const timeoutMs = 6000;
     const start = Date.now();
@@ -402,13 +403,13 @@ export class ServerManager {
       const apiOk = await this.stopViaApi(client, waittime, message);
 
       if (apiOk && waittime > 0) {
-        this.onLog(`[Manager] Attente arrêt gracieux (${waittime}s)...`);
+        this.onLog(managerLine(lt().waitingGraceful(waittime)));
         await waitForExit((waittime + 10) * 1000);
         return finalize();
       }
 
       if (!apiOk) {
-        this.onLog("[Manager] Arrêt forcé via taskkill...");
+        this.onLog(managerLine(lt().forceKill));
         this.forceKill(pid);
         await waitForExit(6000);
         return finalize();
@@ -416,16 +417,14 @@ export class ServerManager {
     }
 
     if (cfg?.gracefulSignal && process.platform === "win32") {
-      this.onLog("[Manager] Envoi d'un arrêt propre (CTRL+C)...");
+      this.onLog(managerLine(lt().ctrlC));
       await sendCtrlC(pid);
       await waitForExit(GRACEFUL_SIGNAL_TIMEOUT_MS);
       return finalize();
     }
 
     this.onLog(
-      adopted
-        ? "[Manager] Arrêt du processus adopté..."
-        : "[Manager] Arrêt du serveur...",
+      adopted ? managerLine(lt().stoppingAdopted) : managerLine(lt().stopping),
     );
     this.forceKill(pid);
     await waitForExit(6000);

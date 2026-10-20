@@ -11,6 +11,7 @@ import {
 import { basename, join } from "path";
 import type { LogSession } from "../../shared/types";
 import { AppError } from "../utils/appError";
+import { lt, managerLine } from "../i18n/logStrings";
 
 // Sessions gardées par serveur (les plus anciennes sont supprimées).
 const KEEP_SESSIONS = 20;
@@ -125,11 +126,11 @@ export class SessionLogStore {
     if (file === s.file) return;
     const now = timeStamp(new Date());
     s.buffer.push(
-      `[${now}] [Manager] Taille maximale du fichier atteinte (20 Mo) : la session continue dans ${basename(file)}.\n`,
+      `[${now}] ${managerLine(lt().sessionFileFull(basename(file)))}\n`,
     );
     this.flush(serverId);
     s.file = file;
-    const header = `[${now}] [Manager] Suite de la session (fichier précédent : ${previous}).\n`;
+    const header = `[${now}] ${managerLine(lt().sessionContinued(previous))}\n`;
     s.buffer.push(header);
     s.bytes = Buffer.byteLength(header);
     this.rotate(serverId);

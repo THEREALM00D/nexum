@@ -3,6 +3,7 @@ import type { IpcContext } from "../../ipc/context";
 import type { ModRegistry, ModUpdateNotice } from "../../../shared/types";
 import { ModRegistryClient } from "./ModRegistryClient";
 import { ValheimModsManager } from "./ValheimModsManager";
+import { lt, managerLine } from "../../i18n/logStrings";
 
 /**
  * Au démarrage d'un serveur Valheim, vérifie en arrière-plan si ses mods
@@ -39,19 +40,24 @@ export async function checkModUpdatesOnStart(
   const mgr = ctx.serverManagers.getOrCreate(id);
 
   if (updates.length === 0 && deprecatedCodes.length === 0) {
-    mgr.log(`[Manager] Mods à jour (${mods.length} vérifiés).`);
+    mgr.log(managerLine(lt().modsUpToDate(mods.length)));
     return;
   }
   if (updates.length > 0) {
     mgr.log(
-      `[Manager] ${updates.length} mod(s) ont une mise à jour : ${updates
-        .map((u) => `${u.name} → v${u.latestVersion}`)
-        .join(", ")}. Mettez-les à jour depuis la page Mods (serveur arrêté).`,
+      managerLine(
+        lt().modUpdates(
+          updates.length,
+          updates.map((u) => `${u.name} → v${u.latestVersion}`).join(", "),
+        ),
+      ),
     );
   }
   if (deprecatedCodes.length > 0) {
     mgr.log(
-      `[Manager] ${deprecatedCodes.length} mod(s) dépréciés par leur auteur : ${deprecatedCodes.join(", ")}.`,
+      managerLine(
+        lt().modsDeprecated(deprecatedCodes.length, deprecatedCodes.join(", ")),
+      ),
     );
   }
 

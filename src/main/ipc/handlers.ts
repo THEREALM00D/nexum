@@ -1,4 +1,5 @@
 import { BrowserWindow, app } from "electron/main";
+import { setLanguage } from "../i18n/language";
 import { join } from "path";
 import { SteamCMD } from "../steamcmd/SteamCMD";
 import { PalConfigParser } from "../games/palworld/PalConfigParser";
@@ -57,6 +58,9 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
   // (ERR_REQUIRE_ESM / "Store is not a constructor").
   const { default: Store } = await import("electron-store");
   const store = new Store<AppStore>();
+  // Langue des lignes [Manager] écrites avant que le renderer l'envoie
+  // (démarrage automatique, adoption).
+  setLanguage(store.get("language", "fr"));
   const servers = new ServerRegistry(store);
   const serverConfigs = new ServerConfigStore(store);
 
