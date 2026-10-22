@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.3](https://github.com/THEREALM00D/nexum/compare/v0.16.2...v0.16.3) (2026-10-22)
+
+
+### Bug Fixes
+
+* restart crashed servers automatically and explain game crash codes ([#134](https://github.com/THEREALM00D/nexum/issues/134)) ([d7f1fb5](https://github.com/THEREALM00D/nexum/commit/d7f1fb5a84a997a044aced24e64515af7670f413))
+
 ## [0.16.2](https://github.com/THEREALM00D/nexum/compare/v0.16.1...v0.16.2) (2026-10-20)
 
 
