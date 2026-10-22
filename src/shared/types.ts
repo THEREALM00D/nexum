@@ -13,6 +13,8 @@ export interface Server {
   createdAt: number;
   // Démarré automatiquement à l'ouverture de Nexum (cf. autoStartServers)
   autoStart?: boolean;
+  // Relancé automatiquement après un plantage (cf. server/crashRestart.ts)
+  autoRestart?: boolean;
 }
 
 // « Lancer Nexum au démarrage de Windows » — `supported` faux en dev

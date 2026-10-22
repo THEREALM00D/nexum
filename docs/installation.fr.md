@@ -93,6 +93,14 @@ Pour que vos serveurs repartent tout seuls après un redémarrage du PC :
 
 À l'ouverture de votre session Windows, Nexum démarre en arrière-plan (son icône près de l'horloge, voir plus bas) et démarre les serveurs cochés, à quelques secondes d'intervalle. Un serveur déjà en cours est laissé tel quel. Les mêmes vérifications qu'un démarrage manuel s'appliquent (conflits de ports, règles du mot de passe Valheim, Player ID Dragonwilds) : si un serveur ne peut pas démarrer, la raison est écrite dans ses logs.
 
+## Relance après un plantage
+
+Dans **Serveurs**, modifiez un serveur et cochez **Relancer automatiquement après un plantage** : quand le serveur s'arrête seul avec une erreur, Nexum le redémarre 10 secondes plus tard, avec les mêmes vérifications qu'un démarrage manuel. Un serveur qui s'arrête normalement, ou que vous arrêtez vous-même, n'est pas relancé.
+
+Pour ne pas boucler sur un serveur qui plante dès le démarrage (monde corrompu, mod cassé), Nexum abandonne après 3 plantages en 30 minutes et l'écrit dans les logs. Cherchez la cause (voir [Logs → Diagnostic](logs.fr.md#diagnostic)), puis démarrez le serveur vous-même.
+
+Le monde repart de la dernière sauvegarde faite par le jeu : Nexum ne peut pas sauvegarder un monde pendant que le jeu plante.
+
 ## Fonctionnement en arrière-plan (icône près de l'horloge)
 
 Fermer la fenêtre de Nexum ne le quitte pas : Nexum continue de tourner dans la **zone de notification** de Windows, près de l'horloge, pour que les sauvegardes automatiques, les redémarrages planifiés et les logs des serveurs continuent. La première fois, une notification Windows vous le rappelle.

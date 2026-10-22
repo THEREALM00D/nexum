@@ -128,7 +128,7 @@ Very little output as long as there's no connection or error.
 
 To investigate a crash or unexpected behavior:
 
-1. **Nexum logs**: look for `[ERR]` or `[Manager]` in the view
+1. **Nexum logs**: look for `[ERR]` or `[Manager]` in the view. A line like `[Manager] The game server crashed (0xC0000005, access violation)` means the game itself crashed, not Nexum: the lines just above show what it was doing. If it happens again, report it to the game's developer with the log of that session. To have Nexum restart the server on its own, see [Restarting after a crash](installation.md#restarting-after-a-crash).
 2. **Palworld logs**: open the latest file in `{serverPath}/Pal/Saved/Logs/`
 3. **Windows Event Viewer**: Application → errors related to `PalServer.exe`
 

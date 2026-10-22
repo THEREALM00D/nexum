@@ -45,6 +45,9 @@ export default {
       autoStart: "Démarrer automatiquement à l'ouverture de Nexum",
       autoStartHelper:
         "Avec « Lancer Nexum au démarrage de Windows » (page Paramètres), le serveur repart tout seul après un redémarrage du PC.",
+      autoRestart: "Relancer automatiquement après un plantage",
+      autoRestartHelper:
+        "10 secondes après le plantage. Au plus 3 fois en 30 minutes, pour ne pas boucler sur un serveur qui plante dès le démarrage.",
       addTitle: "Nouveau serveur",
       editTitle: "Modifier le serveur",
       name: "Nom",

@@ -65,6 +65,7 @@ interface API {
       gameType?: GameType;
       color?: string | null;
       autoStart?: boolean;
+      autoRestart?: boolean;
     }) => Promise<Server>;
     update: (
       id: string,
@@ -74,6 +75,7 @@ interface API {
         gameType: GameType;
         color: string | null;
         autoStart: boolean;
+        autoRestart: boolean;
       }>,
     ) => Promise<Server>;
     delete: (id: string) => Promise<void>;
