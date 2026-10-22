@@ -128,7 +128,7 @@ Très peu de sortie tant qu'il n'y a pas de connexion ou d'erreur.
 
 Pour analyser un crash ou un comportement inattendu :
 
-1. **Logs Nexum** : recherchez `[ERR]` ou `[Manager]` dans la vue
+1. **Logs Nexum** : recherchez `[ERR]` ou `[Manager]` dans la vue. Une ligne comme `[Manager] Le serveur du jeu a planté (0xC0000005, violation d'accès)` veut dire que c'est le jeu lui-même qui a planté, pas Nexum : les lignes juste au-dessus montrent ce qu'il faisait. Si ça se répète, signalez-le à l'éditeur du jeu avec le log de cette session. Pour que Nexum relance le serveur tout seul, voir [Relance après un plantage](installation.fr.md#relance-après-un-plantage).
 2. **Logs Palworld** : ouvrez le dernier fichier dans `{serverPath}/Pal/Saved/Logs/`
 3. **Event Viewer Windows** : Application → Erreurs liées à `PalServer.exe`
 

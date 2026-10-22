@@ -40,6 +40,7 @@ import { registerDragonwildsHandlers } from "../games/dragonwilds/handlers/confi
 import { registerDragonwildsWorldHandlers } from "../games/dragonwilds/handlers/worlds";
 import { getGameStopConfig } from "../games/registry";
 import { autoStartServers } from "../server/startServer";
+import { registerCrashRestart } from "../server/crashRestart";
 import { runScheduledRestart } from "../scheduler/scheduledRestart";
 import { backupServer } from "../backup/serverBackup";
 import { AppError } from "../utils/appError";
@@ -343,6 +344,7 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
   // Serveurs marqués « démarrage automatique » : après l'adoption, pour ne
   // pas relancer un serveur déjà en cours (voir server/startServer.ts).
   adoption.then(() => autoStartServers(ctx, broadcastLog)).catch(() => {});
+  registerCrashRestart(ctx);
 
   registerMiscHandlers(ctx);
   registerLogsHandlers(ctx);

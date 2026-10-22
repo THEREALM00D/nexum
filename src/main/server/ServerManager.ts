@@ -8,7 +8,7 @@ import type { LaunchSpec } from "../games/registry";
 import type { ServerStatus } from "../../shared/types";
 import type { SessionLogSink } from "../logs/SessionLogStore";
 import { appError, appErrorLogText } from "../utils/appError";
-import { lt, managerLine } from "../i18n/logStrings";
+import { exitText, lt, managerLine } from "../i18n/logStrings";
 
 export interface StopConfig {
   restApiEnabled?: boolean;
@@ -52,17 +52,20 @@ export class ServerManager {
   private adoptedPid: number | null = null;
   private adoptedPollInterval: NodeJS.Timeout | null = null;
   private status: ServerStatus = "stopped";
-  private autoRestart = false;
-  private restartCount = 0;
-  private readonly maxRestarts = 5;
   private onLog: (line: string) => void = () => {};
   private tailer: LogFileTailer | null = null;
 
   /**
    * `sessionLog` : fichier de log persistant, un par session (démarrage →
    * arrêt). Optionnel pour ne pas imposer le disque aux usages sans fichier.
+   * `onCrash` : appelé quand le serveur s'arrête seul avec une erreur (lancé
+   * ou adopté), session déjà close. La relance éventuelle est décidée
+   * ailleurs (`server/crashRestart.ts`) pour repasser par `startServer`.
    */
-  constructor(private sessionLog?: SessionLogSink) {}
+  constructor(
+    private sessionLog?: SessionLogSink,
+    private onCrash?: () => void,
+  ) {}
 
   /** Écrit une ligne dans la console du serveur ET dans son fichier de session. */
   log(line: string): void {
@@ -141,6 +144,7 @@ export class ServerManager {
       this.status = this.status === "stopping" ? "stopped" : "crashed";
       this.stopAdoptedPoll();
       this.endSession(this.status === "crashed");
+      if (this.status === "crashed") this.onCrash?.();
     }, 5000);
   }
 
@@ -235,24 +239,10 @@ export class ServerManager {
               : "crashed";
         this.process = null;
         this.stopTailer(); // dernières lignes du jeu avant celle de Nexum
-        log(managerLine(lt().exited(code)));
-        this.endSession(this.status === "crashed");
-
-        if (
-          wasRunning &&
-          this.autoRestart &&
-          this.restartCount < this.maxRestarts
-        ) {
-          this.restartCount++;
-          // Écrit dans la console seulement : la session plantée est déjà
-          // close, la relance ouvre la sienne.
-          onLog(
-            managerLine(
-              lt().autoRestarting(this.restartCount, this.maxRestarts),
-            ),
-          );
-          setTimeout(() => this.start(serverPath, spec, onLog), 5000);
-        }
+        const crashed = this.status === "crashed";
+        log(managerLine(exitText(code, crashed)));
+        this.endSession(crashed);
+        if (wasRunning && crashed) this.onCrash?.();
       });
 
       this.process.on("error", (err) => {
@@ -344,7 +334,6 @@ export class ServerManager {
       return { success: false, error: appError("SERVER_NOT_RUNNING") };
     }
 
-    this.autoRestart = false;
     this.status = "stopping";
     const adopted = !this.process && this.adoptedPid !== null;
     // Processus lancé par nous : sa fin est connue de façon fiable (événement
@@ -441,16 +430,10 @@ export class ServerManager {
       await this.stop(cfg);
       await new Promise((r) => setTimeout(r, 1500));
     }
-    this.restartCount = 0;
     return this.start(serverPath, spec, onLog);
   }
 
   getStatus(): ServerStatus {
     return this.status;
-  }
-
-  setAutoRestart(enabled: boolean): void {
-    this.autoRestart = enabled;
-    this.restartCount = 0;
   }
 }

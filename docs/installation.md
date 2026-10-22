@@ -93,6 +93,14 @@ To have your servers come back on their own after a PC restart:
 
 When you log in to Windows, Nexum starts in the background (its icon near the clock, see below) and starts the checked servers, a few seconds apart. A server that is already running is left as is. The same checks as a manual start apply (port conflicts, Valheim password rules, Dragonwilds Player ID): if a server can't start, the reason is written in its log.
 
+## Restarting after a crash
+
+In **Servers**, edit a server and check **Restart automatically after a crash**: when the server stops on its own with an error, Nexum starts it again 10 seconds later, with the same checks as a manual start. A server that stops cleanly, or that you stop yourself, is not restarted.
+
+To avoid an endless loop with a server that crashes as soon as it starts (corrupted world, broken mod), Nexum gives up after 3 crashes within 30 minutes and says so in the log. Find out what's wrong (see [Logs → Diagnostics](logs.md#diagnostics)), then start the server yourself.
+
+The world is only as recent as the game's last save: Nexum can't save a world while the game is crashing.
+
 ## Running in the background (icon near the clock)
 
 Closing the Nexum window doesn't quit it: Nexum keeps running in the Windows **notification area**, near the clock, so automatic backups, scheduled restarts and server logs keep working. The first time, a Windows notification tells you so.

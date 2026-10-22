@@ -21,7 +21,7 @@ Free, open-source Windows app to run **Valheim**, **Palworld**, **Astroneer** an
 
 - **Multiple servers, multiple games**: Palworld, Valheim, Astroneer and RuneScape: Dragonwilds from one app, no command line, with port conflicts detected before startup
 - **Automatic install** of SteamCMD and the game server, or **import a server that is already installed** (game and worlds detected automatically)
-- **Start / stop / restart** with clean shutdown (Palworld REST API, Valheim CTRL+C) so saves don't get corrupted
+- **Start / stop / restart** with clean shutdown (Palworld REST API, Valheim CTRL+C) so saves don't get corrupted, and automatic restart after a crash
 - **Real-time monitoring**: CPU, RAM, uptime, online players, server console
 - **Visual configuration editor** for each game (Palworld difficulty presets, Valheim world modifiers)
 - **Valheim mods**: browse, install and update from **Thunderstore and Hexium**, automatic dependencies, r2modman/Gale profile import, BepInEx config editor, deprecated mods flagged

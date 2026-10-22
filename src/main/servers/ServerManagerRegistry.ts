@@ -25,6 +25,7 @@ export const PROCESS_NAME_PREFIXES: Record<GameType, string> = {
  */
 export class ServerManagerRegistry {
   private managers = new Map<string, ServerManager>();
+  private crashHandler: ((serverId: string) => void) | null = null;
 
   constructor(
     private servers: ServerRegistry,
@@ -41,10 +42,17 @@ export class ServerManagerRegistry {
     }
     let mgr = this.managers.get(serverId);
     if (!mgr) {
-      mgr = new ServerManager(this.sessionLogs?.sink(serverId));
+      mgr = new ServerManager(this.sessionLogs?.sink(serverId), () =>
+        this.crashHandler?.(serverId),
+      );
       this.managers.set(serverId, mgr);
     }
     return mgr;
+  }
+
+  /** Appelé quand un serveur plante (voir `server/crashRestart.ts`). */
+  onCrash(handler: (serverId: string) => void): void {
+    this.crashHandler = handler;
   }
 
   /** Retourne le manager du serveur actif, ou null si aucun n'est sélectionné. */

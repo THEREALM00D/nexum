@@ -20,8 +20,16 @@ const FR = {
   processStarted: "Processus démarré.",
   exited: (code: number | null) =>
     `Le serveur s'est arrêté (code ${code ?? "?"}).`,
-  autoRestarting: (attempt: number, max: number) =>
-    `Redémarrage automatique... (tentative ${attempt}/${max})`,
+  gameCrashed: (hex: string, name: string | null) =>
+    `Le serveur du jeu a planté (${hex}${name ? `, ${name}` : ""}) : c'est une erreur du jeu lui-même, pas de Nexum. Les dernières lignes ci-dessus montrent ce qu'il faisait.`,
+  crashNames: {
+    "0xC0000005": "violation d'accès",
+    "0xC00000FD": "dépassement de pile",
+    "0xC0000374": "corruption du tas",
+    "0xC0000409": "arrêt d'urgence du programme",
+  } as Record<string, string>,
+  consoleClosed: (hex: string) =>
+    `Le serveur a été fermé depuis sa console (${hex} : CTRL+C, CTRL+Pause ou fermeture de la fenêtre), pas par Nexum.`,
   processError: (msg: string) => `Erreur du processus : ${msg}`,
   announceSent: (msg: string) => `Annonce envoyée : ${msg}`,
   saving: "Sauvegarde en cours...",
@@ -41,6 +49,15 @@ const FR = {
   noActiveMods: "Aucun mod actif.",
   autoStarted: "Démarré automatiquement à l'ouverture de Nexum.",
   autoStartFailed: (err: string) => `Démarrage automatique impossible : ${err}`,
+
+  // Relance après un plantage (crashRestart)
+  autoRestarting: (seconds: number, attempt: number, max: number) =>
+    `Relance automatique dans ${seconds} s (tentative ${attempt}/${max}).`,
+  autoRestarted: (attempt: number, max: number) =>
+    `Relancé automatiquement après un plantage (tentative ${attempt}/${max}).`,
+  autoRestartFailed: (err: string) => `Relance automatique impossible : ${err}`,
+  autoRestartGaveUp: (max: number, minutes: number) =>
+    `Relance automatique abandonnée : ${max} plantages en moins de ${minutes} min. Consultez les logs des sessions plantées, puis démarrez le serveur à la main.`,
 
   // Vérifications au démarrage
   gameUpToDate: (build: string) => `Serveur à jour (build ${build}).`,
@@ -106,8 +123,16 @@ const EN: typeof FR = {
   args: (args) => `Args: ${args}`,
   processStarted: "Process started.",
   exited: (code) => `Server exited with code ${code ?? "?"}.`,
-  autoRestarting: (attempt, max) =>
-    `Auto-restarting... (attempt ${attempt}/${max})`,
+  gameCrashed: (hex, name) =>
+    `The game server crashed (${hex}${name ? `, ${name}` : ""}): this is an error in the game itself, not in Nexum. The last lines above show what it was doing.`,
+  crashNames: {
+    "0xC0000005": "access violation",
+    "0xC00000FD": "stack overflow",
+    "0xC0000374": "heap corruption",
+    "0xC0000409": "fail fast",
+  },
+  consoleClosed: (hex) =>
+    `The server was closed from its console (${hex}: CTRL+C, CTRL+Break or closing the window), not by Nexum.`,
   processError: (msg) => `Process error: ${msg}`,
   announceSent: (msg) => `Announcement sent: ${msg}`,
   saving: "Saving...",
@@ -126,6 +151,14 @@ const EN: typeof FR = {
   noActiveMods: "No active mods.",
   autoStarted: "Started automatically when Nexum opened.",
   autoStartFailed: (err) => `Automatic start failed: ${err}`,
+
+  autoRestarting: (seconds, attempt, max) =>
+    `Restarting automatically in ${seconds} s (attempt ${attempt}/${max}).`,
+  autoRestarted: (attempt, max) =>
+    `Restarted automatically after a crash (attempt ${attempt}/${max}).`,
+  autoRestartFailed: (err) => `Automatic restart failed: ${err}`,
+  autoRestartGaveUp: (max, minutes) =>
+    `Automatic restart stopped: ${max} crashes in less than ${minutes} min. Check the logs of the crashed sessions, then start the server manually.`,
 
   gameUpToDate: (build) => `Server up to date (build ${build}).`,
   gameUpdateAvailable: (installed, latest) =>
@@ -175,6 +208,22 @@ const EN: typeof FR = {
 /** Textes dans la langue courante de l'interface. */
 export function lt(): typeof FR {
   return getLanguage() === "en" ? EN : FR;
+}
+
+/**
+ * Fin du processus du serveur. Un processus Windows tué par une exception
+ * sort avec un code NTSTATUS (3221225477 = 0xC0000005) : il est affiché en
+ * hexadécimal et nommé, pour qu'on voie tout de suite que c'est le jeu qui a
+ * planté, pas Nexum. Exception : 0xC000013A (STATUS_CONTROL_C_EXIT) n'est
+ * pas un plantage, c'est la console du jeu qui a été fermée (Dragonwilds :
+ * CTRL+Pause ou fermeture de la fenêtre).
+ */
+export function exitText(code: number | null, crashed: boolean): string {
+  const t = lt();
+  if (!crashed || code === null || code < 0xc0000000) return t.exited(code);
+  const hex = `0x${code.toString(16).toUpperCase()}`;
+  if (hex === "0xC000013A") return t.consoleClosed(hex);
+  return t.gameCrashed(hex, t.crashNames[hex] ?? null);
 }
 
 /** Ligne de log de Nexum (préfixe `[Manager]`, non traduit). */

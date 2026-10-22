@@ -43,6 +43,9 @@ export default {
       autoStart: "Start automatically when Nexum opens",
       autoStartHelper:
         'With "Launch Nexum when Windows starts" (Settings page), the server comes back on its own after a PC restart.',
+      autoRestart: "Restart automatically after a crash",
+      autoRestartHelper:
+        "10 seconds after the crash. At most 3 times in 30 minutes, so a server that crashes on startup doesn't loop.",
       addTitle: "New server",
       editTitle: "Edit server",
       name: "Name",

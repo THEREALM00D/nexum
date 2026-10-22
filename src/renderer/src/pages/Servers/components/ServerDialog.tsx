@@ -12,10 +12,6 @@ import {
   Select,
   Stack,
   TextField,
-  Box,
-  Checkbox,
-  FormControlLabel,
-  Typography,
 } from "@mui/material";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import { useTranslation } from "react-i18next";
@@ -23,6 +19,7 @@ import type { GameType, Server } from "@shared/types";
 import { useExeDetection } from "../hooks/useExeDetection";
 import ExeStatusHint from "./ExeStatusHint";
 import InstallDirWarning from "../../../components/common/InstallDirWarning";
+import CheckboxField from "../../../components/common/CheckboxField";
 import ColorPicker, { DEFAULT_COLORS } from "./ColorPicker";
 import { GAMES } from "../../../games/registry";
 
@@ -32,6 +29,7 @@ export interface ServerFormValues {
   gameType: GameType;
   color: string | null;
   autoStart: boolean;
+  autoRestart: boolean;
 }
 
 interface Props {
@@ -54,6 +52,7 @@ export default function ServerDialog({
     gameType: "palworld",
     color: DEFAULT_COLORS[0],
     autoStart: false,
+    autoRestart: false,
   });
   const [submitting, setSubmitting] = useState(false);
   const exeStatus = useExeDetection(open, values.path, values.gameType);
@@ -66,6 +65,7 @@ export default function ServerDialog({
         gameType: initial?.gameType ?? "palworld",
         color: initial?.color ?? DEFAULT_COLORS[0],
         autoStart: initial?.autoStart ?? false,
+        autoRestart: initial?.autoRestart ?? false,
       });
     }
   }, [open, initial]);
@@ -157,26 +157,22 @@ export default function ServerDialog({
             onChange={(color) => setValues((v) => ({ ...v, color }))}
           />
 
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={values.autoStart}
-                onChange={(e) =>
-                  setValues((v) => ({ ...v, autoStart: e.target.checked }))
-                }
-              />
-            }
-            label={
-              <Box>
-                <Typography variant="body2">
-                  {t("servers.dialog.autoStart")}
-                </Typography>
-                <Typography variant="caption" sx={{ color: "text.secondary" }}>
-                  {t("servers.dialog.autoStartHelper")}
-                </Typography>
-              </Box>
-            }
-          />
+          <Stack spacing={1}>
+            <CheckboxField
+              checked={values.autoStart}
+              onChange={(autoStart) => setValues((v) => ({ ...v, autoStart }))}
+              label={t("servers.dialog.autoStart")}
+              helper={t("servers.dialog.autoStartHelper")}
+            />
+            <CheckboxField
+              checked={values.autoRestart}
+              onChange={(autoRestart) =>
+                setValues((v) => ({ ...v, autoRestart }))
+              }
+              label={t("servers.dialog.autoRestart")}
+              helper={t("servers.dialog.autoRestartHelper")}
+            />
+          </Stack>
         </Stack>
       </DialogContent>
       <DialogActions>
