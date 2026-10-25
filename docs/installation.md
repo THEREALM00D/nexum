@@ -19,6 +19,18 @@
 
 > **"Nexum cannot be closed" while updating from 0.12.4 or 0.12.5**, although Nexum is closed: this happens when Nexum is installed on another drive than `C:` (for example `H:\Nexum`). Click **Cancel**: your installed version stays intact. Install 0.12.6 or later instead, which fixes it. If you're stuck on an older installer, uninstall Nexum from Windows Settings (your servers and settings are kept), then install the new version.
 
+## Updating Nexum
+
+Nexum checks for a new version at startup (at the bottom of the sidebar, or **Settings → Updates**). It only downloads and installs it when you click.
+
+### Beta versions
+
+To try new features before they are released, turn on **Settings → Updates → Get beta versions** (off by default). Nexum then also offers beta versions (`0.17.0-beta.1`, for example), then the stable version once it is out.
+
+- A beta may contain bugs: back up your worlds before installing it, and report issues on [Discord](https://discord.gg/DbJ3WkK5QU) with the version number.
+- If you turn the option off while a beta is installed, you keep it until the next stable version, which Nexum will offer as usual.
+- Betas are also on the [Releases](https://github.com/THEREALM00D/nexum/releases) page, marked **Pre-release**.
+
 ## First use
 
 ### Setup wizard

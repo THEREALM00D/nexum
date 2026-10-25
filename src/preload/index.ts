@@ -29,6 +29,9 @@ const api = {
     check: () => ipcRenderer.invoke("update:check"),
     download: () => ipcRenderer.invoke("update:download"),
     install: () => ipcRenderer.invoke("update:install"),
+    getBetaUpdates: () => ipcRenderer.invoke("update:getBetaUpdates"),
+    setBetaUpdates: (enabled: boolean) =>
+      ipcRenderer.invoke("update:setBetaUpdates", enabled),
     onStatus: (cb: (status: AppUpdateStatus) => void) => {
       // Retirer CE listener seulement : l'indicateur est monté deux fois
       // (Sidebar + Paramètres) ; un removeAllListeners en quittant Paramètres

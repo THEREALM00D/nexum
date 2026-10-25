@@ -53,6 +53,8 @@ interface API {
     check: () => Promise<void>;
     download: () => Promise<void>;
     install: () => Promise<void>;
+    getBetaUpdates: () => Promise<boolean>;
+    setBetaUpdates: (enabled: boolean) => Promise<boolean>;
     onStatus: (cb: (status: AppUpdateStatus) => void) => () => void;
   };
   servers: {

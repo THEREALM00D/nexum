@@ -348,7 +348,7 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
 
   registerMiscHandlers(ctx);
   registerLogsHandlers(ctx);
-  registerAutoUpdater();
+  registerAutoUpdater(ctx.store);
   registerSteamHandlers(ctx);
   registerServerHandlers(ctx);
   registerPalapiHandlers(ctx);

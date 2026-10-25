@@ -44,6 +44,8 @@ export interface AppStore {
   trayHintShown?: boolean;
   // Langue de l'UI, pour les textes du main (menu de l'icône)
   language?: "fr" | "en";
+  // Mises à jour : proposer aussi les versions bêta (défaut : non)
+  betaUpdates?: boolean;
 }
 
 export interface IpcContext {
