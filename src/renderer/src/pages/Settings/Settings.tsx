@@ -12,6 +12,7 @@ import {
 import SettingsSection from "./components/SettingsSection";
 import LaunchAtLoginSwitch from "./components/LaunchAtLoginSwitch";
 import CloseToTraySwitch from "./components/CloseToTraySwitch";
+import BetaUpdatesSwitch from "./components/BetaUpdatesSwitch";
 import FormPage from "../../components/common/FormPage";
 
 const REPO = "https://github.com/THEREALM00D/nexum";
@@ -48,6 +49,7 @@ export default function Settings() {
 
       <SettingsSection title={t("settings.updates.title")}>
         <UpdateIndicator align="left" />
+        <BetaUpdatesSwitch />
       </SettingsSection>
 
       <SettingsSection title={t("settings.help.title")}>

@@ -25,7 +25,16 @@ export default {
       },
     },
     language: { title: "Langue" },
-    updates: { title: "Mises à jour" },
+    updates: {
+      title: "Mises à jour",
+      beta: {
+        label: "Recevoir les versions bêta",
+        helper:
+          "Pour tester les nouveautés avant tout le monde. Une bêta peut contenir des bugs : faites une sauvegarde de vos mondes et signalez les problèmes sur Discord. En désactivant, vous restez sur la bêta installée jusqu'à la prochaine version stable.",
+        on: "Les versions bêta vous seront proposées",
+        off: "Seules les versions stables vous seront proposées",
+      },
+    },
     help: {
       title: "Aide et à propos",
       docs: "Documentation",

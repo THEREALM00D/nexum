@@ -1,15 +1,22 @@
 import { autoUpdater } from "electron-updater";
 import { BrowserWindow, ipcMain, app } from "electron/main";
+import type Store from "electron-store";
 import type { AppUpdateErrorKind, AppUpdateStatus } from "../../shared/types";
+import type { AppStore } from "../ipc/context";
 
 autoUpdater.autoDownload = false;
 autoUpdater.autoInstallOnAppQuit = false;
-// Versions semver stables (0.x.y, sans suffixe -alpha/-beta) depuis le
-// passage à release-please : canal par défaut ("latest.yml" via l'API
-// "latest release" de GitHub), donc ni `allowPrerelease` ni `channel` à fixer.
-// Les installs encore en 0.0.1-alpha.N (canal "alpha") retrouvent quand même
-// ces versions : electron-updater y cherche "alpha.yml" puis retombe sur
-// "latest.yml" (fallback actif avec leur `allowPrerelease = true`).
+// Versions stables 0.x.y publiées par release-please ("latest.yml", API
+// "latest release" de GitHub, qui ignore les préversions). Les bêtas
+// (0.x.y-beta.N, workflow beta.yml) sont des releases GitHub « prerelease »
+// avec un "beta.yml" : vues seulement quand `allowPrerelease` est vrai, donc
+// quand l'utilisateur a coché « Recevoir les versions bêta » (réglage
+// `betaUpdates`). Jamais de `channel` : son setter active `allowDowngrade`.
+// ⚠️ `allowPrerelease` est fixé explicitement : electron-updater le met à
+// vrai tout seul quand la version installée est une préversion.
+// Les installs encore en 0.0.1-alpha.N (canal "alpha", `allowPrerelease`
+// codé en dur) prennent la release la plus récente, bêta comprise, puis
+// suivent ce réglage une fois à jour.
 
 // Délai max d'une vérification : au-delà, on affiche une erreur au lieu de
 // laisser « Vérification… » indéfiniment (requête GitHub bloquée).
@@ -107,7 +114,8 @@ function checkNow(): void {
  * démarrage, mais le téléchargement et l'installation restent des actions
  * explicites (pas d'auto-download/install silencieux).
  */
-export function registerAutoUpdater(): void {
+export function registerAutoUpdater(store: Store<AppStore>): void {
+  autoUpdater.allowPrerelease = store.get("betaUpdates", false);
   autoUpdater.on("checking-for-update", () => setStatus({ state: "checking" }));
   autoUpdater.on("update-available", (info) =>
     setStatus({ state: "available", version: info.version }),
@@ -132,6 +140,18 @@ export function registerAutoUpdater(): void {
     autoUpdater.downloadUpdate().catch(handleError);
   });
   ipcMain.handle("update:install", () => autoUpdater.quitAndInstall());
+  ipcMain.handle("update:getBetaUpdates", () =>
+    store.get("betaUpdates", false),
+  );
+  // Revérifie tout de suite : la bêta (ou le retour au canal stable) est
+  // visible sans attendre le prochain lancement. Une bêta déjà installée
+  // reste en place jusqu'à la stable suivante (pas de retour en arrière).
+  ipcMain.handle("update:setBetaUpdates", (_, enabled: boolean) => {
+    store.set("betaUpdates", enabled);
+    autoUpdater.allowPrerelease = enabled;
+    if (!pendingCheck && current.state !== "downloading") checkNow();
+    return enabled;
+  });
 }
 
 export function checkForUpdateOnStartup(): void {

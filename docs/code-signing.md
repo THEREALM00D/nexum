@@ -8,7 +8,7 @@
 
 When signing is enabled, it will follow these rules:
 
-- Only binaries built by this repository's GitHub Actions workflow (`.github/workflows/release.yml`), from the source code of this repository, are signed.
+- Only binaries built by this repository's GitHub Actions workflows (`.github/workflows/release.yml` for stable versions, `.github/workflows/beta.yml` for beta versions), from the source code of this repository, are signed.
 - Every release will be approved manually before it is signed.
 - Signed binaries will carry the product name (Nexum) and version in their file metadata.
 

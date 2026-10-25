@@ -8,7 +8,7 @@
 
 Quand la signature sera activée, elle suivra ces règles :
 
-- Seuls les exécutables compilés par le workflow GitHub Actions de ce dépôt (`.github/workflows/release.yml`), à partir de son code source, sont signés.
+- Seuls les exécutables compilés par les workflows GitHub Actions de ce dépôt (`.github/workflows/release.yml` pour les versions stables, `.github/workflows/beta.yml` pour les versions bêta), à partir de son code source, sont signés.
 - Chaque release sera approuvée manuellement avant d'être signée.
 - Les exécutables signés porteront le nom du produit (Nexum) et sa version dans leurs métadonnées.
 

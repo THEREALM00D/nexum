@@ -1,0 +1,146 @@
+name: Beta release
+
+# Publie une version bêta (0.x.y-beta.N) construite depuis la branche choisie
+# dans « Run workflow » (Actions → Beta release). Release GitHub marquée
+# « prerelease » : l'API « latest release » l'ignore, seules les installs qui
+# ont coché « Recevoir les versions bêta » (Paramètres) la voient, via le
+# beta.yml qu'electron-builder génère pour une version en -beta.N.
+#
+# Rien n'est commité : la version n'est changée dans package.json que le temps
+# du build. release-please (release.yml) ne voit pas ces releases et continue
+# de calculer les versions stables depuis .release-please-manifest.json.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version visée, sans suffixe (ex. 0.17.0). Vide = dernière version stable + 1 patch."
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+# Deux bêtas en parallèle calculeraient le même numéro
+concurrency:
+  group: beta-release
+  cancel-in-progress: false
+
+jobs:
+  beta:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # Historique + tags : numéro de bêta et liste des commits des notes
+          fetch-depth: 0
+
+      - name: Compute beta version
+        id: version
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INPUT_VERSION: ${{ inputs.version }}
+        run: |
+          stable=$(gh release view --json tagName -q .tagName)
+          stable=${stable#v}
+          base=${INPUT_VERSION#v}
+          if [ -z "$base" ]; then
+            IFS=. read -r major minor patch <<< "$stable"
+            base="$major.$minor.$((patch + 1))"
+          fi
+          if ! [[ "$base" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Version invalide : '$base' (attendu X.Y.Z)"; exit 1
+          fi
+          # La bêta doit être plus récente que la stable, sinon l'updater ne la
+          # propose jamais (et 0.16.3-beta.1 < 0.16.3 en semver).
+          if [ "$base" = "$stable" ] || [ "$(printf '%s\n%s\n' "$stable" "$base" | sort -V | tail -1)" != "$base" ]; then
+            echo "::error::$base doit être plus récente que la dernière stable ($stable)"; exit 1
+          fi
+          # Numéro suivant : tags ET releases (un draft d'un essai raté n'a pas
+          # encore de tag).
+          last=$( { git tag -l "v$base-beta.*"; gh release list --limit 100 --json tagName -q '.[].tagName'; } \
+            | sed -n "s/^v$base-beta\.\([0-9][0-9]*\)$/\1/p" | sort -n | tail -1)
+          version="$base-beta.$(( ${last:-0} + 1 ))"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "tag=v$version" >> "$GITHUB_OUTPUT"
+          echo "stable=v$stable" >> "$GITHUB_OUTPUT"
+          echo "Beta: $version (stable: $stable)"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+
+      - name: Enable Corepack (Yarn)
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      # Pas commité : seulement pour que l'exe, latest/beta.yml et
+      # app.getVersion() portent le numéro de la bêta.
+      - name: Set beta version
+        run: npm pkg set version=${{ steps.version.outputs.version }}
+
+      # Créée en draft avant le build : electron-builder y attache les assets
+      # (il réutilise un draft existant pour le tag) et l'updater ne voit
+      # jamais une release sans beta.yml.
+      - name: Create draft prerelease
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.version.outputs.tag }}
+          STABLE: ${{ steps.version.outputs.stable }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          {
+            echo "⚠️ **Beta version** built from \`$BRANCH\` (\`${GITHUB_SHA:0:7}\`), for testing only."
+            echo "It may contain bugs: back up your worlds before installing it."
+            echo
+            echo "To receive betas from the app: **Settings → Updates → Get beta versions**."
+            echo
+            echo "### Changes since $STABLE"
+            echo
+            git log --no-merges --format='- %s' "$STABLE..HEAD"
+          } > beta-notes.md
+          gh release create "$TAG" --draft --prerelease --target "$GITHUB_SHA" \
+            --title "Nexum $TAG (beta)" --notes-file beta-notes.md
+
+      - name: Build & upload to draft release
+        run: yarn build --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Add SHA256 to release notes
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          {
+            cat beta-notes.md
+            echo
+            echo "### Verify your download"
+            echo
+            echo "SHA256 (PowerShell: \`Get-FileHash <file> -Algorithm SHA256\`):"
+            echo
+            echo '```'
+            (cd dist && sha256sum *.exe)
+            echo '```'
+          } > release-notes.md
+          gh release edit "$TAG" --notes-file release-notes.md
+
+      # Publiée en prerelease, jamais « latest » : les installs stables ne la
+      # voient pas. Retry : 5xx passagers de l'API GitHub (voir release.yml).
+      - name: Publish prerelease
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          for attempt in 1 2 3 4 5; do
+            if gh release edit "$TAG" --draft=false --prerelease --latest=false; then exit 0; fi
+            echo "Attempt $attempt failed, retrying in $((attempt * 15))s..."
+            sleep $((attempt * 15))
+          done
+          exit 1

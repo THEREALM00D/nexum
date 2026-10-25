@@ -25,7 +25,16 @@ export default {
       },
     },
     language: { title: "Language" },
-    updates: { title: "Updates" },
+    updates: {
+      title: "Updates",
+      beta: {
+        label: "Get beta versions",
+        helper:
+          "Try new features before everyone else. A beta may contain bugs: back up your worlds and report issues on Discord. If you turn this off, you stay on the installed beta until the next stable version.",
+        on: "Beta versions will be offered to you",
+        off: "Only stable versions will be offered to you",
+      },
+    },
     help: {
       title: "Help & about",
       docs: "Documentation",
