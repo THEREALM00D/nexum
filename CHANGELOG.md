@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.17.0](https://github.com/THEREALM00D/nexum/compare/v0.16.3...v0.17.0) (2026-10-25)
+
+
+### Features
+
+* add beta update channel ([#136](https://github.com/THEREALM00D/nexum/issues/136)) ([75730e2](https://github.com/THEREALM00D/nexum/commit/75730e26898bfc2d1cf63c7a9a3f95c44a782a75))
+
 ## [0.16.3](https://github.com/THEREALM00D/nexum/compare/v0.16.2...v0.16.3) (2026-10-22)
 
 
