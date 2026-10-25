@@ -10,4 +10,6 @@ export interface GamePlugin {
     fr: Record<string, unknown>;
     en: Record<string, unknown>;
   };
+  /** Ressources à prévoir, rappelées avant l'installation (GameRequirementsHint). */
+  requirements?: { ramGb: number; diskGb: number };
 }

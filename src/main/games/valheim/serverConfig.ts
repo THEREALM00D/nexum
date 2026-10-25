@@ -66,7 +66,7 @@ export const valheimServerConfig = {
       // Pas d'API REST, mais le manuel officiel recommande explicitement un
       // CTRL+C pour un arrêt propre plutôt qu'un kill direct (risque de
       // sauvegarde corrompue sinon).
-      gracefulSignal: true,
+      gracefulSignal: "ctrlC" as const,
     };
   },
 

@@ -20,6 +20,7 @@ import type {
   ValheimLaunchConfig,
   AstroneerLaunchConfig,
   DragonwildsLaunchConfig,
+  EnshroudedLaunchConfig,
 } from "../../shared/types";
 
 export interface AppStore {
@@ -119,6 +120,13 @@ export interface IpcContext {
   updateDragonwildsConfig: (
     serverId: string | undefined,
     patch: Partial<DragonwildsLaunchConfig>,
+  ) => void;
+
+  // Config Enshrouded par-serveur (arguments libres, le reste est dans le JSON)
+  getEnshroudedConfig: (serverId?: string) => EnshroudedLaunchConfig;
+  updateEnshroudedConfig: (
+    serverId: string | undefined,
+    patch: Partial<EnshroudedLaunchConfig>,
   ) => void;
 
   /** Dossier userData/servers/{id}/ utilisé pour stocker mods.json et les ZIPs temp. */

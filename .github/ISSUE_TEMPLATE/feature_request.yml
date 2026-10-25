@@ -11,6 +11,7 @@ body:
         - Valheim
         - Astroneer
         - "RuneScape: Dragonwilds"
+        - "Enshrouded"
         - Not game-specific
     validations:
       required: true

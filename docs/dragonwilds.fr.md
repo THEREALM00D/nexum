@@ -41,7 +41,7 @@ Le serveur retire le mot de passe admin de son fichier après l'avoir lu : Nexum
 
 La carte **Rejoindre le serveur** du Dashboard donne tout ce qu'il faut transmettre à vos amis :
 
-- **Nom du monde à chercher** : dans le jeu, **Mondes → Public**, cherchez ce nom exact (sensible à la casse). L'apparition dans la liste peut prendre une à deux minutes après le démarrage.
+- **Nom à chercher dans le jeu** (le nom du monde) : dans le jeu, **Mondes → Public**, cherchez ce nom exact (sensible à la casse). L'apparition dans la liste peut prendre une à deux minutes après le démarrage.
 - **Même réseau** : les joueurs de votre réseau local peuvent se connecter directement à `IP:port`.
 - **Depuis Internet** : redirigez **UDP 7777 et 8888** sur votre box vers ce PC, et appliquez les règles de pare-feu de la page **Réseau**.
 

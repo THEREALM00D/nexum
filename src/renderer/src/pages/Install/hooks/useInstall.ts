@@ -27,6 +27,7 @@ export const DEFAULT_INSTALL_PATHS: Record<GameType, string> = {
   valheim: "C:\\ValheimServer",
   astroneer: "C:\\AstroneerServer",
   dragonwilds: "C:\\DragonwildsServer",
+  enshrouded: "C:\\EnshroudedServer",
 };
 
 export function useInstall() {

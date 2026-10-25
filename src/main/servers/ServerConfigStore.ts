@@ -9,6 +9,7 @@ import type {
   ValheimModifiers,
   AstroneerLaunchConfig,
   DragonwildsLaunchConfig,
+  EnshroudedLaunchConfig,
 } from "../../shared/types";
 import type { AppStore } from "../ipc/context";
 
@@ -54,6 +55,10 @@ const DEFAULT_DRAGONWILDS_CONFIG: DragonwildsLaunchConfig = {
   customArgs: "",
 };
 
+const DEFAULT_ENSHROUDED_CONFIG: EnshroudedLaunchConfig = {
+  customArgs: "",
+};
+
 const DEFAULT_BACKUP: BackupConfig = {
   backupDir: "",
   backupKeep: 10,
@@ -74,6 +79,7 @@ export const DEFAULT_SERVER_CONFIG: ServerConfig = {
   valheimConfig: DEFAULT_VALHEIM_CONFIG,
   astroneerConfig: DEFAULT_ASTRONEER_CONFIG,
   dragonwildsConfig: DEFAULT_DRAGONWILDS_CONFIG,
+  enshroudedConfig: DEFAULT_ENSHROUDED_CONFIG,
   backup: DEFAULT_BACKUP,
   restart: DEFAULT_RESTART,
 };
@@ -99,6 +105,10 @@ export class ServerConfigStore {
         ...DEFAULT_DRAGONWILDS_CONFIG,
         ...existing.dragonwildsConfig,
       },
+      enshroudedConfig: {
+        ...DEFAULT_ENSHROUDED_CONFIG,
+        ...existing.enshroudedConfig,
+      },
       backup: { ...DEFAULT_BACKUP, ...existing.backup },
       restart: { ...DEFAULT_RESTART, ...existing.restart },
     };
@@ -116,6 +126,10 @@ export class ServerConfigStore {
       dragonwildsConfig: {
         ...current.dragonwildsConfig,
         ...patch.dragonwildsConfig,
+      },
+      enshroudedConfig: {
+        ...current.enshroudedConfig,
+        ...patch.enshroudedConfig,
       },
       backup: { ...current.backup, ...patch.backup },
       restart: { ...current.restart, ...patch.restart },
@@ -169,6 +183,7 @@ export class ServerConfigStore {
       valheimConfig: DEFAULT_VALHEIM_CONFIG,
       astroneerConfig: DEFAULT_ASTRONEER_CONFIG,
       dragonwildsConfig: DEFAULT_DRAGONWILDS_CONFIG,
+      enshroudedConfig: DEFAULT_ENSHROUDED_CONFIG,
       backup: {
         backupDir: preservedBackupDir,
         backupKeep: this.store.get("backupKeep", 10),

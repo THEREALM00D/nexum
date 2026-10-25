@@ -1,4 +1,5 @@
 import { getLanguage } from "./language";
+import type { ConsoleSignal } from "../server/windowsCtrlC";
 
 // Textes écrits par le main dans les logs d'un serveur et dans le journal
 // d'installation, dans la langue de l'interface au moment où la ligne est
@@ -39,7 +40,8 @@ const FR = {
   notResponding: "Le processus ne répond pas, arrêt forcé via taskkill...",
   waitingGraceful: (s: number) => `Attente de l'arrêt propre (${s} s)...`,
   forceKill: "Arrêt forcé via taskkill...",
-  ctrlC: "Envoi d'un arrêt propre (CTRL+C)...",
+  gracefulSignal: (signal: ConsoleSignal) =>
+    `Envoi d'un arrêt propre (${signal === "ctrlBreak" ? "CTRL+Pause" : "CTRL+C"})...`,
   stoppingAdopted: "Arrêt du processus adopté...",
   stopping: "Arrêt du serveur...",
 
@@ -143,7 +145,8 @@ const EN: typeof FR = {
     "The process isn't responding, forcing it to stop (taskkill)...",
   waitingGraceful: (s) => `Waiting for a clean shutdown (${s} s)...`,
   forceKill: "Forcing the stop (taskkill)...",
-  ctrlC: "Sending a clean stop signal (CTRL+C)...",
+  gracefulSignal: (signal: ConsoleSignal) =>
+    `Sending a clean stop signal (${signal === "ctrlBreak" ? "CTRL+Break" : "CTRL+C"})...`,
   stoppingAdopted: "Stopping the adopted process...",
   stopping: "Stopping the server...",
 

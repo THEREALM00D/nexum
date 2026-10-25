@@ -42,6 +42,16 @@ Deux règles UDP, avec le port dans leur nom pour que plusieurs serveurs Dragonw
 
 Les ports viennent de **Configuration → Réseau**. Après un changement de port, supprimez l'ancienne règle (Pare-feu Windows) et appliquez la nouvelle. Redirigez les deux ports sur votre box pour les joueurs hors de votre réseau. Plus de détails dans [RuneScape: Dragonwilds](dragonwilds.fr.md).
 
+### Enshrouded
+
+Une seule règle UDP, avec le port dans son nom pour que plusieurs serveurs Enshrouded sur le même PC aient chacun la leur :
+
+| Règle                                 | Port (défaut) | Protocole | Usage                  |
+| ------------------------------------- | ------------- | --------- | ---------------------- |
+| **Enshrouded Server - Query (15637)** | 15637         | UDP       | Connexions des joueurs |
+
+Le port vient de **Configuration → Réseau**. Après un changement de port, supprimez l'ancienne règle (Pare-feu Windows) et appliquez la nouvelle. Redirigez ce port sur votre box pour les joueurs hors de votre réseau. Plus de détails dans [Enshrouded](enshrouded.fr.md).
+
 ## Actions disponibles
 
 ### Activer/désactiver une règle individuelle

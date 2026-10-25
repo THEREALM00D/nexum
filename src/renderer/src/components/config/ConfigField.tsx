@@ -58,7 +58,7 @@ export default function ConfigField({
   i18nPrefix,
 }: Props) {
   const { t } = useTranslation();
-  const { key, type, options, required } = field;
+  const { key, type, options, required, min, max, step } = field;
   const baseLabel = t(`${i18nPrefix}.${key}.label`, { defaultValue: key });
   const label = required ? `${baseLabel} *` : baseLabel;
   const missing = !!required && String(value ?? "").trim() === "";
@@ -115,7 +115,7 @@ export default function ConfigField({
         size="small"
         type={type === "number" ? "number" : "text"}
         slotProps={{
-          htmlInput: { step: type === "number" ? "any" : undefined },
+          htmlInput: type === "number" ? { step: step ?? "any", min, max } : {},
         }}
         value={String(value ?? "")}
         onChange={(e) =>

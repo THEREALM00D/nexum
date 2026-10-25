@@ -42,6 +42,16 @@ Two UDP rules, with the port in their name so that several Dragonwilds servers o
 
 Ports come from **Configuration → Network**. After changing a port, remove the old rule (Windows Firewall) and apply the new one. Forward both ports on your router for players outside your network. More in [RuneScape: Dragonwilds](dragonwilds.md).
 
+### Enshrouded
+
+A single UDP rule, with the port in its name so that several Enshrouded servers on the same PC each have their own:
+
+| Rule                                  | Port (default) | Protocol | Use                |
+| ------------------------------------- | -------------- | -------- | ------------------ |
+| **Enshrouded Server - Query (15637)** | 15637          | UDP      | Player connections |
+
+The port comes from **Configuration → Network**. After changing it, remove the old rule (Windows Firewall) and apply the new one. Forward this port on your router for players outside your network. More in [Enshrouded](enshrouded.md).
+
 ## Available actions
 
 ### Toggle an individual rule

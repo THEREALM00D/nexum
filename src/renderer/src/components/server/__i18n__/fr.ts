@@ -4,7 +4,7 @@ export default {
     local: "Même réseau",
     internet: "Depuis Internet",
     code: "Code de connexion crossplay",
-    searchName: "Nom du monde à chercher",
+    searchName: "Nom à chercher dans le jeu",
     showPublicIp: "Afficher mon IP publique",
     publicIpTooltip:
       "Demande votre adresse IP publique au service ipify.org (seulement quand vous cliquez)",

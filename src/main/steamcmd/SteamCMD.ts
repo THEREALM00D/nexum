@@ -15,6 +15,8 @@ export const STEAM_APP_IDS: Record<GameType, string> = {
   astroneer: "728470",
   // « RuneScape: Dragonwilds - Dedicated Servers » (1374490 = le client).
   dragonwilds: "4019830",
+  // « Enshrouded Dedicated Server » (1203620 = le client).
+  enshrouded: "2278520",
 };
 
 /**

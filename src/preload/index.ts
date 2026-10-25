@@ -362,6 +362,21 @@ const api = {
     write: (settings: Record<string, unknown>) =>
       ipcRenderer.invoke("dragonwildsconfig:write", settings),
   },
+  // Enshrouded (serveur actif) — arguments de Nexum et groupes d'utilisateurs
+  enshrouded: {
+    getConfig: () => ipcRenderer.invoke("enshrouded:getConfig"),
+    setConfig: (patch: Record<string, unknown>) =>
+      ipcRenderer.invoke("enshrouded:setConfig", patch),
+    getGroups: () => ipcRenderer.invoke("enshrouded:getGroups"),
+    setGroups: (groups: unknown[]) =>
+      ipcRenderer.invoke("enshrouded:setGroups", groups),
+  },
+  // enshrouded_server.json (clés gérées) + arguments de Nexum
+  enshroudedconfig: {
+    read: () => ipcRenderer.invoke("enshroudedconfig:read"),
+    write: (settings: Record<string, unknown>) =>
+      ipcRenderer.invoke("enshroudedconfig:write", settings),
+  },
   // App
   app: {
     getVersion: () => ipcRenderer.invoke("app:getVersion"),

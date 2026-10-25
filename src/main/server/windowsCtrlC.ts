@@ -4,7 +4,20 @@ import { join } from "path";
 import { writeFileSync, unlinkSync } from "fs";
 
 /**
- * Émule un CTRL+C envoyé au process `pid` sur Windows — Node n'a pas
+ * Signal d'arrêt propre selon le jeu : Valheim sauvegarde sur CTRL+C,
+ * Enshrouded ignore CTRL+C mais s'arrête proprement sur CTRL+Pause
+ * (« Trigger gameflow shutdown, exit: Ctrl_Break », vérifié).
+ */
+export type ConsoleSignal = "ctrlC" | "ctrlBreak";
+
+// dwCtrlEvent de GenerateConsoleCtrlEvent
+const CTRL_EVENTS: Record<ConsoleSignal, number> = {
+  ctrlC: 0,
+  ctrlBreak: 1,
+};
+
+/**
+ * Émule un CTRL+C (ou CTRL+Pause) envoyé au process `pid` sur Windows — Node n'a pas
  * d'équivalent portable à `process.kill(pid, "SIGINT")` sur cette
  * plateforme (ça termine le process directement, comme un kill). C'est la
  * méthode recommandée par le manuel officiel Valheim pour un arrêt propre
@@ -16,7 +29,10 @@ import { writeFileSync, unlinkSync } from "fs";
  * Passe par un script PowerShell (déjà présent sur Windows) plutôt qu'un
  * module natif, pour rester une dépendance zéro-install.
  */
-export function sendCtrlC(pid: number): Promise<void> {
+export function sendConsoleSignal(
+  pid: number,
+  signal: ConsoleSignal,
+): Promise<void> {
   return new Promise((resolve) => {
     const script = [
       `Add-Type -Name Win -Namespace Console -MemberDefinition '`,
@@ -32,7 +48,7 @@ export function sendCtrlC(pid: number): Promise<void> {
       `[Console.Win]::FreeConsole() | Out-Null`,
       `if ([Console.Win]::AttachConsole(${pid})) {`,
       `    [Console.Win]::SetConsoleCtrlHandler([IntPtr]::Zero, $true) | Out-Null`,
-      `    [Console.Win]::GenerateConsoleCtrlEvent(0, 0) | Out-Null`,
+      `    [Console.Win]::GenerateConsoleCtrlEvent(${CTRL_EVENTS[signal]}, 0) | Out-Null`,
       `    Start-Sleep -Milliseconds 300`,
       `    [Console.Win]::FreeConsole() | Out-Null`,
       `}`,

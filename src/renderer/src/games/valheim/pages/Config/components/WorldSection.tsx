@@ -9,7 +9,7 @@ import {
 import { useTranslation } from "react-i18next";
 import type { ValheimLaunchConfig } from "@shared/types";
 import { useExistingWorlds } from "../hooks/useExistingWorlds";
-import Section from "./Section";
+import Section from "../../../../../components/common/Section";
 import InstallDirWarning from "../../../../../components/common/InstallDirWarning";
 
 export default function WorldSection({

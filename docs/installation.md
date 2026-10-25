@@ -37,7 +37,7 @@ To try new features before they are released, turn on **Settings → Updates →
 
 On first launch (no server yet), Nexum opens a **setup wizard** that walks you through everything below, in order:
 
-1. **Game**: pick Palworld, Valheim, Astroneer or RuneScape: Dragonwilds, then **Install a new server** (choose the install folder) or **I already have a server** (choose its folder: Nexum detects the game).
+1. **Game**: pick Palworld, Valheim, Astroneer, RuneScape: Dragonwilds or Enshrouded, then **Install a new server** (choose the install folder) or **I already have a server** (choose its folder: Nexum detects the game).
 2. **Installation** (new server only): install SteamCMD, then the server.
 3. **Configuration**: server name, password, world settings. Save before moving on.
 4. **Firewall**: apply the Windows firewall rules.
@@ -91,9 +91,10 @@ Before starting the server for the first time:
 If a dedicated server is already installed on your machine (installed by hand, with SteamCMD, or with another tool), you don't need to reinstall it:
 
 - Go to **Servers** and click **Add server**
-- Click the folder icon and pick the server folder (the one containing `PalServer.exe`, `valheim_server.exe`, `AstroServer.exe` or `RSDragonwildsServer.exe`)
+- Click the folder icon and pick the server folder (the one containing `PalServer.exe`, `valheim_server.exe`, `AstroServer.exe`, `RSDragonwildsServer.exe` or `enshrouded_server.exe`)
 - The game is detected automatically, and a hint under the path confirms that the server executable was found (or warns if it wasn't — check the folder or the game)
 - Palworld, Astroneer and Dragonwilds: your existing `.ini` settings are read as they are (Dragonwilds: see [its page](dragonwilds.md) for the Player ID and worlds)
+- Enshrouded: `enshrouded_server.json` is read as it is, groups and passwords included (see [its page](enshrouded.md))
 - Valheim: existing worlds are detected. If there is only one, it is selected automatically; otherwise pick it from the suggestions in the **World name** field of **Configuration** — the name must match exactly, or Valheim creates a new empty world
 
 ## Starting automatically

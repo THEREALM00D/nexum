@@ -11,6 +11,10 @@ export interface FieldDef {
   options?: SelectOption[];
   /** Champ sans lequel le serveur ne démarre pas : astérisque + erreur si vide. */
   required?: boolean;
+  /** Bornes d'un champ nombre (flèches du champ, pas de blocage de la saisie). */
+  min?: number;
+  max?: number;
+  step?: number;
 }
 
 export interface FieldGroup {

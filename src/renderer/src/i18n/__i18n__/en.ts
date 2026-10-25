@@ -102,6 +102,15 @@ export default {
       "{{url}} answered with an error (HTTP {{status}}). Check that this address is Odin-Eye's.",
     ODIN_EYE_NO_ENDPOINT:
       "Something answers at {{url}}, but it's not the Odin-Eye players API. Check the port, and that the plugin is up to date.",
+    ENSHROUDED_CONFIG_INVALID:
+      "enshrouded_server.json can't be read ({{detail}}): the server wouldn't start. Fix it, or delete it so the server creates a new one on its next start (a .backup copy is kept next to it).",
+    ENSHROUDED_GROUP_INVALID:
+      "Every group needs a name, and two groups can't share the same one.",
+    ENSHROUDED_SLOTS_INVALID:
+      "Invalid number of slots: between 1 and {{max}} players, and the groups' reserved slots can't add up to more than that.",
+  },
+  gameRequirements: {
+    hint: "{{game}} needs a solid PC: about {{ram}} GB of RAM for the server alone and {{disk}} GB of free disk space.",
   },
   installDir: {
     warning:

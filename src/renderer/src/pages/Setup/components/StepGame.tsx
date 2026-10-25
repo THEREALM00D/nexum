@@ -13,6 +13,7 @@ import { GAMES } from "../../../games/registry";
 import { useExeDetection } from "../../Servers/hooks/useExeDetection";
 import ExeStatusHint from "../../Servers/components/ExeStatusHint";
 import InstallDirWarning from "../../../components/common/InstallDirWarning";
+import GameRequirementsHint from "../../../components/common/GameRequirementsHint";
 import { DEFAULT_INSTALL_PATHS } from "../../Install/hooks/useInstall";
 
 export interface SetupChoice {
@@ -76,6 +77,8 @@ export default function StepGame({
           exclusive
           value={value.gameType}
           onChange={(_, g) => g && setGame(g)}
+          // 5 jeux : passe à la ligne dans une fenêtre étroite
+          sx={{ flexWrap: "wrap" }}
         >
           {GAMES.map((g) => (
             <ToggleButton key={g.id} value={g.id} sx={{ px: 3 }}>
@@ -145,6 +148,9 @@ export default function StepGame({
         <ExeStatusHint status={exeStatus} gameType={value.gameType} />
       )}
       <InstallDirWarning path={value.path} />
+      {value.mode === "new" && (
+        <GameRequirementsHint gameType={value.gameType} />
+      )}
     </Stack>
   );
 }

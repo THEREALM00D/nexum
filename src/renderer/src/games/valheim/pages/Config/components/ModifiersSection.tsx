@@ -1,7 +1,7 @@
 import { Button, ButtonGroup, Stack, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import type { ValheimLaunchConfig, ValheimModifiers } from "@shared/types";
-import Section from "./Section";
+import Section from "../../../../../components/common/Section";
 import ModifierSelect from "./ModifierSelect";
 import { MODIFIER_PRESET_NAMES } from "../presets";
 

@@ -2,7 +2,7 @@ import { spawn, ChildProcess, exec } from "child_process";
 import { join } from "path";
 import { existsSync } from "fs";
 import { PalworldApiClient } from "../games/palworld/PalworldApiClient";
-import { sendCtrlC } from "./windowsCtrlC";
+import { sendConsoleSignal, type ConsoleSignal } from "./windowsCtrlC";
 import { LogFileTailer } from "../logs/LogFileTailer";
 import type { LaunchSpec } from "../games/registry";
 import type { ServerStatus } from "../../shared/types";
@@ -18,10 +18,11 @@ export interface StopConfig {
   shutdownMessage?: string;
   /**
    * Pas d'API REST pour ce jeu, mais un arrêt propre reste possible via un
-   * signal CTRL+C émulé (recommandé par le manuel officiel Valheim) plutôt
-   * qu'un taskkill direct, qui risque de corrompre la sauvegarde en cours.
+   * signal de console émulé (CTRL+C pour Valheim, recommandé par son manuel
+   * officiel ; CTRL+Pause pour Enshrouded) plutôt qu'un taskkill direct, qui
+   * risque de corrompre la sauvegarde en cours.
    */
-  gracefulSignal?: boolean;
+  gracefulSignal?: ConsoleSignal;
 }
 
 // Délai accordé au process pour sauvegarder et quitter après un CTRL+C émulé
@@ -406,8 +407,8 @@ export class ServerManager {
     }
 
     if (cfg?.gracefulSignal && process.platform === "win32") {
-      this.onLog(managerLine(lt().ctrlC));
-      await sendCtrlC(pid);
+      this.onLog(managerLine(lt().gracefulSignal(cfg.gracefulSignal)));
+      await sendConsoleSignal(pid, cfg.gracefulSignal);
       await waitForExit(GRACEFUL_SIGNAL_TIMEOUT_MS);
       return finalize();
     }

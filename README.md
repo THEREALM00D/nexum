@@ -7,7 +7,7 @@
 
 🇬🇧 English | 🇫🇷 [Français](README.fr.md)
 
-Free, open-source Windows app to run **Valheim**, **Palworld**, **Astroneer** and **RuneScape: Dragonwilds** dedicated servers without the command line, with built-in **Valheim mod management** (Thunderstore + Hexium).
+Free, open-source Windows app to run **Valheim**, **Palworld**, **Astroneer**, **RuneScape: Dragonwilds** and **Enshrouded** dedicated servers without the command line, with built-in **Valheim mod management** (Thunderstore + Hexium).
 
 ![Platform](https://img.shields.io/badge/platform-Windows-blue)
 ![License](https://img.shields.io/badge/license-GPL--3.0-blue)
@@ -19,7 +19,7 @@ Free, open-source Windows app to run **Valheim**, **Palworld**, **Astroneer** an
 
 ## Features
 
-- **Multiple servers, multiple games**: Palworld, Valheim, Astroneer and RuneScape: Dragonwilds from one app, no command line, with port conflicts detected before startup
+- **Multiple servers, multiple games**: Palworld, Valheim, Astroneer, RuneScape: Dragonwilds and Enshrouded from one app, no command line, with port conflicts detected before startup
 - **Automatic install** of SteamCMD and the game server, or **import a server that is already installed** (game and worlds detected automatically)
 - **Start / stop / restart** with clean shutdown (Palworld REST API, Valheim CTRL+C) so saves don't get corrupted, and automatic restart after a crash
 - **Real-time monitoring**: CPU, RAM, uptime, online players, server console
@@ -87,6 +87,7 @@ See [docs/installation.md](docs/installation.md) for the full guide.
 - [Valheim player tracking (Odin-Eye)](docs/valheim-players.md)
 - [Valheim mods](docs/valheim-mods.md)
 - [RuneScape: Dragonwilds](docs/dragonwilds.md)
+- [Enshrouded](docs/enshrouded.md)
 - [Code signing policy and privacy](docs/code-signing.md)
 - [Technical architecture](CLAUDE.md)
 

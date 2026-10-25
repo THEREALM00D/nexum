@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Nexum
 
-Gestionnaire de serveurs dédiés de jeux vidéo. Supporte Palworld, Valheim, Astroneer et RuneScape: Dragonwilds.
+Gestionnaire de serveurs dédiés de jeux vidéo. Supporte Palworld, Valheim, Astroneer, RuneScape: Dragonwilds et Enshrouded.
 
 ## Stack
 
@@ -65,6 +65,9 @@ src/
 │   │   ├── dragonwilds/   # Code Dragonwilds : dedicatedServerIni, saveHeader,
 │   │   │   ├── handlers/  #   worlds (mondes / import), startChecks, serverConfig
 │   │   │   └── ...
+│   │   ├── enshrouded/    # Code Enshrouded : serverJson (JSON, groupes),
+│   │   │   ├── handlers/  #   defaults, startChecks, serverConfig
+│   │   │   └── ...
 │   │   ├── ports.ts       # GamePort + formatPortRange (conflits, carte Rejoindre)
 │   │   └── registry.ts    # Record<GameType, …> : getLaunchSpec, getGamePorts,
 │   │                      #   getGameSavePath, getGameStopConfig, GAME_TYPES
@@ -87,12 +90,14 @@ src/
     │                      #   les strings sont chargées depuis games/*/index.ts
     ├── hooks/             # useServerControls (partagé entre jeux)
     ├── components/
-    │   ├── common/        # Petits composants génériques (SearchField)
+    │   ├── common/        # Petits composants génériques (SearchField, Section,
+    │   │                  #   GameRequirementsHint, FormPage, LoadingSkeleton…)
     │   ├── config/        # ConfigPage data-driven (Palworld, Astroneer, Dragonwilds)
     │   ├── backup/        # BackupPage (tous les jeux), BackupConfig, BackupList
     │   ├── schedule/      # RestartSchedulePage (jeux sans API : Valheim, Astroneer, Dragonwilds)
     │   ├── firewall/      # AdminBanner, StandardRules, CustomRules, RuleStatus
-    │   ├── server/        # ServerControls, StatsGrid, Logs (page partagée par tous les jeux)
+    │   ├── server/        # ServerControls, StatsGrid, Logs (page partagée par tous les jeux),
+    │   │                  #   SimpleDashboard (Dashboard d'Astroneer, Dragonwilds, Enshrouded)
     │   ├── players/       # Page « Joueurs » complète (Palworld + Valheim)
     │   ├── Sidebar/       # Sidebar + ServerSwitcher
     │   └── Titlebar/
@@ -108,8 +113,11 @@ src/
     │   ├── astroneer/
     │   │   ├── index.ts   # Manifest Astroneer (pas de page "mods" ni "players")
     │   │   └── pages/<Page>/
-    │   └── dragonwilds/
-    │       ├── index.ts   # Manifest Dragonwilds (pas de page "mods" ni "players")
+    │   ├── dragonwilds/
+    │   │   ├── index.ts   # Manifest Dragonwilds (pas de page "mods" ni "players")
+    │   │   └── pages/<Page>/
+    │   └── enshrouded/
+    │       ├── index.ts   # Manifest Enshrouded (pas de page "mods" ni "players")
     │       └── pages/<Page>/
     └── pages/, services/  # Pages globales (Install, Servers) + services partagés
                            #   (steamService : installation SteamCMD de tous les jeux)
@@ -163,9 +171,9 @@ Les services du main (`ServerManager`, `BackupManager`, etc.) sont instanciés *
 
 Chaque jeu expose un manifest typé dans `games/<jeu>/index.ts`. Le shell consomme la liste via le registry — **App.tsx, Sidebar.tsx et i18n/index.ts ne contiennent aucun nom de jeu en dur**.
 
-**Pour ajouter un jeu** (dernier en date : Dragonwilds, à prendre comme modèle) :
+**Pour ajouter un jeu** — **Valheim est le modèle principal** (le jeu le plus testé par le propriétaire) ; reprendre les autres jeux seulement pour ce que Valheim n'a pas. Dernier ajouté : Enshrouded (page Config façon Valheim, config JSON, arrêt CTRL+Pause) :
 
-1. **Tester un vrai serveur d'abord** (SteamCMD dans un dossier de test, Nexum lancé avec `NEXUM_USER_DATA_DIR`) : nom réel de l'exe et du processus enfant, ce qui arrive sur stdout, arrêt propre ou non (CTRL+C ?), qui réécrit la config et quand, où vont les sauvegardes. Les guides officiels se trompent souvent (Dragonwilds : 5 erreurs, voir « Config INI Dragonwilds »).
+1. **Tester un vrai serveur d'abord** (SteamCMD dans un dossier de test, Nexum lancé avec `NEXUM_USER_DATA_DIR`) : nom réel de l'exe et du processus enfant, ce qui arrive sur stdout, arrêt propre ou non (CTRL+C ? CTRL+Pause ? tester dans une console **séparée**, voir « Enshrouded »), ports réellement ouverts (`Get-NetUDPEndpoint -OwningProcess`), qui réécrit la config et quand, où vont les sauvegardes. Les guides officiels se trompent souvent (Dragonwilds : 5 erreurs, voir « Config INI Dragonwilds »).
 2. `src/shared/types.ts` : ajouter le jeu à `GameType`, sa config de lancement à `ServerConfig` (+ types qui traversent IPC). Puis **`yarn typecheck`** : il liste tous les `Record<GameType, …>` à compléter — `GAME_SERVER_CONFIGS` et les dispatchs de `main/games/registry.ts` (args, sauvegardes, arrêt, ports), `STEAM_APP_IDS` (`SteamCMD.ts`), `PROCESS_NAME_PREFIXES` (`ServerManagerRegistry.ts`, préfixe propre au SERVEUR, pas au client du jeu), `DEFAULT_INSTALL_PATHS` (`useInstall.ts`).
 3. `src/main/games/<jeu>/` : `serverConfig.ts` (`exeName`, `buildArgs`, `getSavePath`, `getStopConfig`, `getPorts`, `env?`, `getLogFilePath?`), parser de config, `handlers/`. Préparation avant chaque démarrage (validations, fichiers à réécrire) → `PREPARE` dans `registry.ts` (`LaunchSpec.prepare`), pas dans `startServer`.
 4. `ServerConfigStore.ts` : valeurs par défaut + fusion dans `get` / `update` / `migrateLegacy`. `ipc/context.ts` + `ipc/handlers.ts` : accesseurs `get/update<Jeu>Config`, enregistrement des handlers.
@@ -191,9 +199,11 @@ App.tsx, Sidebar, i18n/index.ts, l'assistant de démarrage, le dialogue d'ajout 
 
 ### Adoption d'un processus existant
 
-Au démarrage, `ServerManagerRegistry.tryAdoptAll()` lit la liste des processus (un seul `si.processes()`) et associe à chaque serveur **son** processus via `findServerProcess` (`main/servers/processMatch.ts`) : nom commençant par le préfixe du jeu (`PROCESS_NAME_PREFIXES` : `palserver`, `valheim_server`, `astroserver`, `rsdragonwildsserver`) **et** exécutable dans le dossier du serveur (séparateur final compris : `E:\RSDW` ≠ `E:\RSDW2`), processus racine préféré (lanceur plutôt que `…-Shipping.exe`). Chemin illisible (processus lancé en admin) : accepté seulement s'il n'y a qu'un serveur de ce jeu. Puis `ServerManager.adopt(pid, onLog, logFile?)`. ⚠️ Avant, `tryAdopt` refaisait le scan sur le **nom seul** : il pouvait adopter le client du jeu (Dragonwilds : client `RSDragonwilds*.exe`) ou le serveur d'un autre dossier. Si trouvé, le statut passe à `running` et on peut stop/restart via l'API REST (Palworld) + `taskkill`. **Les logs stdout/stderr ne sont pas récupérables** pour un processus adopté (le pipe appartenait à l'ancien parent), sauf pour les jeux dont Nexum suit le fichier de log (Dragonwilds, `LogFileTailer`).
+Au démarrage, `ServerManagerRegistry.tryAdoptAll()` lit la liste des processus (un seul `si.processes()`) et associe à chaque serveur **son** processus via `findServerProcess` (`main/servers/processMatch.ts`) : nom commençant par le préfixe du jeu (`PROCESS_NAME_PREFIXES` : `palserver`, `valheim_server`, `astroserver`, `rsdragonwildsserver`) **et** exécutable dans le dossier du serveur (séparateur final compris : `E:\RSDW` ≠ `E:\RSDW2`), processus racine préféré (lanceur plutôt que `…-Shipping.exe`). Chemin illisible (processus lancé en admin) : accepté seulement s'il n'y a qu'un serveur de ce jeu. Puis `ServerManager.adopt(pid, onLog, logFile?)`. Préfixe Enshrouded : `enshrouded_server` (client : `enshrouded.exe`). ⚠️ Avant, `tryAdopt` refaisait le scan sur le **nom seul** : il pouvait adopter le client du jeu (Dragonwilds : client `RSDragonwilds*.exe`) ou le serveur d'un autre dossier. Si trouvé, le statut passe à `running` et on peut stop/restart via l'API REST (Palworld) + `taskkill`. **Les logs stdout/stderr ne sont pas récupérables** pour un processus adopté (le pipe appartenait à l'ancien parent), sauf pour les jeux dont Nexum suit le fichier de log (Dragonwilds, `LogFileTailer`).
 
 Quand Nexum se ferme, le lanceur de Dragonwilds (`RSDragonwildsServer.exe`) meurt avec ses pipes mais `RSDragonwildsServer-Win64-Shipping.exe` continue : c'est lui qui est adopté au lancement suivant (même préfixe, même dossier). En dev, il hérite aussi du socket du port de débogage d'Electron (`--remoteDebuggingPort`) : relancer sur un autre port.
+
+⚠️ À l'inverse, un serveur à **processus unique** lancé par Nexum (Enshrouded vérifié, Valheim a priori) **meurt avec Nexum**, sans sauvegarde : libuv place les processus lancés par `spawn` dans un job Windows fermé avec le parent (les processus qu'_ils_ lancent en sortent, d'où le `…-Shipping.exe` de Dragonwilds qui survit). L'adoption ne concerne donc que les serveurs lancés hors de Nexum (ou par une ancienne version). Nexum n'arrête pas les serveurs proprement en quittant (piste BACKLOG).
 
 ### Monitoring système (StatsGrid) et coût de `systeminformation`
 
@@ -225,7 +235,7 @@ Quand Nexum se ferme, le lanceur de Dragonwilds (`RSDragonwildsServer.exe`) meur
 
 ### Carte « Rejoindre le serveur » (Dashboard des 3 jeux)
 
-- `components/server/JoinServerCard.tsx` + `main/server/joinInfo.ts` (IPC `server:getJoinInfo`, `server:getPublicIp`) : IP locale + port de jeu et ports UDP à rediriger, tirés de `getGamePorts` (ports `forward: true` uniquement, jamais RCON/REST ; `formatPortRange` → `2456-2458` ou `7777, 8888`), code crossplay Valheim lu dans les logs (`join code X`), **nom du monde à chercher** pour Dragonwilds (`JoinInfo.searchName` = `DefaultWorldName`, les joueurs cherchent le monde par son nom dans la liste du jeu).
+- `components/server/JoinServerCard.tsx` + `main/server/joinInfo.ts` (IPC `server:getJoinInfo`, `server:getPublicIp`) : IP locale + port de jeu et ports UDP à rediriger, tirés de `getGamePorts` (ports `forward: true` uniquement, jamais RCON/REST ; `formatPortRange` → `2456-2458` ou `7777, 8888`), code crossplay Valheim lu dans les logs (`join code X`), **nom à chercher dans le jeu** (`JoinInfo.searchName`, `getGameSearchName` / `SEARCH_NAMES` dans `main/games/registry.ts`) : Dragonwilds = `DefaultWorldName` (monde cherché par son nom), Enshrouded = `name` du JSON (liste des serveurs dédiés). Libellé neutre (« Nom à chercher dans le jeu »), commun aux deux.
 - **IP publique : uniquement au clic** (« Afficher mon IP publique » → `api.ipify.org`, cache 10 min). Service tiers déclaré dans `docs/code-signing*.md` — ne jamais l'appeler automatiquement.
 - `localIpv4()` classe les cartes réseau au lieu d'exclure par nom : ⚠️ un commutateur Hyper-V **externe** s'appelle « vEthernet (…) » et porte la vraie IP du PC sur la box (cas du propriétaire) ; seuls « Default Switch », WSL, VirtualBox, VMware, VPN… sont pénalisés. Préférence 192.168.x.x > 10.x > 172.16-31.
 
@@ -334,7 +344,7 @@ Quand Nexum se ferme, le lanceur de Dragonwilds (`RSDragonwildsServer.exe`) meur
 
 ### Page de config partagée (`components/config/`)
 
-- `ConfigPage` (Palworld, Astroneer, Dragonwilds) : groupes de champs data-driven, recherche, presets (`onFieldChange`). Options : `lockWhileRunning` (alerte + bouton Enregistrer désactivé tant que le serveur n'est ni `stopped` ni `crashed`, relecture du fichier à l'arrêt si rien n'est en cours de saisie — `useConfigLoad`), `notice` (bloc d'info du jeu). `FieldDef.required` : astérisque + erreur si vide.
+- `ConfigPage` (Palworld, Astroneer, Dragonwilds ; Enshrouded n'utilise que `ConfigGroup` / `ConfigField` / `useConfigLoad`, voir sa section) : groupes de champs data-driven, recherche, presets (`onFieldChange`). Options : `lockWhileRunning` (alerte + bouton Enregistrer désactivé tant que le serveur n'est ni `stopped` ni `crashed`, relecture du fichier à l'arrêt si rien n'est en cours de saisie — `useConfigLoad`), `notice` (bloc d'info du jeu). `FieldDef.required` : astérisque + erreur si vide ; `min` / `max` / `step` : bornes d'un champ nombre (flèches du champ, la saisie n'est pas bloquée). `useConfigLoad<T>` est générique (réglages typés d'Enshrouded).
 - Textes partagés de la page : clés `config.*` (dans les fichiers Palworld, historique) et `configPage.*` (`components/config/__i18n__`, importé par les manifests d'Astroneer et Dragonwilds).
 
 ## RuneScape: Dragonwilds
@@ -351,6 +361,23 @@ Quand Nexum se ferme, le lanceur de Dragonwilds (`RSDragonwildsServer.exe`) meur
 - **Rejoindre** : recherche du nom du monde dans « Mondes → Public » (sensible à la casse) ou connexion directe `IP:port` (vérifié depuis un autre PC du réseau). Version du serveur = version du client, sinon le monde n'apparaît pas (`checkGameUpdateOnStart` prévient).
 - Pas d'API ni de RCON, pas de mods serveur : ni page Joueurs ni page Mods. 6 joueurs maximum.
 - Fichiers : `main/games/dragonwilds/` (`serverConfig`, `dedicatedServerIni`, `saveHeader`, `worlds`, `startChecks`, `handlers/config` = vue fusionnée INI + `dragonwildsConfig` pour `ConfigPage`, `handlers/worlds`) ; renderer `games/dragonwilds/`. Pare-feu : règles `Dragonwilds Server - Game (<port>)` / `Beacon (<port>)`, le port dans le nom car `checkRule` ne vérifie que le nom (plusieurs serveurs sur le même PC).
+
+## Enshrouded
+
+> Tout ce qui suit a été **vérifié sur une vraie install** (SteamCMD 2278520 en `anonymous`, serveur 1.0.0.0 / build 26083076, octobre 2026), **sans** connexion d'un joueur (test en jeu des groupes : BACKLOG).
+
+- **Exécutable** : `enshrouded_server.exe` à la racine, **un seul processus** (pas de lanceur), sa propre console. Client du jeu : `enshrouded.exe` → préfixe `enshrouded_server`. Install SteamCMD : 7,6 Go (la FAQ dit 13). Démarrage en ~2 s (`[Session] 'HostOnline' (up)!`), monde chargé ~12 s.
+- **Config** : `enshrouded_server.json` à côté de l'exe, créé au 1er lancement et **réécrit à chaque démarrage** (pas pendant l'exécution ni à l'arrêt) → `lockWhileRunning` côté UI + refus `CONFIG_LOCKED` côté main. Format : UTF-8 sans BOM, **LF**, **tabulations**, flottants écrits `0.500000`. Clés de 1er niveau : `name`, `saveDirectory`, `logDirectory`, `ip`, `queryPort`, `slotCount` (1-16), `tags` (non géré), `voiceChatMode`, `enableVoiceChat`, `enableTextChat`, `gameSettingsPreset`, `gameSettings`, `userGroups`, `bannedAccounts` (⚠️ la doc dit `bans` ; non géré). Plus de clé `password` depuis l'update 2 (un ancien `password` crée un groupe `default`).
+- **Lecture / écriture** (`main/games/enshrouded/serverJson.ts`, valeurs par défaut dans `defaults.ts`) : on patche **l'objet lu** (clés inconnues et ordre gardés), indentation détectée, `readIniText` / `writeIniText` réutilisés pour l'encodage et les fins de ligne, `.backup` avant écriture. Diff après un enregistrement : seulement les valeurs modifiées, plus `"tags": []` / `0.5` (sans effet, relu par le serveur). JSON illisible → `AppError("ENSHROUDED_CONFIG_INVALID")` à la lecture, et refus de démarrer via `PREPARE` (`startChecks.ts`).
+- **gameSettings** : lus **seulement** si `gameSettingsPreset = "Custom"` (le log écrit `[server] Game Settings 'Custom'` suivi des valeurs lues). 38 clés en 1.0.0.0 (`flameLevelFogRemoval` 0-20 et `randomSpawnerAmount: "Automatic"` ajoutés depuis la doc Zendesk : le **readme livré** `enshrouded_server_readme.txt` est plus à jour). `dayTimeDuration`, `nightTimeDuration`, `fromHungerToStarving` en **nanosecondes** dans le fichier, en minutes dans Nexum (conversion dans le main, `DURATION_KEYS`). Hors bornes : ramené à la limite par le serveur ; texte invalide : le serveur ne démarre pas → listes pour les énumérations.
+- **userGroups** : `name`, `password`, `canKickBan`, `canAccessInventories`, `canEditWorld`, `canEditBase`, `canExtendBase`, `reservedSlots`. 4 groupes créés avec des mots de passe aléatoires (Admin, Friend, Guest, Visitor). Écriture : champs inconnus repris du groupe de **même nom** (un groupe renommé les perd). Validation main : noms non vides et uniques (`ENSHROUDED_GROUP_INVALID`), somme des places réservées ≤ `slotCount` (`ENSHROUDED_SLOTS_INVALID`). Groupe sans mot de passe = ouvert à tous avec ses droits → avertissement sur le Dashboard.
+- **UI Config** (structure de la page Valheim) : `GeneralSection`, `NetworkSection`, `DifficultySection` (`ButtonGroup` des presets, comme `ModifiersSection`), `GameSettingsSection` (liste `gameSettingsFields.ts` rendue par `ConfigGroup` + `ConfigField` partagés, bornes `FieldDef.min/max`), `AdvancedSection`, puis `UserGroupsSection` / `UserGroupRow` avec son propre Enregistrer (comme `AdministrationSection`). Modifier un réglage fin passe le preset en `Custom` (`handleSettingChange`). Hooks `useEnshroudedConfig` / `useEnshroudedGroups` sur `useConfigLoad` (verrou + relecture à l'arrêt). `Section` a été déplacée de Valheim vers `components/common/`.
+- **Ports** : seul port fixe **15637 UDP** (`queryPort`) ; le reste est éphémère (vérifié avec `Get-NetUDPEndpoint` / `Get-NetTCPConnection` filtrés sur le PID). Règle de pare-feu `Enshrouded Server - Query (<port>)` (port dans le nom).
+- **Arrêt** : ⚠️ **CTRL+C ignoré**, `taskkill` sans `/F` refusé, **CTRL+Pause = arrêt propre** (« Trigger gameflow shutdown, exit: Ctrl_Break », monde sauvegardé, code 0, < 2 s) → `gracefulSignal: "ctrlBreak"`, vérifié aussi sur un processus **adopté**. Piège de test : un lanceur qui partage la console du serveur reçoit le signal aussi (CTRL+Pause a tué mon script Node) — tester depuis une console séparée (`Start-Process`), comme Electron qui n'a pas de console.
+- **Sauvegardes** : `savegame/world0.ksd` + `savegame/backup/world0.ksd.backup-N` (copies tournantes du jeu, plusieurs dans les premières minutes ; la FAQ annonce une sauvegarde toutes les 5 min). `getSavePath` résout `saveDirectory` depuis `serverPath` (absolu accepté).
+- **Logs** : stdout **complet** (identique à `logs/enshrouded_server.log`, renouvelé à chaque démarrage, l'ancien va dans `logs/backup/`) → pas de `LaunchSpec.logFile`. Contient l'IP publique (`Public ipv4:`, masquée) et `Server SteamId: <n>` (masqué à l'export, `SERVER_STEAM_ID` dans `redactLog.ts`). Aucun mot de passe au démarrage ; lignes de connexion des joueurs non vues (pas de test en jeu).
+- **Rejoindre** : liste du jeu (filtre serveurs dédiés) par le `name`, ou favori Steam `IP:queryPort`. `JoinInfo.searchName` = `name`.
+- Pas d'API ni de RCON, pas de mods serveur : ni page Joueurs ni page Mods. 16 joueurs maximum. RAM : ~4,4 Go au repos (+100 Mo/joueur), 30 Go de disque conseillés → `GamePlugin.requirements` (`{ ramGb: 6, diskGb: 30 }`), affiché par `components/common/GameRequirementsHint` dans l'assistant (nouvelle install) et la page Installation.
 
 ## Mods Valheim (Thunderstore + Hexium)
 
@@ -383,6 +410,7 @@ Quand Nexum se ferme, le lanceur de Dragonwilds (`RSDragonwildsServer.exe`) meur
 - **Palworld** : config `launchArgs: { publicLobby, performanceFlags, customArgs }` (type `LaunchArgsConfig`). `buildArgs` dans `src/main/games/palworld/serverConfig.ts`.
 - **Valheim** : config `valheimConfig: ValheimLaunchConfig`. `buildArgs` dans `src/main/games/valheim/serverConfig.ts`.
 - **Astroneer** : config `astroneerConfig: { customArgs }` (type `AstroneerLaunchConfig`) — Astroneer ne prend quasi aucun argument CLI, toute la config passe par les fichiers `.ini` (voir « Config INI Astroneer »). `buildArgs` dans `src/main/games/astroneer/serverConfig.ts`.
+- **Enshrouded** : config `enshroudedConfig: { customArgs }` (type `EnshroudedLaunchConfig`) — aucun argument documenté (« Cmd-Parameters: » vide dans le log), tout est dans `enshrouded_server.json`.
 - **Dragonwilds** : config `dragonwildsConfig: { port, beaconPort, adminPassword, customArgs }` (type `DragonwildsLaunchConfig`) → `-Port=… -BeaconPort=…` + `customArgs`. Édités dans la page Config avec l'INI (vue fusionnée), voir « RuneScape: Dragonwilds ».
 - **Installation / mise à jour SteamCMD** : un seul IPC pour tous les jeux, `steamcmd:installGame(gameType, path)` / `steamcmd:updateGame()` (serveur actif), `SteamCMD.installGame` → `STEAM_APP_IDS[gameType]`. Côté renderer, `services/steamService.ts`. Avant : un canal par jeu et des ternaires qui retombaient sans bruit sur Palworld.
 - IPC : `server:getLaunchArgs` / `server:setLaunchArgs`. UI : section « Arguments de lancement » dans Installation (Palworld uniquement — Valheim/Astroneer/Dragonwilds n'affichent pas cette section, leur config passe par leur page Config dédiée).
@@ -390,7 +418,7 @@ Quand Nexum se ferme, le lanceur de Dragonwilds (`RSDragonwildsServer.exe`) meur
 
 ## Sauvegardes
 
-- Dossier zippé : `{serverPath}/Pal/Saved/SaveGames/` (Palworld), `{serverPath}/Astro/Saved/SaveGames/` (Astroneer) ou `{serverPath}/RSDragonwilds/Saved/SaveGames/` (Dragonwilds), résolu par `getGameSavePath` (`main/games/registry.ts`). Valheim utilise un chemin hors `serverPath` (`%LOCALAPPDATA_LOW%/IronGate/Valheim/worlds_local` ou `savedir` custom).
+- Dossier zippé : `{serverPath}/Pal/Saved/SaveGames/` (Palworld), `{serverPath}/Astro/Saved/SaveGames/` (Astroneer) `{serverPath}/RSDragonwilds/Saved/SaveGames/` (Dragonwilds) ou `saveDirectory` du JSON résolu depuis `serverPath` (Enshrouded, `./savegame` par défaut), résolu par `getGameSavePath` (`main/games/registry.ts`). Valheim utilise un chemin hors `serverPath` (`%LOCALAPPDATA_LOW%/IronGate/Valheim/worlds_local` ou `savedir` custom).
 - Page partagée `components/backup/BackupPage` (bouton optionnel « ouvrir le dossier des mondes », `renderExtra(refresh)` pour un bloc du jeu : carte Mondes de Dragonwilds).
 - Format : ZIP niveau 9, nom `backup-YYYY-MM-DD_HH-MM-SS.zip` (`…-before-update.zip` avant une mise à jour)
 - Dossier cible : configurable (défaut `{userData}/backups`), `ctx.getBackupDir(serverId?)`
@@ -407,7 +435,7 @@ Quand Nexum se ferme, le lanceur de Dragonwilds (`RSDragonwildsServer.exe`) meur
 - Flow (Palworld) : annonce (via `/v1/api/announce`) → attente `warningMinutes` → save → shutdown API
 - Scheduler vérifie toutes les 30 secondes
 - Le déclenchement passe par `restartServer` (`main/server/startServer.ts`) avec la config d'arrêt du redémarrage planifié (annonce + délai) : même chemin que le bouton Redémarrer. Page partagée `components/schedule/RestartSchedulePage` pour **tous** les jeux (`infoKey` = texte d'info, `notice` = bloc du jeu : Palworld y met l'avertissement « Activer l'API REST »).
-- **Requiert l'API REST activée** (Palworld) — sinon l'arrêt est brutal (`taskkill`) sans save. Astroneer et Dragonwilds n'ont pas de flow gracieux dans Nexum (`getStopConfig()` renvoie `restApiEnabled: false` → `taskkill` systématique ; Dragonwilds ne sait pas s'arrêter proprement sous Windows, voir sa section). **Valheim** n'a pas d'API REST mais a son propre mécanisme : `getStopConfig()` renvoie `gracefulSignal: true`, et `ServerManager.stop()` envoie un vrai CTRL+C (`windowsCtrlC.ts`, via `AttachConsole`/`GenerateConsoleCtrlEvent`) avant de retomber sur `taskkill` en dernier recours (timeout 30s) — recommandé par le manuel officiel pour éviter une sauvegarde corrompue.
+- **Requiert l'API REST activée** (Palworld) — sinon l'arrêt est brutal (`taskkill`) sans save. Astroneer et Dragonwilds n'ont pas de flow gracieux dans Nexum (`getStopConfig()` renvoie `restApiEnabled: false` → `taskkill` systématique ; Dragonwilds ne sait pas s'arrêter proprement sous Windows, voir sa section). **Valheim** n'a pas d'API REST mais a son propre mécanisme : `getStopConfig()` renvoie `gracefulSignal: "ctrlC"`, et `ServerManager.stop()` envoie un vrai CTRL+C (`sendConsoleSignal`, `windowsCtrlC.ts`, via `AttachConsole`/`GenerateConsoleCtrlEvent`). **Enshrouded** : `gracefulSignal: "ctrlBreak"` (ignore CTRL+C, s'arrête proprement sur CTRL+Pause) avant de retomber sur `taskkill` en dernier recours (timeout 30s) — recommandé par le manuel officiel pour éviter une sauvegarde corrompue.
 - **Détection de fin d'arrêt** (`ServerManager.stop`) : pour un processus lancé par Nexum, la fin est lue sur le `ChildProcess` lui-même (`close` / `exitCode`), **jamais** via `si.processes()` — cette liste peut échouer ou être en retard (appels concurrents du monitoring) et `isPidAlive` répond alors « vivant », ce qui déclenchait un `taskkill /F /T` sur un serveur déjà fermé proprement (log « Server exited with code 0 » suivi de « Le processus ne répond pas »), au risque de tuer un autre programme si Windows a réattribué le PID. La vérification par PID (`ensureStopped`, `waitForPidExit`, via `pidExists` = `process.kill(pid, 0)`, plus `si.processes()`) ne sert que pour les processus **adoptés**.
 
 ## Historique des joueurs
@@ -418,7 +446,7 @@ Quand Nexum se ferme, le lanceur de Dragonwilds (`RSDragonwildsServer.exe`) meur
   - `PlayerCountCard` (Dashboard Valheim) s'affiche dès que le serveur tourne, **crossplay ou non**. Compteur (`useValheimPlayerCount`) : Odin-Eye quand `odinEyeUrl` est renseigné et que le plugin répond (`useOdinEyeStatus`, interrogation directe toutes les 10 s via `valheim:testOdinEye`), sinon regex `now N player(s)` sur les logs — ⚠️ ces lignes viennent de la session PlayFab et **n'existent qu'avec `-crossplay`** : hors crossplay sans Odin-Eye, le compteur affiche « — ». Le code de connexion / IP ne sont **volontairement pas affichés** (uniquement dans les logs crossplay, Odin-Eye ne les expose pas : `/v1/serverInfo` = `maxNumberOfPlayers`/`gameVersion`/`steamAppId`).
   - **Diagnostic Odin-Eye** (signalé sur Discord : « ça ne marche pas » sans aucun indice) : le tracker avale ses erreurs, et le Dashboard affichait le même bandeau « nécessite Odin-Eye » que le plugin marche ou non. Désormais `OdinEyeApiClient` lève des `AppError` (`ODIN_EYE_NO_URL` / `INVALID_URL` / `UNREACHABLE` / `TIMEOUT` / `HTTP` / `NO_ENDPOINT`), `parseOdinEyeUrl` ajoute `http://` s'il manque (« 127.0.0.1:21618 » faisait échouer `new URL` en silence), IPC `valheim:testOdinEye(url?)` → nombre de joueurs. UI : bouton **Tester** (`OdinEyeTestButton`, teste la valeur du champ même non enregistrée) et bandeau `OdinEyeStatusAlert` du Dashboard (désactivé / attente du démarrage / connecté / injoignable + raison). Le plugin ne démarre qu'après le chargement du monde : pendant les 3 premières minutes du serveur et jusqu'au premier succès, un échec affiche « En attente d'Odin-Eye » (`waiting`, `BOOT_GRACE_MS`), pas d'erreur (avant : skeleton → « ne répond pas » → connecté à chaque démarrage, signalé). Le délai n'est pas accordé à un serveur lancé depuis plus longtemps (`stats.serverUptime`, Dashboard ouvert après coup). ⚠️ `localhost` se résout en `::1` d'abord ; le Node d'Electron 44 retombe sur IPv4 tout seul (vérifié), pas le Node 22 du système : tester le client sous `ELECTRON_RUN_AS_NODE=1 electron.exe`, pas `node`.
   - **Astroneer** : pas de source (MVP sans RCON, voir plus haut) — le tracker ne démarre jamais pour ce jeu.
-  - **Dragonwilds** : pas de source non plus (ni API ni RCON). Piste pour plus tard : les lignes de connexion du fichier de log (voir « RuneScape: Dragonwilds »).
+  - **Dragonwilds** et **Enshrouded** : pas de source non plus (ni API ni RCON). Piste pour plus tard : les lignes de connexion du fichier de log (voir « RuneScape: Dragonwilds »).
   - Le routage par jeu (`gameType` → bon client) est fait dans `getApiClientForServer` (`main/ipc/handlers.ts`).
 - Stockage : `{userData}/servers/<id>/players/history.json` — un fichier JSON par serveur avec tableau de `PlayerHistoryEntry` (cf. `shared/types.ts`).
 - Chaque entrée trace `firstSeen`, `lastSeen`, `lastIp`, `totalPlaytimeMs`, `sessionCount`, `online`, `currentSessionStart` et un tableau `sessions[]` (cap à 50, plus anciennes éjectées).

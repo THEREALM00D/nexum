@@ -76,6 +76,8 @@ Si l'API est désactivée, Nexum affiche un avertissement avec un bouton **Activ
 
 **RuneScape: Dragonwilds** n'a pas d'API et ne sait pas s'arrêter proprement sous Windows : le redémarrage l'arrête immédiatement, sans avertir les joueurs en jeu. Le serveur sauvegarde le monde de lui-même toutes les 5 minutes : au pire, les 5 dernières minutes sont perdues.
 
+**Enshrouded** n'a pas d'API non plus, donc pas d'avertissement en jeu, mais il s'arrête proprement : Nexum lui envoie CTRL+Pause, le serveur sauvegarde le monde puis redémarre.
+
 ## Cas d'usage
 
 ### Redémarrage de nuit (recommandé)

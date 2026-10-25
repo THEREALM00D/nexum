@@ -5,6 +5,10 @@ import { valheimServerConfig } from "./valheim/serverConfig";
 import { astroneerServerConfig } from "./astroneer/serverConfig";
 import { dragonwildsServerConfig } from "./dragonwilds/serverConfig";
 import { prepareDragonwildsStart } from "./dragonwilds/startChecks";
+import { enshroudedServerConfig } from "./enshrouded/serverConfig";
+import { prepareEnshroudedStart } from "./enshrouded/startChecks";
+import { readSettings as readEnshroudedSettings } from "./enshrouded/serverJson";
+import { readDedicatedServerIni } from "./dragonwilds/dedicatedServerIni";
 import type { PalConfigParser } from "./palworld/PalConfigParser";
 import type { AstroConfigParser } from "./astroneer/AstroConfigParser";
 import type { StopConfig } from "../server/ServerManager";
@@ -18,6 +22,7 @@ const GAME_SERVER_CONFIGS = {
   valheim: valheimServerConfig,
   astroneer: astroneerServerConfig,
   dragonwilds: dragonwildsServerConfig,
+  enshrouded: enshroudedServerConfig,
 } satisfies Record<GameType, { exeName: string }>;
 
 /** Jeux supportés, dans l'ordre de détection d'un dossier existant. */
@@ -45,6 +50,7 @@ const ARGS: Record<GameType, (cfg: ServerConfig) => string[]> = {
   astroneer: (cfg) => astroneerServerConfig.buildArgs(cfg.astroneerConfig),
   dragonwilds: (cfg) =>
     dragonwildsServerConfig.buildArgs(cfg.dragonwildsConfig),
+  enshrouded: (cfg) => enshroudedServerConfig.buildArgs(cfg.enshroudedConfig),
 };
 
 export function buildGameArgs(gameType: GameType, cfg: ServerConfig): string[] {
@@ -80,6 +86,7 @@ const PREPARE: Partial<
   Record<GameType, (serverPath: string, cfg: ServerConfig) => string | null>
 > = {
   dragonwilds: (p, cfg) => prepareDragonwildsStart(p, cfg.dragonwildsConfig),
+  enshrouded: (p) => prepareEnshroudedStart(p),
 };
 
 /**
@@ -110,6 +117,7 @@ const SAVE_PATHS: Record<
   valheim: (_, cfg) => valheimServerConfig.getSavePath(cfg.valheimConfig),
   astroneer: (p) => astroneerServerConfig.getSavePath(p),
   dragonwilds: (p) => dragonwildsServerConfig.getSavePath(p),
+  enshrouded: (p) => enshroudedServerConfig.getSavePath(p),
 };
 
 /** Dossier de sauvegarde source pour le backup. */
@@ -129,6 +137,7 @@ const STOP_CONFIGS: Record<
   valheim: () => valheimServerConfig.getStopConfig(),
   astroneer: () => astroneerServerConfig.getStopConfig(),
   dragonwilds: () => dragonwildsServerConfig.getStopConfig(),
+  enshrouded: () => enshroudedServerConfig.getStopConfig(),
 };
 
 export function getGameStopConfig(
@@ -152,6 +161,7 @@ const PORTS: Record<
   astroneer: (p, _, r) => astroneerServerConfig.getPorts(p, r.astroneer),
   dragonwilds: (_, cfg) =>
     dragonwildsServerConfig.getPorts(cfg.dragonwildsConfig),
+  enshrouded: (p) => enshroudedServerConfig.getPorts(p),
 };
 
 /** Ports ouverts par un serveur (conflits de ports, carte « Rejoindre »). */
@@ -162,4 +172,26 @@ export function getGamePorts(
   readers: GameConfigReaders,
 ): GamePort[] {
   return PORTS[gameType](serverPath, cfg, readers);
+}
+
+// Nom sous lequel les joueurs cherchent le serveur dans le jeu (carte
+// « Rejoindre ») : Dragonwilds, le monde dans « Mondes → Public » (sensible
+// à la casse) ; Enshrouded, le serveur dans la liste « dédiés ».
+const SEARCH_NAMES: Partial<Record<GameType, (serverPath: string) => string>> =
+  {
+    dragonwilds: (p) => readDedicatedServerIni(p).DefaultWorldName,
+    enshrouded: (p) => {
+      try {
+        return readEnshroudedSettings(p).name;
+      } catch {
+        return "";
+      }
+    },
+  };
+
+export function getGameSearchName(
+  gameType: GameType,
+  serverPath: string,
+): string | undefined {
+  return SEARCH_NAMES[gameType]?.(serverPath) || undefined;
 }

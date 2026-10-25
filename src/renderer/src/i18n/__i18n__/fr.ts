@@ -106,6 +106,15 @@ export default {
       "{{url}} a répondu par une erreur (HTTP {{status}}). Vérifiez que cette adresse est bien celle d'Odin-Eye.",
     ODIN_EYE_NO_ENDPOINT:
       "Quelque chose répond à {{url}}, mais ce n'est pas l'API joueurs d'Odin-Eye. Vérifiez le port, et que le plugin est à jour.",
+    ENSHROUDED_CONFIG_INVALID:
+      "enshrouded_server.json est illisible ({{detail}}) : le serveur ne démarrerait pas. Corrigez-le, ou supprimez-le pour que le serveur en recrée un au prochain démarrage (une copie .backup est gardée à côté).",
+    ENSHROUDED_GROUP_INVALID:
+      "Chaque groupe doit avoir un nom, et deux groupes ne peuvent pas porter le même.",
+    ENSHROUDED_SLOTS_INVALID:
+      "Nombre de places invalide : entre 1 et {{max}} joueurs, et les places réservées des groupes ne peuvent pas dépasser ce total.",
+  },
+  gameRequirements: {
+    hint: "{{game}} demande un PC costaud : environ {{ram}} Go de RAM pour le serveur seul et {{disk}} Go d'espace disque libre.",
   },
   installDir: {
     warning:
