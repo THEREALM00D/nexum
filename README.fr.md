@@ -7,7 +7,7 @@
 
 🇬🇧 [English](README.md) | 🇫🇷 Français
 
-Application Windows gratuite et open source pour héberger des serveurs dédiés **Valheim**, **Palworld**, **Astroneer** et **RuneScape: Dragonwilds** sans ligne de commande, avec **gestion intégrée des mods Valheim** (Thunderstore + Hexium).
+Application Windows gratuite et open source pour héberger des serveurs dédiés **Valheim**, **Palworld**, **Astroneer**, **RuneScape: Dragonwilds** et **Enshrouded** sans ligne de commande, avec **gestion intégrée des mods Valheim** (Thunderstore + Hexium).
 
 ![Plateforme](https://img.shields.io/badge/platform-Windows-blue)
 ![Licence](https://img.shields.io/badge/license-GPL--3.0-blue)
@@ -19,9 +19,9 @@ Application Windows gratuite et open source pour héberger des serveurs dédiés
 
 ## Fonctionnalités
 
-- **Plusieurs serveurs, plusieurs jeux** : Palworld, Valheim, Astroneer et RuneScape: Dragonwilds depuis une seule app, sans ligne de commande, avec détection des conflits de ports avant le démarrage
+- **Plusieurs serveurs, plusieurs jeux** : Palworld, Valheim, Astroneer, RuneScape: Dragonwilds et Enshrouded depuis une seule app, sans ligne de commande, avec détection des conflits de ports avant le démarrage
 - **Installation automatique** de SteamCMD et du serveur, ou **import d'un serveur déjà installé** (jeu et mondes détectés automatiquement)
-- **Démarrage / arrêt / redémarrage** avec arrêt propre (API REST Palworld, CTRL+C Valheim) pour ne pas corrompre les sauvegardes, et relance automatique après un plantage
+- **Démarrage / arrêt / redémarrage** avec arrêt propre (API REST Palworld, CTRL+C Valheim, CTRL+Pause Enshrouded) pour ne pas corrompre les sauvegardes, et relance automatique après un plantage
 - **Surveillance en temps réel** : CPU, RAM, uptime, joueurs en ligne, console du serveur
 - **Éditeur de configuration** visuel pour chaque jeu (presets de difficulté Palworld, modificateurs de monde Valheim)
 - **Mods Valheim** : parcourir, installer et mettre à jour depuis **Thunderstore et Hexium**, dépendances automatiques, import de profils r2modman/Gale, éditeur de configs BepInEx, mods dépréciés signalés
@@ -87,6 +87,7 @@ Voir [docs/installation.fr.md](docs/installation.fr.md) pour le guide complet.
 - [Suivi des joueurs Valheim (Odin-Eye)](docs/valheim-players.fr.md)
 - [Mods Valheim](docs/valheim-mods.fr.md)
 - [RuneScape: Dragonwilds](docs/dragonwilds.fr.md)
+- [Enshrouded](docs/enshrouded.fr.md)
 - [Politique de signature et confidentialité](docs/code-signing.fr.md)
 - [Architecture technique](CLAUDE.md)
 
@@ -97,7 +98,7 @@ Voir [docs/installation.fr.md](docs/installation.fr.md) pour le guide complet.
 
 ## Stack technique
 
-- Electron 44, React 19, MUI 9, TypeScript 6, Vite 5
+- Electron 45, React 19, MUI 9, TypeScript 6, Vite 5
 
 ## Licence
 

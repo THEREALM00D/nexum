@@ -5,6 +5,7 @@ import UpdateIcon from "@mui/icons-material/Update";
 import { useTranslation } from "react-i18next";
 import type { GameType } from "@shared/types";
 import InstallDirWarning from "../../../components/common/InstallDirWarning";
+import GameRequirementsHint from "../../../components/common/GameRequirementsHint";
 
 export default function InstallFolderCard({
   gameType,
@@ -53,6 +54,7 @@ export default function InstallFolderCard({
         </Button>
       </Stack>
       <InstallDirWarning path={installPath} sx={{ mb: 2 }} />
+      <GameRequirementsHint gameType={gameType} sx={{ mb: 2 }} />
       <Stack direction="row" spacing={1}>
         <Button
           fullWidth

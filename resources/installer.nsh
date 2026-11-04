@@ -62,6 +62,7 @@
     !insertmacro ${MACRO} "d3dcompiler_47.dll"
     !insertmacro ${MACRO} "dxcompiler.dll"
     !insertmacro ${MACRO} "dxil.dll"
+    !insertmacro ${MACRO} "electron_wer.dll"
     !insertmacro ${MACRO} "ffmpeg.dll"
     !insertmacro ${MACRO} "libEGL.dll"
     !insertmacro ${MACRO} "libGLESv2.dll"
@@ -107,6 +108,9 @@
     ; Le désinstalleur tourne depuis une copie temporaire : son original peut
     ; être supprimé (l'installeur en réécrit un neuf).
     Delete "$INSTDIR\${UNINSTALL_FILENAME}"
+    ; un.onInit a placé le répertoire courant dans $INSTDIR, ce qui empêcherait
+    ; de le supprimer (même précaution que le désinstalleur d'origine).
+    SetOutPath $TEMP
     ; Supprimé seulement s'il est vide : les fichiers de l'utilisateur restent.
     RMDir "$INSTDIR"
   !macroend

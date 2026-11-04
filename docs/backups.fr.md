@@ -23,6 +23,8 @@ Ce dossier contient :
 
 **RuneScape: Dragonwilds** : Nexum zippe `{serverPath}/RSDragonwilds/Saved/SaveGames/` (tous les mondes du serveur, un fichier `.sav` chacun). La même page contient une carte **Mondes** pour choisir le monde chargé au démarrage et importer un monde solo, voir [RuneScape: Dragonwilds](dragonwilds.fr.md).
 
+**Enshrouded** : Nexum zippe le dossier des sauvegardes du serveur (`savegame` par défaut, ou le dossier choisi dans **Configuration → Avancé**) : le monde `world0.ksd` et les copies que le jeu garde dans `savegame/backup`. Voir [Enshrouded](enshrouded.fr.md).
+
 ## Configuration
 
 ### Dossier de sauvegarde

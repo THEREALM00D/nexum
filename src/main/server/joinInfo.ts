@@ -1,9 +1,8 @@
 import { networkInterfaces } from "os";
 import type { IpcContext } from "../ipc/context";
 import type { JoinInfo } from "../../shared/types";
-import { getGamePorts } from "../games/registry";
+import { getGamePorts, getGameSearchName } from "../games/registry";
 import { formatPortRange } from "../games/ports";
-import { readDedicatedServerIni } from "../games/dragonwilds/dedicatedServerIni";
 import { AppError, networkError } from "../utils/appError";
 
 // Réseaux internes créés par les outils de virtualisation / VPN : leur IP
@@ -60,12 +59,7 @@ export function getJoinInfo(ctx: IpcContext, id: string): JoinInfo {
     port: forwarded[0]?.port ?? 0,
     portRange: formatPortRange(forwarded.map((p) => p.port)),
     crossplay: gameType === "valheim" && cfg.valheimConfig.crossplay,
-    // Dragonwilds : les joueurs cherchent le monde par son nom (sensible à
-    // la casse) dans la liste « Mondes » du jeu.
-    searchName:
-      gameType === "dragonwilds"
-        ? readDedicatedServerIni(path).DefaultWorldName || undefined
-        : undefined,
+    searchName: getGameSearchName(gameType, path),
   };
 }
 

@@ -11,11 +11,12 @@ const isStopped = (status: string) =>
  * Chargement du fichier de config dans le formulaire. Avec
  * `lockWhileRunning`, indique si l'édition est bloquée (serveur lancé) et
  * relit le fichier quand le serveur s'arrête — il a pu le réécrire — sauf si
- * l'utilisateur a une saisie en cours (`markDirty`).
+ * l'utilisateur a une saisie en cours (`markDirty`). Aussi utilisé hors de
+ * ConfigPage (page Config d'Enshrouded, réglages typés).
  */
-export function useConfigLoad(
-  readConfig: () => Promise<ConfigSettings>,
-  apply: (settings: ConfigSettings) => void,
+export function useConfigLoad<T = ConfigSettings>(
+  readConfig: () => Promise<T>,
+  apply: (settings: T) => void,
   lockWhileRunning?: boolean,
 ) {
   const { t } = useTranslation();

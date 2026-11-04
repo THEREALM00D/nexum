@@ -15,6 +15,8 @@ export const PROCESS_NAME_PREFIXES: Record<GameType, string> = {
   valheim: "valheim_server",
   astroneer: "astroserver",
   dragonwilds: "rsdragonwildsserver",
+  // Le client s'appelle enshrouded.exe.
+  enshrouded: "enshrouded_server",
 };
 
 /**

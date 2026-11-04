@@ -41,7 +41,7 @@ The server removes the admin password from its file after reading it: Nexum keep
 
 The **Join the server** card on the Dashboard shows everything to give to your friends:
 
-- **World name to search for**: in the game, **Worlds → Public**, search for this exact name (case-sensitive). Appearing in the list can take a minute or two after startup.
+- **Name to search for in game** (the world name): in the game, **Worlds → Public**, search for this exact name (case-sensitive). Appearing in the list can take a minute or two after startup.
 - **Same network**: players on your local network can connect directly to `IP:port`.
 - **From the Internet**: forward **UDP 7777 and 8888** on your router to this PC, and apply the firewall rules on the **Network** page.
 

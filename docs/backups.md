@@ -23,6 +23,8 @@ This folder contains:
 
 **RuneScape: Dragonwilds**: Nexum zips `{serverPath}/RSDragonwilds/Saved/SaveGames/` (every world of the server, one `.sav` file each). The same page has a **Worlds** card to pick the world loaded at startup and to import a single-player world, see [RuneScape: Dragonwilds](dragonwilds.md).
 
+**Enshrouded**: Nexum zips the server's save folder (`savegame` by default, or the folder set in **Configuration → Advanced**): the world `world0.ksd` and the copies the game keeps in `savegame/backup`. See [Enshrouded](enshrouded.md).
+
 ## Configuration
 
 ### Backup folder

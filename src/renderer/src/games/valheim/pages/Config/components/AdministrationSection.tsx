@@ -1,6 +1,6 @@
 import { Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import Section from "./Section";
+import Section from "../../../../../components/common/Section";
 import AdminListField from "./AdminListField";
 
 interface AdminListState {

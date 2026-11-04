@@ -25,6 +25,10 @@ const DRAGONWILDS_SECRETS: RegExp[] = [
   /(\["(?:JoinCode|PasswordHash)"\] written with key\[\w+\] value\[)([^\]]+)/g,
 ];
 
+// Enshrouded écrit le SteamID de son serveur (`Server SteamId: 9029…`, pas
+// au format des SteamID64 de joueurs) à chaque démarrage.
+const SERVER_STEAM_ID = /(Server SteamId: )(\d+)/g;
+
 /**
  * Adresses gardées : boucle locale, « toutes interfaces » et réseaux privés
  * (192.168.x.x, 10.x.x.x, 172.16-31.x.x) n'identifient personne et aident au
@@ -45,6 +49,7 @@ export function redactLog(text: string): string {
   const masked = text
     .replace(IPV4, (ip) => (isHarmlessIp(ip) ? ip : "[IP]"))
     .replace(STEAM_ID, "[SteamID]")
+    .replace(SERVER_STEAM_ID, "$1[SteamID]")
     .replace(JOIN_CODE, "$1[hidden]")
     .replace(HEX_ID, "[ID]");
   return DRAGONWILDS_SECRETS.reduce(

@@ -1,6 +1,6 @@
 import { Paper, Stack, Typography } from "@mui/material";
 import type { ReactNode } from "react";
-import { SkeletonChildren } from "../../../../../components/common/LoadingSkeleton";
+import { SkeletonChildren } from "./LoadingSkeleton";
 
 export default function Section({
   label,

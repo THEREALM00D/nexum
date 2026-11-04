@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import type { ValheimLaunchConfig } from "@shared/types";
-import Section from "./Section";
+import Section from "../../../../../components/common/Section";
 import OdinEyeTestButton from "./OdinEyeTestButton";
 
 export default function NetworkSection({

@@ -32,6 +32,7 @@ export default {
       valheim: "Valheim",
       astroneer: "Astroneer",
       dragonwilds: "RuneScape: Dragonwilds",
+      enshrouded: "Enshrouded",
     },
     actions: {
       activate: "Activer",

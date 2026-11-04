@@ -6,7 +6,7 @@
 
 - **Windows 10 ou 11** (64 bits)
 - Pas besoin des droits administrateur : Windows demande seulement une confirmation (UAC) quand vous modifiez les règles du pare-feu
-- **~10 GB d'espace disque** pour SteamCMD + le serveur Palworld
+- **Espace disque** pour SteamCMD + le serveur du jeu, selon le jeu : environ 10 GB pour Palworld, 30 GB conseillés pour Enshrouded
 - Connexion Internet pour le téléchargement initial
 
 ## Installer Nexum
@@ -25,7 +25,7 @@ Nexum vérifie au démarrage s'il existe une nouvelle version (en bas de la barr
 
 ### Versions bêta
 
-Pour tester les nouveautés avant leur sortie, activez **Paramètres → Mises à jour → Recevoir les versions bêta** (désactivé par défaut). Nexum vous propose alors aussi les versions bêta (`0.17.0-beta.1`, par exemple), puis la version stable quand elle sort.
+Pour tester les nouveautés avant leur sortie, activez **Paramètres → Mises à jour → Recevoir les versions bêta** (désactivé par défaut). Nexum vous propose alors aussi les versions bêta (`0.17.1-beta.2`, par exemple), puis la version stable quand elle sort.
 
 - Une bêta peut contenir des bugs : sauvegardez vos mondes avant de l'installer, et signalez les problèmes sur [Discord](https://discord.gg/DbJ3WkK5QU) en précisant le numéro de version.
 - Si vous désactivez l'option alors qu'une bêta est installée, vous la gardez jusqu'à la prochaine version stable, que Nexum vous proposera normalement.
@@ -37,7 +37,7 @@ Pour tester les nouveautés avant leur sortie, activez **Paramètres → Mises �
 
 Au premier lancement (aucun serveur), Nexum ouvre un **assistant de démarrage** qui vous guide dans tout ce qui suit, dans l'ordre :
 
-1. **Jeu** : choisissez Palworld, Valheim, Astroneer ou RuneScape: Dragonwilds, puis **Installer un nouveau serveur** (choisissez le dossier d'installation) ou **J'ai déjà un serveur** (choisissez son dossier : Nexum détecte le jeu).
+1. **Jeu** : choisissez Palworld, Valheim, Astroneer, RuneScape: Dragonwilds ou Enshrouded, puis **Installer un nouveau serveur** (choisissez le dossier d'installation) ou **J'ai déjà un serveur** (choisissez son dossier : Nexum détecte le jeu).
 2. **Installation** (nouveau serveur seulement) : installez SteamCMD, puis le serveur.
 3. **Configuration** : nom du serveur, mot de passe, paramètres du monde. Enregistrez avant de continuer.
 4. **Pare-feu** : appliquez les règles du pare-feu Windows.
@@ -91,9 +91,10 @@ Avant de démarrer le serveur la première fois :
 Si un serveur dédié est déjà installé sur votre machine (à la main, avec SteamCMD ou avec un autre outil), inutile de le réinstaller :
 
 - Allez dans **Serveurs** et cliquez sur **Ajouter un serveur**
-- Cliquez sur l'icône de dossier et choisissez le dossier du serveur (celui qui contient `PalServer.exe`, `valheim_server.exe`, `AstroServer.exe` ou `RSDragonwildsServer.exe`)
+- Cliquez sur l'icône de dossier et choisissez le dossier du serveur (celui qui contient `PalServer.exe`, `valheim_server.exe`, `AstroServer.exe`, `RSDragonwildsServer.exe` ou `enshrouded_server.exe`)
 - Le jeu est détecté automatiquement, et une indication sous le chemin confirme que l'exécutable du serveur a été trouvé (ou prévient s'il est absent — vérifiez le dossier ou le jeu)
 - Palworld, Astroneer et Dragonwilds : vos réglages `.ini` existants sont relus tels quels (Dragonwilds : voir [sa page](dragonwilds.fr.md) pour le Player ID et les mondes)
+- Enshrouded : `enshrouded_server.json` est relu tel quel, groupes et mots de passe compris (voir [sa page](enshrouded.fr.md))
 - Valheim : les mondes existants sont détectés. S'il n'y en a qu'un, il est sélectionné automatiquement ; sinon choisissez-le parmi les suggestions du champ **Nom du monde** dans **Configuration** — le nom doit correspondre exactement, sinon Valheim crée un nouveau monde vide
 
 ## Démarrage automatique

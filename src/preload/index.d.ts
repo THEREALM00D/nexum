@@ -21,6 +21,9 @@ import type {
   DragonwildsLaunchConfig,
   DragonwildsSettings,
   DragonwildsWorld,
+  EnshroudedLaunchConfig,
+  EnshroudedSettings,
+  EnshroudedUserGroup,
   ValheimMod,
   ValheimModConfigFile,
   ModRegistry,
@@ -338,6 +341,21 @@ interface API {
     read: () => Promise<DragonwildsSettings>;
     write: (
       settings: DragonwildsSettings,
+    ) => Promise<{ success: boolean; error?: string }>;
+  };
+  enshrouded: {
+    getConfig: () => Promise<EnshroudedLaunchConfig>;
+    setConfig: (patch: Partial<EnshroudedLaunchConfig>) => Promise<void>;
+    /** Groupes d'utilisateurs d'enshrouded_server.json (mot de passe = droits). */
+    getGroups: () => Promise<EnshroudedUserGroup[]>;
+    setGroups: (
+      groups: EnshroudedUserGroup[],
+    ) => Promise<{ success: boolean; error?: string }>;
+  };
+  enshroudedconfig: {
+    read: () => Promise<EnshroudedSettings>;
+    write: (
+      settings: EnshroudedSettings,
     ) => Promise<{ success: boolean; error?: string }>;
   };
   app: {

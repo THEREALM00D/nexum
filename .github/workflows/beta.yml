@@ -3,8 +3,9 @@ name: Beta release
 # Publie une version bêta (0.x.y-beta.N) construite depuis la branche choisie
 # dans « Run workflow » (Actions → Beta release). Release GitHub marquée
 # « prerelease » : l'API « latest release » l'ignore, seules les installs qui
-# ont coché « Recevoir les versions bêta » (Paramètres) la voient, via le
-# beta.yml qu'electron-builder génère pour une version en -beta.N.
+# ont coché « Recevoir les versions bêta » (Paramètres) la voient. Sans
+# publish.channel, electron-builder génère latest.yml, pas beta.yml : l'updater
+# cherche beta.yml dans la release, puis retombe sur son latest.yml.
 #
 # Rien n'est commité : la version n'est changée dans package.json que le temps
 # du build. release-please (release.yml) ne voit pas ces releases et continue
@@ -77,14 +78,14 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      # Pas commité : seulement pour que l'exe, latest/beta.yml et
+      # Pas commité : seulement pour que l'exe, latest.yml et
       # app.getVersion() portent le numéro de la bêta.
       - name: Set beta version
         run: npm pkg set version=${{ steps.version.outputs.version }}
 
       # Créée en draft avant le build : electron-builder y attache les assets
       # (il réutilise un draft existant pour le tag) et l'updater ne voit
-      # jamais une release sans beta.yml.
+      # jamais une release sans latest.yml.
       - name: Create draft prerelease
         shell: bash
         env:

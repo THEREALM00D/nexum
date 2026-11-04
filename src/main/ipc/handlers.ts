@@ -20,6 +20,7 @@ import type {
   ValheimLaunchConfig,
   AstroneerLaunchConfig,
   DragonwildsLaunchConfig,
+  EnshroudedLaunchConfig,
 } from "../../shared/types";
 import type { AppStore, IpcContext } from "./context";
 import { registerMiscHandlers } from "./handlers/misc";
@@ -38,6 +39,7 @@ import { registerValheimModsHandlers } from "../games/valheim/handlers/mods";
 import { registerAstroneerHandlers } from "../games/astroneer/handlers/config";
 import { registerDragonwildsHandlers } from "../games/dragonwilds/handlers/config";
 import { registerDragonwildsWorldHandlers } from "../games/dragonwilds/handlers/worlds";
+import { registerEnshroudedHandlers } from "../games/enshrouded/handlers/config";
 import { getGameStopConfig } from "../games/registry";
 import { autoStartServers } from "../server/startServer";
 import { registerCrashRestart } from "../server/crashRestart";
@@ -135,6 +137,15 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
   ) =>
     serverConfigs.update(resolveServerId(id), {
       dragonwildsConfig: patch as DragonwildsLaunchConfig,
+    });
+  const getEnshroudedConfig = (id?: string) =>
+    serverConfigs.get(resolveServerId(id)).enshroudedConfig;
+  const updateEnshroudedConfig = (
+    id: string | undefined,
+    patch: Partial<EnshroudedLaunchConfig>,
+  ) =>
+    serverConfigs.update(resolveServerId(id), {
+      enshroudedConfig: patch as EnshroudedLaunchConfig,
     });
 
   const getModsDataDir = (id?: string): string => {
@@ -338,6 +349,8 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
     updateAstroneerConfig,
     getDragonwildsConfig,
     updateDragonwildsConfig,
+    getEnshroudedConfig,
+    updateEnshroudedConfig,
     getModsDataDir,
   };
 
@@ -362,5 +375,6 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
   registerAstroneerHandlers(ctx);
   registerDragonwildsHandlers(ctx);
   registerDragonwildsWorldHandlers(ctx);
+  registerEnshroudedHandlers(ctx);
   return ctx;
 }

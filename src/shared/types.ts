@@ -2,7 +2,8 @@
 // Tout ce qui transite via IPC doit avoir le même type des deux côtés.
 
 // --- Serveurs ---
-export type GameType = "palworld" | "valheim" | "astroneer" | "dragonwilds";
+export type GameType =
+  "palworld" | "valheim" | "astroneer" | "dragonwilds" | "enshrouded";
 
 export interface Server {
   id: string;
@@ -31,6 +32,7 @@ export interface ServerConfig {
   valheimConfig: ValheimLaunchConfig;
   astroneerConfig: AstroneerLaunchConfig;
   dragonwildsConfig: DragonwildsLaunchConfig;
+  enshroudedConfig: EnshroudedLaunchConfig;
   backup: BackupConfig;
   restart: RestartConfig;
 }
@@ -362,7 +364,10 @@ export type AppErrorCode =
   | "ODIN_EYE_UNREACHABLE"
   | "ODIN_EYE_TIMEOUT"
   | "ODIN_EYE_HTTP"
-  | "ODIN_EYE_NO_ENDPOINT";
+  | "ODIN_EYE_NO_ENDPOINT"
+  | "ENSHROUDED_CONFIG_INVALID"
+  | "ENSHROUDED_GROUP_INVALID"
+  | "ENSHROUDED_SLOTS_INVALID";
 
 // --- RuneScape: Dragonwilds ---
 // Ports passés en arguments (-Port / -BeaconPort), le reste vit dans
@@ -394,6 +399,49 @@ export interface DragonwildsWorld {
   path: string;
   sizeBytes: number;
   lastModified: number;
+}
+
+// --- Enshrouded ---
+// Toute la config vit dans enshrouded_server.json (à côté de l'exe) : la
+// config de lancement ne garde que les arguments libres.
+export interface EnshroudedLaunchConfig {
+  customArgs: string;
+}
+
+export type EnshroudedGameSettingValue = string | number | boolean;
+
+/**
+ * Clés d'enshrouded_server.json éditées par la page Config. Les durées de
+ * `gameSettings` (dayTimeDuration, nightTimeDuration, fromHungerToStarving)
+ * sont en MINUTES ici, en nanosecondes dans le fichier.
+ */
+export interface EnshroudedSettings {
+  name: string;
+  ip: string;
+  queryPort: number;
+  slotCount: number;
+  voiceChatMode: string;
+  enableVoiceChat: boolean;
+  enableTextChat: boolean;
+  /** Default | Relaxed | Hard | Survival | Custom (gameSettings lu si Custom). */
+  gameSettingsPreset: string;
+  gameSettings: Record<string, EnshroudedGameSettingValue>;
+  saveDirectory: string;
+  logDirectory: string;
+  /** Config de lancement de Nexum, pas du fichier. */
+  customArgs: string;
+}
+
+/** Groupe d'utilisateurs : le mot de passe saisi en jeu donne ces droits. */
+export interface EnshroudedUserGroup {
+  name: string;
+  password: string;
+  canKickBan: boolean;
+  canAccessInventories: boolean;
+  canEditWorld: boolean;
+  canEditBase: boolean;
+  canExtendBase: boolean;
+  reservedSlots: number;
 }
 
 // --- Mods Valheim ---
