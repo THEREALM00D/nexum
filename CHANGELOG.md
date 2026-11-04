@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.0](https://github.com/THEREALM00D/nexum/compare/v0.17.0...v0.18.0) (2026-11-04)
+
+
+### Features
+
+* add Enshrouded support ([#142](https://github.com/THEREALM00D/nexum/issues/142)) ([a4ba3ec](https://github.com/THEREALM00D/nexum/commit/a4ba3ec4f7142475cf171f56cee956b9a389aa19))
+
 ## [0.17.0](https://github.com/THEREALM00D/nexum/compare/v0.16.3...v0.17.0) (2026-10-25)
 
 
