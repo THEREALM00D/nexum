@@ -21,7 +21,7 @@ Free, open-source Windows app to run **Valheim**, **Palworld**, **Astroneer**, *
 
 - **Multiple servers, multiple games**: Palworld, Valheim, Astroneer, RuneScape: Dragonwilds and Enshrouded from one app, no command line, with port conflicts detected before startup
 - **Automatic install** of SteamCMD and the game server, or **import a server that is already installed** (game and worlds detected automatically)
-- **Start / stop / restart** with clean shutdown (Palworld REST API, Valheim CTRL+C) so saves don't get corrupted, and automatic restart after a crash
+- **Start / stop / restart** with clean shutdown (Palworld REST API, Valheim CTRL+C, Enshrouded CTRL+Break) so saves don't get corrupted, and automatic restart after a crash
 - **Real-time monitoring**: CPU, RAM, uptime, online players, server console
 - **Visual configuration editor** for each game (Palworld difficulty presets, Valheim world modifiers)
 - **Valheim mods**: browse, install and update from **Thunderstore and Hexium**, automatic dependencies, r2modman/Gale profile import, BepInEx config editor, deprecated mods flagged
@@ -98,7 +98,7 @@ See [docs/installation.md](docs/installation.md) for the full guide.
 
 ## Tech stack
 
-- Electron 44, React 19, MUI 9, TypeScript 6, Vite 5
+- Electron 45, React 19, MUI 9, TypeScript 6, Vite 5
 
 ## License
 

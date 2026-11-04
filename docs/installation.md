@@ -6,7 +6,7 @@
 
 - **Windows 10 or 11** (64-bit)
 - No administrator rights needed: Windows only asks for confirmation (UAC) when you change firewall rules
-- **~10 GB of disk space** for SteamCMD + the Palworld server
+- **Disk space** for SteamCMD + the game server, depending on the game: about 10 GB for Palworld, 30 GB recommended for Enshrouded
 - Internet connection for the initial download
 
 ## Installing Nexum
@@ -25,7 +25,7 @@ Nexum checks for a new version at startup (at the bottom of the sidebar, or **Se
 
 ### Beta versions
 
-To try new features before they are released, turn on **Settings → Updates → Get beta versions** (off by default). Nexum then also offers beta versions (`0.17.0-beta.1`, for example), then the stable version once it is out.
+To try new features before they are released, turn on **Settings → Updates → Get beta versions** (off by default). Nexum then also offers beta versions (`0.17.1-beta.2`, for example), then the stable version once it is out.
 
 - A beta may contain bugs: back up your worlds before installing it, and report issues on [Discord](https://discord.gg/DbJ3WkK5QU) with the version number.
 - If you turn the option off while a beta is installed, you keep it until the next stable version, which Nexum will offer as usual.

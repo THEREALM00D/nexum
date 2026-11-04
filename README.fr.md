@@ -21,7 +21,7 @@ Application Windows gratuite et open source pour héberger des serveurs dédiés
 
 - **Plusieurs serveurs, plusieurs jeux** : Palworld, Valheim, Astroneer, RuneScape: Dragonwilds et Enshrouded depuis une seule app, sans ligne de commande, avec détection des conflits de ports avant le démarrage
 - **Installation automatique** de SteamCMD et du serveur, ou **import d'un serveur déjà installé** (jeu et mondes détectés automatiquement)
-- **Démarrage / arrêt / redémarrage** avec arrêt propre (API REST Palworld, CTRL+C Valheim) pour ne pas corrompre les sauvegardes, et relance automatique après un plantage
+- **Démarrage / arrêt / redémarrage** avec arrêt propre (API REST Palworld, CTRL+C Valheim, CTRL+Pause Enshrouded) pour ne pas corrompre les sauvegardes, et relance automatique après un plantage
 - **Surveillance en temps réel** : CPU, RAM, uptime, joueurs en ligne, console du serveur
 - **Éditeur de configuration** visuel pour chaque jeu (presets de difficulté Palworld, modificateurs de monde Valheim)
 - **Mods Valheim** : parcourir, installer et mettre à jour depuis **Thunderstore et Hexium**, dépendances automatiques, import de profils r2modman/Gale, éditeur de configs BepInEx, mods dépréciés signalés
@@ -98,7 +98,7 @@ Voir [docs/installation.fr.md](docs/installation.fr.md) pour le guide complet.
 
 ## Stack technique
 
-- Electron 44, React 19, MUI 9, TypeScript 6, Vite 5
+- Electron 45, React 19, MUI 9, TypeScript 6, Vite 5
 
 ## Licence
 

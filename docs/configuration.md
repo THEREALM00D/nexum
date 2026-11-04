@@ -2,7 +2,12 @@
 
 🇬🇧 English | 🇫🇷 [Français](configuration.fr.md)
 
-Graphical editor for the `PalWorldSettings.ini` file.
+Each game has its own **Configuration** page. This page covers **Palworld**: a graphical editor for the `PalWorldSettings.ini` file.
+
+- **Valheim**: launch settings (name, world, password, modifiers), passed to the server at startup
+- **Astroneer**: the `Engine.ini` and `AstroServerSettings.ini` files. Change them only while the server is stopped: Astroneer doesn't keep changes made while it is running
+- **RuneScape: Dragonwilds**: see [its page](dragonwilds.md)
+- **Enshrouded**: see [its page](enshrouded.md)
 
 ## Source file
 
