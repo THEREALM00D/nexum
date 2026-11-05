@@ -6,8 +6,8 @@ import { processTreeStats } from "../servers/processMatch";
 // Sous Windows, si.processes() lance un PowerShell (Get-CimInstance
 // Win32_Process) qui coûte ~1,5 s de CPU : interrogé toutes les 2 s avec
 // si.mem() (autre PowerShell), le monitoring saturait le CPU des petites
-// machines (signalé sur Discord en 0.12.2). On ne relit donc la liste des
-// processus que si un serveur tourne, et au plus toutes les 15 s.
+// machines. On ne relit donc la liste des processus que si un serveur tourne,
+// et au plus toutes les 15 s.
 const GAME_PROC_REFRESH_MS = 15_000;
 
 interface GameProcInfo {

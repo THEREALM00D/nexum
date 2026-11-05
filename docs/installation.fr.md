@@ -78,7 +78,7 @@ Avant de démarrer le serveur la première fois :
 ### 4. Activer le firewall
 
 - Allez dans **Réseau**
-- Cliquez sur **Tout activer** pour créer les règles firewall (Game UDP, RCON, REST API)
+- Cliquez sur **Tout appliquer** pour créer les règles firewall (Game UDP, RCON, REST API)
 
 ### 5. Premier démarrage
 
@@ -88,7 +88,7 @@ Avant de démarrer le serveur la première fois :
 
 ## Ajouter un serveur déjà installé
 
-Si un serveur dédié est déjà installé sur votre machine (à la main, avec SteamCMD ou avec un autre outil), inutile de le réinstaller :
+Si un serveur dédié est déjà installé sur votre machine, inutile de le réinstaller :
 
 - Allez dans **Serveurs** et cliquez sur **Ajouter un serveur**
 - Cliquez sur l'icône de dossier et choisissez le dossier du serveur (celui qui contient `PalServer.exe`, `valheim_server.exe`, `AstroServer.exe`, `RSDragonwildsServer.exe` ou `enshrouded_server.exe`)

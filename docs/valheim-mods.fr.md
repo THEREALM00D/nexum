@@ -14,9 +14,9 @@ La plupart des mods Valheim nécessitent **BepInEx**. Si Nexum ne le détecte pa
 
 ## Serveur et joueurs
 
-Nexum installe les mods **sur le serveur seulement**. La plupart des mods doivent **aussi être installés par chaque joueur**, avec un gestionnaire de mods client comme [Gale](https://github.com/Kesomannen/gale), r2modman ou le [gestionnaire de mods Hexium](https://hexium.gg/mod-manager). La page du mod sur son registre indique s'il est nécessaire côté client, côté serveur ou les deux. Un mod installé seulement sur le serveur semblera généralement ne rien faire. Nexum affiche ce rappel sur la page Mods ; une fois la règle connue, **Masquer le rappel** le réduit à un lien d'une ligne (choix mémorisé).
+Nexum installe les mods **sur le serveur seulement**. La plupart des mods doivent **aussi être installés par chaque joueur**, avec un gestionnaire de mods sur leur propre PC. La page du mod sur son registre indique s'il est nécessaire côté client, côté serveur ou les deux. Un mod installé seulement sur le serveur semblera généralement ne rien faire. Nexum affiche ce rappel sur la page Mods ; une fois la règle connue, **Masquer le rappel** le réduit à un lien d'une ligne (choix mémorisé).
 
-Astuce : montez votre modpack dans Gale, exportez le code du profil et importez-le dans Nexum (voir plus bas) pour que le serveur et les joueurs aient les mêmes mods.
+Astuce : pour que le serveur et les joueurs aient les mêmes mods, [partagez le modpack du serveur](#partager-le-modpack-avec-vos-joueurs) ou importez un profil existant (voir plus bas).
 
 ## Onglet Installés
 
@@ -67,11 +67,11 @@ Les mods installés manuellement ne sont pas concernés : sans registre connu, N
 
 ### Partager le modpack avec vos joueurs
 
-**Partager le modpack** crée un code de profil avec tous les mods **actifs** du serveur (plus BepInEx). Donnez-le à vos joueurs : dans **Gale** ou **r2modman**, importez un profil depuis un code et collez-le. Ils ont exactement les mêmes mods et les mêmes versions que le serveur.
+**Partager le modpack** crée un code de profil avec tous les mods **actifs** du serveur (plus BepInEx). Donnez-le à vos joueurs : dans **[Gale](https://github.com/Kesomannen/gale)** ou **r2modman**, importez un profil depuis un code et collez-le. Ils ont exactement les mêmes mods et les mêmes versions que le serveur.
 
-- Si le serveur utilise des mods **Hexium**, les joueurs doivent utiliser **Gale** (ou le gestionnaire de mods Hexium) : r2modman ne connaît que Thunderstore.
+- Si le serveur utilise des mods **Hexium**, les joueurs doivent utiliser **Gale** (ou le [gestionnaire de mods Hexium](https://hexium.gg/mod-manager)) : r2modman ne connaît que Thunderstore.
 - Les mods installés à la main (hors de Nexum) n'ont pas de code de registre et ne sont pas inclus : les joueurs doivent les installer eux-mêmes.
-- Le code est conservé par Thunderstore (c'est ainsi que r2modman et Gale partagent les profils) et peut expirer après un certain temps : il suffit d'en créer un nouveau.
+- Le code est conservé par Thunderstore et peut expirer après un certain temps : il suffit d'en créer un nouveau.
 - Seule la liste des mods et de leurs versions est envoyée, avec le nom du serveur comme nom de profil. Aucun fichier de config, monde ou donnée personnelle.
 
 ## Onglet Configs

@@ -74,6 +74,10 @@ Si l'API est désactivée, Nexum affiche un avertissement avec un bouton **Activ
 
 > Sans API REST, l'arrêt se fait avec `taskkill /F` sans sauvegarde — vous risquez de perdre des données récentes.
 
+**Valheim** n'a pas d'API, donc pas d'avertissement en jeu, mais il s'arrête proprement : Nexum lui envoie CTRL+C et le serveur sauvegarde le monde avant de se fermer. Un arrêt forcé n'a lieu qu'en dernier recours, si le serveur ne répond pas.
+
+**Astroneer** : Nexum n'utilise pas sa console d'administration, le redémarrage l'arrête donc immédiatement, sans avertissement en jeu ni sauvegarde préalable.
+
 **RuneScape: Dragonwilds** n'a pas d'API et ne sait pas s'arrêter proprement sous Windows : le redémarrage l'arrête immédiatement, sans avertir les joueurs en jeu. Le serveur sauvegarde le monde de lui-même toutes les 5 minutes : au pire, les 5 dernières minutes sont perdues.
 
 **Enshrouded** n'a pas d'API non plus, donc pas d'avertissement en jeu, mais il s'arrête proprement : Nexum lui envoie CTRL+Pause, le serveur sauvegarde le monde puis redémarre.

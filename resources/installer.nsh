@@ -5,8 +5,7 @@
 ; d'installation (`RMDir /r $INSTDIR`), y compris les fichiers que
 ; l'utilisateur y a rangés. Il tourne aussi à chaque mise à jour (l'installeur
 ; lance le désinstalleur de l'ancienne version) : un dossier de sauvegarde
-; Valheim placé dans H:\Nexum était effacé à chaque mise à jour de Nexum
-; (signalé sur Discord, 2026-10-15).
+; Valheim placé dans ce dossier était effacé à chaque mise à jour de Nexum.
 ;
 ; On ne supprime donc que les fichiers de Nexum (liste blanche ci-dessous).
 ; ⚠️ À revoir à chaque bump majeur d'Electron : comparer avec le contenu de
@@ -24,7 +23,7 @@
   ; (C:), et Windows refuse de déplacer un dossier vers un autre lecteur. En
   ; 0.12.4/0.12.5, renommer `resources` d'un bloc échouait pour une install
   ; sur H: ; vu comme « fichier occupé », la mise à jour était annulée en
-  ; boucle (« Nexum cannot be closed », signalé sur Discord).
+  ; boucle (« Nexum cannot be closed »).
   !macro nexumRemoveEntry NAME
     ${if} ${isUpdated}
       ${if} $nexumBusyFile == ""

@@ -19,7 +19,7 @@ When signing is enabled, it will follow these rules:
 | Committers and reviewers | [THEREALM00D](https://github.com/THEREALM00D) |
 | Approvers                | [THEREALM00D](https://github.com/THEREALM00D) |
 
-All accounts use multi-factor authentication on GitHub and SignPath.
+All accounts use multi-factor authentication on GitHub.
 
 ## Privacy
 

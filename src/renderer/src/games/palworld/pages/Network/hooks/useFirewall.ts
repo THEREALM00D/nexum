@@ -38,7 +38,7 @@ export function useFirewall(serverPath: string) {
   const { t } = useTranslation();
   const { notify } = useNotification();
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
-  // Les 3 règles Palworld (ports par défaut) affichées tout de suite, état
+  // Les règles Palworld (ports par défaut) affichées tout de suite, état
   // en skeleton pendant la vérification, plutôt qu'un tableau vide.
   const [rules, setRules] = useState<FirewallRuleStatus[]>(PLACEHOLDER_RULES);
   const [customRules, setCustomRules] = useState<FirewallRuleStatus[]>([]);

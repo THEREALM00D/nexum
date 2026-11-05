@@ -17,7 +17,7 @@ export function appInstallDir(): string | null {
  * Renvoie le dossier d'installation si `path` est dedans (ou est ce dossier),
  * sinon null. Les versions ≤ 0.12.3 de Nexum vident tout ce dossier à chaque
  * mise à jour (désinstalleur electron-builder par défaut) : des mondes
- * Valheim rangés dans H:\Nexum disparaissaient (signalé sur Discord).
+ * Valheim rangés dans ce dossier disparaissaient.
  */
 export function installDirConflict(path: string): string | null {
   const dir = appInstallDir();

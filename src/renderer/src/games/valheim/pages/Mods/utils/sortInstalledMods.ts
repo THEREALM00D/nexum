@@ -1,7 +1,6 @@
 import type { ValheimMod } from "@shared/types";
 
-// Tris proposés dans l'onglet Installés (demandé sur Discord : « mises à
-// jour disponibles, mis à jour récemment, etc. »).
+// Tris proposés dans l'onglet Installés.
 export const INSTALLED_SORTS = [
   "name",
   "updates",
