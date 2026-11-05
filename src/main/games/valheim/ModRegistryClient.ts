@@ -148,8 +148,8 @@ export class ModRegistryClient {
   // cache chez nous). ⚠️ La liste complète `/c/valheim/api/v1/package/` est
   // regénérée côté Thunderstore environ toutes les heures (vu le 2026-10-14 :
   // `last-modified` 50 min avant la réponse) : une mise à jour toute fraîche y
-  // est absente alors que r2modman la voit déjà (signalé sur Reddit, joueurs
-  // refusés pour « version mismatch »). Cet endpoint-ci est à jour en quelques
+  // est absente alors que les joueurs peuvent déjà l'avoir (joueurs refusés
+  // pour « version mismatch »). Cet endpoint-ci est à jour en quelques
   // minutes, même schéma sur Hexium. `null` si le package n'existe pas ou si
   // le registre ne répond pas.
   static async getFreshLatest(
@@ -421,8 +421,8 @@ export class ModRegistryClient {
   // Cherche d'abord sur le registre d'origine du mod, puis sur les autres —
   // un mod peut être déprécié/gelé sur son registre d'origine et continuer
   // d'être maintenu ailleurs (cas Azumatt : mods figés sur Thunderstore,
-  // toujours à jour sur Hexium). `sourceChanged` signale ce cas à l'UI, à la
-  // manière de Gale qui prévient explicitement du changement de source.
+  // toujours à jour sur Hexium). `sourceChanged` signale ce cas à l'UI, qui
+  // prévient du changement de source avant d'installer.
   // Renvoie aussi les mods dont le package est déprécié sur leur registre
   // d'origine (`deprecatedCodes`), pour les signaler dans l'UI.
   static async checkUpdates(
@@ -466,7 +466,7 @@ export class ModRegistryClient {
         // propose une version PLUS RÉCENTE que celle installée, on s'arrête là.
         // ⚠️ Pas juste « différente » : un mod installé depuis Hexium en
         // dernière version se voyait proposer l'ancienne version restée sur
-        // Thunderstore (signalé sur Discord, 78 mods concernés).
+        // Thunderstore (78 mods concernés).
         const searchOrder = [
           registry,
           ...REGISTRIES.filter((r) => r !== registry),

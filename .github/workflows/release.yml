@@ -103,8 +103,8 @@ jobs:
 
       # Publiée seulement une fois tous les assets en ligne : l'auto-updater
       # ne voit jamais une release sans latest.yml.
-      # Retry : l'API GitHub renvoie parfois un 5xx passager (vécu en 0.1.1,
-      # HTTP 502 → release restée en draft alors que le build était OK).
+      # Retry : l'API GitHub renvoie parfois un 5xx passager (HTTP 502 →
+      # release restée en draft alors que le build était OK).
       # L'édition est idempotente, on peut la rejouer sans risque.
       - name: Publish release
         shell: bash

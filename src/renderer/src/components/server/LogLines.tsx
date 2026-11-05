@@ -16,8 +16,8 @@ const lineColor = (line: string) =>
  * Zone de lignes du log (en direct ou session terminée). Suit la dernière
  * ligne seulement si l'utilisateur est en bas. Quand il remonte, la vue est
  * FIGÉE : sans ça, une fois le tampon de 500 lignes plein, chaque nouvelle
- * ligne fait sortir la plus ancienne et le texte remonte quand même (signalé
- * sur Discord). Un bouton ramène au direct.
+ * ligne fait sortir la plus ancienne et le texte remonte quand même. Un bouton
+ * ramène au direct.
  */
 export default function LogLines({ lines }: { lines: string[] }) {
   const { t } = useTranslation();

@@ -36,7 +36,7 @@ const INITIAL: OdinEyeStatus = {
  * État d'Odin-Eye pour le serveur actif, interrogé directement toutes les
  * 10 s quand le serveur tourne. Avant, le Dashboard affichait le même bandeau
  * « nécessite Odin-Eye » que le plugin marche ou non, et le tracker avalait
- * les erreurs : impossible de savoir ce qui n'allait pas (signalé sur Discord).
+ * les erreurs : impossible de savoir ce qui n'allait pas.
  *
  * `serverUptime` (secondes, 0 si inconnu) évite d'accorder le délai de
  * démarrage à un serveur lancé depuis longtemps (Dashboard ouvert après coup).

@@ -19,7 +19,7 @@ Quand la signature sera activée, elle suivra ces règles :
 | Contributeurs et relecteurs | [THEREALM00D](https://github.com/THEREALM00D) |
 | Approbateurs                | [THEREALM00D](https://github.com/THEREALM00D) |
 
-Tous les comptes utilisent l'authentification à deux facteurs sur GitHub et SignPath.
+Tous les comptes utilisent l'authentification à deux facteurs sur GitHub.
 
 ## Confidentialité
 

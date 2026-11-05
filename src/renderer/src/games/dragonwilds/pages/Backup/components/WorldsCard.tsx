@@ -27,8 +27,8 @@ const PLACEHOLDER_WORLD: DragonwildsWorld = {
 
 /**
  * Mondes Dragonwilds : celui que le serveur charge au démarrage
- * (DefaultWorldName = nom du fichier .sav), les autres mondes du serveur, et
- * l'import d'un monde solo de ce PC ou d'un fichier .sav.
+ * (DefaultWorldName = nom inscrit dans la sauvegarde), les autres mondes du
+ * serveur, et l'import d'un monde solo de ce PC ou d'un fichier .sav.
  */
 export default function WorldsCard({
   onImported,

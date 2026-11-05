@@ -9,7 +9,7 @@ export default {
       configs: "Configs",
     },
     clientHint:
-      "Nexum installe les mods sur le serveur seulement. La plupart doivent aussi être installés par chaque joueur, avec un gestionnaire de mods comme Gale, r2modman ou le gestionnaire de mods Hexium (la page du mod indique s'il est nécessaire côté client). Utilisez « Partager le modpack » pour leur donner les mêmes mods en un seul code.",
+      "Nexum installe les mods sur le serveur seulement. La plupart doivent aussi être installés par chaque joueur, avec un gestionnaire de mods sur leur propre PC (la page du mod indique s'il est nécessaire côté client). Utilisez « Partager le modpack » pour leur donner les mêmes mods en un seul code.",
     clientHintShow:
       "Rappel : la plupart des mods doivent aussi être installés chez les joueurs",
     clientHintHide: "Masquer le rappel",

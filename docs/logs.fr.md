@@ -2,7 +2,7 @@
 
 🇬🇧 [English](logs.md) | 🇫🇷 Français
 
-Affichage en temps réel des sorties du processus `PalServer.exe` et des messages internes de Nexum.
+Affichage en temps réel de la sortie du serveur du jeu et des messages internes de Nexum.
 
 ## Source des logs
 
@@ -18,15 +18,15 @@ Les messages `[Manager]` sont écrits dans la langue de l'application (français
 
 ## Couleurs
 
-- **Rouge** : lignes commençant par `[ERR]`
-- **Bleu** : lignes commençant par `[Manager]`
+- **Rouge** : lignes contenant `[ERR]` ou `Error`
+- **Vert** : lignes contenant `[Manager]`
 - **Gris** : reste (sortie standard du serveur)
 
 ## Limitations à connaître
 
 ### PalServer.exe est silencieux
 
-Contrairement à beaucoup de serveurs de jeu, **PalServer.exe écrit très peu sur stdout/stderr**. La majorité des logs Palworld sont écrits dans des fichiers internes :
+**PalServer.exe écrit très peu sur stdout/stderr**. La majorité des logs Palworld sont écrits dans des fichiers internes :
 
 ```
 {serverPath}/Pal/Saved/Logs/

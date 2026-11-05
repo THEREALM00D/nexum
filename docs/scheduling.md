@@ -74,6 +74,10 @@ If the API is disabled, Nexum shows a warning with an **Enable** button that upd
 
 > Without the REST API, the shutdown happens via `taskkill /F` with no save — you risk losing recent data.
 
+**Valheim** has no API, so players can't be warned in game, but it shuts down cleanly: Nexum sends it CTRL+C and the server saves the world before closing. A forced stop only happens as a last resort, if the server doesn't respond.
+
+**Astroneer**: Nexum doesn't use its admin console, so the restart stops it immediately, with no in-game warning or save beforehand.
+
 **RuneScape: Dragonwilds** has no API and can't shut down cleanly on Windows: the restart stops it immediately, with no in-game warning. The server saves the world by itself every 5 minutes, so at most the last 5 minutes are lost.
 
 **Enshrouded** has no API either, so players can't be warned in game, but it shuts down cleanly: Nexum sends it CTRL+Break, the server saves the world, then restarts.

@@ -2,11 +2,11 @@
 
 🇬🇧 English | 🇫🇷 [Français](backups.fr.md)
 
-ZIP backup system for the Palworld server's `SaveGames` folder.
+ZIP backups of each server's worlds.
 
 ## What gets backed up?
 
-Nexum zips the following folder:
+**Palworld**: Nexum zips the following folder:
 
 ```
 {serverPath}/Pal/Saved/SaveGames/
@@ -21,6 +21,10 @@ This folder contains:
 
 > The `PalWorldSettings.ini` file is **not** included in the backup — it lives in `Pal/Saved/Config/WindowsServer/`.
 
+**Valheim**: Nexum zips the `worlds_local` folder (in `%USERPROFILE%\AppData\LocalLow\IronGate\Valheim`, or in the **Saves folder** set in **Configuration**).
+
+**Astroneer**: Nexum zips `{serverPath}/Astro/Saved/SaveGames/`.
+
 **RuneScape: Dragonwilds**: Nexum zips `{serverPath}/RSDragonwilds/Saved/SaveGames/` (every world of the server, one `.sav` file each). The same page has a **Worlds** card to pick the world loaded at startup and to import a single-player world, see [RuneScape: Dragonwilds](dragonwilds.md).
 
 **Enshrouded**: Nexum zips the server's save folder (`savegame` by default, or the folder set in **Configuration → Advanced**): the world `world0.ksd` and the copies the game keeps in `savegame/backup`. See [Enshrouded](enshrouded.md).
@@ -29,7 +33,7 @@ This folder contains:
 
 ### Backup folder
 
-Default: `{userData}/backups` (typically `C:\Users\{user}\AppData\Roaming\server-forge\backups`).
+Default: `{userData}/servers/<server id>/backups` (typically `%APPDATA%\Nexum\servers\<server id>\backups`; `%APPDATA%\server-forge\…` for installs that started as ServerForge).
 
 You can choose a different folder (external drive, NAS) via the **folder** button.
 
@@ -63,7 +67,7 @@ Interval selector:
 
 **Back up the world before every update** option, on by default. A game or mod patch that breaks the world no longer costs you any progress. Nexum backs up the world:
 
-- before every game update from the **Install** page (and the setup wizard);
+- before every game update from the **Installation** page (and the setup wizard);
 - before the game update done by the [scheduled restart](scheduling.md);
 - before **Update** and **Update all** on the Mods page (Valheim), with a single backup for the whole batch.
 
@@ -78,7 +82,7 @@ These backups are named `backup-YYYY-MM-DD_HH-MM-SS-before-update.zip` and are t
 
 **Create a backup** button:
 
-1. Zips the SaveGames folder (compression level 9 = max)
+1. Zips the save folder (compression level 9 = max)
 2. Names the file `backup-YYYY-MM-DD_HH-MM-SS.zip`
 3. Applies rotation if needed
 4. Shows a success notification
@@ -91,7 +95,7 @@ Creating a backup can take from a few seconds to several minutes depending on th
 
 1. Confirmation required
 2. **The server must be stopped** (the button is disabled otherwise)
-3. The current SaveGames folder is deleted
+3. The current save folder is deleted
 4. The ZIP's contents are extracted in its place
 
 > ⚠️ Restoring **overwrites** the current save. Make a manual backup before restoring if you want to be able to roll back.

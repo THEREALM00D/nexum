@@ -50,7 +50,7 @@ On first launch (no server yet), Nexum opens a **setup wizard** that walks you t
 SteamCMD is Valve's official utility for downloading Steam servers.
 
 - Open Nexum
-- Go to **Install** in the sidebar
+- Go to **Installation** in the sidebar
 - Click **Install SteamCMD**
 - Nexum downloads and configures SteamCMD automatically (logs visible at the bottom)
 
@@ -78,7 +78,7 @@ Before starting the server for the first time:
 ### 4. Enable the firewall
 
 - Go to **Network**
-- Click **Enable all** to create the firewall rules (Game UDP, RCON, REST API)
+- Click **Apply all** to create the firewall rules (Game UDP, RCON, REST API)
 
 ### 5. First start
 
@@ -88,7 +88,7 @@ Before starting the server for the first time:
 
 ## Adding a server that is already installed
 
-If a dedicated server is already installed on your machine (installed by hand, with SteamCMD, or with another tool), you don't need to reinstall it:
+If a dedicated server is already installed on your machine, you don't need to reinstall it:
 
 - Go to **Servers** and click **Add server**
 - Click the folder icon and pick the server folder (the one containing `PalServer.exe`, `valheim_server.exe`, `AstroServer.exe`, `RSDragonwildsServer.exe` or `enshrouded_server.exe`)
@@ -130,12 +130,12 @@ To make closing the window quit Nexum instead, turn off **Settings → Keep Nexu
 A server that is one version behind refuses players who updated their game. So every time a server starts (**Start** button or automatic start), Nexum checks in the background whether it is up to date:
 
 - The start doesn't wait for this check: if Steam doesn't answer, the server starts normally and nothing is reported.
-- If an update exists, a notification says so, with an **Update** button that opens the **Install** page of that server. The result is also written in its log (handy after a start with Windows, when nobody is watching the screen).
-- Server installed through the **Steam library** (in `steamapps\common`): Steam updates it, and the notification reminds you of that. If you update it from Nexum's **Install** page instead, Nexum detects that too (up to 0.12.4, it kept announcing the update). The check needs SteamCMD to be installed (**Install** page).
+- If an update exists, a notification says so, with an **Update** button that opens the **Installation** page of that server. The result is also written in its log (handy after a start with Windows, when nobody is watching the screen).
+- Server installed through the **Steam library** (in `steamapps\common`): Steam updates it, and the notification reminds you of that. If you update it from Nexum's **Installation** page instead, Nexum detects that too (up to 0.12.4, it kept announcing the update). The check needs SteamCMD to be installed (**Installation** page).
 
 To update (the server must be stopped):
 
-- Go to **Install**
+- Go to **Installation**
 - Click **Check** to compare the installed version against the Steam version
 - If an update is available, click **Update**
 

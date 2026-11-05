@@ -14,9 +14,9 @@ Most Valheim mods require **BepInEx**. If Nexum doesn't find it in the server fo
 
 ## Server and players
 
-Nexum installs mods **on the server only**. Most mods must **also be installed by each player**, with a client mod manager such as [Gale](https://github.com/Kesomannen/gale), r2modman or the [Hexium mod manager](https://hexium.gg/mod-manager). The mod's page on its registry says whether it's needed on the client, on the server, or both. A mod installed on the server only will usually seem to do nothing. Nexum shows this reminder on the Mods page; once you know it, **Hide reminder** shrinks it to a one-line link (your choice is remembered).
+Nexum installs mods **on the server only**. Most mods must **also be installed by each player**, with a mod manager on their own PC. The mod's page on its registry says whether it's needed on the client, on the server, or both. A mod installed on the server only will usually seem to do nothing. Nexum shows this reminder on the Mods page; once you know it, **Hide reminder** shrinks it to a one-line link (your choice is remembered).
 
-Tip: build your modpack in Gale, export the profile code, and import it in Nexum (see below) so the server and players get the same mods.
+Tip: to give the server and the players the same mods, [share the server's modpack](#share-the-modpack-with-your-players) or import an existing profile (see below).
 
 ## Installed tab
 
@@ -67,11 +67,11 @@ Manually installed mods are not covered: without a known registry, Nexum can che
 
 ### Share the modpack with your players
 
-**Share modpack** creates a profile code with all the **active** mods of the server (plus BepInEx). Give it to your players: in **Gale** or **r2modman**, import a profile from a code and paste it. They get exactly the same mods and versions as the server.
+**Share modpack** creates a profile code with all the **active** mods of the server (plus BepInEx). Give it to your players: in **[Gale](https://github.com/Kesomannen/gale)** or **r2modman**, import a profile from a code and paste it. They get exactly the same mods and versions as the server.
 
-- If the server uses **Hexium** mods, players need **Gale** (or the Hexium mod manager): r2modman only knows Thunderstore.
+- If the server uses **Hexium** mods, players need **Gale** (or the [Hexium mod manager](https://hexium.gg/mod-manager)): r2modman only knows Thunderstore.
 - Mods installed by hand (outside Nexum) have no registry code and aren't included: players must install them themselves.
-- The code is stored by Thunderstore (this is how r2modman and Gale share profiles) and may expire after a while: just create a new one.
+- The code is stored by Thunderstore and may expire after a while: just create a new one.
 - Only the list of mods and versions is sent, with the server name as the profile name. No config file, world or personal data.
 
 ## Configs tab

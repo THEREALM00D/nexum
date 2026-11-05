@@ -20,7 +20,7 @@ interface Props {
 /**
  * Confirmation renforcée pour la suppression d'un serveur : il faut retaper
  * son nom exact pour activer le bouton — une simple boîte confirm() se
- * clique trop facilement sans lire (vécu : suppression accidentelle).
+ * clique trop facilement sans lire (suppression accidentelle).
  */
 export default function ConfirmDeleteDialog({
   server,

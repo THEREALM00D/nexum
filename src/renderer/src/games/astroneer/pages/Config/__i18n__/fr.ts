@@ -94,7 +94,7 @@ export default {
       ConsolePort: {
         label: "Port console (RCON)",
         description:
-          "Port TCP du protocole console/RCON. À ne jamais exposer publiquement — Nexum ne l'utilise pas (MVP).",
+          "Port TCP du protocole console/RCON. À ne jamais exposer publiquement — Nexum ne l'utilise pas.",
       },
       ConsolePassword: {
         label: "Mot de passe console (RCON)",

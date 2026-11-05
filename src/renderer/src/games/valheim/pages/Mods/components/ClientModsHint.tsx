@@ -22,7 +22,7 @@ function saveHidden(hidden: boolean): void {
 }
 
 // Rappel : Nexum n'installe les mods que sur le serveur. Beaucoup doivent
-// aussi être chez chaque joueur (vécu : mods installés côté serveur seulement,
+// aussi être chez chaque joueur (sinon : mods installés côté serveur seulement,
 // « aucun ne fonctionne »). Masquable (mémorisé) pour laisser la place aux
 // listes sur un écran de portable ; il reste un lien d'une ligne pour le
 // rouvrir.

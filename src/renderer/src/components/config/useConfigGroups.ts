@@ -36,8 +36,8 @@ function filterGroups(
 
 /**
  * Recherche + expand/collapse pour une page de config data-driven (groupes de
- * champs). Partagé entre Palworld et Astroneer — `i18nPrefix` distingue les
- * namespaces de traduction (ex: "config.fields" vs "astroneerConfig.fields").
+ * champs). Partagé entre les jeux qui utilisent ConfigPage — `i18nPrefix`
+ * distingue les namespaces de traduction (ex: "config.fields" vs "astroneerConfig.fields").
  */
 export function useConfigGroups(fieldGroups: FieldGroup[], i18nPrefix: string) {
   const { t } = useTranslation();

@@ -172,7 +172,7 @@ export class SteamCMD {
     // coexister : on garde le plus récent. Avant, celui de la bibliothèque
     // passait toujours en premier ; après une mise à jour faite depuis Nexum
     // (SteamCMD), il restait sur l'ancien build et Nexum annonçait une mise à
-    // jour en boucle (signalé sur Discord).
+    // jour en boucle.
     const own = [join(installPath, "steamapps", manifest)];
     if (isSteamLibraryInstall(installPath)) {
       own.push(join(dirname(dirname(installPath)), manifest));

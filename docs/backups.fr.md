@@ -2,11 +2,11 @@
 
 🇬🇧 [English](backups.md) | 🇫🇷 Français
 
-Système de sauvegardes ZIP du dossier `SaveGames` du serveur Palworld.
+Sauvegardes ZIP des mondes de chaque serveur.
 
 ## Que sauvegarde-t-on ?
 
-Nexum zippe le dossier suivant :
+**Palworld** : Nexum zippe le dossier suivant :
 
 ```
 {serverPath}/Pal/Saved/SaveGames/
@@ -21,6 +21,10 @@ Ce dossier contient :
 
 > Le fichier `PalWorldSettings.ini` n'est **pas** inclus dans la sauvegarde — il est dans `Pal/Saved/Config/WindowsServer/`.
 
+**Valheim** : Nexum zippe le dossier `worlds_local` (dans `%USERPROFILE%\AppData\LocalLow\IronGate\Valheim`, ou dans le **Dossier de sauvegardes** choisi dans **Configuration**).
+
+**Astroneer** : Nexum zippe `{serverPath}/Astro/Saved/SaveGames/`.
+
 **RuneScape: Dragonwilds** : Nexum zippe `{serverPath}/RSDragonwilds/Saved/SaveGames/` (tous les mondes du serveur, un fichier `.sav` chacun). La même page contient une carte **Mondes** pour choisir le monde chargé au démarrage et importer un monde solo, voir [RuneScape: Dragonwilds](dragonwilds.fr.md).
 
 **Enshrouded** : Nexum zippe le dossier des sauvegardes du serveur (`savegame` par défaut, ou le dossier choisi dans **Configuration → Avancé**) : le monde `world0.ksd` et les copies que le jeu garde dans `savegame/backup`. Voir [Enshrouded](enshrouded.fr.md).
@@ -29,7 +33,7 @@ Ce dossier contient :
 
 ### Dossier de sauvegarde
 
-Par défaut : `{userData}/backups` (typiquement `C:\Users\{user}\AppData\Roaming\server-forge\backups`).
+Par défaut : `{userData}/servers/<id du serveur>/backups` (typiquement `%APPDATA%\Nexum\servers\<id du serveur>\backups` ; `%APPDATA%\server-forge\…` pour les installations d'origine ServerForge).
 
 Vous pouvez choisir un autre dossier (disque externe, NAS) via le bouton **dossier**.
 
@@ -78,7 +82,7 @@ Ces sauvegardes s'appellent `backup-YYYY-MM-DD_HH-MM-SS-before-update.zip` et po
 
 Bouton **Créer une sauvegarde** :
 
-1. Zippe le dossier SaveGames (compression niveau 9 = max)
+1. Zippe le dossier des sauvegardes du jeu (compression niveau 9 = max)
 2. Nomme le fichier `backup-YYYY-MM-DD_HH-MM-SS.zip`
 3. Applique la rotation si nécessaire
 4. Notification de succès
@@ -91,7 +95,7 @@ Bouton **Restaurer** sur chaque sauvegarde :
 
 1. Confirmation requise
 2. **Le serveur doit être arrêté** (le bouton est désactivé sinon)
-3. Le dossier SaveGames actuel est supprimé
+3. Le dossier des sauvegardes actuel est supprimé
 4. Le contenu du ZIP est extrait à sa place
 
 > ⚠️ La restauration **écrase** la sauvegarde actuelle. Faites une sauvegarde manuelle avant de restaurer si vous voulez pouvoir revenir en arrière.
