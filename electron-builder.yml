@@ -19,7 +19,6 @@ extraResources:
     to: icon.ico
 asarUnpack:
   - resources/**
-  - node_modules/node-pty/**
 win:
   executableName: nexum
   icon: resources/icon.ico
