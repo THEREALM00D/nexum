@@ -12,6 +12,10 @@ export function useServerControls() {
   const canStart = state.status === "stopped" || state.status === "crashed";
   const canStop = state.status === "running" || state.status === "starting";
 
+  // Toujours le serveur affiché : sans id, le main retombait sur SON serveur
+  // actif, qui pouvait différer (issue #144).
+  const serverId = state.activeServerId ?? undefined;
+
   const optimistic = (status: ServerStatus) => {
     if (!state.activeServerId) return;
     dispatch({
@@ -23,7 +27,7 @@ export function useServerControls() {
   const start = async () => {
     optimistic("starting");
     try {
-      const res = await window.api.server.start();
+      const res = await window.api.server.start(serverId);
       if (!res.success) {
         notify(
           appErrorMessage(t, res.error, t("serverControls.startFailed")),
@@ -40,7 +44,7 @@ export function useServerControls() {
   const stop = async () => {
     optimistic("stopping");
     try {
-      const res = await window.api.server.stop();
+      const res = await window.api.server.stop(serverId);
       if (!res.success)
         notify(
           appErrorMessage(t, res.error, t("serverControls.stopFailed")),
@@ -54,7 +58,7 @@ export function useServerControls() {
   const restart = async () => {
     optimistic("stopping");
     try {
-      const res = await window.api.server.restart();
+      const res = await window.api.server.restart(serverId);
       if (!res.success)
         notify(
           appErrorMessage(t, res.error, t("serverControls.restartFailed")),

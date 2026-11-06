@@ -44,6 +44,10 @@ If a server was already running when Nexum opened (Nexum "adopts" it), its outpu
 
 Exception: **RuneScape: Dragonwilds**. Its standard output only carries warnings and errors, so Nexum reads the game's own log file instead (`RSDragonwilds/Saved/Logs/RSDragonwilds.log`, the engine timestamp is removed). This works for an adopted server too: the log picks up from where it was when Nexum opened.
 
+### "Stop refused" line
+
+If clicking **Stop** doesn't stop anything, the view shows a `[Manager]` line such as `Stop refused: the server is not running (status stopped, PID none).` It means Nexum doesn't consider this server running. Copy it into your bug report.
+
 ### Valheim "Log file" field
 
 In Valheim's **Configuration → Advanced**, leave **Log file** empty. When it's set, Valheim writes its output to that file instead of sending it to Nexum, so the Logs page, the Dashboard console and the saved sessions stay empty.
