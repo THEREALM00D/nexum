@@ -15,14 +15,31 @@ const DEFAULT_COLORS = [
 ];
 
 export class ServerRegistry {
-  constructor(private store: Store<AppStore>) {}
+  /**
+   * Serveur actif gardé en mémoire, lu une seule fois au démarrage. Le store
+   * (electron-store, sans cache) relit config.json à chaque `get` : une autre
+   * instance de Nexum sur le même dossier de données (dev) qui changeait de
+   * serveur actif changeait aussi la cible de tous nos handlers « serveur
+   * actif » — Arrêter visait un autre serveur, sans rien écrire (issue #144).
+   */
+  private activeId: string | null;
+
+  constructor(private store: Store<AppStore>) {
+    this.activeId = store.get("activeServerId", null as string | null);
+  }
 
   list(): Server[] {
     return this.store.get("servers", [] as Server[]);
   }
 
   getActiveId(): string | null {
-    return this.store.get("activeServerId", null as string | null);
+    return this.activeId;
+  }
+
+  /** Change le serveur actif en mémoire et le persiste pour le prochain lancement. */
+  private writeActive(id: string | null): void {
+    this.activeId = id;
+    this.store.set("activeServerId", id);
   }
 
   getActive(): Server | null {
@@ -52,7 +69,7 @@ export class ServerRegistry {
       createdAt: Date.now(),
     };
     this.store.set("servers", [server]);
-    this.store.set("activeServerId", server.id);
+    this.writeActive(server.id);
     // On garde `serverPath` dans le store pour rétrocompat (peut être lu par
     // d'anciens handlers pas encore migrés). Pas grave qu'il reste.
     return server;
@@ -62,7 +79,7 @@ export class ServerRegistry {
     if (id !== null && !this.list().some((s) => s.id === id)) {
       throw new AppError("SERVER_NOT_FOUND", { id });
     }
-    this.store.set("activeServerId", id);
+    this.writeActive(id);
   }
 
   create(input: {
@@ -86,7 +103,7 @@ export class ServerRegistry {
       autoRestart: input.autoRestart ?? false,
     };
     this.store.set("servers", [...servers, server]);
-    if (!this.getActiveId()) this.store.set("activeServerId", server.id);
+    if (!this.getActiveId()) this.writeActive(server.id);
     return server;
   }
 
@@ -105,7 +122,7 @@ export class ServerRegistry {
     const next = this.list().filter((s) => s.id !== id);
     this.store.set("servers", next);
     if (this.getActiveId() === id) {
-      this.store.set("activeServerId", next[0]?.id ?? null);
+      this.writeActive(next[0]?.id ?? null);
     }
   }
 

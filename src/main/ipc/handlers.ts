@@ -313,9 +313,23 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
     }
   }, 5000);
 
-  // Try to adopt any existing PalServer.exe processes on startup, matching
-  // each running process to a configured server by executable path.
-  const adoption = serverManagers.tryAdoptAll(broadcastLog).catch(() => {});
+  // Reprend les serveurs déjà lancés (processus associé à chaque serveur par
+  // son nom et son dossier). Pas en dev sur le dossier de données partagé
+  // avec l'app installée (sans NEXUM_USER_DATA_DIR) : sans verrou d'instance,
+  // le dev adoptait les VRAIS serveurs de l'app installée, deux Nexum
+  // pilotaient alors le même processus (issue #144). NEXUM_DEV_ADOPT=1 pour
+  // tester l'adoption elle-même.
+  const skipAdoption =
+    !app.isPackaged &&
+    !process.env.NEXUM_USER_DATA_DIR &&
+    process.env.NEXUM_DEV_ADOPT !== "1";
+  if (skipAdoption)
+    console.log(
+      "[Nexum] Dev sur le dossier de données de l'app installée : adoption des serveurs en cours désactivée (NEXUM_DEV_ADOPT=1 pour la forcer).",
+    );
+  const adoption = skipAdoption
+    ? Promise.resolve()
+    : serverManagers.tryAdoptAll(broadcastLog).catch(() => {});
 
   const ctx: IpcContext = {
     app,

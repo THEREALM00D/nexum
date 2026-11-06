@@ -44,6 +44,8 @@ const FR = {
     `Envoi d'un arrêt propre (${signal === "ctrlBreak" ? "CTRL+Pause" : "CTRL+C"})...`,
   stoppingAdopted: "Arrêt du processus adopté...",
   stopping: "Arrêt du serveur...",
+  stopRefused: (status: string, pid: number | null) =>
+    `Arrêt refusé : le serveur n'est pas lancé (statut ${status}, PID ${pid ?? "aucun"}).`,
   stoppingBeforeQuit:
     "Fermeture de Nexum : arrêt propre du serveur avant de quitter.",
 
@@ -151,6 +153,8 @@ const EN: typeof FR = {
     `Sending a clean stop signal (${signal === "ctrlBreak" ? "CTRL+Break" : "CTRL+C"})...`,
   stoppingAdopted: "Stopping the adopted process...",
   stopping: "Stopping the server...",
+  stopRefused: (status, pid) =>
+    `Stop refused: the server is not running (status ${status}, PID ${pid ?? "none"}).`,
   stoppingBeforeQuit: "Nexum is quitting: stopping the server cleanly first.",
 
   activeMods: (count, list) => `Active mods (${count}): ${list}`,

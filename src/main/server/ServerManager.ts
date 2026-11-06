@@ -345,6 +345,9 @@ export class ServerManager {
   async stop(cfg?: StopConfig): Promise<{ success: boolean; error?: string }> {
     const pid = this.getRunningPid();
     if (!pid || this.status === "stopped") {
+      // Trace du refus (issue #144) : sans elle, un clic sur Arrêter qui ne
+      // fait rien ne laisse aucun indice dans les logs.
+      this.onLog(managerLine(lt().stopRefused(this.status, pid)));
       return { success: false, error: appError("SERVER_NOT_RUNNING") };
     }
 

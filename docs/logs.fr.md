@@ -44,6 +44,10 @@ Si un serveur tournait déjà à l'ouverture de Nexum (Nexum l'« adopte »), sa
 
 Exception : **RuneScape: Dragonwilds**. Sa sortie standard ne contient que les avertissements et les erreurs : Nexum lit donc le fichier de log du jeu (`RSDragonwilds/Saved/Logs/RSDragonwilds.log`, sans l'horodatage du moteur). Ça marche aussi pour un serveur adopté : le log reprend là où il en était à l'ouverture de Nexum.
 
+### Ligne « Arrêt refusé »
+
+Si un clic sur **Arrêter** n'arrête rien, la vue affiche une ligne `[Manager]` comme `Arrêt refusé : le serveur n'est pas lancé (statut stopped, PID aucun).` Elle signifie que Nexum ne considère pas ce serveur comme lancé. Copiez-la dans votre rapport de bug.
+
 ### Champ « Fichier de log » de Valheim
 
 Dans **Configuration → Avancé** de Valheim, laissez **Fichier de log** vide. S'il est rempli, Valheim écrit sa sortie dans ce fichier au lieu de l'envoyer à Nexum : la page Logs, la console du Dashboard et les sessions enregistrées restent vides.
