@@ -32,6 +32,7 @@ import { registerBackupHandlers } from "./handlers/backup";
 import { registerScheduleHandlers } from "./handlers/schedule";
 import { registerServersHandlers } from "./handlers/servers";
 import { registerAutoUpdater } from "../update/AutoUpdater";
+import { confirmAndStopServers } from "../server/quitGuard";
 import { registerPalapiHandlers } from "../games/palworld/handlers/palapi";
 import { registerPlayersHandlers } from "../games/palworld/handlers/players";
 import { registerValheimHandlers } from "../games/valheim/handlers/config";
@@ -361,7 +362,9 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
 
   registerMiscHandlers(ctx);
   registerLogsHandlers(ctx);
-  registerAutoUpdater(ctx.store);
+  registerAutoUpdater(ctx.store, () =>
+    confirmAndStopServers(ctx, BrowserWindow.getAllWindows()[0] ?? null),
+  );
   registerSteamHandlers(ctx);
   registerServerHandlers(ctx);
   registerPalapiHandlers(ctx);

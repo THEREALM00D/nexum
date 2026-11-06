@@ -125,6 +125,17 @@ Closing the Nexum window doesn't quit it: Nexum keeps running in the Windows **n
 
 To make closing the window quit Nexum instead, turn off **Settings → Keep Nexum running in the notification area when closed**. With this setting off, Nexum launched with Windows starts minimized in the taskbar instead.
 
+### Quitting Nexum with servers online
+
+Servers started by Nexum stop when Nexum quits. So when you **Quit Nexum**, close the window with the setting above turned off, or install a Nexum update while servers are online, Nexum asks first:
+
+- **Stop and quit**: Nexum stops each server cleanly, the same way as the **Stop** button (the world is saved), then quits. It can take up to a minute; a Windows notification tells you it's in progress.
+- **Cancel**: nothing is stopped, Nexum keeps running.
+
+A server Nexum didn't start itself (already running when Nexum opened) keeps running after Nexum quits, and Nexum picks it up again next time: Nexum doesn't ask about it.
+
+Shutting down or restarting Windows doesn't go through this question: stop your servers before.
+
 ## Updating the server
 
 A server that is one version behind refuses players who updated their game. So every time a server starts (**Start** button or automatic start), Nexum checks in the background whether it is up to date:

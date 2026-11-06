@@ -113,8 +113,16 @@ function checkNow(): void {
  * Flow entièrement manuel côté utilisateur : on vérifie automatiquement au
  * démarrage, mais le téléchargement et l'installation restent des actions
  * explicites (pas d'auto-download/install silencieux).
+ *
+ * `beforeInstall` : arrête proprement les serveurs lancés par Nexum (avec
+ * confirmation, `server/quitGuard.ts`), false = annulé. Doit passer AVANT
+ * `quitAndInstall()`, qui lance l'installeur avant même `before-quit` :
+ * l'installeur ferme ensuite Nexum et ses processus enfants (`taskkill /T`).
  */
-export function registerAutoUpdater(store: Store<AppStore>): void {
+export function registerAutoUpdater(
+  store: Store<AppStore>,
+  beforeInstall: () => Promise<boolean>,
+): void {
   autoUpdater.allowPrerelease = store.get("betaUpdates", false);
   autoUpdater.on("checking-for-update", () => setStatus({ state: "checking" }));
   autoUpdater.on("update-available", (info) =>
@@ -139,7 +147,9 @@ export function registerAutoUpdater(store: Store<AppStore>): void {
     setStatus({ state: "downloading", percent: 0 });
     autoUpdater.downloadUpdate().catch(handleError);
   });
-  ipcMain.handle("update:install", () => autoUpdater.quitAndInstall());
+  ipcMain.handle("update:install", async () => {
+    if (await beforeInstall()) autoUpdater.quitAndInstall();
+  });
   ipcMain.handle("update:getBetaUpdates", () =>
     store.get("betaUpdates", false),
   );

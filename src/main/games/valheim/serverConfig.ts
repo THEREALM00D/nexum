@@ -63,10 +63,14 @@ export const valheimServerConfig = {
       adminPassword: "",
       shutdownWaittime: 0,
       shutdownMessage: "",
-      // Pas d'API REST, mais le manuel officiel recommande explicitement un
-      // CTRL+C pour un arrêt propre plutôt qu'un kill direct (risque de
-      // sauvegarde corrompue sinon).
-      gracefulSignal: "ctrlC" as const,
+      // Pas d'API REST : le manuel officiel recommande un CTRL+C plutôt qu'un
+      // kill direct (sauvegarde corrompue sinon). ⚠️ Lancé par Nexum, Valheim
+      // ignorait le CTRL+C émulé (30 s puis taskkill, monde non sauvegardé ;
+      // probablement l'attribut « ignorer CTRL+C » hérité du parent).
+      // CTRL+Pause ne peut pas être ignoré ainsi et donne le même arrêt propre
+      // (« OnApplicationQuit » → « World save (5/5) done », code 0, ~3 s),
+      // vérifié (serveur SteamCMD 896660, build 26266951, novembre 2026).
+      gracefulSignal: "ctrlBreak" as const,
     };
   },
 

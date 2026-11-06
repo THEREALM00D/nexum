@@ -25,7 +25,7 @@ Shown at the top as a colored chip:
 | Game                   | How the server stops                                                                                    |
 | ---------------------- | ------------------------------------------------------------------------------------------------------- |
 | Palworld               | REST API: announcement, save, shutdown                                                                  |
-| Valheim                | CTRL+C: the game saves the world before closing                                                         |
+| Valheim                | CTRL+Break: the game saves the world before closing                                                     |
 | Enshrouded             | CTRL+Break: the game saves the world before closing                                                     |
 | Astroneer              | Immediate stop with `taskkill`                                                                          |
 | RuneScape: Dragonwilds | Immediate stop with `taskkill`: the game has no clean stop on Windows, but it autosaves every 5 minutes |

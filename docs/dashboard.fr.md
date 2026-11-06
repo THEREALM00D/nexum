@@ -25,7 +25,7 @@ Affiché en haut sous forme de chip coloré :
 | Jeu                    | Comment le serveur s'arrête                                                                                         |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | Palworld               | API REST : annonce, sauvegarde, arrêt                                                                               |
-| Valheim                | CTRL+C : le jeu sauvegarde le monde avant de se fermer                                                              |
+| Valheim                | CTRL+Pause : le jeu sauvegarde le monde avant de se fermer                                                          |
 | Enshrouded             | CTRL+Pause : le jeu sauvegarde le monde avant de se fermer                                                          |
 | Astroneer              | Arrêt immédiat par `taskkill`                                                                                       |
 | RuneScape: Dragonwilds | Arrêt immédiat par `taskkill` : le jeu n'a pas d'arrêt propre sous Windows, mais il sauvegarde toutes les 5 minutes |

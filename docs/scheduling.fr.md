@@ -74,7 +74,7 @@ Si l'API est désactivée, Nexum affiche un avertissement avec un bouton **Activ
 
 > Sans API REST, l'arrêt se fait avec `taskkill /F` sans sauvegarde — vous risquez de perdre des données récentes.
 
-**Valheim** n'a pas d'API, donc pas d'avertissement en jeu, mais il s'arrête proprement : Nexum lui envoie CTRL+C et le serveur sauvegarde le monde avant de se fermer. Un arrêt forcé n'a lieu qu'en dernier recours, si le serveur ne répond pas.
+**Valheim** n'a pas d'API, donc pas d'avertissement en jeu, mais il s'arrête proprement : Nexum lui envoie CTRL+Pause et le serveur sauvegarde le monde avant de se fermer. Un arrêt forcé n'a lieu qu'en dernier recours, si le serveur ne répond pas.
 
 **Astroneer** : Nexum n'utilise pas sa console d'administration, le redémarrage l'arrête donc immédiatement, sans avertissement en jeu ni sauvegarde préalable.
 
