@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.19.0](https://github.com/THEREALM00D/nexum/compare/v0.18.0...v0.19.0) (2026-11-06)
+
+
+### Features
+
+* notify when crash auto-restarts give up ([#184](https://github.com/THEREALM00D/nexum/issues/184)) ([4aa2139](https://github.com/THEREALM00D/nexum/commit/4aa2139510796104be6db9b09c9c35a4ebdd1f15))
+
+
+### Bug Fixes
+
+* stop servers properly before Nexum quits ([#182](https://github.com/THEREALM00D/nexum/issues/182)) ([c6285e6](https://github.com/THEREALM00D/nexum/commit/c6285e623a6dea0cd792afc1542e8f756d6a2623))
+* stop the displayed server even when another instance changes the active one ([#185](https://github.com/THEREALM00D/nexum/issues/185)) ([4f265c8](https://github.com/THEREALM00D/nexum/commit/4f265c86ddb739785ae727b70d3ec0e9141bc4bf))
+
 ## [0.18.0](https://github.com/THEREALM00D/nexum/compare/v0.17.0...v0.18.0) (2026-11-04)
 
 
