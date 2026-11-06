@@ -78,9 +78,10 @@ Les mods installés manuellement ne sont pas concernés : sans registre connu, N
 
 Liste les fichiers `.cfg` générés par les mods dans `BepInEx/config/` (un mod crée son fichier au premier lancement du serveur).
 
-- Filtrez la liste par nom de fichier, puis cliquez sur **Éditer**.
+- Le champ de recherche de la liste cherche un nom de fichier **et** les paramètres de tous les fichiers (nom, description ou section). Chaque fichier trouvé affiche ses premiers paramètres trouvés (`Section › Paramètre`), puis le nombre de paramètres en plus.
+- Cliquez sur un fichier (ou sur **Éditer**) pour l'ouvrir. S'il a été trouvé grâce à ses paramètres, l'éditeur s'ouvre avec la même recherche déjà appliquée : vous arrivez directement dessus.
 - L'éditeur affiche chaque paramètre avec le bon type de champ (case à cocher, liste, nombre borné…) d'après les commentaires générés par BepInEx, et sa valeur par défaut.
-- Le champ de recherche filtre les paramètres par nom, description ou section.
+- Le champ de recherche de l'éditeur filtre les paramètres de ce fichier par nom, description ou section.
 - Seules les lignes de valeur modifiées sont réécrites : le reste du fichier (commentaires, ordre) est conservé.
 - Si vous fermez un fichier modifié sans l'avoir enregistré, Nexum demande confirmation : **Continuer l'édition**, **Quitter sans enregistrer** ou **Enregistrer**.
 
