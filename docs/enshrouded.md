@@ -65,11 +65,11 @@ Use another port (for example 15638). Nexum refuses to start a server whose port
 
 ## Stopping and saves
 
-Stopping is **clean**: Nexum sends the server a CTRL+Break signal, the server saves the world and shuts down within a second or two (CTRL+C is ignored by Enshrouded, tested). The [scheduled restart](scheduling.md) works the same way, but players can't be warned in game (no admin API).
+Stopping is **clean**: Nexum sends the server a CTRL+Break signal, the server saves the world and shuts down within a second or two (Enshrouded ignores the CTRL+C sent by Nexum, tested). The [scheduled restart](scheduling.md) works the same way, but players can't be warned in game (no admin API).
 
 World saves are in the `savegame` folder of the server (`world0.ksd`, plus the copies the game keeps in `savegame/backup`). Nexum's [backups](backups.md) zip this folder, and follow the save folder set in **Advanced**.
 
-Good to know: **quitting Nexum** (tray menu **Quit Nexum**) also stops a server it started, without a clean save. Closing the window is fine (Nexum stays in the notification area, the default); to quit Nexum, stop the server first.
+Good to know: a server started by Nexum stops when Nexum quits. Nexum asks first and stops it cleanly (see [Quitting Nexum with servers online](installation.md#quitting-nexum-with-servers-online)).
 
 ## Logs
 

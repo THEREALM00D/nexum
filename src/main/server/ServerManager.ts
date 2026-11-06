@@ -18,9 +18,8 @@ export interface StopConfig {
   shutdownMessage?: string;
   /**
    * Pas d'API REST pour ce jeu, mais un arrêt propre reste possible via un
-   * signal de console émulé (CTRL+C pour Valheim, recommandé par son manuel
-   * officiel ; CTRL+Pause pour Enshrouded) plutôt qu'un taskkill direct, qui
-   * risque de corrompre la sauvegarde en cours.
+   * signal de console émulé (CTRL+Pause pour Valheim et Enshrouded) plutôt
+   * qu'un taskkill direct, qui risque de corrompre la sauvegarde en cours.
    */
   gracefulSignal?: ConsoleSignal;
 }
@@ -107,6 +106,16 @@ export class ServerManager {
 
   private getRunningPid(): number | null {
     return this.process?.pid ?? this.adoptedPid ?? null;
+  }
+
+  /**
+   * Vrai si le serveur a été lancé par cette instance de Nexum (processus
+   * enfant). Il est alors dans le job Windows de Nexum et meurt avec lui : à
+   * arrêter proprement avant de quitter (`server/quitGuard.ts`). Un serveur
+   * adopté, lui, survit à la fermeture.
+   */
+  ownsProcess(): boolean {
+    return this.process !== null;
   }
 
   /** PID du processus racine du serveur (lancé ou adopté), null s'il ne tourne pas. */

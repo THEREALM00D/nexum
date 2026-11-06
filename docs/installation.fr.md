@@ -125,6 +125,17 @@ Fermer la fenêtre de Nexum ne le quitte pas : Nexum continue de tourner dans la
 
 Pour que fermer la fenêtre quitte Nexum, désactivez **Paramètres → Garder Nexum dans la zone de notification à la fermeture**. Dans ce cas, Nexum lancé avec Windows démarre réduit dans la barre des tâches.
 
+### Quitter Nexum avec des serveurs en ligne
+
+Les serveurs démarrés par Nexum s'arrêtent quand Nexum se ferme. Quand vous faites **Quitter Nexum**, fermez la fenêtre avec le réglage ci-dessus désactivé, ou installez une mise à jour de Nexum alors que des serveurs sont en ligne, Nexum vous demande donc d'abord :
+
+- **Arrêter et quitter** : Nexum arrête chaque serveur proprement, comme le bouton **Arrêter** (le monde est sauvegardé), puis se ferme. Cela peut prendre jusqu'à une minute ; une notification Windows vous l'indique.
+- **Annuler** : rien n'est arrêté, Nexum reste ouvert.
+
+Un serveur que Nexum n'a pas démarré lui-même (déjà lancé à l'ouverture de Nexum) continue de tourner après la fermeture, et Nexum le reprend au lancement suivant : Nexum ne pose pas la question pour lui.
+
+L'arrêt ou le redémarrage de Windows ne passe pas par cette question : arrêtez vos serveurs avant.
+
 ## Mise à jour du serveur
 
 Un serveur en retard d'une version refuse les joueurs qui ont mis leur jeu à jour. À chaque démarrage d'un serveur (bouton **Démarrer** ou démarrage automatique), Nexum vérifie donc en arrière-plan s'il est à jour :

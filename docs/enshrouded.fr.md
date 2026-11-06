@@ -65,11 +65,11 @@ Utilisez un autre port (par exemple 15638). Nexum refuse de démarrer un serveur
 
 ## Arrêt et sauvegardes
 
-L'arrêt est **propre** : Nexum envoie au serveur un signal CTRL+Pause, le serveur sauvegarde le monde et s'éteint en une ou deux secondes (CTRL+C est ignoré par Enshrouded, testé). Le [redémarrage planifié](scheduling.fr.md) fonctionne de la même façon, mais les joueurs ne peuvent pas être prévenus en jeu (pas d'API d'administration).
+L'arrêt est **propre** : Nexum envoie au serveur un signal CTRL+Pause, le serveur sauvegarde le monde et s'éteint en une ou deux secondes (Enshrouded ignore le CTRL+C envoyé par Nexum, testé). Le [redémarrage planifié](scheduling.fr.md) fonctionne de la même façon, mais les joueurs ne peuvent pas être prévenus en jeu (pas d'API d'administration).
 
 Les sauvegardes du monde sont dans le dossier `savegame` du serveur (`world0.ksd`, plus les copies que le jeu garde dans `savegame/backup`). Les [sauvegardes](backups.fr.md) de Nexum zippent ce dossier et suivent le dossier choisi dans **Avancé**.
 
-Bon à savoir : **quitter Nexum** (menu de l'icône, **Quitter Nexum**) arrête aussi un serveur qu'il a lancé, sans sauvegarde propre. Fermer la fenêtre ne pose pas de problème (Nexum reste dans la zone de notification, par défaut) ; pour quitter Nexum, arrêtez d'abord le serveur.
+Bon à savoir : un serveur démarré par Nexum s'arrête quand Nexum se ferme. Nexum vous le demande d'abord et l'arrête proprement (voir [Quitter Nexum avec des serveurs en ligne](installation.fr.md#quitter-nexum-avec-des-serveurs-en-ligne)).
 
 ## Logs
 

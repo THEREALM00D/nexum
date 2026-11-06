@@ -4,9 +4,10 @@ import { join } from "path";
 import { writeFileSync, unlinkSync } from "fs";
 
 /**
- * Signal d'arrêt propre selon le jeu : Valheim sauvegarde sur CTRL+C,
- * Enshrouded ignore CTRL+C mais s'arrête proprement sur CTRL+Pause
- * (« Trigger gameflow shutdown, exit: Ctrl_Break », vérifié).
+ * Signal d'arrêt propre selon le jeu. Valheim et Enshrouded s'arrêtent
+ * proprement sur CTRL+Pause (vérifié). ⚠️ Un CTRL+C émulé est ignoré par un
+ * serveur lancé par Nexum (attribut « ignorer CTRL+C » probablement hérité
+ * du parent), CTRL+Pause ne peut pas l'être : préférer CTRL+Pause.
  */
 export type ConsoleSignal = "ctrlC" | "ctrlBreak";
 
