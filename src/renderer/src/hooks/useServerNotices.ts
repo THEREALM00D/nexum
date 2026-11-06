@@ -5,18 +5,21 @@ import { useNotification } from "../context/NotificationContext";
 import { serverService } from "../services/serverService";
 
 /**
- * Notifications des vérifications faites au démarrage d'un serveur (côté
- * main, en arrière-plan) :
+ * Notifications envoyées par le main pour un serveur (vérifications faites au
+ * démarrage, en arrière-plan, et relance après un plantage) :
  * - jeu pas à jour (`checkGameUpdateOnStart`) → bouton vers la page
  *   Installation, sauf install de la bibliothèque Steam (c'est Steam qui la
  *   met à jour) ;
  * - mods Valheim à mettre à jour ou dépréciés (`checkModUpdatesOnStart`) →
- *   bouton vers la page Mods.
+ *   bouton vers la page Mods ;
+ * - relance après un plantage abandonnée (`crashRestart.ts`) → bouton vers
+ *   la page Logs.
  * Le bouton sélectionne d'abord le serveur concerné.
  */
-export function useUpdateNotices(pages: {
+export function useServerNotices(pages: {
   openInstallPage: () => void;
   openModsPage: () => void;
+  openLogsPage: () => void;
 }): void {
   const { t } = useTranslation();
   const { state, switchActive } = useServer();
@@ -68,9 +71,23 @@ export function useUpdateNotices(pages: {
       });
     });
 
+    const stopCrash = serverService.onAutoRestartGaveUp((notice) => {
+      const { notify, t, pages } = latest.current;
+      const params = {
+        name: serverName(notice.serverId),
+        crashes: notice.crashes,
+        minutes: notice.minutes,
+      };
+      notify(t("autoRestart.gaveUp", params), "error", {
+        label: t("autoRestart.viewLogs"),
+        onClick: () => goTo(notice.serverId, pages.openLogsPage),
+      });
+    });
+
     return () => {
       stopGame();
       stopMods();
+      stopCrash();
     };
   }, []);
 }

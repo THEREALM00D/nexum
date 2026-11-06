@@ -110,7 +110,7 @@ When you log in to Windows, Nexum starts in the background (its icon near the cl
 
 In **Servers**, edit a server and check **Restart automatically after a crash**: when the server stops on its own with an error, Nexum starts it again 10 seconds later, with the same checks as a manual start. A server that stops cleanly, or that you stop yourself, is not restarted.
 
-To avoid an endless loop with a server that crashes as soon as it starts (corrupted world, broken mod), Nexum gives up after 3 crashes within 30 minutes and says so in the log. Find out what's wrong (see [Logs → Diagnostics](logs.md#diagnostics)), then start the server yourself.
+To avoid an endless loop with a server that crashes as soon as it starts (corrupted world, broken mod), Nexum gives up after 3 crashes within 30 minutes. It tells you with a notification (with a **View logs** button), and with a Windows notification if the Nexum window is hidden or in the background. Giving up is also written at the end of the last crashed session, like each "Restarting automatically in 10 s", so it's still there after Nexum is closed. Find out what's wrong (see [Logs → Diagnostics](logs.md#diagnostics)), then start the server yourself.
 
 The world is only as recent as the game's last save: Nexum can't save a world while the game is crashing.
 

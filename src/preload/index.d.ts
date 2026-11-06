@@ -12,6 +12,7 @@ import type {
   UpdateCheckResult,
   GameUpdateNotice,
   ModUpdateNotice,
+  AutoRestartGaveUpNotice,
   AppUpdateStatus,
   LaunchArgsConfig,
   ValheimLaunchConfig,
@@ -120,6 +121,9 @@ interface API {
     ) => () => void;
     onModUpdatesAvailable: (
       cb: (notice: ModUpdateNotice) => void,
+    ) => () => void;
+    onAutoRestartGaveUp: (
+      cb: (notice: AutoRestartGaveUpNotice) => void,
     ) => () => void;
   };
   palconfig: {

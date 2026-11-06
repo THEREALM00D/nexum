@@ -110,7 +110,7 @@ Pour que vos serveurs repartent tout seuls après un redémarrage du PC :
 
 Dans **Serveurs**, modifiez un serveur et cochez **Relancer automatiquement après un plantage** : quand le serveur s'arrête seul avec une erreur, Nexum le redémarre 10 secondes plus tard, avec les mêmes vérifications qu'un démarrage manuel. Un serveur qui s'arrête normalement, ou que vous arrêtez vous-même, n'est pas relancé.
 
-Pour ne pas boucler sur un serveur qui plante dès le démarrage (monde corrompu, mod cassé), Nexum abandonne après 3 plantages en 30 minutes et l'écrit dans les logs. Cherchez la cause (voir [Logs → Diagnostic](logs.fr.md#diagnostic)), puis démarrez le serveur vous-même.
+Pour ne pas boucler sur un serveur qui plante dès le démarrage (monde corrompu, mod cassé), Nexum abandonne après 3 plantages en 30 minutes. Il vous prévient par une notification (avec un bouton **Voir les logs**), et par une notification Windows si la fenêtre de Nexum est cachée ou en arrière-plan. L'abandon est aussi écrit à la fin de la dernière session plantée, comme chaque « Relance automatique dans 10 s », ce qui le garde après la fermeture de Nexum. Cherchez la cause (voir [Logs → Diagnostic](logs.fr.md#diagnostic)), puis démarrez le serveur vous-même.
 
 Le monde repart de la dernière sauvegarde faite par le jeu : Nexum ne peut pas sauvegarder un monde pendant que le jeu plante.
 

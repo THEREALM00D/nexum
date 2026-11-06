@@ -59,7 +59,8 @@ export class ServerManager {
    * `sessionLog` : fichier de log persistant, un par session (démarrage →
    * arrêt). Optionnel pour ne pas imposer le disque aux usages sans fichier.
    * `onCrash` : appelé quand le serveur s'arrête seul avec une erreur (lancé
-   * ou adopté), session déjà close. La relance éventuelle est décidée
+   * ou adopté), session encore ouverte (ce qu'il écrit avec `log()` va dans
+   * le fichier de la session plantée). La relance éventuelle est décidée
    * ailleurs (`server/crashRestart.ts`) pour repasser par `startServer`.
    */
   constructor(
@@ -153,8 +154,9 @@ export class ServerManager {
       this.adoptedPid = null;
       this.status = this.status === "stopping" ? "stopped" : "crashed";
       this.stopAdoptedPoll();
-      this.endSession(this.status === "crashed");
-      if (this.status === "crashed") this.onCrash?.();
+      const crashed = this.status === "crashed";
+      if (crashed) this.onCrash?.();
+      this.endSession(crashed);
     }, 5000);
   }
 
@@ -251,8 +253,10 @@ export class ServerManager {
         this.stopTailer(); // dernières lignes du jeu avant celle de Nexum
         const crashed = this.status === "crashed";
         log(managerLine(exitText(code, crashed)));
-        this.endSession(crashed);
+        // Avant de clore la session : les lignes de la relance auto (ou de
+        // son abandon) restent dans le fichier de la session plantée.
         if (wasRunning && crashed) this.onCrash?.();
+        this.endSession(crashed);
       });
 
       this.process.on("error", (err) => {

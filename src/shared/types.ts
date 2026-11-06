@@ -176,6 +176,18 @@ export interface ModUpdateNotice {
   deprecated: number;
 }
 
+/**
+ * Envoyé au renderer (`server:autoRestartGaveUp`) quand la relance après un
+ * plantage abandonne (`crashRestart.ts`).
+ */
+export interface AutoRestartGaveUpNotice {
+  serverId: string;
+  /** Plantages comptés dans la fenêtre. */
+  crashes: number;
+  /** Durée de la fenêtre, en minutes. */
+  minutes: number;
+}
+
 /** Infos pour rejoindre un serveur (carte « Rejoindre le serveur »). */
 export interface JoinInfo {
   /** IPv4 de ce PC sur le réseau local, pour les joueurs du même réseau. */

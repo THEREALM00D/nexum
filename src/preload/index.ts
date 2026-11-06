@@ -6,6 +6,7 @@ import type {
   GameType,
   GameUpdateNotice,
   ModUpdateNotice,
+  AutoRestartGaveUpNotice,
   ModRegistry,
   RestartConfig,
 } from "../shared/types";
@@ -121,6 +122,15 @@ const api = {
       ipcRenderer.on("valheim:modUpdatesAvailable", (_e, notice) => cb(notice));
       return () =>
         ipcRenderer.removeAllListeners("valheim:modUpdatesAvailable");
+    },
+    onAutoRestartGaveUp: (cb: (notice: AutoRestartGaveUpNotice) => void) => {
+      const listener = (
+        _e: IpcRendererEvent,
+        notice: AutoRestartGaveUpNotice,
+      ) => cb(notice);
+      ipcRenderer.on("server:autoRestartGaveUp", listener);
+      return () =>
+        ipcRenderer.removeListener("server:autoRestartGaveUp", listener);
     },
   },
   // Palworld config (serverId optionnel — par défaut actif)

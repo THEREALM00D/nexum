@@ -1,5 +1,9 @@
 import type { OperationResult, ServerStatus, ServerLogEvent } from "../types";
-import type { GameUpdateNotice, ModUpdateNotice } from "@shared/types";
+import type {
+  AutoRestartGaveUpNotice,
+  GameUpdateNotice,
+  ModUpdateNotice,
+} from "@shared/types";
 
 export const serverService = {
   start: (serverId?: string): Promise<OperationResult> =>
@@ -18,4 +22,6 @@ export const serverService = {
     window.api.server.onGameUpdateAvailable(cb),
   onModUpdatesAvailable: (cb: (notice: ModUpdateNotice) => void) =>
     window.api.server.onModUpdatesAvailable(cb),
+  onAutoRestartGaveUp: (cb: (notice: AutoRestartGaveUpNotice) => void) =>
+    window.api.server.onAutoRestartGaveUp(cb),
 };
