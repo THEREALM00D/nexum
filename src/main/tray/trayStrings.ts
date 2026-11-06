@@ -2,8 +2,9 @@ import type { ServerStatus } from "../../shared/types";
 import type { AppLanguage } from "../i18n/language";
 
 // Le main n'a pas react-i18next : textes du menu de l'icône, de la
-// notification « Nexum continue en arrière-plan » et de la confirmation avant
-// de quitter (`server/quitGuard.ts`), en FR et EN. La langue vient du
+// notification « Nexum continue en arrière-plan », de la confirmation avant
+// de quitter (`server/quitGuard.ts`) et de l'abandon de la relance après un
+// plantage (`server/crashRestart.ts`), en FR et EN. La langue vient du
 // renderer (IPC `app:setLanguage`), mémorisée dans le store.
 export type TrayLanguage = AppLanguage;
 
@@ -35,6 +36,9 @@ Ils s'arrêtent avec Nexum : Nexum va d'abord les arrêter proprement (sauvegard
     quitCancel: "Annuler",
     stoppingTitle: "Arrêt des serveurs",
     stoppingBody: "Nexum arrête proprement les serveurs et se fermera ensuite.",
+    crashGaveUpTitle: "Relance automatique abandonnée",
+    crashGaveUpBody: (name: string, crashes: number, minutes: number) =>
+      `« ${name} » a planté ${crashes} fois en moins de ${minutes} min : Nexum ne le relance plus. Consultez ses logs puis démarrez-le à la main.`,
     status: {
       running: "En ligne",
       starting: "Démarrage…",
@@ -71,6 +75,9 @@ They stop with Nexum: Nexum will first stop them cleanly (the world is saved), t
     stoppingTitle: "Stopping servers",
     stoppingBody:
       "Nexum is stopping the servers cleanly and will quit afterwards.",
+    crashGaveUpTitle: "Auto-restart stopped",
+    crashGaveUpBody: (name: string, crashes: number, minutes: number) =>
+      `"${name}" crashed ${crashes} times in less than ${minutes} min: Nexum no longer restarts it. Check its logs, then start it manually.`,
     status: {
       running: "Online",
       starting: "Starting…",

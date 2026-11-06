@@ -127,6 +127,11 @@ export default {
       "{{name}} : une mise à jour du serveur est disponible (build {{build}}). Installé via la bibliothèque Steam : mettez-le à jour depuis Steam.",
     update: "Mettre à jour",
   },
+  autoRestart: {
+    gaveUp:
+      "{{name}} : relance automatique abandonnée après {{crashes}} plantages en moins de {{minutes}} min. Consultez les logs des sessions plantées, puis démarrez le serveur à la main.",
+    viewLogs: "Voir les logs",
+  },
   modUpdate: {
     available_one:
       "{{name}} : 1 mod a une mise à jour. Mettez-le à jour serveur arrêté.",

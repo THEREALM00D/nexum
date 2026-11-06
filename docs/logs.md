@@ -52,7 +52,7 @@ In Valheim's **Configuration → Advanced**, leave **Log file** empty. When it's
 
 Every server start opens a **new session**: the view starts empty, and everything is also written to a file that survives closing Nexum. A manual restart, the daily scheduled restart and an automatic restart after a crash each start a new session.
 
-- **Session picker** (next to the buttons): **Current session (live)**, or any previous session to read it again. Sessions marked ⚠ **crashed** are the ones where the server stopped on its own with an error: that's the file to share in a bug report.
+- **Session picker** (next to the buttons): **Current session (live)**, or any previous session to read it again. Sessions marked ⚠ **crashed** are the ones where the server stopped on its own with an error: that's the file to share in a bug report. If automatic restart is on, the crashed session ends with the line announcing the restart (or that Nexum gave up).
 - **Folder button**: opens the folder with the log files, `%APPDATA%\Nexum\servers\<server id>\logs\` (`%APPDATA%\server-forge\…` for installs that started as ServerForge).
 - Each line in the file starts with the time, e.g. `[14:32:07]`.
 - Nexum keeps the **last 20 sessions** per server and deletes older ones. A session file is capped at **20 MB**: a longer session (a busy Dragonwilds server writes that much in about 11 hours) continues in a new file, which appears as a separate entry in the session list. A line at the end of one file and the start of the next links the two. Disk use stays bounded, even for a server stuck in an error loop.

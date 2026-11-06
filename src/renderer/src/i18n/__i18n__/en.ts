@@ -123,6 +123,11 @@ export default {
       "{{name}}: a server update is available (build {{build}}). Installed through the Steam library: update it from Steam.",
     update: "Update",
   },
+  autoRestart: {
+    gaveUp:
+      "{{name}}: auto-restart stopped after {{crashes}} crashes in less than {{minutes}} min. Check the logs of the crashed sessions, then start the server manually.",
+    viewLogs: "View logs",
+  },
   modUpdate: {
     available_one:
       "{{name}}: 1 mod has an update. Update it while the server is stopped.",

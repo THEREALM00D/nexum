@@ -11,7 +11,7 @@ import Titlebar from "./components/Titlebar/Titlebar";
 import Sidebar from "./components/Sidebar/Sidebar";
 import PageSkeleton from "./components/common/PageSkeleton";
 import { DEFAULT_GAME, getGamePlugin } from "./games/registry";
-import { useUpdateNotices } from "./hooks/useUpdateNotices";
+import { useServerNotices } from "./hooks/useServerNotices";
 
 export type Page =
   | "dashboard"
@@ -37,9 +37,10 @@ const FULL_WIDTH_PAGES: Page[] = ["logs"];
 function AppShell() {
   const [page, setPage] = useState<Page>("dashboard");
   const { state } = useServer();
-  useUpdateNotices({
+  useServerNotices({
     openInstallPage: () => setPage("install"),
     openModsPage: () => setPage("mods"),
+    openLogsPage: () => setPage("logs"),
   });
 
   // Premier lancement (aucun serveur) : l'assistant plutôt qu'une app vide.
