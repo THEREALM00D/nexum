@@ -37,8 +37,6 @@ export default {
       crashed: "plantée",
       size: "{{size}} Ko",
       openDir: "Ouvrir le dossier des logs",
-      truncated:
-        "Affichage des {{count}} dernières lignes de cette session. Copier et Enregistrer exportent le fichier complet.",
     },
   },
 };

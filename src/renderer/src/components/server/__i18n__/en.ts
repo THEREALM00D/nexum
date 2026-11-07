@@ -37,8 +37,6 @@ export default {
       crashed: "crashed",
       size: "{{size}} KB",
       openDir: "Open the logs folder",
-      truncated:
-        "Showing the last {{count}} lines of this session. Copy and Save export the whole file.",
     },
   },
 };

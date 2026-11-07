@@ -5,6 +5,8 @@ import { writeFile } from "fs/promises";
 import { basename, join } from "path";
 import type { IpcContext } from "../context";
 import { AppError } from "../../utils/appError";
+import { filterNoise } from "../../logs/logNoise";
+import { getGameLogNoise } from "../../games/registry";
 
 export function registerLogsHandlers(ctx: IpcContext): void {
   const resolveId = (id: string | undefined): string => {
@@ -18,8 +20,17 @@ export function registerLogsHandlers(ctx: IpcContext): void {
     ctx.sessionLogs.list(resolveId(serverId)),
   );
 
-  ipcMain.handle("logs:readSession", (_, name: string, serverId?: string) =>
-    ctx.sessionLogs.read(resolveId(serverId), name),
+  // `forDisplay` : sans les lignes techniques du jeu (même filtre que la vue
+  // en direct). L'export lit le fichier brut.
+  ipcMain.handle(
+    "logs:readSession",
+    (_, name: string, serverId?: string, forDisplay?: boolean) => {
+      const id = resolveId(serverId);
+      const text = ctx.sessionLogs.read(id, name);
+      if (!forDisplay) return text;
+      const gameType = ctx.servers.list().find((s) => s.id === id)?.gameType;
+      return gameType ? filterNoise(getGameLogNoise(gameType), text) : text;
+    },
   );
 
   ipcMain.handle("logs:openDir", async (_, serverId?: string) => {

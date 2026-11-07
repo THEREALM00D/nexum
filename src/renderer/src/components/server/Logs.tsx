@@ -1,11 +1,11 @@
-import { Alert, Box, Typography, Paper, Button, Stack } from "@mui/material";
+import { Box, Typography, Paper, Button, Stack } from "@mui/material";
 import DeleteSweepIcon from "@mui/icons-material/DeleteSweep";
 import { useTranslation } from "react-i18next";
 import { useServer } from "../../context/ServerContext";
 import LogExportButtons from "./LogExportButtons";
 import LogSessionPicker from "./LogSessionPicker";
 import LogLines from "./LogLines";
-import { MAX_DISPLAYED_LINES, useLogSessions } from "./hooks/useLogSessions";
+import { useLogSessions } from "./hooks/useLogSessions";
 
 export default function Logs() {
   const { t } = useTranslation();
@@ -61,12 +61,6 @@ export default function Logs() {
         </Stack>
       </Stack>
 
-      {logs.truncated && (
-        <Alert severity="info" sx={{ fontSize: 13 }}>
-          {t("logs.session.truncated", { count: MAX_DISPLAYED_LINES })}
-        </Alert>
-      )}
-
       <Paper
         sx={{
           flex: 1,
@@ -77,7 +71,8 @@ export default function Logs() {
           minHeight: 0,
         }}
       >
-        <LogLines lines={logs.displayed} />
+        {/* key : une autre session s'ouvre en bas de son log */}
+        <LogLines key={logs.selected ?? "live"} lines={logs.displayed} />
       </Paper>
     </Stack>
   );

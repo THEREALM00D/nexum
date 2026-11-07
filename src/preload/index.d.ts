@@ -220,8 +220,16 @@ interface API {
   };
   logs: {
     listSessions: (serverId?: string) => Promise<LogSession[]>;
-    /** Contenu complet d'un fichier de session (`LogSession.name`). */
-    readSession: (name: string, serverId?: string) => Promise<string>;
+    /**
+     * Contenu complet d'un fichier de session (`LogSession.name`).
+     * `forDisplay` : sans les lignes techniques du jeu (affichage seulement,
+     * jamais pour un export).
+     */
+    readSession: (
+      name: string,
+      serverId?: string,
+      forDisplay?: boolean,
+    ) => Promise<string>;
     openDir: (serverId?: string) => Promise<void>;
     /** Chemin du fichier écrit, ou null si l'utilisateur a annulé. */
     saveToFile: (

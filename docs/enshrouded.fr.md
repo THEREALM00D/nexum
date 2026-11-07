@@ -73,7 +73,7 @@ Bon à savoir : un serveur démarré par Nexum s'arrête quand Nexum se ferme. N
 
 ## Logs
 
-La sortie du serveur s'affiche en entier dans la page **Logs**. Quand vous copiez ou enregistrez un log pour un rapport de bug, l'IP publique et l'identifiant Steam du serveur sont masqués.
+La sortie du serveur s'affiche dans la page **Logs**, sans les lignes techniques que le jeu écrit en grand nombre : liste des threads, description du processeur, logo du démarrage, bloc « Session » répété toutes les 30 secondes et statistiques écrites à l'arrêt. Les messages Steam habituels d'un serveur dédié (« Couldn't retrieve steam friends interface », « Could not find MatchmakingServers interface »…) ne sont pas des erreurs et ne s'affichent plus en rouge. Le fichier de la session et l'export (**Copier**, **Enregistrer**) contiennent tout. Quand vous copiez ou enregistrez un log pour un rapport de bug, l'IP publique et l'identifiant Steam du serveur sont masqués.
 
 ## Joueurs
 
