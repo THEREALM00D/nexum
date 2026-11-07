@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.20.1](https://github.com/THEREALM00D/nexum/compare/v0.20.0...v0.20.1) (2026-11-07)
+
+
+### Bug Fixes
+
+* run automatic backups for every running server ([#198](https://github.com/THEREALM00D/nexum/issues/198)) ([82cfad2](https://github.com/THEREALM00D/nexum/commit/82cfad231ae84955165dff8bf22bf5cca34d0734))
+* save the game and wait for stable files before backing up a running server ([#196](https://github.com/THEREALM00D/nexum/issues/196)) ([8e58ee4](https://github.com/THEREALM00D/nexum/commit/8e58ee46520ea778617f5971856b568286cf129a))
+
 ## [0.20.0](https://github.com/THEREALM00D/nexum/compare/v0.19.0...v0.20.0) (2026-11-07)
 
 
