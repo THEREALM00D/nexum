@@ -16,6 +16,8 @@ import { FONT_MONO } from "../../../../../theme";
 
 interface Props {
   fileName: string | null;
+  /** Recherche appliquée à l'ouverture (reprise de la liste des fichiers). */
+  initialSearch: string;
   entries: CfgEntry[];
   saving: boolean;
   /** Modifications non sauvegardées : la fermeture demande confirmation. */
@@ -27,6 +29,7 @@ interface Props {
 
 export default function ConfigFileEditorDialog({
   fileName,
+  initialSearch,
   entries,
   saving,
   dirty,
@@ -42,9 +45,9 @@ export default function ConfigFileEditorDialog({
   const [confirmClose, setConfirmClose] = useState(false);
 
   useEffect(() => {
-    setSearch("");
+    setSearch(initialSearch);
     setConfirmClose(false);
-  }, [fileName]);
+  }, [fileName, initialSearch]);
 
   // Croix/Échap/clic à côté/bouton Fermer passent tous par ici
   const requestClose = () => {

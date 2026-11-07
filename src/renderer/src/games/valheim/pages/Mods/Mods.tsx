@@ -87,6 +87,7 @@ export default function ValheimMods() {
     files: configFiles,
     loading: configsLoading,
     editing: editingConfig,
+    initialSearch: configInitialSearch,
     entries: configEntries,
     saving: savingConfig,
     dirty: configDirty,
@@ -286,6 +287,7 @@ export default function ValheimMods() {
 
       <ConfigFileEditorDialog
         fileName={editingConfig}
+        initialSearch={configInitialSearch}
         entries={configEntries}
         saving={savingConfig}
         dirty={configDirty}

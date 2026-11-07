@@ -12,6 +12,8 @@ export function useValheimModConfigs() {
   // Vrai dès le départ : la 1re lecture de la liste est un chargement
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<string | null>(null);
+  // Recherche déjà saisie dans la liste, reportée dans l'éditeur à l'ouverture
+  const [initialSearch, setInitialSearch] = useState("");
   const [lines, setLines] = useState<string[]>([]);
   const [entries, setEntries] = useState<CfgEntry[]>([]);
   // Valeurs telles que lues sur disque, pour détecter les modifs non sauvegardées
@@ -34,13 +36,14 @@ export function useValheimModConfigs() {
   }, [load]);
 
   const openFile = useCallback(
-    async (fileName: string) => {
+    async (fileName: string, search = "") => {
       try {
         const text = await window.api.valheim.mods.readConfigFile(fileName);
         const parsed = parseCfg(text);
         setLines(parsed.lines);
         setEntries(parsed.entries);
         setInitialEntries(parsed.entries);
+        setInitialSearch(search);
         setEditing(fileName);
       } catch {
         notify(t("valheimMods.configs.readFailed"), "error");
@@ -91,6 +94,7 @@ export function useValheimModConfigs() {
     files,
     loading,
     editing,
+    initialSearch,
     entries,
     saving,
     dirty,

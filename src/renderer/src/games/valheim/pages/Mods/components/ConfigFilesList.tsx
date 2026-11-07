@@ -1,13 +1,12 @@
-import { useMemo, useState } from "react";
-import { Box, IconButton, Stack, Tooltip, Typography } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
+import { useState } from "react";
+import { Stack, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import type { ValheimModConfigFile } from "@shared/types";
-import { formatDate, formatSize } from "../../../../../utils/format";
 import SearchField from "../../../../../components/common/SearchField";
 import ScrollPanel from "../../../../../components/common/ScrollPanel";
 import { skeletonRows } from "../../../../../components/common/LoadingSkeleton";
-import { FONT_MONO } from "../../../../../theme";
+import { useConfigFilesSearch } from "../hooks/useConfigFilesSearch";
+import ConfigFileRow from "./ConfigFileRow";
 
 // Fichier d'exemple des lignes en skeleton (jamais affiché)
 const PLACEHOLDER_FILE: ValheimModConfigFile = {
@@ -16,65 +15,13 @@ const PLACEHOLDER_FILE: ValheimModConfigFile = {
   mtime: 0,
 };
 
-function ConfigFileRow({
-  file,
-  locale,
-  onOpen,
-}: {
-  file: ValheimModConfigFile;
-  locale: string;
-  onOpen: (fileName: string) => void;
-}) {
-  const { t } = useTranslation();
-  return (
-    <Box
-      onClick={() => onOpen(file.name)}
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        gap: 2,
-        py: 1,
-        px: 1,
-        borderRadius: 1,
-        cursor: "pointer",
-        "&:hover": { bgcolor: "action.hover" },
-      }}
-    >
-      <Typography
-        variant="body2"
-        sx={{ flex: 1, fontFamily: FONT_MONO }}
-        noWrap
-      >
-        {file.name}
-      </Typography>
-      <Typography variant="caption" sx={{ color: "text.secondary" }}>
-        {formatSize(file.size)}
-      </Typography>
-      <Typography
-        variant="caption"
-        sx={{
-          color: "text.secondary",
-          minWidth: 120,
-          textAlign: "right",
-        }}
-      >
-        {formatDate(file.mtime, locale)}
-      </Typography>
-      <Tooltip title={t("valheimMods.configs.edit")}>
-        <IconButton size="small" onClick={() => onOpen(file.name)}>
-          <EditIcon fontSize="small" />
-        </IconButton>
-      </Tooltip>
-    </Box>
-  );
-}
-
 interface Props {
   files: ValheimModConfigFile[];
   /** Liste pas encore lue : lignes en skeleton. */
   loading: boolean;
   locale: string;
-  onOpen: (fileName: string) => void;
+  /** `search` : recherche à reporter dans l'éditeur (paramètres trouvés). */
+  onOpen: (fileName: string, search?: string) => void;
 }
 
 export default function ConfigFilesList({
@@ -85,13 +32,7 @@ export default function ConfigFilesList({
 }: Props) {
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
-
-  const visibleFiles = useMemo(() => {
-    const query = search.trim().toLowerCase();
-    return query
-      ? files.filter((f) => f.name.toLowerCase().includes(query))
-      : files;
-  }, [files, search]);
+  const { results, query, indexing } = useConfigFilesSearch(files, search);
 
   if (!loading && files.length === 0) {
     return (
@@ -101,9 +42,21 @@ export default function ConfigFilesList({
     );
   }
 
+  const placeholderRows = (count: number) =>
+    skeletonRows(
+      <ConfigFileRow
+        file={PLACEHOLDER_FILE}
+        matches={[]}
+        locale={locale}
+        onOpen={() => {}}
+      />,
+      count,
+    );
+
   return (
     <ScrollPanel
       minHeight={280}
+      resetKey={query}
       header={
         <SearchField
           value={search}
@@ -113,29 +66,27 @@ export default function ConfigFilesList({
         />
       }
     >
-      {visibleFiles.length === 0 && (
+      {!loading && !indexing && results.length === 0 && (
         <Typography variant="body2" sx={{ color: "text.secondary", py: 1 }}>
           {t("valheimMods.configs.noMatch")}
         </Typography>
       )}
       <Stack spacing={0.5}>
-        {loading &&
-          skeletonRows(
-            <ConfigFileRow
-              file={PLACEHOLDER_FILE}
-              locale={locale}
-              onOpen={() => {}}
-            />,
-            6,
-          )}
-        {visibleFiles.map((file) => (
+        {loading && placeholderRows(6)}
+        {results.map(({ file, matches }) => (
           <ConfigFileRow
             key={file.name}
             file={file}
+            matches={matches}
             locale={locale}
-            onOpen={onOpen}
+            // Fichier trouvé par son nom seul : ouvert sans filtre
+            onOpen={() =>
+              onOpen(file.name, matches.length > 0 ? query : undefined)
+            }
           />
         ))}
+        {/* Paramètres en cours de lecture : d'autres fichiers vont s'ajouter */}
+        {indexing && placeholderRows(3)}
       </Stack>
     </ScrollPanel>
   );

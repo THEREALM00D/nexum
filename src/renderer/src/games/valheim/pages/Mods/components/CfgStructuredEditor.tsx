@@ -3,6 +3,7 @@ import { Stack, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import type { CfgEntry } from "../utils/cfgParser";
 import CfgSection from "./CfgSection";
+import { cfgEntryMatches } from "../utils/cfgSearch";
 
 interface Props {
   entries: CfgEntry[];
@@ -14,15 +15,6 @@ interface Props {
 // Sous ce nombre de résultats, une recherche ouvre automatiquement les
 // sections concernées ; au-delà on laisse l'utilisateur les ouvrir (perf).
 const AUTO_EXPAND_MAX_RESULTS = 40;
-
-// Un nom de section qui matche garde tous les paramètres de la section.
-function matches(entry: CfgEntry, query: string): boolean {
-  return (
-    entry.section.toLowerCase().includes(query) ||
-    entry.key.toLowerCase().includes(query) ||
-    (entry.description?.toLowerCase().includes(query) ?? false)
-  );
-}
 
 export default function CfgStructuredEditor({
   entries,
@@ -38,7 +30,7 @@ export default function CfgStructuredEditor({
     const map = new Map<string, CfgEntry[]>();
     let count = 0;
     for (const entry of entries) {
-      if (query && !matches(entry, query)) continue;
+      if (query && !cfgEntryMatches(entry, query)) continue;
       const list = map.get(entry.section) ?? [];
       list.push(entry);
       map.set(entry.section, list);
