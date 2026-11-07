@@ -108,4 +108,6 @@ Open source sous licence [GNU General Public License v3.0 ou ultérieure](LICENS
 
 La branche `main` est protégée : toute contribution passe par une Pull Request, et seul le mainteneur du projet peut la merger.
 
+Toute Pull Request part d'une [issue](https://github.com/THEREALM00D/nexum/issues) : créez-la d'abord si elle n'existe pas, puis ajoutez `Closes #<numéro>` à la description de la PR. C'est vérifié en CI (les Pull Requests ouvertes par des bots en sont dispensées).
+
 Les titres de PR doivent suivre [Conventional Commits](https://www.conventionalcommits.org/) (`feat: …`, `fix: …`, `chore: …`), ce qui est vérifié en CI. Les versions et le [CHANGELOG](CHANGELOG.md) sont générés à partir de ces titres par [release-please](https://github.com/googleapis/release-please-action) : `fix` fait monter la version patch, `feat` la version mineure, et une release est publiée en mergeant la PR de release qu'il ouvre. Pour faire tester une branche avant, le workflow **Beta release** (Actions → Run workflow) la publie en préversion `X.Y.Z-beta.N`, proposée seulement aux utilisateurs qui ont activé **Paramètres → Recevoir les versions bêta**.

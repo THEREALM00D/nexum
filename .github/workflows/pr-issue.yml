@@ -1,0 +1,29 @@
+name: PR linked issue
+
+# Toute PR ouverte par une personne ferme au moins une issue (`Closes #N`) :
+# chaque travail a son issue et sa carte dans le Project. Les PR des bots
+# (release-please, Dependabot) en sont dispensées.
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  linked-issue:
+    if: github.event.pull_request.user.type != 'Bot'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for a closing keyword
+        env:
+          # Passé par l'environnement, jamais interpolé dans le script :
+          # le corps de la PR est du texte libre.
+          BODY: ${{ github.event.pull_request.body }}
+        run: |
+          if printf '%s' "$BODY" | grep -Eiq '\b(close[sd]?|fix(e[sd])?|resolve[sd]?) +#[0-9]+'; then
+            echo "Linked issue found."
+          else
+            echo "::error::This pull request has no linked issue. Create one first, then add 'Closes #<number>' to the description."
+            exit 1
+          fi
