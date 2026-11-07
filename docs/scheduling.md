@@ -39,6 +39,8 @@ Text sent to all players via the REST API. The `{minutes}` placeholder is replac
 
 Example: `"The server will restart in {minutes} minutes"` becomes `"The server will restart in 5 minutes"`.
 
+Leave the field **empty** to send the default message, in Nexum's language (English or French, as set in **Settings**) at the time of the restart.
+
 ### Update the game at restart time
 
 Off by default. At restart time, Nexum checks whether a server update is available on Steam:

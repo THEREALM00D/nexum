@@ -74,7 +74,6 @@ export interface IpcContext {
   /** Dossier de sauvegarde d'un serveur (par défaut : serveur actif). */
   getBackupDir: (serverId?: string) => string;
   getRestartConfig: () => RestartConfig;
-  applyBackupScheduler: () => void;
   /**
    * Lit la config d'arrêt (REST API + creds) pour un serveur donné.
    * `serverId` est optionnel : par défaut, le serveur actif.

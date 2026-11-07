@@ -103,6 +103,10 @@ const FR = {
     "Activez l'API REST (page Config) pour que Nexum fasse sauvegarder le serveur juste avant.",
 
   // Redémarrage planifié
+  // Annonce envoyée aux joueurs (pas une ligne de log) quand le message du
+  // redémarrage planifié est vide. Même texte en placeholder côté renderer
+  // (`schedule.messageDefault`).
+  restartAnnounceDefault: "Le serveur va redémarrer dans {minutes} minutes",
   autoUpdateSkippedSteam:
     "Mise à jour automatique ignorée : serveur installé via la bibliothèque Steam, c'est Steam qui le met à jour.",
   autoUpdateSkippedNoSteamCmd:
@@ -222,6 +226,7 @@ const EN: typeof FR = {
   backupRestApiHint:
     "Enable the REST API (Config page) so Nexum makes the server save right before.",
 
+  restartAnnounceDefault: "The server will restart in {minutes} minutes",
   autoUpdateSkippedSteam:
     "Automatic update skipped: the server was installed through the Steam library, Steam updates it.",
   autoUpdateSkippedNoSteamCmd:

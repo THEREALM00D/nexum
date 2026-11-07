@@ -17,10 +17,10 @@ function stopConfigForRestart(ctx: IpcContext, serverId: string): StopConfig {
   return {
     ...ctx.getStopConfig(serverId),
     shutdownWaittime: restart.warningMinutes * 60,
-    shutdownMessage: restart.message.replace(
-      "{minutes}",
-      String(restart.warningMinutes),
-    ),
+    // Message vide : message par défaut dans la langue de Nexum.
+    shutdownMessage: (
+      restart.message.trim() || lt().restartAnnounceDefault
+    ).replace("{minutes}", String(restart.warningMinutes)),
   };
 }
 
