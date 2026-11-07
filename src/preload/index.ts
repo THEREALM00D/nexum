@@ -228,8 +228,8 @@ const api = {
       ipcRenderer.invoke("logs:saveToFile", content, defaultName),
     listSessions: (serverId?: string) =>
       ipcRenderer.invoke("logs:listSessions", serverId),
-    readSession: (name: string, serverId?: string) =>
-      ipcRenderer.invoke("logs:readSession", name, serverId),
+    readSession: (name: string, serverId?: string, forDisplay?: boolean) =>
+      ipcRenderer.invoke("logs:readSession", name, serverId, forDisplay),
     openDir: (serverId?: string) =>
       ipcRenderer.invoke("logs:openDir", serverId),
   },

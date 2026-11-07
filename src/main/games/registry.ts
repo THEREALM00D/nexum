@@ -13,6 +13,8 @@ import type { PalConfigParser } from "./palworld/PalConfigParser";
 import type { AstroConfigParser } from "./astroneer/AstroConfigParser";
 import type { StopConfig } from "../server/ServerManager";
 import type { GamePort } from "./ports";
+import type { LogNoiseRules } from "../logs/logNoise";
+import { ENSHROUDED_LOG_NOISE } from "./enshrouded/logNoise";
 
 // Chaque traitement par jeu est un Record<GameType, …> : ajouter un jeu à
 // `GameType` fait échouer le typecheck tant qu'il manque une entrée (avant,
@@ -70,11 +72,21 @@ export function getGameLogFile(
   return LOG_FILES[gameType]?.(serverPath);
 }
 
+// Lignes techniques masquées à l'écran (fichier de session et export bruts).
+const LOG_NOISE: Partial<Record<GameType, LogNoiseRules>> = {
+  enshrouded: ENSHROUDED_LOG_NOISE,
+};
+
+export function getGameLogNoise(gameType: GameType): LogNoiseRules | undefined {
+  return LOG_NOISE[gameType];
+}
+
 export interface LaunchSpec {
   exeName: string;
   args: string[];
   env: Record<string, string>;
   logFile?: string;
+  logNoise?: LogNoiseRules;
   /**
    * Exécuté par ServerManager.start avant CHAQUE lancement, relance après
    * plantage comprise. Renvoie un message pour refuser le démarrage.
@@ -103,6 +115,7 @@ export function getLaunchSpec(
     args: buildGameArgs(gameType, cfg),
     env: getGameEnv(gameType),
     logFile: getGameLogFile(gameType, serverPath),
+    logNoise: getGameLogNoise(gameType),
     prepare: PREPARE[gameType]
       ? () => PREPARE[gameType]!(serverPath, cfg)
       : undefined,

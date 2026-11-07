@@ -21,7 +21,10 @@ interface ServerState {
   /** Compat : status du serveur actif (= statuses[activeServerId]). */
   status: ServerStatus;
 
-  /** Logs séparés par serveur, capés à 500 lignes chacun. */
+  /**
+   * Logs séparés par serveur, toute la session (liste virtualisée à
+   * l'affichage). Seul garde-fou mémoire : MAX_LIVE_LINES.
+   */
   logsByServer: Record<string, string[]>;
   /** Compat : logs du serveur actif (= logsByServer[activeServerId] ?? []). */
   logs: string[];
@@ -45,7 +48,7 @@ type Action =
       payload: { serverId: string; status: ServerStatus };
     }
   | { type: "SET_STATS"; payload: SystemStats }
-  | { type: "ADD_LOG"; payload: { serverId: string; line: string } }
+  | { type: "ADD_LOGS"; payload: { serverId: string; lines: string[] } }
   | { type: "CLEAR_LOGS"; payload?: { serverId?: string } }
   | { type: "SET_LOADED" };
 
@@ -61,6 +64,17 @@ const initialState: ServerState = {
   stats: null,
   loaded: false,
 };
+
+// Garde-fou mémoire de la vue en direct (≈ 25 Mo au pire), pas une limite
+// d'affichage : un serveur Dragonwilds écrit ~170 000 lignes en 11 h, une
+// session de plusieurs jours finirait par peser des centaines de Mo. Au-delà,
+// les plus anciennes sortent par paquets ; le fichier de session garde tout.
+export const MAX_LIVE_LINES = 100_000;
+const TRIM_CHUNK = 10_000;
+
+// Lignes reçues regroupées puis ajoutées en une fois : un démarrage de
+// Valheim envoie des centaines de lignes, et chaque ajout recopie le tableau.
+const LOG_FLUSH_MS = 100;
 
 function resolveActive(
   servers: Server[],
@@ -128,10 +142,14 @@ function reducer(state: ServerState, action: Action): ServerState {
     }
     case "SET_STATS":
       return { ...state, stats: action.payload };
-    case "ADD_LOG": {
-      const { serverId, line } = action.payload;
+    case "ADD_LOGS": {
+      const { serverId, lines } = action.payload;
       const prev = state.logsByServer[serverId] ?? [];
-      const nextLogs = [...prev.slice(-499), line];
+      const all = prev.concat(lines);
+      const nextLogs =
+        all.length > MAX_LIVE_LINES
+          ? all.slice(all.length - MAX_LIVE_LINES + TRIM_CHUNK)
+          : all;
       const logsByServer = { ...state.logsByServer, [serverId]: nextLogs };
       return {
         ...state,
@@ -209,14 +227,29 @@ export function ServerProvider({ children }: { children: ReactNode }) {
       dispatch({ type: "SET_STATS", payload: stats });
     });
 
-    // Logs : on dispatch avec le serverId, le reducer route vers le bon
-    // bucket et expose les logs du serveur actif via `state.logs`.
-    const stopLogs = serverService.onLog((event) => {
-      dispatch({ type: "ADD_LOG", payload: event });
+    // Logs : regroupés par serveur, ajoutés toutes les LOG_FLUSH_MS ; le
+    // reducer expose ceux du serveur actif via `state.logs`.
+    const pending = new Map<string, string[]>();
+    let flushTimer: ReturnType<typeof setTimeout> | null = null;
+    const flushLogs = () => {
+      if (flushTimer) clearTimeout(flushTimer);
+      flushTimer = null;
+      pending.forEach((lines, serverId) =>
+        dispatch({ type: "ADD_LOGS", payload: { serverId, lines } }),
+      );
+      pending.clear();
+    };
+    const stopLogs = serverService.onLog(({ serverId, line }) => {
+      const lines = pending.get(serverId);
+      if (lines) lines.push(line);
+      else pending.set(serverId, [line]);
+      if (!flushTimer) flushTimer = setTimeout(flushLogs, LOG_FLUSH_MS);
     });
     // Nouvelle session (démarrage du serveur) : vue vidée pour ce serveur,
     // les sessions précédentes restent consultables (fichiers sur disque).
+    // Les lignes en attente (fin de l'ancienne session) passent avant.
     const stopLogSessions = serverService.onLogSession(({ serverId }) => {
+      flushLogs();
       dispatch({ type: "CLEAR_LOGS", payload: { serverId } });
     });
 
@@ -228,6 +261,7 @@ export function ServerProvider({ children }: { children: ReactNode }) {
       stopMonitor();
       stopLogs();
       stopLogSessions();
+      if (flushTimer) clearTimeout(flushTimer);
       clearInterval(statusInterval);
       monitorService.stopPolling();
     };

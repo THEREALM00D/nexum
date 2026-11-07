@@ -73,7 +73,7 @@ Good to know: a server started by Nexum stops when Nexum quits. Nexum asks first
 
 ## Logs
 
-The server's output is shown in full on the **Logs** page. When you copy or save a log for a bug report, the public IP and the server's Steam ID are hidden.
+The server's output is shown on the **Logs** page, without the many technical lines the game writes: thread list, processor details, startup logo, the "Session" block repeated every 30 seconds and the statistics written at shutdown. The usual Steam messages of a dedicated server ("Couldn't retrieve steam friends interface", "Could not find MatchmakingServers interface"…) are not errors and are no longer shown in red. The session file and the export (**Copy**, **Save**) contain everything. When you copy or save a log for a bug report, the public IP and the server's Steam ID are hidden.
 
 ## Players
 

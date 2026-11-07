@@ -4,6 +4,11 @@ import { existsSync } from "fs";
 import { PalworldApiClient } from "../games/palworld/PalworldApiClient";
 import { sendConsoleSignal, type ConsoleSignal } from "./windowsCtrlC";
 import { LogFileTailer } from "../logs/LogFileTailer";
+import {
+  createNoiseFilter,
+  isBenignStderr,
+  type LogNoiseRules,
+} from "../logs/logNoise";
 import type { LaunchSpec } from "../games/registry";
 import type { ServerStatus } from "../../shared/types";
 import type { SessionLogSink } from "../logs/SessionLogStore";
@@ -73,12 +78,20 @@ export class ServerManager {
     this.onLog(line);
   }
 
-  /** Ouvre une nouvelle session de log et renvoie le logger à utiliser. */
-  private beginSession(onLog: (line: string) => void): (line: string) => void {
+  /**
+   * Ouvre une nouvelle session de log et renvoie le logger à utiliser. Le
+   * fichier reçoit tout ; les lignes techniques du jeu (`noise`) ne sont pas
+   * envoyées à l'écran (voir `logs/logNoise.ts`).
+   */
+  private beginSession(
+    onLog: (line: string) => void,
+    noise?: LogNoiseRules,
+  ): (line: string) => void {
     this.sessionLog?.begin();
+    const hide = createNoiseFilter(noise);
     const log = (line: string) => {
       this.sessionLog?.line(line);
-      onLog(line);
+      if (!hide(line)) onLog(line);
     };
     this.onLog = log;
     return log;
@@ -184,7 +197,7 @@ export class ServerManager {
     spec: LaunchSpec,
     onLog: (line: string) => void,
   ): Promise<{ success: boolean; error?: string }> {
-    const { exeName, args, env, logFile } = spec;
+    const { exeName, args, env, logFile, logNoise } = spec;
     if (this.status === "running" || this.status === "starting") {
       return { success: false, error: appError("SERVER_ALREADY_RUNNING") };
     }
@@ -209,9 +222,11 @@ export class ServerManager {
     this.status = "starting";
     // Nouvelle session à chaque démarrage (manuel, planifié, relance auto) :
     // un fichier neuf, et la vue de l'app repart de zéro.
-    const log = this.beginSession(onLog);
+    const log = this.beginSession(onLog, logNoise);
     log(managerLine(lt().starting(exeName)));
-    log(managerLine(lt().args(redactArgs(args).join(" "))));
+    if (args.length > 0) {
+      log(managerLine(lt().args(redactArgs(args).join(" "))));
+    }
 
     try {
       this.process = spawn(exe, args, {
@@ -237,7 +252,13 @@ export class ServerManager {
 
       this.process.stderr?.on("data", (data: Buffer) => {
         const lines = data.toString().split("\n").filter(Boolean);
-        lines.forEach((line) => log(`[ERR] ${line}`));
+        // Messages connus que le jeu écrit sur stderr sans que ce soit une
+        // erreur (Steam d'un serveur dédié) : sans [ERR], donc pas en rouge.
+        lines.forEach((line) =>
+          log(
+            logNoise && isBenignStderr(logNoise, line) ? line : `[ERR] ${line}`,
+          ),
+        );
       });
 
       this.process.on("close", (code) => {

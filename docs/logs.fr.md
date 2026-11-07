@@ -22,6 +22,10 @@ Les messages `[Manager]` sont écrits dans la langue de l'application (français
 - **Vert** : lignes contenant `[Manager]`
 - **Gris** : reste (sortie standard du serveur)
 
+## Lignes techniques masquées
+
+Certains jeux écrivent beaucoup de lignes qui ne servent qu'à leurs développeurs. Pour **Enshrouded**, Nexum les masque à l'écran (liste des threads, description du processeur, logo du démarrage, bloc « Session » répété toutes les 30 secondes, statistiques écrites à l'arrêt), et les messages Steam habituels d'un serveur dédié écrits sur la sortie d'erreur ne sont plus marqués `[ERR]`. Le fichier de la session et l'export (**Copier**, **Enregistrer en .txt**) contiennent toujours tout.
+
 ## Limitations à connaître
 
 ### PalServer.exe est silencieux
@@ -36,7 +40,7 @@ Pour les logs détaillés du serveur (connexions joueurs, erreurs Unreal Engine,
 
 ### Affichage à l'écran
 
-La vue en direct montre les **500 dernières lignes** de la session en cours. La session complète est dans son fichier (voir plus bas).
+La vue en direct montre **toute** la session en cours, et une session passée s'affiche en entier : la liste ne dessine que les lignes visibles, elle reste fluide même avec des centaines de milliers de lignes. Au-delà de 100 000 lignes en direct (plusieurs heures d'un serveur très bavard), les plus anciennes sortent de l'écran pour ne pas surcharger la mémoire ; elles restent dans le fichier de la session (voir plus bas).
 
 ### Serveurs démarrés avant Nexum
 
@@ -72,7 +76,7 @@ L'affichage défile automatiquement vers le bas quand de nouvelles lignes arrive
 
 Pour partager le log (Discord, issue GitHub) :
 
-- **Copier** : copie **tout** le log de la session choisie (le fichier complet, pas seulement les 500 lignes à l'écran) dans le presse-papiers, précédé d'une ligne avec votre version de Nexum, le jeu et la date. Collez-le directement : sur Discord, un long texte collé devient automatiquement un fichier `message.txt`.
+- **Copier** : copie **tout** le log de la session choisie (le fichier complet) dans le presse-papiers, précédé d'une ligne avec votre version de Nexum, le jeu et la date. Collez-le directement : sur Discord, un long texte collé devient automatiquement un fichier `message.txt`.
 - **Enregistrer en .txt** : ouvre la fenêtre « Enregistrer sous » de Windows (dossier Documents par défaut). Une fois le fichier enregistré, le bouton **Afficher dans le dossier** ouvre l'Explorateur, prêt à joindre le fichier.
 
 Tout le log est exporté, pas seulement les dernières lignes : quand un serveur s'arrête tout seul, la cause est généralement au **début** du log, les dernières lignes ne montrent que la fermeture.

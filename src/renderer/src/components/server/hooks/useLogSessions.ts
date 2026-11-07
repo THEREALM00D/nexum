@@ -2,11 +2,6 @@ import { useCallback, useEffect, useState } from "react";
 import type { LogSession } from "@shared/types";
 import { useServer } from "../../../context/ServerContext";
 
-// Au-delà, une session passée n'affiche que ses dernières lignes (un fichier
-// peut faire 20 Mo) ; Copier / Enregistrer exportent toujours le fichier entier
-// (une session plus longue est découpée en plusieurs fichiers de 20 Mo).
-export const MAX_DISPLAYED_LINES = 2000;
-
 /**
  * Sessions de log conservées sur disque pour le serveur actif. `selected` =
  * nom du fichier d'une session terminée affichée, ou null pour la vue en
@@ -35,8 +30,10 @@ export function useLogSessions() {
 
   useEffect(() => {
     if (!selected || !serverId) return;
+    // Vide d'abord : la liste s'ouvre en bas du NOUVEAU log, pas de l'ancien
+    setPastLines([]);
     window.api.logs
-      .readSession(selected, serverId)
+      .readSession(selected, serverId, true)
       .then((text) => setPastLines(text.split(/\r?\n/).filter(Boolean)))
       .catch(() => setPastLines([]));
   }, [selected, serverId]);
@@ -56,9 +53,9 @@ export function useLogSessions() {
     return state.logs.join("\n");
   }, [selected, serverId, state.logs]);
 
-  const displayed = selected
-    ? pastLines.slice(-MAX_DISPLAYED_LINES)
-    : state.logs;
+  // Session passée affichée en entier (liste virtualisée, fichier de 20 Mo
+  // au plus : une session plus longue est découpée en plusieurs fichiers).
+  const displayed = selected ? pastLines : state.logs;
 
   return {
     sessions,
@@ -66,7 +63,6 @@ export function useLogSessions() {
     setSelected,
     refresh,
     displayed,
-    truncated: selected !== null && pastLines.length > MAX_DISPLAYED_LINES,
     loadFullLog,
     openDir: () => serverId && window.api.logs.openDir(serverId),
   };

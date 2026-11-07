@@ -22,6 +22,10 @@ Three sources are merged into the same view:
 - **Green**: lines containing `[Manager]`
 - **Gray**: everything else (the server's standard output)
 
+## Hidden technical lines
+
+Some games write many lines that are only useful to their developers. For **Enshrouded**, Nexum hides them on screen (thread list, processor details, startup logo, "Session" block repeated every 30 seconds, statistics written at shutdown), and the usual Steam messages of a dedicated server written to the error output are no longer tagged `[ERR]`. The session file and the export (**Copy**, **Save as .txt**) always contain everything.
+
 ## Known limitations
 
 ### PalServer.exe is quiet
@@ -36,7 +40,7 @@ For detailed server logs (player connections, Unreal Engine errors, etc.), check
 
 ### On-screen view
 
-The live view shows the **last 500 lines** of the current session. The full session is in its file (see below).
+The live view shows the **whole** current session, and a past session is shown in full: the list only draws the visible lines, so it stays smooth even with hundreds of thousands of lines. Beyond 100,000 live lines (several hours of a very chatty server), the oldest ones leave the screen to keep memory use in check; they stay in the session file (see below).
 
 ### Servers started before Nexum
 
@@ -72,7 +76,7 @@ The view automatically scrolls down as new lines arrive. Scroll up to **pause** 
 
 To share the log (Discord, GitHub issue):
 
-- **Copy**: copies the **whole** log of the selected session (the full file, not just the 500 lines on screen) to the clipboard, with a first line giving your Nexum version, the game and the date. Paste it directly: on Discord, a long paste is automatically turned into a `message.txt` file.
+- **Copy**: copies the **whole** log of the selected session (the full file) to the clipboard, with a first line giving your Nexum version, the game and the date. Paste it directly: on Discord, a long paste is automatically turned into a `message.txt` file.
 - **Save as .txt**: opens the Windows "Save as" dialog (Documents folder by default). Once saved, a **Show in folder** button opens the folder in Explorer, ready to attach the file.
 
 The whole log is exported, not just the last lines: when a server stops on its own, the cause is usually near the **start** of the log, while the last lines only show the shutdown.
