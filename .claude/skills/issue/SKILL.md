@@ -1,6 +1,6 @@
 ---
 name: issue
-description: Crée une ou plusieurs issues GitHub pour Nexum (bug ou feature, selon les templates du repo), en anglais, après validation du brouillon, puis les place dans la colonne « To do » du GitHub Project. Utiliser quand l'utilisateur veut créer, ouvrir ou noter une issue, un bug ou une idée de feature pour Nexum.
+description: Crée une ou plusieurs issues GitHub pour Nexum (bug ou feature, selon les templates du repo), en anglais, après validation du brouillon, puis les place dans la colonne « To do » du GitHub Project. Utiliser quand l'utilisateur veut créer, ouvrir ou noter une issue, un bug ou une idée de feature pour Nexum, ET avant de commencer tout travail (branche, commit, PR) qui n'a pas encore d'issue : chaque PR de Nexum doit fermer une issue.
 argument-hint: <description du bug ou de la feature>
 ---
 
@@ -9,6 +9,13 @@ argument-hint: <description du bug ou de la feature>
 Demande de l'utilisateur : $ARGUMENTS
 
 Communique en **français**. L'issue est publique : titre et corps en **anglais**.
+
+**Règle du repo : tout travail a son issue, et toute PR la ferme (`Closes #N`, vérifié en
+CI par `pr-issue.yml`).** Ce skill sert donc aussi quand un travail démarre sans issue
+(demande faite en conversation, hors `/nexum`) : crée l'issue **avant** la branche, place-la
+directement en « In dev », puis nomme la branche `<type>/<N>-<slug>`. Si une PR existe déjà
+sans issue, crée l'issue, ajoute `Closes #N` à la description de la PR
+(`gh pr edit <pr> --body-file -`) et place la carte en « To test ».
 
 ## 1. Comprendre et compléter
 
@@ -39,21 +46,27 @@ Reprends les sections des templates `.github/ISSUE_TEMPLATE/` sous forme de titr
 
 ```markdown
 ### Nexum version
+
 v0.18.0
 
 ### Game
+
 Valheim
 
 ### What happened?
+
 ...
 
 ### What did you expect to happen?
+
 ...
 
 ### Steps to reproduce
+
 1. ...
 
 ### Relevant logs
+
 (omit section if none)
 ```
 
@@ -61,12 +74,15 @@ Valheim
 
 ```markdown
 ### Game
+
 Not game-specific
 
 ### What problem would this solve?
+
 ...
 
 ### Proposed solution
+
 ...
 ```
 

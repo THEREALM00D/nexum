@@ -10,7 +10,10 @@ Tu prends en charge l'issue **#$ARGUMENTS** du repo `THEREALM00D/nexum`. Le cycl
 toujours le même : **comprendre → questionner → planifier → (approbation) → développer →
 vérifier → demander avant de publier**. Ne saute aucune étape.
 
-Si `$ARGUMENTS` est vide ou n'est pas un numéro, demande le numéro d'issue et arrête-toi.
+Si `$ARGUMENTS` est vide ou n'est pas un numéro : demande le numéro d'issue. S'il n'y a pas
+encore d'issue pour ce travail, crée-la d'abord en suivant le skill `/issue` (règle du repo :
+**aucun travail ni PR sans issue**, vérifié en CI par `pr-issue.yml`), puis reprends ici avec
+son numéro.
 
 Communique en **français** avec l'utilisateur. Tout ce qui est public (commits, PR,
 commentaires d'issue) est en **anglais**.
@@ -160,6 +163,8 @@ node .claude/scripts/project-status.mjs $ARGUMENTS "To test"
 ```
 
 Le titre de PR doit être en Conventional Commits (vérifié par `pr-title.yml`). Il devient le
-commit squash sur `main` et décide de la release. Donne le lien de la PR à la fin.
+commit squash sur `main` et décide de la release. La ligne `Closes #$ARGUMENTS` est
+obligatoire (vérifiée par `pr-issue.yml`). Si le travail a débordé sur un autre sujet, ouvre
+une issue pour ce sujet et sépare-le dans sa propre PR plutôt que de l'ajouter ici. Donne le lien de la PR à la fin.
 Ne déplace pas la carte vers « Done » : à la fusion, `Closes #N` ferme l'issue et le workflow
 intégré du Project (« Item closed → Done ») la déplace.
