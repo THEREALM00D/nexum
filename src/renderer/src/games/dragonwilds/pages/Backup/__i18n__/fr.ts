@@ -3,6 +3,8 @@ export default {
     subtitle:
       "Gérez les sauvegardes des mondes Dragonwilds (RSDragonwilds/Saved/SaveGames)",
     openWorldFolder: "Ouvrir le dossier des mondes",
+    autoNote:
+      "Dragonwilds ne sait pas sauvegarder sur commande : serveur lancé, la sauvegarde contient la dernière sauvegarde automatique du jeu (toutes les 5 min). Nexum attend que le jeu ait fini d'écrire avant de zipper.",
   },
   dragonwildsWorlds: {
     title: "Mondes",

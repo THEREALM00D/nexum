@@ -46,7 +46,8 @@ import { autoStartServers } from "../server/startServer";
 import { registerCrashRestart } from "../server/crashRestart";
 import { runScheduledRestart } from "../scheduler/scheduledRestart";
 import { backupServer } from "../backup/serverBackup";
-import { AppError } from "../utils/appError";
+import { AppError, appErrorLogText } from "../utils/appError";
+import { lt, managerLine } from "../i18n/logStrings";
 
 const DEFAULT_RESTART_CONFIG: RestartConfig = {
   enabled: false,
@@ -234,7 +235,16 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
       if (!currentActive || !mgr || mgr.getStatus() !== "running") return;
       // Dossier des mondes résolu par jeu (Valheim les range hors de
       // serverPath) : avant, l'auto-backup zippait toujours celui de Palworld.
-      await backupServer(ctx, currentActive.id);
+      // Un échec était avalé sans trace : il va maintenant dans les logs.
+      try {
+        await backupServer(ctx, currentActive.id);
+      } catch (e) {
+        mgr.log(
+          managerLine(
+            lt().autoBackupFailed(appErrorLogText((e as Error).message)),
+          ),
+        );
+      }
     });
   };
 

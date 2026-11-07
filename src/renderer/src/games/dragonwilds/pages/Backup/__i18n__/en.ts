@@ -3,6 +3,8 @@ export default {
     subtitle:
       "Manage Dragonwilds world backups (RSDragonwilds/Saved/SaveGames)",
     openWorldFolder: "Open the worlds folder",
+    autoNote:
+      "Dragonwilds cannot save on command: while the server runs, the backup contains the game's last autosave (every 5 min). Nexum waits for the game to finish writing before zipping.",
   },
   dragonwildsWorlds: {
     title: "Worlds",

@@ -63,6 +63,24 @@ Interval selector:
 
 > Automatic backup only runs **while the server is running**.
 
+### Backing up a running server
+
+A backup made while the server runs (automatic backup, **Create a backup** button, backup before a mod update) goes through these steps:
+
+1. **Palworld**: Nexum first asks the server to save through the REST API (`/v1/api/save`), so the backup contains the world as it is right now. The REST API must be enabled in **Configuration**. Without it (or if the server doesn't answer), the backup contains the game's last autosave (`AutoSaveSpan` setting).
+2. **Other games**: they cannot save on command, so the backup contains the last save written by the game:
+
+   | Game                   | Game autosave                                                |
+   | ---------------------- | ------------------------------------------------------------ |
+   | Valheim                | Every 30 min by default, and on shutdown                     |
+   | Astroneer              | `AutoSaveGameInterval` (900 s by default, **Configuration**) |
+   | RuneScape: Dragonwilds | Every 5 min                                                  |
+   | Enshrouded             | About every 5 min, and on shutdown                           |
+
+3. Nexum waits until the game has finished writing its save files (no file changed for 5 s, 30 s at most) before zipping, so a file is never caught half-written. If the game writes again while the ZIP is being created, the ZIP is made a second time.
+
+The server logs say what happened, for example `Backup created: backup-….zip` followed by `The backup contains the last save written by the game (14:32:05).` For the most recent progress in a game without a save command, stop the server (it saves on shutdown) and back up then.
+
 ### Backup before every update
 
 **Back up the world before every update** option, on by default. A game or mod patch that breaks the world no longer costs you any progress. Nexum backs up the world:

@@ -23,6 +23,7 @@ export default function EnshroudedBackup() {
   return (
     <BackupPage
       subtitleKey="enshroudedBackup.subtitle"
+      autoNoteKey="enshroudedBackup.autoNote"
       onOpenSaveFolder={openSaveFolder}
       openFolderTooltipKey="enshroudedBackup.openWorldFolder"
     />

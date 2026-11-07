@@ -25,6 +25,8 @@ interface Props {
   loading: boolean;
   onSelectDir: () => void;
   onConfigChange: (patch: Partial<BackupConfig>) => void;
+  /** Ce que contient une sauvegarde faite serveur lancé, propre au jeu. */
+  autoNoteKey: string;
 }
 
 export default function BackupConfigPanel({
@@ -32,6 +34,7 @@ export default function BackupConfigPanel({
   loading,
   onSelectDir,
   onConfigChange,
+  autoNoteKey,
 }: Props) {
   const { t } = useTranslation();
 
@@ -83,27 +86,32 @@ export default function BackupConfigPanel({
             helperText={t("backup.config.keepHelper")}
           />
 
-          <FormControl size="small" sx={{ maxWidth: 280 }}>
-            <InputLabel>{t("backup.config.auto")}</InputLabel>
-            <Select
-              label={t("backup.config.auto")}
-              value={config.backupIntervalMinutes}
-              onChange={(e) =>
-                onConfigChange({
-                  backupIntervalMinutes: Number(e.target.value),
-                })
-              }
-            >
-              <MenuItem value={0}>{t("backup.config.autoOff")}</MenuItem>
-              <MenuItem value={15}>{t("backup.config.auto15")}</MenuItem>
-              <MenuItem value={30}>{t("backup.config.auto30")}</MenuItem>
-              <MenuItem value={60}>{t("backup.config.auto60")}</MenuItem>
-              <MenuItem value={180}>{t("backup.config.auto180")}</MenuItem>
-              <MenuItem value={360}>{t("backup.config.auto360")}</MenuItem>
-              <MenuItem value={720}>{t("backup.config.auto720")}</MenuItem>
-              <MenuItem value={1440}>{t("backup.config.auto1440")}</MenuItem>
-            </Select>
-          </FormControl>
+          <Stack spacing={0.5}>
+            <FormControl size="small" sx={{ maxWidth: 280 }}>
+              <InputLabel>{t("backup.config.auto")}</InputLabel>
+              <Select
+                label={t("backup.config.auto")}
+                value={config.backupIntervalMinutes}
+                onChange={(e) =>
+                  onConfigChange({
+                    backupIntervalMinutes: Number(e.target.value),
+                  })
+                }
+              >
+                <MenuItem value={0}>{t("backup.config.autoOff")}</MenuItem>
+                <MenuItem value={15}>{t("backup.config.auto15")}</MenuItem>
+                <MenuItem value={30}>{t("backup.config.auto30")}</MenuItem>
+                <MenuItem value={60}>{t("backup.config.auto60")}</MenuItem>
+                <MenuItem value={180}>{t("backup.config.auto180")}</MenuItem>
+                <MenuItem value={360}>{t("backup.config.auto360")}</MenuItem>
+                <MenuItem value={720}>{t("backup.config.auto720")}</MenuItem>
+                <MenuItem value={1440}>{t("backup.config.auto1440")}</MenuItem>
+              </Select>
+            </FormControl>
+            <Typography variant="caption" sx={{ color: "text.secondary" }}>
+              {t(autoNoteKey)}
+            </Typography>
+          </Stack>
 
           <FormControlLabel
             control={
