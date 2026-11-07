@@ -8,7 +8,7 @@ const DEFAULT_RESTART: RestartConfig = {
   enabled: false,
   time: "04:00",
   warningMinutes: 5,
-  message: "Le serveur va redémarrer dans {minutes} minutes",
+  message: "",
   updateGame: false,
 };
 

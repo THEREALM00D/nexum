@@ -105,6 +105,10 @@ export default function RestartSchedulePage({ infoKey, notice }: Props) {
               value={cfg.message}
               onChange={(e) => update({ message: e.target.value })}
               disabled={!cfg.enabled}
+              // Vide : le main envoie le message par défaut dans la langue
+              // de Nexum, affiché ici en placeholder.
+              placeholder={t("schedule.messageDefault")}
+              slotProps={{ inputLabel: { shrink: true } }}
               helperText={t("schedule.messageHelper")}
               fullWidth
             />

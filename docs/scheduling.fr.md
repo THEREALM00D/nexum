@@ -39,6 +39,8 @@ Texte envoyé à tous les joueurs via l'API REST. Le placeholder `{minutes}` est
 
 Exemple : `"Le serveur va redémarrer dans {minutes} minutes"` devient `"Le serveur va redémarrer dans 5 minutes"`.
 
+Laissez le champ **vide** pour envoyer le message par défaut, dans la langue de Nexum (français ou anglais, réglée dans **Paramètres**) au moment du redémarrage.
+
 ### Mettre à jour le jeu au moment du redémarrage
 
 Option désactivée par défaut. Au moment du redémarrage, Nexum vérifie si une mise à jour du serveur est disponible sur Steam :

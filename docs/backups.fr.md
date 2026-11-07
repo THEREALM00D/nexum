@@ -63,6 +63,8 @@ Sélecteur d'intervalle :
 
 > La sauvegarde automatique tourne **uniquement quand le serveur est en cours d'exécution**.
 
+Chaque serveur lancé est sauvegardé à son propre intervalle, qu'il soit sélectionné dans Nexum ou non. La première sauvegarde a lieu un intervalle après le démarrage du serveur, et le décompte repart de zéro à son arrêt. Quand plusieurs serveurs sont dus en même temps, leurs sauvegardes passent l'une après l'autre : les serveurs lancés ne se disputent pas le disque et le processeur.
+
 ### Sauvegarde d'un serveur lancé
 
 Une sauvegarde faite serveur lancé (sauvegarde automatique, bouton **Créer une sauvegarde**, sauvegarde avant une mise à jour de mods) suit ces étapes :

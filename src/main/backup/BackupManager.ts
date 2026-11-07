@@ -45,28 +45,8 @@ function isValidZip(filePath: string): boolean {
 }
 
 export class BackupManager {
-  private schedulerTimer: NodeJS.Timeout | null = null;
-
   private getSavePath(serverPath: string): string {
     return join(serverPath, "Pal", "Saved", "SaveGames");
-  }
-
-  startScheduler(intervalMinutes: number, run: () => Promise<void>): void {
-    this.stopScheduler();
-    if (intervalMinutes <= 0) return;
-    this.schedulerTimer = setInterval(
-      () => {
-        run().catch(() => {});
-      },
-      intervalMinutes * 60 * 1000,
-    );
-  }
-
-  stopScheduler(): void {
-    if (this.schedulerTimer) {
-      clearInterval(this.schedulerTimer);
-      this.schedulerTimer = null;
-    }
   }
 
   ensureBackupDir(backupDir: string): void {

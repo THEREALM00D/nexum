@@ -204,7 +204,9 @@ export default {
     warning: "Avertissement (minutes avant)",
     warningHelper: "Délai entre l'annonce et l'arrêt (0 = immédiat)",
     message: "Message d'annonce",
-    messageHelper: "{minutes} sera remplacé par le délai",
+    messageHelper:
+      "{minutes} sera remplacé par le délai. Vide : message par défaut, dans la langue de Nexum.",
+    messageDefault: "Le serveur va redémarrer dans {minutes} minutes",
     updateGame: "Mettre à jour le jeu au moment du redémarrage",
     updateGameHelper:
       "Si une mise à jour du serveur est disponible : arrêt, sauvegarde du monde, mise à jour avec SteamCMD, puis démarrage. Sans effet pour un serveur installé via la bibliothèque Steam.",

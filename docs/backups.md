@@ -63,6 +63,8 @@ Interval selector:
 
 > Automatic backup only runs **while the server is running**.
 
+Each running server is backed up on its own interval, whether it is selected in Nexum or not. The first backup happens one interval after the server starts, and the count starts over when it stops. When several servers are due at the same time, their backups run one after the other, so the running servers never compete for the disk and CPU.
+
 ### Backing up a running server
 
 A backup made while the server runs (automatic backup, **Create a backup** button, backup before a mod update) goes through these steps:

@@ -200,7 +200,9 @@ export default {
     warningHelper:
       "Delay between the announcement and the shutdown (0 = immediate)",
     message: "Announcement message",
-    messageHelper: "{minutes} will be replaced by the delay",
+    messageHelper:
+      "{minutes} will be replaced by the delay. Empty: default message, in Nexum's language.",
+    messageDefault: "The server will restart in {minutes} minutes",
     updateGame: "Update the game at restart time",
     updateGameHelper:
       "If a server update is available: shutdown, world backup, update with SteamCMD, then start. No effect for a server installed through the Steam library.",

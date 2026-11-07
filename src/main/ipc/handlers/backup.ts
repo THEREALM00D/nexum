@@ -12,8 +12,8 @@ export function registerBackupHandlers(ctx: IpcContext): void {
   });
 
   ipcMain.handle("backup:setConfig", (_, cfg: BackupConfig) => {
+    // Relu à chaque tick par BackupScheduler : rien à réarmer.
     ctx.updateServerConfig(undefined, { backup: cfg });
-    ctx.applyBackupScheduler();
   });
 
   ipcMain.handle("backup:list", () => ctx.backup.list(ctx.getBackupDir()));
