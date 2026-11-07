@@ -8,6 +8,12 @@ import BackupList from "./BackupList";
 
 interface BackupPageProps {
   subtitleKey: string;
+  /**
+   * Texte sous l'intervalle de sauvegarde auto : ce que contient une
+   * sauvegarde faite serveur lancé (sauvegarde forcée ou dernière
+   * autosauvegarde du jeu). Obligatoire : chaque jeu doit le dire.
+   */
+  autoNoteKey: string;
   /** Bouton « ouvrir le dossier des sauvegardes du jeu » à côté du sous-titre. */
   onOpenSaveFolder?: () => void;
   openFolderTooltipKey?: string;
@@ -22,6 +28,7 @@ interface BackupPageProps {
 /** Page « Sauvegardes » commune aux jeux : seuls le texte et les extras changent. */
 export default function BackupPage({
   subtitleKey,
+  autoNoteKey,
   onOpenSaveFolder,
   openFolderTooltipKey,
   renderExtra,
@@ -52,6 +59,7 @@ export default function BackupPage({
         loading={backup.loading}
         onSelectDir={backup.handleSelectDir}
         onConfigChange={backup.handleConfigChange}
+        autoNoteKey={autoNoteKey}
       />
 
       {renderExtra?.(backup.refresh)}

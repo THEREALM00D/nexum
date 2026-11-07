@@ -6,6 +6,7 @@ export default function ValheimBackup() {
   return (
     <BackupPage
       subtitleKey="valheimBackup.subtitle"
+      autoNoteKey="valheimBackup.autoNote"
       onOpenSaveFolder={() => window.api.valheim.openSaveFolder(config.savedir)}
       openFolderTooltipKey="valheimBackup.openWorldFolder"
     />

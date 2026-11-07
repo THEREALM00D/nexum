@@ -63,6 +63,24 @@ Sélecteur d'intervalle :
 
 > La sauvegarde automatique tourne **uniquement quand le serveur est en cours d'exécution**.
 
+### Sauvegarde d'un serveur lancé
+
+Une sauvegarde faite serveur lancé (sauvegarde automatique, bouton **Créer une sauvegarde**, sauvegarde avant une mise à jour de mods) suit ces étapes :
+
+1. **Palworld** : Nexum demande d'abord au serveur de sauvegarder via l'API REST (`/v1/api/save`) ; la sauvegarde contient donc le monde tel qu'il est à cet instant. L'API REST doit être activée dans **Configuration**. Sans elle (ou si le serveur ne répond pas), la sauvegarde contient la dernière sauvegarde automatique du jeu (réglage `AutoSaveSpan`).
+2. **Autres jeux** : ils ne savent pas sauvegarder sur commande, la sauvegarde contient donc le dernier enregistrement écrit par le jeu :
+
+   | Jeu                    | Sauvegarde automatique du jeu                                |
+   | ---------------------- | ------------------------------------------------------------ |
+   | Valheim                | Toutes les 30 min par défaut, et à l'arrêt                   |
+   | Astroneer              | `AutoSaveGameInterval` (900 s par défaut, **Configuration**) |
+   | RuneScape: Dragonwilds | Toutes les 5 min                                             |
+   | Enshrouded             | Environ toutes les 5 min, et à l'arrêt                       |
+
+3. Nexum attend que le jeu ait fini d'écrire ses fichiers de sauvegarde (aucun fichier modifié depuis 5 s, 30 s au plus) avant de zipper : un fichier n'est jamais pris à moitié écrit. Si le jeu écrit de nouveau pendant la création du ZIP, le ZIP est refait une fois.
+
+Les logs du serveur disent ce qui s'est passé, par exemple `Sauvegarde créée : backup-….zip` suivi de `La sauvegarde contient la dernière sauvegarde écrite par le jeu (14:32:05).` Pour avoir la toute dernière progression d'un jeu sans commande de sauvegarde, arrêtez le serveur (il sauvegarde à l'arrêt) puis sauvegardez.
+
 ### Sauvegarde avant chaque mise à jour
 
 Option **Sauvegarder le monde avant chaque mise à jour**, activée par défaut. Un patch du jeu ou d'un mod qui casse le monde ne fait plus perdre de progression. Nexum sauvegarde le monde :

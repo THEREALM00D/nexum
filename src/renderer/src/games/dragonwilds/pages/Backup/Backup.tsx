@@ -7,6 +7,7 @@ export default function DragonwildsBackup() {
   return (
     <BackupPage
       subtitleKey="dragonwildsBackup.subtitle"
+      autoNoteKey="dragonwildsBackup.autoNote"
       onOpenSaveFolder={() =>
         window.api.shell.openPath(
           `${state.serverPath}/RSDragonwilds/Saved/SaveGames`,

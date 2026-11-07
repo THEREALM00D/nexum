@@ -83,6 +83,25 @@ const FR = {
   backupBeforeUpdate: "Sauvegarde du monde avant la mise à jour...",
   backupCreated: (name: string) => `Sauvegarde créée : ${name}`,
 
+  // Sauvegarde d'un serveur lancé
+  saveRequested: "Demande de sauvegarde au serveur avant de zipper le monde...",
+  saveRequestFailed: (err: string) =>
+    `Le serveur n'a pas pu sauvegarder (${err}) : la sauvegarde contiendra sa dernière sauvegarde automatique.`,
+  saveNotWritten:
+    "Le serveur a accepté la demande de sauvegarde mais n'a écrit aucun fichier en 30 s : la sauvegarde contiendra sa dernière sauvegarde automatique.",
+  saveStillWriting:
+    "Le jeu écrit encore ses fichiers de sauvegarde après 30 s : sauvegarde faite quand même.",
+  backupRetryChanged:
+    "Le jeu a écrit pendant la création du ZIP : nouvelle tentative.",
+  backupChangedDuringZip:
+    "Le jeu a encore écrit pendant la création du ZIP : un fichier de la sauvegarde peut être incomplet.",
+  backupFromAutosave: (time: string) =>
+    `La sauvegarde contient la dernière sauvegarde écrite par le jeu (${time}).`,
+  autoBackupFailed: (err: string) =>
+    `Échec de la sauvegarde automatique : ${err}`,
+  backupRestApiHint:
+    "Activez l'API REST (page Config) pour que Nexum fasse sauvegarder le serveur juste avant.",
+
   // Redémarrage planifié
   autoUpdateSkippedSteam:
     "Mise à jour automatique ignorée : serveur installé via la bibliothèque Steam, c'est Steam qui le met à jour.",
@@ -185,6 +204,23 @@ const EN: typeof FR = {
   backupNoWorld: "No world to back up before the update.",
   backupBeforeUpdate: "Backing up the world before the update...",
   backupCreated: (name) => `Backup created: ${name}`,
+
+  saveRequested: "Asking the server to save before zipping the world...",
+  saveRequestFailed: (err) =>
+    `The server could not save (${err}): the backup will contain its last autosave.`,
+  saveNotWritten:
+    "The server accepted the save request but wrote no file within 30 s: the backup will contain its last autosave.",
+  saveStillWriting:
+    "The game was still writing its save files after 30 s: backed up anyway.",
+  backupRetryChanged:
+    "The game wrote while the ZIP was being created: retrying.",
+  backupChangedDuringZip:
+    "The game wrote again while the ZIP was being created: a file in the backup may be incomplete.",
+  backupFromAutosave: (time) =>
+    `The backup contains the last save written by the game (${time}).`,
+  autoBackupFailed: (err) => `Automatic backup failed: ${err}`,
+  backupRestApiHint:
+    "Enable the REST API (Config page) so Nexum makes the server save right before.",
 
   autoUpdateSkippedSteam:
     "Automatic update skipped: the server was installed through the Steam library, Steam updates it.",
