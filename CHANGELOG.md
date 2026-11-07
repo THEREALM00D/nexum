@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.20.0](https://github.com/THEREALM00D/nexum/compare/v0.19.0...v0.20.0) (2026-11-07)
+
+
+### Features
+
+* search settings across all Valheim mod config files ([#186](https://github.com/THEREALM00D/nexum/issues/186)) ([af6ca01](https://github.com/THEREALM00D/nexum/commit/af6ca01fa180e556461d45fb568cf46dc6118e7c))
+
+
+### Bug Fixes
+
+* show the whole server log and hide Enshrouded noise ([#187](https://github.com/THEREALM00D/nexum/issues/187)) ([2ce7889](https://github.com/THEREALM00D/nexum/commit/2ce7889b1cbfeb75dabf26b5492254fd8f3b6224))
+
 ## [0.19.0](https://github.com/THEREALM00D/nexum/compare/v0.18.0...v0.19.0) (2026-11-06)
 
 
