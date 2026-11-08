@@ -14,6 +14,7 @@ export default {
     clearSearch: "Effacer la recherche",
     minimize: "Réduire",
     maximize: "Agrandir",
+    restore: "Restaurer",
     close: "Fermer",
   },
   serverControls: {

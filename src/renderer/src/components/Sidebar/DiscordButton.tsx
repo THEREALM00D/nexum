@@ -43,10 +43,13 @@ export default function DiscordButton({ collapsed }: { collapsed: boolean }) {
     <Tooltip title={t("sidebar.discord.tooltip")}>
       <Button
         size="small"
-        fullWidth
         onClick={open}
         startIcon={<DiscordIcon sx={{ fontSize: 16 }} />}
-        sx={{ typography: "caption", color: "text.secondary", mb: 1 }}
+        sx={{
+          typography: "caption",
+          color: "text.secondary",
+          whiteSpace: "nowrap",
+        }}
       >
         {t("sidebar.discord.label")}
       </Button>

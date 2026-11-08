@@ -90,7 +90,7 @@ function AppShell() {
         bgcolor: "background.default",
       }}
     >
-      <Titlebar />
+      <Titlebar page={page} />
       <Box sx={{ display: "flex", flex: 1, overflow: "hidden" }}>
         <Sidebar currentPage={page} onNavigate={setPage} />
         <Box

@@ -81,6 +81,12 @@ function createWindow(): void {
   const win = mainWindow;
   attachCloseToTray(win, () => ipcCtx);
 
+  // Barre de titre : Agrandir / Restaurer suit aussi le double-clic et le snap
+  const sendMaximized = () =>
+    win.webContents.send("window:maximizedChanged", win.isMaximized());
+  win.on("maximize", sendMaximized);
+  win.on("unmaximize", sendMaximized);
+
   win.on("ready-to-show", () => {
     // Lancé à la connexion Windows : rester dans la zone de notification, ou
     // réduit dans la barre des tâches si l'icône est désactivée.

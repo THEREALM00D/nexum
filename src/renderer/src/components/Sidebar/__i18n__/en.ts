@@ -11,6 +11,7 @@ export default {
     mods: "Mods",
     settings: "Settings",
     servers: "Servers",
+    maintenance: "Maintenance",
     noServer: "No server",
     noServers: "No server configured",
     manageServers: "Manage servers",
@@ -29,6 +30,8 @@ export default {
       install: "Restart & install v{{version}}",
       installHint: "The app restarts and installs the update automatically.",
       upToDate: "Up to date · checked at {{time}}",
+      upToDateShort: "Up to date",
+      checkedAt: "{{version}} · checked at {{time}}",
       retry: "Retry",
       devMode: "Unavailable in development mode",
       errors: {

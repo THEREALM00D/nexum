@@ -55,7 +55,6 @@ export const NEXUM = {
 export const CONTENT_MAX_WIDTH = 1280;
 export const COMPACT_MEDIA = "@media (max-height: 820px), (max-width: 1100px)";
 export const NARROW_WINDOW_QUERY = "(max-width: 1100px)";
-export const SHORT_WINDOW_QUERY = "(max-height: 820px)";
 
 // Polices de la marque (chargées dans main.tsx via @fontsource)
 export const FONT_SANS = '"IBM Plex Sans", "Segoe UI", system-ui, sans-serif';

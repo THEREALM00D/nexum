@@ -11,6 +11,7 @@ export default {
     mods: "Mods",
     settings: "Paramètres",
     servers: "Serveurs",
+    maintenance: "Maintenance",
     noServer: "Aucun serveur",
     noServers: "Aucun serveur configuré",
     manageServers: "Gérer les serveurs",
@@ -30,6 +31,8 @@ export default {
       installHint:
         "L'app redémarre et installe la mise à jour automatiquement.",
       upToDate: "À jour · vérifié à {{time}}",
+      upToDateShort: "À jour",
+      checkedAt: "{{version}} · vérifié à {{time}}",
       retry: "Réessayer",
       devMode: "Indisponible en mode développement",
       errors: {

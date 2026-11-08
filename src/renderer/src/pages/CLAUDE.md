@@ -10,7 +10,7 @@
 
 ## Paramètres (`Settings/`)
 
-Démarrage (`LaunchAtLoginSwitch`, `CloseToTraySwitch`), Langue (`components/common/LanguageToggle`, `size="medium"`), Mises à jour (`UpdateIndicator align="left"`, `BetaUpdatesSwitch`), Aide et à propos (Discord, docs, bug, confidentialité). Règle : réglage **de l'app** → Paramètres ; réglage **d'un serveur** → `ServerDialog` ou les pages du jeu.
+Démarrage (`LaunchAtLoginSwitch`, `CloseToTraySwitch`), Langue (`components/common/LanguageToggle`, seul endroit où la changer), Mises à jour (`UpdateIndicator`, `BetaUpdatesSwitch`), Aide et à propos (Discord, docs, bug, confidentialité). Règle : réglage **de l'app** → Paramètres ; réglage **d'un serveur** → `ServerDialog` ou les pages du jeu.
 
 ## Serveurs (`Servers/`)
 
