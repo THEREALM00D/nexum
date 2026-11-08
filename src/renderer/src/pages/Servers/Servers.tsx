@@ -1,4 +1,4 @@
-import { Box, Button, Stack, Typography } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import { useTranslation } from "react-i18next";
@@ -6,6 +6,7 @@ import { useServers } from "./hooks/useServers";
 import ServersTable from "./components/ServersTable";
 import ServerDialog from "./components/ServerDialog";
 import ConfirmDeleteDialog from "./components/ConfirmDeleteDialog";
+import PageHeader from "../../components/common/PageHeader";
 
 export default function Servers({ onOpenSetup }: { onOpenSetup: () => void }) {
   const { t } = useTranslation();
@@ -27,38 +28,35 @@ export default function Servers({ onOpenSetup }: { onOpenSetup: () => void }) {
 
   return (
     <Stack spacing={3}>
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "flex-start",
-          flexWrap: "wrap",
-          justifyContent: "space-between",
-          gap: 2,
-        }}
-      >
-        <Box>
-          <Typography variant="h6">{t("servers.title")}</Typography>
-          <Typography variant="body2" sx={{ color: "text.secondary", mt: 0.5 }}>
-            {t("servers.subtitle")}
-          </Typography>
-        </Box>
-        <Stack
-          direction="row"
-          spacing={1}
-          sx={{ flexShrink: 0, "& .MuiButton-root": { whiteSpace: "nowrap" } }}
-        >
-          <Button
-            variant="outlined"
-            startIcon={<AutoFixHighIcon />}
-            onClick={onOpenSetup}
+      <PageHeader
+        title={t("servers.title")}
+        subtitle={t("servers.subtitle")}
+        actions={
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={{
+              flexShrink: 0,
+              "& .MuiButton-root": { whiteSpace: "nowrap" },
+            }}
           >
-            {t("servers.setupWizard")}
-          </Button>
-          <Button variant="contained" startIcon={<AddIcon />} onClick={openAdd}>
-            {t("servers.addServer")}
-          </Button>
-        </Stack>
-      </Box>
+            <Button
+              variant="outlined"
+              startIcon={<AutoFixHighIcon />}
+              onClick={onOpenSetup}
+            >
+              {t("servers.setupWizard")}
+            </Button>
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={openAdd}
+            >
+              {t("servers.addServer")}
+            </Button>
+          </Stack>
+        }
+      />
 
       <ServersTable
         servers={state.servers}

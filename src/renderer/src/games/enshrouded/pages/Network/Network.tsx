@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Box, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useEnshroudedFirewall } from "./hooks/useEnshroudedFirewall";
 import AdminBanner from "../../../../components/firewall/AdminBanner";
@@ -7,6 +6,7 @@ import StandardRules from "../../../../components/firewall/StandardRules";
 import CustomRules from "../../../../components/firewall/CustomRules";
 import FormPage from "../../../../components/common/FormPage";
 import { enshroudedConfigService } from "../../services/configService";
+import PageHeader from "../../../../components/common/PageHeader";
 
 export default function EnshroudedNetwork() {
   const { t } = useTranslation();
@@ -34,12 +34,10 @@ export default function EnshroudedNetwork() {
 
   return (
     <FormPage>
-      <Box>
-        <Typography variant="h6">{t("enshroudedNetwork.title")}</Typography>
-        <Typography variant="body2" sx={{ color: "text.secondary", mt: 0.5 }}>
-          {t("enshroudedNetwork.subtitle")}
-        </Typography>
-      </Box>
+      <PageHeader
+        title={t("enshroudedNetwork.title")}
+        subtitle={t("enshroudedNetwork.subtitle")}
+      />
 
       <AdminBanner isAdmin={isAdmin} />
 

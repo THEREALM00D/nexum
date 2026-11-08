@@ -47,7 +47,7 @@ export default function LogSessionPicker({
         onChange={(e) =>
           onSelect(e.target.value === LIVE ? null : e.target.value)
         }
-        sx={{ minWidth: 240, fontSize: 13 }}
+        sx={{ typography: "body2", minWidth: 240 }}
       >
         <MenuItem value={LIVE}>{t("logs.session.live")}</MenuItem>
         {past.map((s) => (

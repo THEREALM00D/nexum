@@ -9,12 +9,12 @@ import { useConfigGroups } from "./useConfigGroups";
 import { useConfigLoad } from "./useConfigLoad";
 import ConfigGroup from "./ConfigGroup";
 import ConfigField from "./ConfigField";
-import ConfigPageHeader from "./ConfigPageHeader";
 import ConfigSearchBar from "./ConfigSearchBar";
 import type { ConfigSettings, FieldGroup } from "./types";
 import { appErrorMessage } from "../../utils/appErrorMessage";
 import LoadingSkeleton from "../common/LoadingSkeleton";
 import FormPage from "../common/FormPage";
+import PageHeader from "../common/PageHeader";
 
 const SAVE_FLASH_MS = 2000;
 
@@ -123,18 +123,19 @@ export default function ConfigPage({
 
   return (
     <FormPage>
-      <ConfigPageHeader
-        titleKey={titleKey}
-        subtitleKey={subtitleKey}
-        folderPath={folderPath(state.serverPath)}
+      <PageHeader
+        title={t(titleKey)}
+        subtitle={t(subtitleKey)}
+        onOpenFolder={() =>
+          window.api.shell.openPath(folderPath(state.serverPath))
+        }
+        folderTooltip={t("config.openFolder")}
       />
 
       {notice}
 
       {locked && (
-        <Alert severity="warning" sx={{ fontSize: 13 }}>
-          {t("configPage.lockedWhileRunning")}
-        </Alert>
+        <Alert severity="warning">{t("configPage.lockedWhileRunning")}</Alert>
       )}
 
       {/* Chargement : la page garde sa forme, chaque bloc en skeleton */}

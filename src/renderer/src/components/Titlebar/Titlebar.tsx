@@ -58,7 +58,7 @@ export default function Titlebar() {
           sx={{
             color: "text.secondary",
             borderRadius: 1,
-            "&:hover": { bgcolor: "error.main", color: "#fff" },
+            "&:hover": { bgcolor: "error.main", color: "error.contrastText" },
           }}
         >
           <CloseIcon sx={{ fontSize: 14 }} />

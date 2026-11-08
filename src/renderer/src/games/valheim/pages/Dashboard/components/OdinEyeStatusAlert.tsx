@@ -40,9 +40,7 @@ export default function OdinEyeStatusAlert({
 
   return (
     <LoadingSkeleton loading={loading || pending} fullWidth>
-      <Alert severity={severity} sx={{ fontSize: 13 }}>
-        {text}
-      </Alert>
+      <Alert severity={severity}>{text}</Alert>
     </LoadingSkeleton>
   );
 }

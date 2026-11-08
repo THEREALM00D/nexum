@@ -17,7 +17,6 @@ export default function BepInExBanner({
   return (
     <Alert
       severity="warning"
-      sx={{ fontSize: 13 }}
       action={
         <Button
           color="inherit"

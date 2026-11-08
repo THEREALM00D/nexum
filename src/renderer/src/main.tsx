@@ -9,6 +9,8 @@ import "@fontsource/ibm-plex-sans/600.css";
 import "@fontsource/ibm-plex-sans/700.css";
 import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
+// Axes wdth + wght : Archivo Expanded (font-stretch 125 %) pour les titres
+import "@fontsource-variable/archivo/wdth.css";
 import "./assets/index.css";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(

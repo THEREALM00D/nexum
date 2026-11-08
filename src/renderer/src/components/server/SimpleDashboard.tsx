@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Alert, Box, Stack, Typography } from "@mui/material";
+import { Alert, Box, Stack } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { useTranslation } from "react-i18next";
 import { useServer } from "../../context/ServerContext";
@@ -8,6 +8,7 @@ import ServerControls from "./ServerControls";
 import StatsGrid from "./StatsGrid";
 import JoinServerCard from "./JoinServerCard";
 import Logs from "./Logs";
+import PageHeader from "../common/PageHeader";
 
 interface Props {
   titleKey: string;
@@ -38,12 +39,10 @@ export default function SimpleDashboard({
 
   return (
     <Stack spacing={3}>
-      <Box>
-        <Typography variant="h6">{t(titleKey)}</Typography>
-        <Typography variant="body2" sx={{ color: "text.secondary", mt: 0.5 }}>
-          {serverPath || t(noServerPathKey)}
-        </Typography>
-      </Box>
+      <PageHeader
+        title={t(titleKey)}
+        subtitle={serverPath || t(noServerPathKey)}
+      />
 
       {warning}
 
@@ -60,11 +59,7 @@ export default function SimpleDashboard({
 
       <JoinServerCard />
 
-      <Alert
-        severity="info"
-        icon={<InfoOutlinedIcon fontSize="inherit" />}
-        sx={{ fontSize: 13 }}
-      >
+      <Alert severity="info" icon={<InfoOutlinedIcon fontSize="inherit" />}>
         {t(infoKey)}
       </Alert>
 
@@ -72,7 +67,7 @@ export default function SimpleDashboard({
           log hors de l'écran sur un portable (768 px de haut). */}
       {showLogs && (
         <Box sx={{ height: "clamp(220px, 40vh, 400px)" }}>
-          <Logs />
+          <Logs embedded />
         </Box>
       )}
     </Stack>

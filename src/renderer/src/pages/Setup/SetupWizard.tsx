@@ -1,6 +1,5 @@
 import { useState } from "react";
 import {
-  Box,
   Button,
   Paper,
   Stack,
@@ -22,6 +21,7 @@ import StepGame, {
 import StepStart from "./components/StepStart";
 import FormPage from "../../components/common/FormPage";
 import { errorMessage } from "../../utils/appErrorMessage";
+import PageHeader from "../../components/common/PageHeader";
 
 type StepId = "game" | "install" | "config" | "network" | "start";
 
@@ -89,12 +89,7 @@ export default function SetupWizard({ onFinish }: { onFinish: () => void }) {
 
   return (
     <FormPage width={960}>
-      <Box>
-        <Typography variant="h6">{t("setup.title")}</Typography>
-        <Typography variant="body2" sx={{ color: "text.secondary", mt: 0.5 }}>
-          {t("setup.subtitle")}
-        </Typography>
-      </Box>
+      <PageHeader title={t("setup.title")} subtitle={t("setup.subtitle")} />
 
       <Stepper activeStep={index} alternativeLabel>
         {steps.map((s) => (

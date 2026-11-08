@@ -67,7 +67,7 @@ export default function SidebarNavItem({
       <ListItemText
         primary={label}
         slotProps={{
-          primary: { sx: { fontSize: 13, fontWeight: active ? 600 : 400 } },
+          primary: { variant: "body2", sx: { fontWeight: active ? 600 : 400 } },
         }}
       />
     </ListItemButton>

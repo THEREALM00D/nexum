@@ -46,7 +46,7 @@ export default function DiscordButton({ collapsed }: { collapsed: boolean }) {
         fullWidth
         onClick={open}
         startIcon={<DiscordIcon sx={{ fontSize: 16 }} />}
-        sx={{ color: "text.secondary", fontSize: 12, mb: 1 }}
+        sx={{ typography: "caption", color: "text.secondary", mb: 1 }}
       >
         {t("sidebar.discord.label")}
       </Button>

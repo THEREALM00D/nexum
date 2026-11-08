@@ -22,7 +22,7 @@ interface Props {
   onInstall: () => void;
 }
 
-const actionSx = { mt: 0.5, fontSize: 11, py: 0.25 };
+const actionSx = { typography: "micro", mt: 0.5, py: 0.25 };
 
 /** Ligne d'état sous la version : un rendu distinct pour chaque état. */
 export default function UpdateStatusDetails({
@@ -122,7 +122,11 @@ export default function UpdateStatusDetails({
               {t(`sidebar.update.errors.${status.kind}`)}
             </Typography>
           </Tooltip>
-          <Button size="small" onClick={onRetry} sx={{ fontSize: 11, py: 0 }}>
+          <Button
+            size="small"
+            onClick={onRetry}
+            sx={{ typography: "micro", py: 0 }}
+          >
             {t("sidebar.update.retry")}
           </Button>
         </Box>

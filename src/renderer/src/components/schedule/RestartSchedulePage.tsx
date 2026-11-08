@@ -15,6 +15,7 @@ import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { useRestartSchedule } from "./useRestartSchedule";
 import LoadingSkeleton from "../common/LoadingSkeleton";
+import PageHeader from "../common/PageHeader";
 
 interface Props {
   /** Texte d'information du jeu (comment se passe l'arrêt). */
@@ -33,19 +34,13 @@ export default function RestartSchedulePage({ infoKey, notice }: Props) {
 
   return (
     <Stack spacing={3}>
-      <Box>
-        <Typography variant="h6">{t("schedule.title")}</Typography>
-        <Typography variant="body2" sx={{ color: "text.secondary", mt: 0.5 }}>
-          {t("schedule.subtitle")}
-        </Typography>
-      </Box>
+      <PageHeader
+        title={t("schedule.title")}
+        subtitle={t("schedule.subtitle")}
+      />
 
       {infoKey && (
-        <Alert
-          severity="info"
-          icon={<InfoOutlinedIcon fontSize="inherit" />}
-          sx={{ fontSize: 13 }}
-        >
+        <Alert severity="info" icon={<InfoOutlinedIcon fontSize="inherit" />}>
           {t(infoKey)}
         </Alert>
       )}

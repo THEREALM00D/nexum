@@ -212,7 +212,11 @@ export default function Sidebar({ currentPage, onNavigate }: SidebarProps) {
                 color={STATUS_COLOR[state.status] ?? "default"}
                 size="small"
                 variant="outlined"
-                sx={{ width: "100%", fontSize: 11, mb: state.loaded ? 1 : 0 }}
+                sx={{
+                  typography: "micro",
+                  width: "100%",
+                  mb: state.loaded ? 1 : 0,
+                }}
               />
             </LoadingSkeleton>
             <DiscordButton collapsed={false} />

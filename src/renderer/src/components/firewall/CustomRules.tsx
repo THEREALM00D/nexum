@@ -30,12 +30,11 @@ import RuleStatus from "./RuleStatus";
 import { FONT_MONO } from "../../theme";
 import { firewallErrorMessage } from "./useNamedRulesFirewall";
 import LoadingSkeleton from "../common/LoadingSkeleton";
+import SectionTitle from "../common/SectionTitle";
 
 const HEAD_SX = {
   color: "text.secondary",
-  fontSize: 11,
-  textTransform: "uppercase",
-  letterSpacing: 0.6,
+  typography: "overline",
 };
 
 interface Props {
@@ -106,17 +105,7 @@ export default function CustomRules({
 
   return (
     <Paper sx={{ p: 2.5 }}>
-      <Typography
-        variant="subtitle2"
-        sx={{
-          textTransform: "uppercase",
-          letterSpacing: 0.8,
-          color: "text.secondary",
-          mb: 2,
-        }}
-      >
-        {t("network.custom.title")}
-      </Typography>
+      <SectionTitle sx={{ mb: 2 }}>{t("network.custom.title")}</SectionTitle>
 
       <Stack
         direction="row"
@@ -210,7 +199,7 @@ export default function CustomRules({
                         label={rule.protocol}
                         size="small"
                         variant="outlined"
-                        sx={{ fontSize: 10 }}
+                        sx={{ typography: "micro" }}
                       />
                     </TableCell>
                     <TableCell>

@@ -19,11 +19,7 @@ export default function GameRequirementsHint({
   const req = getGamePlugin(gameType)?.requirements;
   if (!req) return null;
   return (
-    <Alert
-      severity="info"
-      icon={<MemoryIcon fontSize="inherit" />}
-      sx={[{ fontSize: 13 }, ...(Array.isArray(sx) ? sx : [sx])]}
-    >
+    <Alert severity="info" icon={<MemoryIcon fontSize="inherit" />} sx={sx}>
       {t("gameRequirements.hint", {
         game: t(`servers.games.${gameType}`),
         ram: req.ramGb,

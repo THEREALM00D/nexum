@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import type { SystemStats } from "@shared/types";
 import { formatDuration } from "../../utils/format";
 import LoadingSkeleton from "../common/LoadingSkeleton";
+import SectionTitle from "../common/SectionTitle";
 
 // Valeurs de forme réaliste, affichées masquées sous les skeletons tant que
 // les premières statistiques ne sont pas arrivées (même taille de cartes).
@@ -39,16 +40,7 @@ function StatCard({
     <Paper
       sx={{ p: 2.5, height: "100%", display: "flex", flexDirection: "column" }}
     >
-      <Typography
-        variant="caption"
-        sx={{
-          color: "text.secondary",
-          textTransform: "uppercase",
-          letterSpacing: 0.8,
-        }}
-      >
-        {label}
-      </Typography>
+      <SectionTitle component="div">{label}</SectionTitle>
       <LoadingSkeleton loading={loading} sx={{ mt: 0.5 }}>
         <Box
           sx={{
@@ -58,16 +50,7 @@ function StatCard({
             mt: loading ? 0 : 0.5,
           }}
         >
-          {/* 6 cartes par ligne (xl) : un peu plus petit pour que
-            « 13.57 / 31.92 » tienne sur une ligne */}
-          <Typography
-            variant="h5"
-            sx={{
-              fontWeight: 700,
-              whiteSpace: "nowrap",
-              fontSize: { xl: "1.25rem" },
-            }}
-          >
+          <Typography variant="stat" sx={{ whiteSpace: "nowrap" }}>
             {value}
           </Typography>
           {unit && (

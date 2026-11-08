@@ -103,12 +103,12 @@ export default function ShareModpackButton({
                 {t("valheimMods.share.howTo", { count: result.modCount })}
               </Typography>
               {result.includesHexium && (
-                <Alert severity="warning" sx={{ fontSize: 13 }}>
+                <Alert severity="warning">
                   {t("valheimMods.share.hexiumWarning")}
                 </Alert>
               )}
               {result.skippedManual > 0 && (
-                <Alert severity="info" sx={{ fontSize: 13 }}>
+                <Alert severity="info">
                   {t("valheimMods.share.skippedManual", {
                     count: result.skippedManual,
                   })}

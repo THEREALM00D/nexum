@@ -3,17 +3,17 @@ import { Box, Skeleton, Stack } from "@mui/material";
 /**
  * Page en cours de chargement au lancement de l'app (serveurs pas encore
  * lus, donc page du jeu inconnue) : titre, sous-titre et blocs de contenu.
- * Mêmes tailles de texte que l'en-tête des pages (h6 + body2).
+ * Mêmes tailles de texte que l'en-tête des pages (h1 + body2).
  */
 export default function PageSkeleton() {
   return (
     <Stack spacing={3}>
       <Box>
-        <Skeleton variant="text" width={240} sx={{ fontSize: "1.25rem" }} />
+        <Skeleton variant="text" width={240} sx={{ typography: "h1" }} />
         <Skeleton
           variant="text"
           width={360}
-          sx={{ fontSize: "0.875rem", mt: 0.5 }}
+          sx={{ typography: "body2", mt: 0.5 }}
         />
       </Box>
       <Skeleton variant="rounded" height={72} />

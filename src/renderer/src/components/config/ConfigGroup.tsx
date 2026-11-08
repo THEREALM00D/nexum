@@ -4,12 +4,12 @@ import {
   AccordionSummary,
   Divider,
   Stack,
-  Typography,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useTranslation } from "react-i18next";
 import type { ReactNode } from "react";
 import type { FieldGroup, FieldDef } from "./types";
+import SectionTitle from "../common/SectionTitle";
 
 interface Props {
   group: FieldGroup;
@@ -28,16 +28,7 @@ export default function ConfigGroup({
   return (
     <Accordion expanded={expanded} onChange={onToggle} disableGutters>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-        <Typography
-          variant="subtitle2"
-          sx={{
-            textTransform: "uppercase",
-            letterSpacing: 0.8,
-            color: "text.secondary",
-          }}
-        >
-          {t(group.labelKey)}
-        </Typography>
+        <SectionTitle component="span">{t(group.labelKey)}</SectionTitle>
       </AccordionSummary>
       <AccordionDetails>
         <Stack spacing={1.5}>

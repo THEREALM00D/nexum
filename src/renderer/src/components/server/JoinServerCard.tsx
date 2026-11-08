@@ -14,8 +14,8 @@ import { useTranslation } from "react-i18next";
 import type { JoinInfo } from "@shared/types";
 import { useServer } from "../../context/ServerContext";
 import { useNotification } from "../../context/NotificationContext";
-import { FONT_MONO } from "../../theme";
 import LoadingSkeleton, { SkeletonChildren } from "../common/LoadingSkeleton";
+import SectionTitle from "../common/SectionTitle";
 
 // Dernier code de connexion crossplay Valheim vu dans les logs
 // (« … with join code 123456 and IP … »).
@@ -50,9 +50,7 @@ function CopyRow({ label, value }: { label: string; value: string }) {
       <Typography variant="body2" sx={LABEL_SX}>
         {label}
       </Typography>
-      <Typography sx={{ fontFamily: FONT_MONO, fontSize: 14 }}>
-        {value}
-      </Typography>
+      <Typography variant="code">{value}</Typography>
       <Tooltip title={t("join.copy")}>
         <IconButton size="small" onClick={copy}>
           <ContentCopyIcon sx={{ fontSize: 16 }} />
@@ -110,9 +108,7 @@ export default function JoinServerCard() {
   const data = info ?? PLACEHOLDER_INFO;
   return (
     <Paper sx={{ p: 2.5 }}>
-      <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1.5 }}>
-        {t("join.title")}
-      </Typography>
+      <SectionTitle sx={{ mb: 1.5 }}>{t("join.title")}</SectionTitle>
       <Stack spacing={1}>
         <SkeletonChildren loading={loading}>
           {data.localIp && (

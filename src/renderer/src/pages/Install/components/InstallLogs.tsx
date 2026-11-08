@@ -25,8 +25,8 @@ export default function InstallLogs({ logs }: { logs: string[] }) {
         sx={{
           height: 180,
           overflowY: "auto",
+          typography: "micro",
           fontFamily: FONT_MONO,
-          fontSize: 11,
           color: "text.secondary",
           lineHeight: 1.6,
         }}

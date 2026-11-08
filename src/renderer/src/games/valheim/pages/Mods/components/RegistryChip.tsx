@@ -30,7 +30,7 @@ export default function RegistryChip({ source }: Props) {
       size="small"
       variant="outlined"
       sx={{
-        fontSize: 10,
+        typography: "micro",
         height: 18,
         px: 0,
         ...(color && { color, borderColor: color }),

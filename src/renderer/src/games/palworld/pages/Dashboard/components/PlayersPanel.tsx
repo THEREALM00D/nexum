@@ -16,6 +16,7 @@ import BlockIcon from "@mui/icons-material/Block";
 import { useTranslation } from "react-i18next";
 import type { PalPlayer } from "@shared/types";
 import { useNotification } from "../../../../../context/NotificationContext";
+import SectionTitle from "../../../../../components/common/SectionTitle";
 
 interface Props {
   players: PalPlayer[];
@@ -61,9 +62,9 @@ export default function PlayersPanel({ players, setPlayers }: Props) {
 
   return (
     <Paper sx={{ p: 2.5, flex: "1 1 360px", minWidth: 0 }}>
-      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+      <SectionTitle sx={{ mb: 1 }}>
         {t("dashboard.players.title", { count: players.length })}
-      </Typography>
+      </SectionTitle>
       <Divider sx={{ mb: 1 }} />
       {players.length === 0 ? (
         <Typography variant="body2" sx={{ color: "text.secondary" }}>
@@ -123,9 +124,9 @@ export default function PlayersPanel({ players, setPlayers }: Props) {
         </Stack>
       )}
       <Divider sx={{ my: 1.5 }} />
-      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+      <SectionTitle sx={{ mb: 1 }}>
         {t("dashboard.players.unbanTitle")}
-      </Typography>
+      </SectionTitle>
       <Stack direction="row" spacing={1}>
         <TextField
           size="small"

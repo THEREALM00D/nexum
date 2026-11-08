@@ -13,7 +13,7 @@ export default function LanguageToggle({
 }) {
   const { i18n } = useTranslation();
   const compact = size === "small";
-  const btn = compact ? { fontSize: 11, py: 0.25 } : { px: 3 };
+  const btn = compact ? { typography: "micro", py: 0.25 } : { px: 3 };
 
   return (
     <ToggleButtonGroup

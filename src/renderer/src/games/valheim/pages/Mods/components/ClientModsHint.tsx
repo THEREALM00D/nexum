@@ -51,7 +51,6 @@ export default function ClientModsHint() {
   return (
     <Alert
       severity="info"
-      sx={{ fontSize: 13 }}
       onClose={() => toggle(true)}
       closeText={t("valheimMods.clientHintHide")}
     >

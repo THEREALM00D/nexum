@@ -11,6 +11,7 @@ import type { BackupEntry, ServerStatus } from "@shared/types";
 import ScrollPanel from "../common/ScrollPanel";
 import LoadingSkeleton, { skeletonRows } from "../common/LoadingSkeleton";
 import BackupRow from "./BackupRow";
+import SectionTitle from "../common/SectionTitle";
 
 // Ligne d'exemple des skeletons (forme d'une vraie sauvegarde, jamais affichée)
 const PLACEHOLDER: BackupEntry = {
@@ -64,9 +65,9 @@ export default function BackupList({
             }}
           >
             <LoadingSkeleton loading={loading}>
-              <Typography variant="subtitle2">
+              <SectionTitle>
                 {t("backup.list.title", { count: backups.length })}
-              </Typography>
+              </SectionTitle>
             </LoadingSkeleton>
             <Button
               variant="contained"

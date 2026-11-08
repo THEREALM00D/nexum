@@ -38,6 +38,7 @@ import ConfigFilesList from "./components/ConfigFilesList";
 import ConfigFileEditorDialog from "./components/ConfigFileEditorDialog";
 import { REGISTRY_LABEL } from "./utils/modPageUrl";
 import { FONT_MONO } from "../../../../theme";
+import PageHeader from "../../../../components/common/PageHeader";
 
 type MainTab = "installed" | "browse" | "configs";
 
@@ -122,12 +123,10 @@ export default function ValheimMods() {
 
   return (
     <Stack spacing={3} sx={{ height: "100%" }}>
-      <Box>
-        <Typography variant="h6">{t("valheimMods.title")}</Typography>
-        <Typography variant="body2" sx={{ color: "text.secondary", mt: 0.5 }}>
-          {t("valheimMods.subtitle")}
-        </Typography>
-      </Box>
+      <PageHeader
+        title={t("valheimMods.title")}
+        subtitle={t("valheimMods.subtitle")}
+      />
 
       <BepInExBanner
         detected={bepInEx}

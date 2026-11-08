@@ -18,6 +18,7 @@ import ScrollPanel from "../common/ScrollPanel";
 import SearchField from "../common/SearchField";
 import LoadingSkeleton, { skeletonTableRows } from "../common/LoadingSkeleton";
 import PlayerRow from "./PlayerRow";
+import PageHeader from "../common/PageHeader";
 
 const REFRESH_INTERVAL_MS = 10_000;
 
@@ -95,12 +96,7 @@ export default function Players() {
 
   return (
     <Stack spacing={3} sx={{ height: "100%" }}>
-      <Box>
-        <Typography variant="h6">{t("players.title")}</Typography>
-        <Typography variant="body2" sx={{ color: "text.secondary", mt: 0.5 }}>
-          {t("players.subtitle")}
-        </Typography>
-      </Box>
+      <PageHeader title={t("players.title")} subtitle={t("players.subtitle")} />
 
       <Stack
         direction="row"

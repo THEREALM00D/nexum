@@ -29,11 +29,10 @@ export default function PlayerRow({ entry, onRemove }: Props) {
             {entry.name}
           </Typography>
           <Typography
-            variant="caption"
+            variant="micro"
             sx={{
               color: "text.secondary",
               fontFamily: FONT_MONO,
-              fontSize: 11,
             }}
           >
             {entry.userId}

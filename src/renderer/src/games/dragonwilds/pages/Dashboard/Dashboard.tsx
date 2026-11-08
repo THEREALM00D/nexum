@@ -28,7 +28,7 @@ export default function DragonwildsDashboard() {
       showLogs
       warning={
         ownerMissing && (
-          <Alert severity="warning" sx={{ fontSize: 13 }}>
+          <Alert severity="warning">
             {t("dragonwildsDashboard.ownerMissing")}
           </Alert>
         )

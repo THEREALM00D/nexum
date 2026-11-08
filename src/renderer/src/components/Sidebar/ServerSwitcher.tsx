@@ -139,12 +139,12 @@ export default function ServerSwitcher({ onManage, collapsed }: Props) {
           sx={{
             justifyContent: "space-between",
             textTransform: "none",
-            bgcolor: "rgba(255,255,255,0.05)",
+            bgcolor: NEXUM.raised,
             color: "text.primary",
             py: 1,
             px: 1.5,
             borderRadius: 2,
-            "&:hover": { bgcolor: "rgba(255,255,255,0.08)" },
+            "&:hover": { bgcolor: "action.hover" },
           }}
         >
           <Box
