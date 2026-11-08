@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.21.0](https://github.com/THEREALM00D/nexum/compare/v0.20.0...v0.21.0) (2026-11-08)
+
+
+### Features
+
+* improve contrast and keyboard access ([#215](https://github.com/THEREALM00D/nexum/issues/215)) ([24f539b](https://github.com/THEREALM00D/nexum/commit/24f539b2a04f2b8ecee1256f86b7d516385d8340))
+* keep server colors distinct from status colors ([#216](https://github.com/THEREALM00D/nexum/issues/216)) ([348cb9b](https://github.com/THEREALM00D/nexum/commit/348cb9b76f61022adc9d4c522d0413afe40cb757))
+* lead the dashboard with the server, its status and the right action ([#221](https://github.com/THEREALM00D/nexum/issues/221)) ([aaeadad](https://github.com/THEREALM00D/nexum/commit/aaeadad352b77cc5eb36cac865a5d97a05a9a3ed))
+* make server actions safer and add a useful empty state ([#220](https://github.com/THEREALM00D/nexum/issues/220)) ([1dd6e69](https://github.com/THEREALM00D/nexum/commit/1dd6e6937eab2a1e4596523d00b10b6c58a832d8))
+* reorganize the sidebar and titlebar ([#219](https://github.com/THEREALM00D/nexum/issues/219)) ([0a4cf1d](https://github.com/THEREALM00D/nexum/commit/0a4cf1da1c774f22b9a86517403d8ff3db378549))
+* show the latest log lines on the dashboard ([#224](https://github.com/THEREALM00D/nexum/issues/224)) ([7e6e04f](https://github.com/THEREALM00D/nexum/commit/7e6e04faf272faa17fe444e9409135efb07162f8))
+* unify page headers, section titles and the type scale ([#214](https://github.com/THEREALM00D/nexum/issues/214)) ([788015c](https://github.com/THEREALM00D/nexum/commit/788015cb189144c623f110d415f50bbf97bee6ba))
+
+
+### Bug Fixes
+
+* resolve relative paths against the server folder in the install folder warning ([#225](https://github.com/THEREALM00D/nexum/issues/225)) ([c733ffa](https://github.com/THEREALM00D/nexum/commit/c733ffa9eb7651caa44d13ff79a2a2ec16665fe5))
+* run automatic backups for every running server ([#198](https://github.com/THEREALM00D/nexum/issues/198)) ([82cfad2](https://github.com/THEREALM00D/nexum/commit/82cfad231ae84955165dff8bf22bf5cca34d0734))
+* save the game and wait for stable files before backing up a running server ([#196](https://github.com/THEREALM00D/nexum/issues/196)) ([8e58ee4](https://github.com/THEREALM00D/nexum/commit/8e58ee46520ea778617f5971856b568286cf129a))
+* stop nesting cards in the setup wizard ([#223](https://github.com/THEREALM00D/nexum/issues/223)) ([a270690](https://github.com/THEREALM00D/nexum/commit/a27069009facb3c0113fa952c3461f90ac568436))
+* stop shipping repository files in the packaged app ([#206](https://github.com/THEREALM00D/nexum/issues/206)) ([04a154f](https://github.com/THEREALM00D/nexum/commit/04a154f36e2cade40c2b1dbada1c9197f15ab23e))
+
 ## [0.20.0](https://github.com/THEREALM00D/nexum/compare/v0.19.0...v0.20.0) (2026-11-07)
 
 
