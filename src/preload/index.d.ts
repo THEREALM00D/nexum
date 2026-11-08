@@ -46,6 +46,8 @@ interface API {
     minimize: () => Promise<void>;
     maximize: () => Promise<void>;
     close: () => Promise<void>;
+    isMaximized: () => Promise<boolean>;
+    onMaximizedChange: (cb: (maximized: boolean) => void) => () => void;
   };
   config: {
     getServerPath: () => Promise<string>;

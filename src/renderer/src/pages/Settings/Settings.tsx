@@ -42,12 +42,12 @@ export default function Settings() {
 
       <SettingsSection title={t("settings.language.title")}>
         <Box>
-          <LanguageToggle size="medium" />
+          <LanguageToggle />
         </Box>
       </SettingsSection>
 
       <SettingsSection title={t("settings.updates.title")}>
-        <UpdateIndicator align="left" />
+        <UpdateIndicator />
         <BetaUpdatesSwitch />
       </SettingsSection>
 

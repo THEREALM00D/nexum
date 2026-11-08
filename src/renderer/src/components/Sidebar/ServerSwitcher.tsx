@@ -19,6 +19,8 @@ import { useServer } from "../../context/ServerContext";
 import type { Page } from "../../App";
 import LoadingSkeleton from "../common/LoadingSkeleton";
 import ServerTile from "../common/ServerTile";
+import StatusDot from "../common/StatusDot";
+import { DEFAULT_GAME } from "../../games/registry";
 import { FOCUS_RING_SX, NEXUM } from "../../theme";
 
 interface Props {
@@ -52,6 +54,14 @@ export default function ServerSwitcher({ onManage, collapsed }: Props) {
     name: state.activeServer?.name ?? "",
     color: state.activeServer?.color ?? null,
   };
+  const statusLabel = t(`status.${state.status}`, {
+    defaultValue: state.status,
+  });
+  const gameLabel = t(
+    `servers.games.${state.activeServer?.gameType ?? DEFAULT_GAME}`,
+  );
+  // Pendant le chargement aussi : le skeleton garde la hauteur finale
+  const showStatus = !state.loaded || !!state.activeServer;
 
   const menu = (
     <Menu
@@ -94,7 +104,10 @@ export default function ServerSwitcher({ onManage, collapsed }: Props) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", py: 1.5 }}>
         <LoadingSkeleton loading={!state.loaded}>
-          <Tooltip title={activeName} placement="right">
+          <Tooltip
+            title={showStatus ? `${activeName} · ${statusLabel}` : activeName}
+            placement="right"
+          >
             <ButtonBase
               onClick={handleOpen}
               aria-haspopup="menu"
@@ -105,6 +118,18 @@ export default function ServerSwitcher({ onManage, collapsed }: Props) {
               }}
             >
               <ServerTile {...tileProps} size={28} />
+              {showStatus && (
+                <StatusDot
+                  status={state.status}
+                  sx={{
+                    position: "absolute",
+                    right: -3,
+                    bottom: -3,
+                    outline: "2px solid",
+                    outlineColor: "background.paper",
+                  }}
+                />
+              )}
             </ButtonBase>
           </Tooltip>
         </LoadingSkeleton>
@@ -114,7 +139,7 @@ export default function ServerSwitcher({ onManage, collapsed }: Props) {
   }
 
   return (
-    <Box sx={{ p: 1.5 }}>
+    <Box sx={{ p: 1 }}>
       <LoadingSkeleton loading={!state.loaded} fullWidth>
         <Button
           onClick={handleOpen}
@@ -126,7 +151,7 @@ export default function ServerSwitcher({ onManage, collapsed }: Props) {
             bgcolor: NEXUM.raised,
             color: "text.primary",
             py: 1,
-            px: 1.5,
+            px: 1,
             borderRadius: 2,
             "&:hover": { bgcolor: "action.hover" },
           }}
@@ -134,18 +159,27 @@ export default function ServerSwitcher({ onManage, collapsed }: Props) {
           <Box
             sx={{ display: "flex", alignItems: "center", gap: 1, minWidth: 0 }}
           >
-            <ServerTile {...tileProps} />
-            <Typography
-              variant="body2"
-              sx={{
-                fontWeight: 500,
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-              }}
-            >
-              {activeName}
-            </Typography>
+            <ServerTile {...tileProps} size={32} />
+            <Box sx={{ minWidth: 0, textAlign: "left" }}>
+              <Typography variant="body2" noWrap sx={{ fontWeight: 500 }}>
+                {activeName}
+              </Typography>
+              {showStatus && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 0.75,
+                    color: "text.secondary",
+                  }}
+                >
+                  <StatusDot status={state.status} />
+                  <Typography variant="caption" noWrap>
+                    {statusLabel} · {gameLabel}
+                  </Typography>
+                </Box>
+              )}
+            </Box>
           </Box>
         </Button>
       </LoadingSkeleton>

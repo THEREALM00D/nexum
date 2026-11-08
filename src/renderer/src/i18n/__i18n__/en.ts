@@ -14,6 +14,7 @@ export default {
     clearSearch: "Clear search",
     minimize: "Minimize",
     maximize: "Maximize",
+    restore: "Restore",
     close: "Close",
   },
   serverControls: {

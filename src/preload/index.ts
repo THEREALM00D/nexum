@@ -17,6 +17,14 @@ const api = {
     minimize: () => ipcRenderer.invoke("window:minimize"),
     maximize: () => ipcRenderer.invoke("window:maximize"),
     close: () => ipcRenderer.invoke("window:close"),
+    isMaximized: () => ipcRenderer.invoke("window:isMaximized"),
+    onMaximizedChange: (cb: (maximized: boolean) => void) => {
+      const listener = (_e: IpcRendererEvent, maximized: boolean) =>
+        cb(maximized);
+      ipcRenderer.on("window:maximizedChanged", listener);
+      return () =>
+        ipcRenderer.removeListener("window:maximizedChanged", listener);
+    },
   },
   // App config
   config: {

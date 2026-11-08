@@ -9,7 +9,7 @@ import LoadingSkeleton from "../common/LoadingSkeleton";
 // États où lancer une nouvelle vérification manuelle est pertinent — pas
 // pendant un check/téléchargement déjà en cours, ni quand une action est
 // déjà proposée (mise à jour dispo ou prête à installer).
-const CAN_CHECK_STATES: AppUpdateStatus["state"][] = [
+export const CAN_CHECK_STATES: AppUpdateStatus["state"][] = [
   "idle",
   "upToDate",
   "error",
@@ -17,27 +17,16 @@ const CAN_CHECK_STATES: AppUpdateStatus["state"][] = [
   "devMode",
 ];
 
-/** Version de l'app + état de la mise à jour (Sidebar et page Paramètres). */
-export default function UpdateIndicator({
-  align = "center",
-}: {
-  align?: "center" | "left";
-}) {
+/** Version de l'app + état de la mise à jour (page Paramètres). */
+export default function UpdateIndicator() {
   const { t } = useTranslation();
   const { currentVersion, status, loading, check, download, install } =
     useAppUpdate();
-  const justify = align === "center" ? "center" : "flex-start";
 
   return (
-    <Box sx={{ textAlign: align, mb: align === "center" ? 1.5 : 0 }}>
-      <LoadingSkeleton
-        loading={loading}
-        sx={{ mx: align === "center" ? "auto" : 0 }}
-      >
-        <Stack
-          direction="row"
-          sx={{ alignItems: "center", justifyContent: justify, gap: 0.25 }}
-        >
+    <Box>
+      <LoadingSkeleton loading={loading}>
+        <Stack direction="row" sx={{ alignItems: "center", gap: 0.25 }}>
           <Typography variant="caption" sx={{ color: "text.disabled" }}>
             {/* « 0.00.0 » : largeur réaliste pour le skeleton avant la vraie version */}
             {t("sidebar.version", { version: currentVersion || "0.00.0" })}
@@ -54,7 +43,7 @@ export default function UpdateIndicator({
       {!loading && (
         <UpdateStatusDetails
           status={status}
-          justify={justify}
+          justify="flex-start"
           onRetry={check}
           onDownload={download}
           onInstall={install}

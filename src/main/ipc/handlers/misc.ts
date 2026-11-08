@@ -18,6 +18,11 @@ export function registerMiscHandlers(ctx: IpcContext): void {
     if (win?.isMaximized()) win.unmaximize();
     else win?.maximize();
   });
+  ipcMain.handle(
+    "window:isMaximized",
+    (event) =>
+      BrowserWindow.fromWebContents(event.sender)?.isMaximized() ?? false,
+  );
   ipcMain.handle("window:close", () => {
     BrowserWindow.getFocusedWindow()?.close();
   });
