@@ -18,3 +18,6 @@ BACKLOG.md
 # Editor
 .vscode/
 .idea/
+
+# Réglages Claude Code personnels (les réglages partagés sont dans .claude/settings.json)
+.claude/settings.local.json

@@ -38,7 +38,7 @@ Pas de tests unitaires configurés dans ce projet — ne pas en chercher ni en a
 
 **Tester le contenu packagé sans toucher aux vrais serveurs** : `NEXUM_USER_DATA_DIR=<dossier> node_modules/electron/dist/electron.exe dist/win-unpacked/resources/app.asar --remote-debugging-port=<port>`. `isPackaged` y est faux (pas de démarrage auto ni de verrou d'instance), mais les `node_modules` sont ceux qu'a collectés electron-builder. Jamais `dist/win-unpacked/nexum.exe` : il ouvrirait les vraies données et démarrerait les serveurs en démarrage auto.
 
-Un hook PostToolUse (`.claude/settings.local.json`) lance automatiquement `fix:prettier` après chaque Write/Edit.
+Un hook PostToolUse (`.claude/settings.json` → `.claude/hooks/prettier.mjs`) passe Prettier sur chaque fichier du projet écrit par Write/Edit (fichiers hors du repo ignorés). Réglages Claude Code partagés (attribution désactivée, hook) dans `.claude/settings.json` ; `.claude/settings.local.json` est personnel et ignoré par git.
 
 ## CI / automatisation
 
