@@ -19,6 +19,7 @@ Three sources are merged into the same view:
 ## Colors
 
 - **Red**: lines containing `[ERR]` or `Error`
+- **Orange**: lines containing `[WRN]` or `Warning`
 - **Green**: lines containing `[Manager]`
 - **Gray**: everything else (the server's standard output)
 

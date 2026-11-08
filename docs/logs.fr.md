@@ -19,6 +19,7 @@ Les messages `[Manager]` sont écrits dans la langue de l'application (français
 ## Couleurs
 
 - **Rouge** : lignes contenant `[ERR]` ou `Error`
+- **Orange** : lignes contenant `[WRN]` ou `Warning`
 - **Vert** : lignes contenant `[Manager]`
 - **Gris** : reste (sortie standard du serveur)
 
