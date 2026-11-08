@@ -20,7 +20,8 @@ import { useExeDetection } from "../hooks/useExeDetection";
 import ExeStatusHint from "./ExeStatusHint";
 import InstallDirWarning from "../../../components/common/InstallDirWarning";
 import CheckboxField from "../../../components/common/CheckboxField";
-import ColorPicker, { DEFAULT_COLORS } from "./ColorPicker";
+import ColorPicker from "./ColorPicker";
+import { SERVER_COLORS } from "@shared/serverColors";
 import { GAMES } from "../../../games/registry";
 
 export interface ServerFormValues {
@@ -50,7 +51,7 @@ export default function ServerDialog({
     name: "",
     path: "",
     gameType: "palworld",
-    color: DEFAULT_COLORS[0],
+    color: SERVER_COLORS[0],
     autoStart: false,
     autoRestart: false,
   });
@@ -63,7 +64,7 @@ export default function ServerDialog({
         name: initial?.name ?? "",
         path: initial?.path ?? "",
         gameType: initial?.gameType ?? "palworld",
-        color: initial?.color ?? DEFAULT_COLORS[0],
+        color: initial?.color ?? SERVER_COLORS[0],
         autoStart: initial?.autoStart ?? false,
         autoRestart: initial?.autoRestart ?? false,
       });
@@ -153,6 +154,7 @@ export default function ServerDialog({
           </FormControl>
 
           <ColorPicker
+            name={values.name}
             value={values.color}
             onChange={(color) => setValues((v) => ({ ...v, color }))}
           />

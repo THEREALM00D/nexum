@@ -4,6 +4,10 @@
 
 Beaucoup d'IPC prennent un `serverId?` et retombent sur `ctx.getActiveServer()`. Le serveur actif est gardé **en mémoire** (lu au démarrage, persisté à chaque changement) : ⚠️ electron-store relit `config.json` à chaque `get`, et une 2e instance sur le même dossier de données changeait la cible de nos handlers (Arrêter visait un autre serveur, issue #144). Les actions sur un serveur (`useServerControls`) passent en plus **explicitement** le `serverId` affiché. Arrêt refusé (`SERVER_NOT_RUNNING`) → ligne `[Manager]` `stopRefused` avec statut et PID connus.
 
+## Couleur d'un serveur
+
+Palette dans `src/shared/serverColors.ts` (le main s'en sert pour la couleur par défaut et la migration). `migrateColors()` remplace au démarrage toute couleur enregistrée hors palette par la plus proche, sans prévenir ; `null` est conservé. ⚠️ Toute couleur retirée de `SERVER_COLORS` sera donc réécrite chez les utilisateurs.
+
 ## Adoption d'un processus existant
 
 - ⚠️ **Pas d'adoption en dev sur le dossier partagé** : sans `NEXUM_USER_DATA_DIR`, `yarn dev` partage `%APPDATA%\server-forge` avec l'app installée et adoptait ses vrais serveurs (deux Nexum sur le même processus, issue #144). `tryAdoptAll` est sauté sauf `NEXUM_DEV_ADOPT=1`. Avec `NEXUM_USER_DATA_DIR`, l'adoption reste active.

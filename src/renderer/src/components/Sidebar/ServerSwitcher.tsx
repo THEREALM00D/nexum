@@ -18,6 +18,7 @@ import { useTranslation } from "react-i18next";
 import { useServer } from "../../context/ServerContext";
 import type { Page } from "../../App";
 import LoadingSkeleton from "../common/LoadingSkeleton";
+import ServerTile from "../common/ServerTile";
 import { FOCUS_RING_SX, NEXUM } from "../../theme";
 
 interface Props {
@@ -47,19 +48,10 @@ export default function ServerSwitcher({ onManage, collapsed }: Props) {
   };
 
   const activeName = state.activeServer?.name ?? t("sidebar.noServer");
-  const activeColor = state.activeServer?.color ?? NEXUM.steel;
-
-  const colorDot = (
-    <Box
-      sx={{
-        width: 10,
-        height: 10,
-        borderRadius: "50%",
-        bgcolor: activeColor,
-        flexShrink: 0,
-      }}
-    />
-  );
+  const tileProps = {
+    name: state.activeServer?.name ?? "",
+    color: state.activeServer?.color ?? null,
+  };
 
   const menu = (
     <Menu
@@ -80,14 +72,7 @@ export default function ServerSwitcher({ onManage, collapsed }: Props) {
           onClick={() => handleSelect(srv.id)}
         >
           <ListItemIcon>
-            <Box
-              sx={{
-                width: 12,
-                height: 12,
-                borderRadius: "50%",
-                bgcolor: srv.color ?? NEXUM.steel,
-              }}
-            />
+            <ServerTile name={srv.name} color={srv.color} />
           </ListItemIcon>
           <ListItemText primary={srv.name} />
           {srv.id === state.activeServerId && (
@@ -108,22 +93,19 @@ export default function ServerSwitcher({ onManage, collapsed }: Props) {
   if (collapsed) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", py: 1.5 }}>
-        <LoadingSkeleton loading={!state.loaded} variant="circular">
+        <LoadingSkeleton loading={!state.loaded}>
           <Tooltip title={activeName} placement="right">
             <ButtonBase
               onClick={handleOpen}
               aria-haspopup="menu"
               sx={{
-                width: 28,
-                height: 28,
-                borderRadius: "50%",
-                bgcolor: activeColor,
-                border: "2px solid",
-                borderColor: "divider",
+                borderRadius: 1,
                 "&:hover": { opacity: 0.85 },
                 ...FOCUS_RING_SX,
               }}
-            />
+            >
+              <ServerTile {...tileProps} size={28} />
+            </ButtonBase>
           </Tooltip>
         </LoadingSkeleton>
         {menu}
@@ -152,7 +134,7 @@ export default function ServerSwitcher({ onManage, collapsed }: Props) {
           <Box
             sx={{ display: "flex", alignItems: "center", gap: 1, minWidth: 0 }}
           >
-            {colorDot}
+            <ServerTile {...tileProps} />
             <Typography
               variant="body2"
               sx={{

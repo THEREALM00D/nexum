@@ -1,23 +1,17 @@
 import { Box, ButtonBase, Stack } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import { SERVER_COLORS } from "@shared/serverColors";
+import ServerTile from "../../../components/common/ServerTile";
 import { FOCUS_RING_SX } from "../../../theme";
 
-export const DEFAULT_COLORS = [
-  "#3b82f6",
-  "#22c55e",
-  "#f59e0b",
-  "#ef4444",
-  "#a855f7",
-  "#06b6d4",
-  "#ec4899",
-];
-
 interface Props {
+  /** Nom saisi : les pastilles montrent la tuile telle qu'elle s'affichera. */
+  name: string;
   value: string | null;
   onChange: (color: string) => void;
 }
 
-export default function ColorPicker({ value, onChange }: Props) {
+export default function ColorPicker({ name, value, onChange }: Props) {
   const { t } = useTranslation();
 
   return (
@@ -29,24 +23,23 @@ export default function ColorPicker({ value, onChange }: Props) {
         {t("servers.dialog.color")}
       </Box>
       <Stack direction="row" spacing={1}>
-        {DEFAULT_COLORS.map((c) => (
+        {SERVER_COLORS.map((c) => (
           <ButtonBase
             key={c}
             onClick={() => onChange(c)}
             aria-label={`${t("servers.dialog.color")} ${c}`}
             aria-pressed={value === c}
             sx={{
-              width: 28,
-              height: 28,
-              borderRadius: "50%",
-              bgcolor: c,
+              borderRadius: 1,
               border: "2px solid",
-              borderColor: value === c ? "white" : "transparent",
+              borderColor: value === c ? "text.primary" : "transparent",
               transition: "transform 0.1s",
               "&:hover": { transform: "scale(1.1)" },
               ...FOCUS_RING_SX,
             }}
-          />
+          >
+            <ServerTile name={name} color={c} size={28} />
+          </ButtonBase>
         ))}
       </Stack>
     </Box>
