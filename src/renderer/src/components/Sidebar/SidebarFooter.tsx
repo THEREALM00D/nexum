@@ -52,7 +52,7 @@ export default function SidebarFooter() {
       case "devMode":
         return t("sidebar.update.devMode");
       default:
-        return t("sidebar.update.checkNow");
+        return canCheck ? t("sidebar.update.checkNow") : version;
     }
   })();
 
