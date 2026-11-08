@@ -62,6 +62,7 @@ export default function BackupConfigPanel({
                 <IconButton
                   disabled={!config.backupDir}
                   onClick={() => window.api.shell.openPath(config.backupDir)}
+                  aria-label={t("backup.config.dirOpen")}
                 >
                   <LaunchIcon />
                 </IconButton>

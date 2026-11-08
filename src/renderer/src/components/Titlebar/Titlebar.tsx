@@ -2,9 +2,11 @@ import { Box, IconButton, Typography } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
 import CropSquareIcon from "@mui/icons-material/CropSquare";
 import CloseIcon from "@mui/icons-material/Close";
+import { useTranslation } from "react-i18next";
 import logo from "../../assets/logo.svg";
 
 export default function Titlebar() {
+  const { t } = useTranslation();
   return (
     <Box
       sx={{
@@ -33,6 +35,7 @@ export default function Titlebar() {
         <IconButton
           size="small"
           onClick={() => window.api.window.minimize()}
+          aria-label={t("common.minimize")}
           sx={{
             color: "text.secondary",
             borderRadius: 1,
@@ -44,6 +47,7 @@ export default function Titlebar() {
         <IconButton
           size="small"
           onClick={() => window.api.window.maximize()}
+          aria-label={t("common.maximize")}
           sx={{
             color: "text.secondary",
             borderRadius: 1,
@@ -55,6 +59,7 @@ export default function Titlebar() {
         <IconButton
           size="small"
           onClick={() => window.api.window.close()}
+          aria-label={t("common.close")}
           sx={{
             color: "text.secondary",
             borderRadius: 1,

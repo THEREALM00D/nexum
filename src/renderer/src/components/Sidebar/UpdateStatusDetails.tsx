@@ -117,7 +117,7 @@ export default function UpdateStatusDetails({
           <Tooltip title={status.message}>
             <Typography
               variant="caption"
-              sx={{ display: "block", color: "error.main" }}
+              sx={{ display: "block", color: "error.light" }}
             >
               {t(`sidebar.update.errors.${status.kind}`)}
             </Typography>

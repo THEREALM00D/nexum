@@ -2,6 +2,7 @@ import { useState } from "react";
 import {
   Box,
   Button,
+  ButtonBase,
   Divider,
   ListItemIcon,
   ListItemText,
@@ -17,7 +18,7 @@ import { useTranslation } from "react-i18next";
 import { useServer } from "../../context/ServerContext";
 import type { Page } from "../../App";
 import LoadingSkeleton from "../common/LoadingSkeleton";
-import { NEXUM } from "../../theme";
+import { FOCUS_RING_SX, NEXUM } from "../../theme";
 
 interface Props {
   onManage: (page: Page) => void;
@@ -109,17 +110,18 @@ export default function ServerSwitcher({ onManage, collapsed }: Props) {
       <Box sx={{ display: "flex", justifyContent: "center", py: 1.5 }}>
         <LoadingSkeleton loading={!state.loaded} variant="circular">
           <Tooltip title={activeName} placement="right">
-            <Box
+            <ButtonBase
               onClick={handleOpen}
+              aria-haspopup="menu"
               sx={{
                 width: 28,
                 height: 28,
                 borderRadius: "50%",
                 bgcolor: activeColor,
-                cursor: "pointer",
                 border: "2px solid",
                 borderColor: "divider",
                 "&:hover": { opacity: 0.85 },
+                ...FOCUS_RING_SX,
               }}
             />
           </Tooltip>

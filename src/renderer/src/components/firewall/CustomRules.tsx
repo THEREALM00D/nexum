@@ -213,6 +213,7 @@ export default function CustomRules({
                             color="error"
                             disabled={deleting !== null}
                             onClick={() => handleDelete(rule)}
+                            aria-label={t("network.custom.delete")}
                           >
                             {deleting === `${rule.name}-${rule.protocol}` ? (
                               <CircularProgress size={16} color="inherit" />
