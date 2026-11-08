@@ -22,7 +22,6 @@ export default function DragonwildsDashboard() {
 
   return (
     <SimpleDashboard
-      titleKey="dragonwildsDashboard.title"
       noServerPathKey="dragonwildsDashboard.noServerPath"
       infoKey="dragonwildsDashboard.noApi"
       showLogs

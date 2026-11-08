@@ -6,7 +6,7 @@ Vue principale de Nexum — statut du serveur, statistiques, contrôles et moyen
 
 ## Statut du serveur
 
-Affiché en haut sous forme de chip coloré :
+La carte du haut indique le nom du serveur, son jeu et son dossier, avec son statut à côté des actions (et depuis quand il est en ligne) :
 
 | Statut           | Couleur | Description                                      |
 | ---------------- | ------- | ------------------------------------------------ |
@@ -18,9 +18,11 @@ Affiché en haut sous forme de chip coloré :
 
 ## Contrôles
 
-- **Démarrer** : lance le serveur du jeu
-- **Redémarrer** : arrête puis relance
-- **Arrêter** : arrête le serveur aussi proprement que le jeu le permet, puis force l'arrêt via `taskkill` si nécessaire
+Seules les actions possibles selon le statut sont affichées :
+
+- **Démarrer** (arrêté ou planté) : lance le serveur du jeu. Après un plantage, **Voir les logs** ouvre la page Logs pour comprendre ce qui s'est passé.
+- **Redémarrer** (en ligne) : arrête puis relance
+- **Arrêter** (en ligne ou au démarrage) : arrête le serveur aussi proprement que le jeu le permet, puis force l'arrêt via `taskkill` si nécessaire
 
 | Jeu                    | Comment le serveur s'arrête                                                                                         |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------- |
@@ -32,29 +34,28 @@ Affiché en haut sous forme de chip coloré :
 
 > Sur Palworld, l'arrêt propre n'est possible que si **API REST** est activée dans la configuration. Sinon, le serveur est tué brutalement et les modifications récentes peuvent être perdues.
 
-## Statistiques système
+## Statistiques
 
-Six cartes affichant en temps réel (rafraîchies toutes les 2 secondes) :
+Données en temps réel, rafraîchies toutes les 2 secondes. Le serveur d'abord :
+
+- **Joueurs connectés** (Palworld et Valheim, quand Nexum peut lire ce nombre)
+- **RAM du serveur** : mémoire utilisée par le serveur du jeu (quand il tourne)
+- **En ligne depuis** : temps écoulé depuis le démarrage du serveur du jeu, avec le prochain redémarrage planifié s'il y en a un
+
+Un bandeau en dessous indique l'état du PC :
 
 - **CPU** : utilisation du processeur en %
-- **RAM** : utilisation mémoire en %
-- **RAM utilisée** : mémoire consommée en GB
-- **RAM serveur** : mémoire utilisée par le serveur du jeu (quand il tourne)
-- **Uptime système** : temps écoulé depuis le démarrage de la machine
-- **Uptime serveur** : temps écoulé depuis le démarrage du serveur du jeu
+- **RAM** : utilisation mémoire en % et en GB
+- **Allumé depuis** : temps écoulé depuis le démarrage de la machine
 
-Les barres de progression changent de couleur :
-
-- Vert : < 65%
-- Orange : 65-85%
-- Rouge : > 85%
+Les barres restent neutres, puis passent en orange au-delà de 65 % et en rouge au-delà de 85 %.
 
 ## Rejoindre le serveur
 
-La carte **Rejoindre le serveur** (tous les jeux) donne l'adresse à partager avec vos amis, chacune avec un bouton Copier :
+La carte **Rejoindre le serveur** (tous les jeux) donne l'adresse à partager avec vos amis une fois le serveur en ligne, chacune avec un bouton Copier :
 
-- **Même réseau** : l'adresse locale de ce PC et le port du jeu (ex. `192.168.1.30:2456`), pour les joueurs sur le même Wi-Fi / la même box.
 - **Depuis Internet** : cliquez sur **Afficher mon IP publique** pour obtenir l'adresse à donner aux amis hors de votre réseau. Nexum la demande au service ipify.org, **seulement quand vous cliquez**.
+- **Même réseau** : l'adresse locale de ce PC et le port du jeu (ex. `192.168.1.30:2456`), pour les joueurs sur le même Wi-Fi / la même box.
 - **Code de connexion crossplay** (Valheim avec Crossplay activé) : le code lu dans les logs du serveur, une fois celui-ci démarré.
 
 La note en dessous rappelle les ports UDP à rediriger sur votre box (ex. `2456-2458` pour Valheim) et vers quel PC. La plupart des box ne permettent pas de rejoindre sa propre IP publique depuis chez soi : faites tester un ami à l'extérieur.

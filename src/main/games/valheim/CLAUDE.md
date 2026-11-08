@@ -23,7 +23,7 @@ Jeu le plus testé : **modèle principal** pour un nouveau jeu. Mods côté UI :
 - Erreurs : `AppError` `ODIN_EYE_NO_URL` / `INVALID_URL` / `UNREACHABLE` / `TIMEOUT` / `HTTP` / `NO_ENDPOINT`. IPC `valheim:testOdinEye(url?)` → nombre de joueurs. UI : `OdinEyeTestButton` (teste le champ même non enregistré), `OdinEyeStatusAlert` (désactivé / attente `waiting` / connecté / injoignable + raison). `/v1/serverInfo` ne donne que `maxNumberOfPlayers` / `gameVersion` / `steamAppId`.
 - Le plugin ne démarre qu'après le chargement du monde : pendant 3 min (`BOOT_GRACE_MS`) et jusqu'au 1er succès, un échec affiche « En attente » ; pas de délai accordé à un serveur lancé depuis plus longtemps (`stats.serverUptime`).
 - ⚠️ `localhost` se résout en `::1` d'abord ; le Node d'Electron retombe sur IPv4, pas le Node 22 du système : tester sous `ELECTRON_RUN_AS_NODE=1 electron.exe`, pas `node`.
-- `PlayerCountCard` (Dashboard) dès que le serveur tourne. `useValheimPlayerCount` : Odin-Eye s'il répond (`useOdinEyeStatus`, toutes les 10 s), sinon regex `now N player(s)` sur les logs, ⚠️ lignes PlayFab qui **n'existent qu'avec `-crossplay`** (sinon « — »). Code de connexion et IP volontairement non affichés (seulement dans les logs crossplay).
+- Carte « Joueurs connectés » du Dashboard (`ServerStats`). `useValheimPlayerCount` : Odin-Eye s'il répond (`useOdinEyeStatus`, toutes les 10 s), sinon regex `now N player(s)` sur les logs, ⚠️ lignes PlayFab qui **n'existent qu'avec `-crossplay`** (sinon « — »). Code de connexion et IP volontairement non affichés (seulement dans les logs crossplay).
 
 ## Mods : registres (`ModRegistryClient.ts`, `registries.ts`)
 

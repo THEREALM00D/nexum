@@ -1,15 +1,6 @@
 export default {
   dashboard: {
-    title: "Dashboard",
     noServerPath: "No server path — configure in Installation",
-    stats: {
-      cpu: "CPU",
-      ram: "RAM",
-      ramUsed: "RAM used",
-      ramServer: "Server RAM",
-      uptimeSystem: "System uptime",
-      uptimeServer: "Server uptime",
-    },
     controls: {
       start: "Start",
       restart: "Restart",
