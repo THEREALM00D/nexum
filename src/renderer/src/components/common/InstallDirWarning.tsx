@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { Alert, type SxProps, type Theme } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import { useServer } from "../../context/ServerContext";
 
 interface Props {
   path: string;
+  /** Chemin lu par le serveur du jeu : relatif à son dossier (`./savegame`). */
+  serverRelative?: boolean;
   sx?: SxProps<Theme>;
 }
 
@@ -12,14 +15,20 @@ interface Props {
  * Valheim, backups) est rangé dans le dossier d'installation de Nexum : les
  * versions ≤ 0.12.3 vident ce dossier à chaque mise à jour.
  */
-export default function InstallDirWarning({ path, sx }: Props) {
+export default function InstallDirWarning({
+  path,
+  serverRelative = false,
+  sx,
+}: Props) {
   const { t } = useTranslation();
+  const { state } = useServer();
   const [installDir, setInstallDir] = useState<string | null>(null);
+  const basePath = serverRelative ? state.serverPath : undefined;
 
   useEffect(() => {
     let cancelled = false;
     window.api.app
-      .installDirConflict(path)
+      .installDirConflict(path, basePath)
       .then((dir) => {
         if (!cancelled) setInstallDir(dir);
       })
@@ -27,7 +36,7 @@ export default function InstallDirWarning({ path, sx }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [path]);
+  }, [path, basePath]);
 
   if (!installDir) return null;
   return (

@@ -56,7 +56,7 @@ export default function WorldSection({
         fullWidth
         placeholder="%LOCALAPPDATA%\..\LocalLow\IronGate\Valheim"
       />
-      <InstallDirWarning path={config.savedir} />
+      <InstallDirWarning path={config.savedir} serverRelative />
       <TextField
         label={t("valheimConfig.fields.worldSeed.label")}
         helperText={t("valheimConfig.fields.worldSeed.description")}

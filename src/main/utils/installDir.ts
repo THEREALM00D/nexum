@@ -18,11 +18,18 @@ export function appInstallDir(): string | null {
  * sinon null. Les versions ≤ 0.12.3 de Nexum vident tout ce dossier à chaque
  * mise à jour (désinstalleur electron-builder par défaut) : des mondes
  * Valheim rangés dans ce dossier disparaissaient.
+ *
+ * `basePath` : dossier auquel se rapporte un chemin relatif. Sans lui, c'est
+ * le dossier de travail de Nexum, c'est-à-dire son dossier d'installation.
  */
-export function installDirConflict(path: string): string | null {
+export function installDirConflict(
+  path: string,
+  basePath?: string,
+): string | null {
   const dir = appInstallDir();
   if (!dir || !path?.trim()) return null;
+  const target = resolve(basePath ?? "", path);
   // Windows : chemins insensibles à la casse.
-  const rel = relative(resolve(dir).toLowerCase(), resolve(path).toLowerCase());
+  const rel = relative(resolve(dir).toLowerCase(), target.toLowerCase());
   return rel === "" || (!rel.startsWith("..") && !isAbsolute(rel)) ? dir : null;
 }
