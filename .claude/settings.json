@@ -1,0 +1,20 @@
+{
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/prettier.mjs\"",
+            "statusMessage": "Prettier..."
+          }
+        ]
+      }
+    ]
+  }
+}
