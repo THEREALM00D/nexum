@@ -1,0 +1,7 @@
+# Monitoring système (StatsGrid) et coût de `systeminformation`
+
+- ⚠️ Sous Windows, `si.processes()` et `si.mem()` lancent **chacun un PowerShell** (`Get-CimInstance`, ~1,5-2 s de CPU par appel). Une boucle de 2 s qui les appelait occupait plus de 2 cœurs en permanence (symptôme : « CPU à 100 % + plein de PowerShell, ça disparaît en fermant Nexum »).
+- `SystemMonitor` : CPU via `si.currentLoad()` (basé sur `os.cpus()`, aucun processus), RAM et uptime via `os`. Le processus du jeu (RAM, uptime serveur) n'est lu avec `si.processes()` que si le serveur actif tourne, **au plus toutes les 15 s** (cache ; uptime recalculé à chaque tick depuis l'heure de démarrage). Retrouvé par le **PID** du `ServerManager` (`getPid()`) : le plus gourmand du processus et de ses enfants directs (`processTreeStats`), jamais par nom (affichait le client du jeu ou un autre serveur).
+- Boucle en `setTimeout` (jamais deux cycles en même temps), ticks sautés fenêtre cachée ou réduite (`monitor:startPolling`, `src/main/ipc/handlers/misc.ts`).
+- Tester qu'un PID existe : `pidExists()` (`ServerManager.ts`, `process.kill(pid, 0)`, `EPERM` = vivant), **jamais** `si.processes()` dans une boucle. `si.processes()` est réservé aux recherches par nom ou chemin (adoption au démarrage).
+- Mesurer : compter les `powershell.exe` dont le parent est l'app (`Win32_Process.ParentProcessId`). ⚠️ Si Nexum est installé, il tourne souvent dans la zone de notification : filtrer par parent.

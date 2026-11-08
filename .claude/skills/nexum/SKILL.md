@@ -1,29 +1,18 @@
 ---
 name: nexum
-description: Prend en charge une issue GitHub de Nexum de bout en bout — lecture de l'issue, plan mode, questions, plan, développement, vérifications, puis (sur accord) push + PR. Utiliser quand l'utilisateur écrit « nexum 42 », « nexum #42 », « nexum(42) », « /nexum 42 » ou demande de travailler sur une issue précise de Nexum.
+description: Prend en charge une issue GitHub de Nexum de bout en bout — lecture de l'issue, plan mode, questions, plan, développement, vérifications (typecheck, lint, test dans l'app isolée), doc, puis (sur accord) push + PR. Utiliser quand l'utilisateur écrit « nexum 42 », « nexum #42 », « nexum(42) », « /nexum 42 » ou demande de travailler sur une issue précise de Nexum.
 argument-hint: <numéro d'issue>
 ---
 
 # Travailler sur l'issue Nexum #$ARGUMENTS
 
-Tu prends en charge l'issue **#$ARGUMENTS** du repo `THEREALM00D/nexum`. Le cycle est
-toujours le même : **comprendre → questionner → planifier → (approbation) → développer →
-vérifier → demander avant de publier**. Ne saute aucune étape.
+Cycle : **comprendre → questionner → planifier → (approbation) → développer → vérifier → documenter → demander avant de publier**. Ne saute aucune étape. Règles de travail (langue, branches, commits, PR, doc, public) : `.claude/CLAUDE.md`, à appliquer sans les redemander.
 
-Si `$ARGUMENTS` est vide ou n'est pas un numéro : demande le numéro d'issue. S'il n'y a pas
-encore d'issue pour ce travail, crée-la d'abord en suivant le skill `/issue` (règle du repo :
-**aucun travail ni PR sans issue**, vérifié en CI par `pr-issue.yml`), puis reprends ici avec
-son numéro.
+`$ARGUMENTS` vide ou pas un numéro → demande le numéro. Pas encore d'issue pour ce travail → crée-la avec `/issue` (colonne « In dev »), puis reprends ici.
 
-Communique en **français** avec l'utilisateur. Tout ce qui est public (commits, PR,
-commentaires d'issue) est en **anglais**.
+## 1. Plan mode
 
-## 1. Passer en plan mode
-
-Avant toute autre chose, entre en plan mode avec l'outil `EnterPlanMode`. Si l'outil n'est
-pas disponible, demande à l'utilisateur d'activer le plan mode (Shift+Tab) et, en attendant,
-respecte la même règle : **aucune modification de fichier, aucune commande qui écrit
-(git checkout -b, commit, gh issue edit…) avant que le plan soit approuvé.**
+Entre en plan mode (`EnterPlanMode`). S'il n'est pas disponible, demande à l'utilisateur de l'activer (Shift+Tab) et, en attendant : **aucune modification de fichier ni commande qui écrit** (branche, commit, `gh issue edit`…) avant l'approbation du plan.
 
 ## 2. Comprendre l'issue
 
@@ -32,53 +21,36 @@ gh issue view $ARGUMENTS --repo THEREALM00D/nexum --json number,title,body,label
 ```
 
 - Issue fermée → signale-le et demande s'il faut continuer.
-- Lis les commentaires : ils précisent souvent le besoin.
-- Labels → type Conventional Commits : `bug` → `fix`, `enhancement` → `feat`, doc → `docs`,
-  outillage/CI/dépendances → `chore` (ou `ci`, `refactor`). En cas de doute, pose la question :
-  le type du titre de PR décide de la version publiée (release-please).
+- Lis les commentaires (ils précisent souvent le besoin).
+- Type Conventional Commits : `bug` → `fix`, `enhancement` → `feat`, `documentation` → `docs`, `chore` → `chore` (ou `ci`, `refactor`). Un changement qui ne se voit pas dans l'app n'est jamais `fix`/`feat` (il publierait une version). En cas de doute, demande : le type décide de la release.
 
-## 3. Lire le contexte du repo
+## 3. Lire le contexte
 
-- `CLAUDE.md` (racine) : lis la table des matières (`grep -n '^#' CLAUDE.md`), puis **les
-  sections qui touchent l'issue** (jeu concerné, page, IPC, i18n, skeletons, ScrollPanel…).
-  Le fichier est long : ne le lis pas en entier si ce n'est pas utile.
-- `.claude/CLAUDE.md` : règles de dev, de commit et de PR.
-- Explore le code concerné. Cherche les composants, hooks et patterns **déjà existants** à
-  réutiliser : la règle est d'éviter la duplication.
-- Si l'issue touche une API externe ou un jeu, utilise les liens de « Utiliser la doc » de
-  `.claude/CLAUDE.md` et le serveur MCP MUI pour les questions MUI.
+- Tableau « Où est la doc » du `CLAUDE.md` racine → lis les `CLAUDE.md` des domaines touchés (jeu, page, logs, sauvegardes…). Nouveau jeu → suis aussi `/new-game`.
+- Explore le code concerné et cherche ce qui existe déjà (composants, hooks, helpers) : la règle est de ne pas dupliquer.
+- Jeu ou API externe : liens « Doc officielle » de `.claude/CLAUDE.md`, en gardant en tête les écarts notés dans le `CLAUDE.md` du jeu.
 
-## 4. Poser les questions nécessaires
+## 4. Questions
 
-Utilise `AskUserQuestion` (1 à 4 questions par appel, plusieurs appels si besoin) pour tout ce
-qui reste flou et changerait l'implémentation : comportement attendu, cas limites, jeux
-concernés, emplacement dans l'UI, texte FR/EN, impact sur la config existante des
-utilisateurs, type `feat`/`fix`. Mets l'option recommandée en premier.
+`AskUserQuestion` (1 à 4 questions par appel, option recommandée en premier) pour ce qui reste flou **et changerait l'implémentation** : comportement attendu, cas limites, jeux concernés, emplacement dans l'UI, textes FR/EN, effet sur la config existante des utilisateurs, type de PR. Pas de question dont la réponse est dans le code ou les `CLAUDE.md`.
 
-**Challenge l'utilisateur** : si l'issue propose une solution qui va contre une convention du
-repo, qui duplique l'existant ou qui a une meilleure alternative, dis-le et propose
-l'alternative. Ne pose pas de questions dont la réponse se trouve dans le code ou dans
-CLAUDE.md.
+**Challenge** : si l'issue propose une solution qui va contre une convention, duplique l'existant ou a une meilleure alternative, dis-le et propose l'alternative.
 
-## 5. Présenter le plan
+## 5. Plan (`ExitPlanMode`)
 
-Le plan (via `ExitPlanMode`) contient :
+1. **Résumé** de la demande (1-2 phrases).
+2. **Titre de PR** : ex. `feat: add backup retention per server`.
+3. **Branche** : `<type>/$ARGUMENTS-<slug-court-en-anglais>`.
+4. **Fichiers** à créer ou modifier, avec ce qui change.
+5. **Réutilisation** : composants / hooks existants utilisés ou extraits.
+6. **i18n** : nouvelles clés FR + EN (préfixées par le jeu si besoin).
+7. **Doc** : `docs/*.md` + `.fr.md`, README, `CLAUDE.md` du domaine.
+8. **Réseau** : nouvel appel → déclaration de confidentialité.
+9. **Vérification** : ce que tu testeras dans l'app isolée (`/test-app`) et le plan de test manuel pour l'utilisateur (jeu, page, étapes).
 
-1. **Résumé** de ce que l'issue demande, en une ou deux phrases.
-2. **Type et titre de PR** prévus : ex. `feat: add backup retention per server`.
-3. **Branche** : `<type>/$ARGUMENTS-<slug-court-en-anglais>` (ex. `feat/42-backup-retention`).
-4. **Fichiers** à créer ou modifier, avec ce qui change dans chacun.
-5. **Réutilisation** : composants/hooks existants utilisés ou extraits.
-6. **i18n** : nouvelles clés FR + EN.
-7. **Doc** : pages `docs/*.md` + `docs/*.fr.md` (et README) à mettre à jour ou créer, et
-   sections de `CLAUDE.md` à ajuster.
-8. **Réseau** : tout nouvel appel réseau → déclaration de confidentialité dans
-   `docs/code-signing.md` + `.fr.md`.
-9. **Plan de test manuel** : étapes concrètes pour l'utilisateur (quel jeu, quelle page).
+Attends l'approbation ; ajuste et représente le plan si l'utilisateur demande des changements.
 
-Attends l'approbation. Si l'utilisateur demande des changements, ajuste et représente le plan.
-
-## 6. Démarrer (après approbation)
+## 6. Démarrer
 
 ```bash
 git status --porcelain            # doit être vide, sinon demande quoi faire
@@ -87,28 +59,13 @@ git switch -c <branche> origin/main
 node .claude/scripts/project-status.mjs $ARGUMENTS "In dev"
 ```
 
-Si le script échoue faute de droit `project`, indique la commande
-`gh auth refresh -s project` et continue le développement.
+Échec du script faute de droit `project` → donne `gh auth refresh -s project` et continue.
 
 ## 7. Développer
 
-Respecte les conventions de `CLAUDE.md`, en particulier :
+Conventions : `CLAUDE.md` racine + `src/renderer/src/CLAUDE.md` (UI) + `CLAUDE.md` du domaine. Les pièges les plus fréquents : string hors `t()`, erreur affichée sans `errorMessage` / `appErrorMessage`, phrase en dur dans le main au lieu d'un code `AppError` ou de `logStrings`, import statique d'une dépendance ESM dans le main, texte « Chargement... » au lieu d'un skeleton, import depuis un autre jeu, fichier > 200 lignes.
 
-- Les pages gèrent l'affichage, les composants gèrent la logique. Fichiers < 200 lignes.
-- Toute string visible passe par `t()`, avec les clés FR **et** EN. Commentaires de code en
-  français.
-- MUI uniquement. Notifications via `useNotification().notify()`. Skeletons pour les
-  chargements.
-- Jamais d'import de `src/main/` dans le renderer (passer par l'IPC, types dans
-  `src/shared/types.ts`).
-- Dépendances ESM pures → `await import()` dans le main process. Licence compatible GPL-3.0.
-- Pas de tests unitaires (ne pas en ajouter sans demander).
-- Ne touche jamais à `version` dans `package.json` et ne crée pas de tag.
-- Règle publique : pas de comparaison avec d'autres apps, pas de sources d'inspiration, pas de
-  pseudos de testeurs dans le code, les commits ou la PR. Ne mentionne jamais `BACKLOG.md`.
-
-Si tu découvres en cours de route que le plan ne tient plus (changement de portée, nouvelle
-décision à prendre), arrête-toi et demande avant de dévier.
+Si le plan ne tient plus (portée, nouvelle décision), arrête-toi et demande avant de dévier. Un autre sujet découvert en route → propose une issue séparée, ne l'ajoute pas ici.
 
 ## 8. Vérifier
 
@@ -117,36 +74,30 @@ yarn typecheck
 yarn lint:check
 ```
 
-Corrige jusqu'à ce que les deux passent. Puis termine la doc :
+Corrige jusqu'à ce que les deux passent (les avertissements déjà présents sur `main` ne sont pas à corriger ici). Changement visible ou comportement du main → teste-le avec `/test-app` (jamais sur les données de l'app installée) et garde les captures utiles. Dis clairement ce qui n'a pas pu être testé (vrai serveur, vrai joueur…).
 
-- `docs/*.md` + `docs/*.fr.md` mis à jour des deux côtés (mêmes changements).
-- `README.md` / `README.fr.md` si une page de doc est ajoutée ou si le démarrage change.
-- `CLAUDE.md` ajusté (décisions non évidentes, pièges rencontrés) : c'est obligatoire à la
-  fin de chaque travail.
+Relis ton diff (`git diff origin/main`) comme un relecteur : duplication, strings en dur, fichiers trop longs, code de test temporaire oublié, doc manquante.
 
-Relis ton propre diff (`git diff origin/main`) comme le ferait un relecteur : duplication,
-strings en dur, fichiers trop longs, doc oubliée.
+## 9. Documenter
 
-## 9. Commit
+- `docs/*.md` + `docs/*.fr.md` (mêmes changements), README si besoin, confidentialité si nouvel appel réseau.
+- `CLAUDE.md` du domaine : décisions non évidentes et pièges rencontrés, selon « Écrire dans les CLAUDE.md » du `CLAUDE.md` racine (au bon endroit, court, sans historique). Obligatoire à la fin de chaque travail.
 
-Commits en anglais, Conventional Commits, impératif, concis
-(ex. `feat: add per-server backup retention`). N'ajoute **aucune** ligne d'attribution
-(`Co-Authored-By`, « Generated with ») : le repo les désactive.
+## 10. Commit
 
-## 10. Demander avant de publier
+Anglais, Conventional Commits, impératif, concis, sans ligne d'attribution.
 
-Fais un récapitulatif en français (ce qui a changé, résultat de typecheck/lint, plan de test
-manuel), puis demande avec `AskUserQuestion` :
+## 11. Demander avant de publier
 
-- **Pousser et ouvrir la PR** (recommandé)
-- **Garder en local** : je teste d'abord
-- **Corriger quelque chose avant**
+Récapitulatif en français (ce qui a changé, typecheck / lint, ce qui a été testé dans l'app, plan de test manuel), puis `AskUserQuestion` : **Pousser et ouvrir la PR** (recommandé) / **Garder en local** / **Corriger quelque chose avant**.
 
-Si l'utilisateur dit oui :
+Si oui :
 
 ```bash
 git push -u origin <branche>
 gh pr create --repo THEREALM00D/nexum --base main --title "<type>: <description>" --body-file - <<'EOF'
+Closes #$ARGUMENTS
+
 ## Summary
 
 <what changed and why, in English>
@@ -155,16 +106,10 @@ gh pr create --repo THEREALM00D/nexum --base main --title "<type>: <description>
 
 - [x] `yarn typecheck` passes
 - [x] `yarn lint:check` passes
-- [ ] Tested manually: <steps>
-
-Closes #$ARGUMENTS
+- [x] <what was checked in the app>
+- [ ] Tested manually: <steps for the user>
 EOF
 node .claude/scripts/project-status.mjs $ARGUMENTS "To test"
 ```
 
-Le titre de PR doit être en Conventional Commits (vérifié par `pr-title.yml`). Il devient le
-commit squash sur `main` et décide de la release. La ligne `Closes #$ARGUMENTS` est
-obligatoire (vérifiée par `pr-issue.yml`). Si le travail a débordé sur un autre sujet, ouvre
-une issue pour ce sujet et sépare-le dans sa propre PR plutôt que de l'ajouter ici. Donne le lien de la PR à la fin.
-Ne déplace pas la carte vers « Done » : à la fusion, `Closes #N` ferme l'issue et le workflow
-intégré du Project (« Item closed → Done ») la déplace.
+Donne le lien de la PR. Ne déplace pas la carte vers « Done » : à la fusion, `Closes #N` ferme l'issue et le Project la passe en Done.

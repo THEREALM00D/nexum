@@ -1,34 +1,29 @@
 ---
 name: issue
-description: Crée une ou plusieurs issues GitHub pour Nexum (bug ou feature, selon les templates du repo), en anglais, après validation du brouillon, puis les place dans la colonne « To do » du GitHub Project. Utiliser quand l'utilisateur veut créer, ouvrir ou noter une issue, un bug ou une idée de feature pour Nexum, ET avant de commencer tout travail (branche, commit, PR) qui n'a pas encore d'issue : chaque PR de Nexum doit fermer une issue.
-argument-hint: <description du bug ou de la feature>
+description: Crée une ou plusieurs issues GitHub pour Nexum (bug, feature ou tâche d'outillage/doc, selon les templates du repo), en anglais, après validation du brouillon, puis les place dans le GitHub Project. Utiliser quand l'utilisateur veut créer, ouvrir ou noter une issue, un bug ou une idée pour Nexum, ET avant de commencer tout travail (branche, commit, PR) qui n'a pas encore d'issue : chaque PR de Nexum doit fermer une issue.
+argument-hint: <description du bug, de la feature ou de la tâche>
 ---
 
 # Créer une issue Nexum
 
-Demande de l'utilisateur : $ARGUMENTS
+Demande : $ARGUMENTS
 
-Communique en **français**. L'issue est publique : titre et corps en **anglais**.
+Règles (langue, « tout ce qui est public », une issue par travail) : `.claude/CLAUDE.md`. L'issue est publique : titre et corps en **anglais**.
 
-**Règle du repo : tout travail a son issue, et toute PR la ferme (`Closes #N`, vérifié en
-CI par `pr-issue.yml`).** Ce skill sert donc aussi quand un travail démarre sans issue
-(demande faite en conversation, hors `/nexum`) : crée l'issue **avant** la branche, place-la
-directement en « In dev », puis nomme la branche `<type>/<N>-<slug>`. Si une PR existe déjà
-sans issue, crée l'issue, ajoute `Closes #N` à la description de la PR
-(`gh pr edit <pr> --body-file -`) et place la carte en « To test ».
+Si un travail démarre sans issue : crée-la **avant** la branche, en colonne « In dev », puis branche `<type>/<N>-<slug>`. Si une PR existe déjà sans issue : crée l'issue, ajoute `Closes #N` en tête de la description (`gh pr edit <pr> --body-file -`) et place la carte en « To test ».
 
 ## 1. Comprendre et compléter
 
-- Détermine le type : **bug** (label `bug`) ou **feature** (label `enhancement`). Si la demande
-  contient plusieurs sujets distincts, propose une issue par sujet.
-- Identifie le jeu : Palworld, Valheim, Astroneer, RuneScape: Dragonwilds, Enshrouded ou
-  « Not game-specific ».
-- Si une info clé manque (version de Nexum pour un bug, comportement attendu, étapes de
-  reproduction), pose la question avec `AskUserQuestion`. Ne demande pas ce que tu peux trouver
-  dans le code. Pour la version, `package.json` → `version` est une valeur par défaut acceptable
-  si l'utilisateur teste la version de `main`.
-- Si la demande est vague ou que la solution proposée semble discutable, dis-le et propose une
-  meilleure formulation.
+- **Type** et labels :
+  - bug visible dans l'app → `bug`
+  - nouvelle fonction ou amélioration de l'app → `enhancement`
+  - outillage, CI, dépendances, réglages Claude → `chore` (+ `bug` si quelque chose est cassé)
+  - doc seule → `documentation` (+ `chore`)
+  - idée pas encore prête → `idea` (colonne « Ideas »)
+- **Jeu** : une des options du champ « Game » de `.github/ISSUE_TEMPLATE/bug_report.yml` (ou « Not game-specific »). Jeu précis → ajoute aussi le label `game:<jeu>` (`gh label list` pour les noms exacts).
+- Plusieurs sujets distincts → une issue par sujet.
+- Info clé manquante (version de Nexum pour un bug, comportement attendu, étapes) → `AskUserQuestion`. Ne demande pas ce que le code ou les `CLAUDE.md` disent. Version par défaut acceptable : `version` de `package.json` si l'utilisateur teste `main`.
+- Demande vague ou solution discutable : dis-le et propose mieux.
 
 ## 2. Chercher les doublons
 
@@ -36,88 +31,32 @@ sans issue, crée l'issue, ajoute `Closes #N` à la description de la PR
 gh issue list --repo THEREALM00D/nexum --state all --search "<mots-clés>" --limit 10
 ```
 
-Si une issue proche existe, montre-la et demande s'il faut plutôt la commenter ou la compléter.
+Issue proche (ouverte ou fermée récemment) → montre-la et demande s'il faut la commenter, la rouvrir ou en créer une nouvelle.
 
 ## 3. Rédiger le brouillon
 
-Reprends les sections des templates `.github/ISSUE_TEMPLATE/` sous forme de titres markdown.
+Sections des templates `.github/ISSUE_TEMPLATE/` en titres markdown :
 
-**Bug** :
+- **Bug** : `### Nexum version`, `### Game`, `### What happened?`, `### What did you expect to happen?`, `### Steps to reproduce`, `### Relevant logs` (omise si vide ; logs anonymisés : l'export de Nexum le fait).
+- **Feature / tâche** : `### Game`, `### What problem would this solve?`, `### Proposed solution`.
 
-```markdown
-### Nexum version
-
-v0.18.0
-
-### Game
-
-Valheim
-
-### What happened?
-
-...
-
-### What did you expect to happen?
-
-...
-
-### Steps to reproduce
-
-1. ...
-
-### Relevant logs
-
-(omit section if none)
-```
-
-**Feature** :
-
-```markdown
-### Game
-
-Not game-specific
-
-### What problem would this solve?
-
-...
-
-### Proposed solution
-
-...
-```
-
-Titre : court, descriptif, sans préfixe (`bug:`/`feat:` n'est pas utilisé dans les titres
-d'issue). Ex. « Backup restore fails when the world name contains spaces ».
-
-Règle publique : décris ce que Nexum doit faire. Pas de comparaison avec d'autres apps, pas de
-sources d'inspiration, pas de pseudos de testeurs. Les services intégrés (Thunderstore,
-Hexium, BepInEx, Steam…) et les jeux peuvent être nommés. Ne mentionne jamais `BACKLOG.md`.
+Titre court et descriptif, **sans préfixe** `bug:` / `feat:` (ex. « Backup restore fails when the world name contains spaces »). Décris ce que Nexum doit faire, pas comment un autre outil le fait.
 
 ## 4. Valider
 
-Montre le brouillon (titre, label, corps) et demande avec `AskUserQuestion` : **Créer** /
-**Modifier** / **Annuler**. Pour plusieurs issues, montre-les toutes et fais une seule
-validation.
+Montre titre, labels, colonne et corps de chaque issue, puis **une seule** question `AskUserQuestion` : **Créer** / **Modifier** / **Annuler**.
 
 ## 5. Créer et placer dans le Project
 
 ```bash
-gh issue create --repo THEREALM00D/nexum --title "<titre>" --label "<bug|enhancement>" --body-file - <<'EOF'
+gh issue create --repo THEREALM00D/nexum --title "<titre>" --label "<label>" [--label "<label>"] --body-file - <<'EOF'
 <corps>
 EOF
-```
-
-Récupère le numéro dans l'URL renvoyée, puis :
-
-```bash
 node .claude/scripts/project-status.mjs <numéro> "To do"
 ```
 
-Si l'utilisateur précise une autre colonne (Ideas, In dev…), utilise-la. Si le script
-échoue faute de droit `project`, donne la commande `gh auth refresh -s project` : l'issue est
-quand même créée.
+Colonne : « To do » par défaut, « In dev » si le travail démarre maintenant, « Ideas » pour une idée. Si le script échoue faute de droit `project` : l'issue est créée, donne `gh auth refresh -s project`.
 
 ## 6. Conclure
 
-Donne le lien de chaque issue et sa colonne. Propose en une ligne de la prendre en charge avec
-`/nexum <numéro>`.
+Lien de chaque issue + colonne. Si le travail ne démarre pas tout de suite, propose `/nexum <numéro>` en une ligne.
