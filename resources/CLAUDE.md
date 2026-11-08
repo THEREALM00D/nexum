@@ -1,6 +1,7 @@
 # `resources/` : icône et installeur NSIS
 
 - `resources/` est le dossier `buildResources` d'electron-builder : **jamais embarqué** dans l'app (ni `?asset` ni `asarUnpack` n'y changent rien). L'icône de la zone de notification est copiée via `extraResources` (`electron-builder.yml`) et lue à `process.resourcesPath/icon.ico` ; en dev, `?asset`. `icon.ico` = 16 → 256 px.
+- **Contenu de `app.asar`** : liste blanche `files` dans `electron-builder.yml` (`out/**`, `package.json`, `LICENSE` ; les `node_modules` de production sont ajoutés par electron-builder). Ne jamais revenir à une liste d'exclusions : tout le reste du repo partait dans l'app (`docs/` et ses images, `.claude/`, `CLAUDE.md`, fichiers non suivis d'un build local). Un fichier lu à l'exécution hors de `out/` doit être ajouté à la liste. Vérifier : `@electron/asar` → `listPackage` sur `dist/win-unpacked/resources/app.asar`.
 - Installeur NSIS assisté (`oneClick: false`, `allowToChangeInstallationDirectory: true`), nécessaire pour l'auto-update avec un dossier choisi. Il ajoute `\Nexum` au dossier choisi s'il ne contient pas déjà « Nexum ».
 
 ## Désinstalleur = liste blanche (`installer.nsh`, macro `customRemoveFiles`)
