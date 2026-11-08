@@ -405,8 +405,8 @@ const api = {
     setLanguage: (lang: string) => ipcRenderer.invoke("app:setLanguage", lang),
     setLaunchAtLogin: (enabled: boolean) =>
       ipcRenderer.invoke("app:setLaunchAtLogin", enabled),
-    installDirConflict: (path: string) =>
-      ipcRenderer.invoke("app:installDirConflict", path),
+    installDirConflict: (path: string, basePath?: string) =>
+      ipcRenderer.invoke("app:installDirConflict", path, basePath),
   },
 };
 

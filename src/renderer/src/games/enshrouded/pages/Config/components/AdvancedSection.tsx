@@ -20,7 +20,7 @@ export default function AdvancedSection({
         size="small"
         fullWidth
       />
-      <InstallDirWarning path={config.saveDirectory} />
+      <InstallDirWarning path={config.saveDirectory} serverRelative />
       <TextField
         label={t("enshroudedConfig.fields.logDirectory.label")}
         helperText={t("enshroudedConfig.fields.logDirectory.description")}

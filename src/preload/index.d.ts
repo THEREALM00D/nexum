@@ -382,7 +382,10 @@ interface API {
     /** Langue de l'UI, pour les textes du main (menu de l'icône). */
     setLanguage: (lang: string) => Promise<void>;
     /** Dossier d'installation de Nexum si `path` est dedans, sinon null. */
-    installDirConflict: (path: string) => Promise<string | null>;
+    installDirConflict: (
+      path: string,
+      basePath?: string,
+    ) => Promise<string | null>;
   };
 }
 

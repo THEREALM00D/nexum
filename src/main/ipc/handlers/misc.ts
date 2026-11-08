@@ -81,8 +81,9 @@ export function registerMiscHandlers(ctx: IpcContext): void {
     setLaunchAtLogin(enabled),
   );
   // Dossier choisi par l'utilisateur rangé dans le dossier d'installation ?
-  ipcMain.handle("app:installDirConflict", (_, path: string) =>
-    installDirConflict(path),
+  ipcMain.handle(
+    "app:installDirConflict",
+    (_, path: string, basePath?: string) => installDirConflict(path, basePath),
   );
 
   // Persistent config (legacy compat : retourne/configure le serveur actif)
