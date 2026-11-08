@@ -139,7 +139,7 @@ export default function ServerSwitcher({ onManage, collapsed }: Props) {
   }
 
   return (
-    <Box sx={{ p: 1.5 }}>
+    <Box sx={{ p: 1 }}>
       <LoadingSkeleton loading={!state.loaded} fullWidth>
         <Button
           onClick={handleOpen}
@@ -151,7 +151,7 @@ export default function ServerSwitcher({ onManage, collapsed }: Props) {
             bgcolor: NEXUM.raised,
             color: "text.primary",
             py: 1,
-            px: 1.5,
+            px: 1,
             borderRadius: 2,
             "&:hover": { bgcolor: "action.hover" },
           }}
