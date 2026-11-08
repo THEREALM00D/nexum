@@ -2,7 +2,11 @@ export default {
   servers: {
     title: "Servers",
     subtitle: "All your dedicated servers. Click a server to set it as active.",
-    empty: "No server configured. Add your first server to get started.",
+    emptyTitle: "No server yet",
+    emptyHint:
+      "The wizard installs the game, sets up the configuration and opens the ports in a few steps.",
+    launchWizard: "Launch the setup wizard",
+    importFolder: "Import an existing folder",
     active: "Active",
     addServer: "Add server",
     setupWizard: "Setup wizard",
@@ -34,6 +38,8 @@ export default {
     },
     actions: {
       activate: "Activate",
+      more: "More actions",
+      openFolder: "Open folder",
       edit: "Edit",
       delete: "Delete",
       deleteConfirm:

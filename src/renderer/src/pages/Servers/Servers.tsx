@@ -4,6 +4,7 @@ import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import { useTranslation } from "react-i18next";
 import { useServers } from "./hooks/useServers";
 import ServersTable from "./components/ServersTable";
+import ServersEmptyState from "./components/ServersEmptyState";
 import ServerDialog from "./components/ServerDialog";
 import ConfirmDeleteDialog from "./components/ConfirmDeleteDialog";
 import PageHeader from "../../components/common/PageHeader";
@@ -58,17 +59,21 @@ export default function Servers({ onOpenSetup }: { onOpenSetup: () => void }) {
         }
       />
 
-      <ServersTable
-        servers={state.servers}
-        statuses={state.statuses}
-        activeServerId={state.activeServerId}
-        onActivate={handleActivate}
-        onStart={(srv) => handleServerAction("start", srv)}
-        onStop={(srv) => handleServerAction("stop", srv)}
-        onRestart={(srv) => handleServerAction("restart", srv)}
-        onEdit={openEdit}
-        onDelete={openDeleteConfirm}
-      />
+      {state.servers.length === 0 ? (
+        <ServersEmptyState onOpenSetup={onOpenSetup} onImport={openAdd} />
+      ) : (
+        <ServersTable
+          servers={state.servers}
+          statuses={state.statuses}
+          activeServerId={state.activeServerId}
+          onActivate={handleActivate}
+          onStart={(srv) => handleServerAction("start", srv)}
+          onStop={(srv) => handleServerAction("stop", srv)}
+          onRestart={(srv) => handleServerAction("restart", srv)}
+          onEdit={openEdit}
+          onDelete={openDeleteConfirm}
+        />
+      )}
 
       <ServerDialog
         open={dialogOpen}
