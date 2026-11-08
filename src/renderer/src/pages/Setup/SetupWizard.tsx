@@ -1,5 +1,6 @@
 import { useState } from "react";
 import {
+  Box,
   Button,
   Paper,
   Stack,
@@ -103,7 +104,13 @@ export default function SetupWizard({ onFinish }: { onFinish: () => void }) {
         {t(`setup.help.${step}`)}
       </Typography>
 
-      <Paper sx={{ p: 3 }}>{renderStep()}</Paper>
+      {/* Seule la 1re étape n'a pas ses propres cartes. Box pour les autres :
+          directement dans un Stack, une FormPage perd son centrage (mx: auto). */}
+      {step === "game" ? (
+        <Paper sx={{ p: 3 }}>{renderStep()}</Paper>
+      ) : (
+        <Box>{renderStep()}</Box>
+      )}
 
       <Stack direction="row" spacing={1} sx={{ justifyContent: "flex-end" }}>
         <Button onClick={onFinish}>{t("setup.skip")}</Button>
