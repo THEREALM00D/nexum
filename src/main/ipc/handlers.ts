@@ -68,6 +68,7 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
   // Phase 1 multi-serveur : migre l'ancien `serverPath` unique en premier
   // entry de la liste. No-op si déjà migré ou si pas de legacy à migrer.
   const migrated = servers.migrateLegacy();
+  servers.migrateColors();
   // Phase 2a : migre les anciennes configs globales (launchArgs / backup* /
   // restartSchedule) vers la config du premier serveur. Idempotent.
   // Phase 4 : on passe aussi l'ancien default backup dir partagé pour

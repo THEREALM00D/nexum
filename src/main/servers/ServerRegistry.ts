@@ -3,16 +3,11 @@ import type Store from "electron-store";
 import type { Server } from "../../shared/types";
 import type { AppStore } from "../ipc/context";
 import { AppError } from "../utils/appError";
-
-const DEFAULT_COLORS = [
-  "#3b82f6",
-  "#22c55e",
-  "#f59e0b",
-  "#ef4444",
-  "#a855f7",
-  "#06b6d4",
-  "#ec4899",
-];
+import {
+  SERVER_COLORS,
+  closestServerColor,
+  isServerColor,
+} from "../../shared/serverColors";
 
 export class ServerRegistry {
   /**
@@ -65,7 +60,7 @@ export class ServerRegistry {
       name: this.inferNameFromPath(legacyPath),
       gameType: "palworld",
       path: legacyPath,
-      color: DEFAULT_COLORS[0],
+      color: SERVER_COLORS[0],
       createdAt: Date.now(),
     };
     this.store.set("servers", [server]);
@@ -73,6 +68,22 @@ export class ServerRegistry {
     // On garde `serverPath` dans le store pour rétrocompat (peut être lu par
     // d'anciens handlers pas encore migrés). Pas grave qu'il reste.
     return server;
+  }
+
+  /**
+   * Remplace une couleur enregistrée hors de la palette par la plus proche
+   * (l'ancienne palette contenait les couleurs de statut). Idempotent.
+   */
+  migrateColors(): void {
+    const servers = this.list();
+    const outdated = (s: Server) => s.color !== null && !isServerColor(s.color);
+    if (!servers.some(outdated)) return;
+    this.store.set(
+      "servers",
+      servers.map((s) =>
+        outdated(s) ? { ...s, color: closestServerColor(s.color ?? "") } : s,
+      ),
+    );
   }
 
   setActive(id: string | null): void {
@@ -97,7 +108,7 @@ export class ServerRegistry {
       gameType: input.gameType ?? "palworld",
       path: input.path,
       color:
-        input.color ?? DEFAULT_COLORS[servers.length % DEFAULT_COLORS.length],
+        input.color ?? SERVER_COLORS[servers.length % SERVER_COLORS.length],
       createdAt: Date.now(),
       autoStart: input.autoStart ?? false,
       autoRestart: input.autoRestart ?? false,

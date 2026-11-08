@@ -23,7 +23,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useTranslation } from "react-i18next";
 import type { Server, ServerStatus } from "@shared/types";
 import { STATUS_COLOR } from "../../../utils/status";
-import { FONT_MONO, NEXUM } from "../../../theme";
+import ServerTile from "../../../components/common/ServerTile";
+import { FONT_MONO } from "../../../theme";
 
 interface Props {
   servers: Server[];
@@ -111,14 +112,7 @@ export default function ServersTable({
                       spacing={1}
                       sx={{ alignItems: "center" }}
                     >
-                      <Box
-                        sx={{
-                          width: 10,
-                          height: 10,
-                          borderRadius: "50%",
-                          bgcolor: srv.color ?? NEXUM.steel,
-                        }}
-                      />
+                      <ServerTile name={srv.name} color={srv.color} />
                       <Typography
                         variant="body2"
                         sx={{ fontWeight: isActive ? 600 : 400 }}
