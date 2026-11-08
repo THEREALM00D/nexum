@@ -4,13 +4,15 @@ appId: com.serverforge.app
 productName: Nexum
 directories:
   buildResources: resources
+# Liste blanche : l'app ne lit que le code compilé (out/) et package.json.
+# Une liste d'exclusions laissait passer tout le reste du repo (docs/ et ses
+# images, .claude/, CLAUDE.md, fichiers non suivis d'un build local…).
+# electron-builder ajoute de lui-même les node_modules de production.
+# LICENSE : la GPL demande de fournir le texte de la licence avec le programme.
 files:
-  - "!**/.vscode/*"
-  - "!src/*"
-  - "!electron.vite.config.{js,ts}"
-  - "!{.eslintignore,.eslintrc.cjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}"
-  - "!{.env,.env.*,.npmrc,pnpm-lock.yaml}"
-  - "!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}"
+  - "out/**"
+  - "package.json"
+  - "LICENSE"
 # resources/ est le dossier buildResources : electron-builder ne l'embarque
 # PAS dans l'app. L'icône de la zone de notification est donc copiée à part,
 # lue via process.resourcesPath (voir main/tray/AppTray.ts).
