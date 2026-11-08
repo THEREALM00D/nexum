@@ -20,7 +20,7 @@ export default function ServerTile({
     <Box
       aria-hidden
       sx={{
-        typography: "caption",
+        typography: size >= 48 ? "h1" : "caption",
         fontWeight: 600,
         lineHeight: 1,
         width: size,

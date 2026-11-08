@@ -3,6 +3,7 @@ import { ThemeProvider, CssBaseline, Box } from "@mui/material";
 import { COMPACT_MEDIA, CONTENT_MAX_WIDTH, darkTheme } from "./theme";
 import { ServerProvider, useServer } from "./context/ServerContext";
 import { NotificationProvider } from "./context/NotificationContext";
+import { NavigationContext } from "./context/NavigationContext";
 import Install from "./pages/Install/Install";
 import Servers from "./pages/Servers/Servers";
 import Settings from "./pages/Settings/Settings";
@@ -138,7 +139,9 @@ function AppShell() {
             }}
           >
             {/* Serveurs pas encore lus : on ne sait pas quel jeu afficher */}
-            {state.loaded ? renderPage() : <PageSkeleton />}
+            <NavigationContext.Provider value={setPage}>
+              {state.loaded ? renderPage() : <PageSkeleton />}
+            </NavigationContext.Provider>
           </Box>
         </Box>
       </Box>

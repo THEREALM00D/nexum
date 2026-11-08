@@ -1,6 +1,5 @@
 export default {
   enshroudedDashboard: {
-    title: "Enshrouded Dashboard",
     noServerPath: "No path configured",
     openGroups:
       "Group(s) without a password: {{groups}}. Anyone can join the server with their permissions. Add a password in the Configuration page.",

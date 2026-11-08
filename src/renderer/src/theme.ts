@@ -9,12 +9,14 @@ declare module "@mui/material/styles" {
     stat: CSSProperties;
     micro: CSSProperties;
     code: CSSProperties;
+    address: CSSProperties;
   }
   interface TypographyVariantsOptions {
     display?: CSSProperties;
-    stat?: CSSProperties & Record<string, unknown>;
+    stat?: CSSProperties;
     micro?: CSSProperties;
     code?: CSSProperties;
+    address?: CSSProperties;
   }
 }
 
@@ -24,6 +26,7 @@ declare module "@mui/material/Typography" {
     stat: true;
     micro: true;
     code: true;
+    address: true;
   }
 }
 
@@ -123,14 +126,7 @@ export const darkTheme = createTheme({
       letterSpacing: "normal",
     },
     h6: { fontWeight: 600 },
-    // 20 px à partir de xl : les 6 cartes de StatsGrid tiennent alors sur une
-    // ligne, et « 13.57 / 31.92 » doit y rester sans retour à la ligne.
-    stat: {
-      fontWeight: 600,
-      fontSize: rem(24),
-      lineHeight: 1.2,
-      "@media (min-width:1536px)": { fontSize: rem(20) },
-    },
+    stat: { fontWeight: 600, fontSize: rem(32), lineHeight: 1 },
     body1: { fontSize: rem(14) },
     body2: { fontSize: rem(13) },
     overline: {
@@ -141,6 +137,7 @@ export const darkTheme = createTheme({
     },
     micro: { fontSize: rem(11), fontWeight: 500, lineHeight: 1.4 },
     code: { fontFamily: FONT_MONO, fontSize: rem(13), fontWeight: 400 },
+    address: { fontFamily: FONT_MONO, fontSize: rem(18), fontWeight: 500 },
   },
   components: {
     MuiTypography: {

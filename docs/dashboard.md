@@ -6,7 +6,7 @@ Nexum's main view — server status, statistics, controls, and how to join. Palw
 
 ## Server status
 
-Shown at the top as a colored chip:
+The top card shows the server's name, game and folder, with its status next to the actions (and how long it has been online):
 
 | Status          | Color  | Description                                     |
 | --------------- | ------ | ----------------------------------------------- |
@@ -18,9 +18,11 @@ Shown at the top as a colored chip:
 
 ## Controls
 
-- **Start**: launches the game's server
-- **Restart**: stops then relaunches
-- **Stop**: stops the server as cleanly as the game allows, then force-stops it with `taskkill` if needed
+Only the actions that make sense for the current status are shown:
+
+- **Start** (stopped or crashed): launches the game's server. After a crash, **View logs** opens the Logs page to help you understand what happened.
+- **Restart** (online): stops then relaunches
+- **Stop** (online or starting): stops the server as cleanly as the game allows, then force-stops it with `taskkill` if needed
 
 | Game                   | How the server stops                                                                                    |
 | ---------------------- | ------------------------------------------------------------------------------------------------------- |
@@ -32,29 +34,28 @@ Shown at the top as a colored chip:
 
 > On Palworld, a clean stop is only possible if **REST API** is enabled in the configuration. Otherwise the server is killed abruptly and recent changes may be lost.
 
-## System statistics
+## Statistics
 
-Six cards showing real-time data (refreshed every 2 seconds):
+Real-time data, refreshed every 2 seconds. The server comes first:
+
+- **Players online** (Palworld and Valheim, when Nexum can read the number)
+- **Server RAM**: memory used by the game server (while it is running)
+- **Online for**: time elapsed since the game server started, with the next scheduled restart if one is set
+
+A strip below shows the state of the PC:
 
 - **CPU**: processor usage in %
-- **RAM**: memory usage in %
-- **RAM used**: memory consumed in GB
-- **Server RAM**: memory used by the game server (while it is running)
-- **System uptime**: time elapsed since the machine started
-- **Server uptime**: time elapsed since the game server started
+- **RAM**: memory usage in % and in GB
+- **Up for**: time elapsed since the machine started
 
-Progress bars change color:
-
-- Green: < 65%
-- Orange: 65-85%
-- Red: > 85%
+The bars stay neutral, then turn orange above 65% and red above 85%.
 
 ## Join the server
 
-The **Join the server** card (all games) gives the address to share with your friends, each with a copy button:
+The **Join the server** card (all games) gives the address to share with your friends once the server is online, each with a copy button:
 
-- **Same network**: this PC's local address and the game port (e.g. `192.168.1.30:2456`), for players on the same Wi-Fi / router.
 - **From the Internet**: click **Show my public IP** to get the address for friends outside your network. Nexum asks the ipify.org service for it, **only when you click**.
+- **Same network**: this PC's local address and the game port (e.g. `192.168.1.30:2456`), for players on the same Wi-Fi / router.
 - **Crossplay join code** (Valheim with Crossplay on): the code from the server log, once the server has started.
 
 The note below reminds you which UDP ports to forward on your router (e.g. `2456-2458` for Valheim) and to which PC. Most routers don't let you join your own public IP from inside your network: ask a friend outside to test it.

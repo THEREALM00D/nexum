@@ -27,7 +27,6 @@ export default function EnshroudedDashboard() {
 
   return (
     <SimpleDashboard
-      titleKey="enshroudedDashboard.title"
       noServerPathKey="enshroudedDashboard.noServerPath"
       infoKey="enshroudedDashboard.noApi"
       showLogs

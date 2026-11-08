@@ -1,20 +1,12 @@
-import { Button, Chip, Paper, Stack } from "@mui/material";
+import { Box, Button, Chip, Stack, Typography } from "@mui/material";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import StopIcon from "@mui/icons-material/Stop";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import { useTranslation } from "react-i18next";
 import type { ServerStatus } from "@shared/types";
-
-const STATUS_COLOR: Record<
-  ServerStatus,
-  "success" | "warning" | "error" | "default"
-> = {
-  running: "success",
-  starting: "warning",
-  stopping: "warning",
-  crashed: "error",
-  stopped: "default",
-};
+import { STATUS_COLOR } from "../../utils/status";
+import { formatDuration } from "../../utils/format";
+import StatusDot from "../common/StatusDot";
 
 interface Props {
   status: ServerStatus;
@@ -23,8 +15,13 @@ interface Props {
   onStart: () => void;
   onStop: () => void;
   onRestart: () => void;
+  /** Secondes depuis le démarrage, affichées sous le statut quand il est en ligne. */
+  uptime?: number;
+  /** Bouton « Voir les logs » si le serveur a planté. */
+  onViewLogs?: () => void;
 }
 
+/** Statut du serveur et, à droite, seulement les actions possibles. */
 export default function ServerControls({
   status,
   canStart,
@@ -32,56 +29,82 @@ export default function ServerControls({
   onStart,
   onStop,
   onRestart,
+  uptime,
+  onViewLogs,
 }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const running = status === "running";
+
   return (
-    <Paper
-      sx={{
-        p: 2.5,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        flexWrap: "wrap",
-        gap: 1.5,
-      }}
+    <Box
+      sx={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 2 }}
     >
-      <Chip
-        label={t(`status.${status}`, { defaultValue: status })}
-        color={STATUS_COLOR[status] ?? "default"}
-        variant="outlined"
-      />
-      <Stack direction="row" spacing={1}>
-        <Button
-          variant="contained"
-          color="success"
-          startIcon={<PlayArrowIcon />}
-          disabled={!canStart}
-          onClick={onStart}
-          size="small"
-        >
-          {t("dashboard.controls.start")}
-        </Button>
-        <Button
-          variant="contained"
-          color="warning"
-          startIcon={<RestartAltIcon />}
-          disabled={!canStop}
-          onClick={onRestart}
-          size="small"
-        >
-          {t("dashboard.controls.restart")}
-        </Button>
-        <Button
-          variant="contained"
-          color="error"
-          startIcon={<StopIcon />}
-          disabled={!canStop}
-          onClick={onStop}
-          size="small"
-        >
-          {t("dashboard.controls.stop")}
-        </Button>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-end",
+          gap: 0.25,
+        }}
+      >
+        <Chip
+          // Marge ici : Chip ne peut pas poser sa classe d'icône sur StatusDot
+          icon={<StatusDot status={status} size={10} sx={{ ml: 1.25 }} />}
+          label={t(`status.${status}`, { defaultValue: status })}
+          color={STATUS_COLOR[status] ?? "default"}
+          variant="outlined"
+          sx={{ typography: "body2", fontWeight: 600 }}
+        />
+        {running && !!uptime && (
+          <Typography
+            variant="caption"
+            sx={{ color: "text.secondary", pr: 0.5 }}
+          >
+            {t("serverDashboard.since", {
+              duration: formatDuration(uptime, i18n.resolvedLanguage ?? "fr"),
+            })}
+          </Typography>
+        )}
+      </Box>
+
+      <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: "wrap" }}>
+        {status === "crashed" && onViewLogs && (
+          <Button variant="outlined" color="inherit" onClick={onViewLogs}>
+            {t("serverDashboard.viewLogs")}
+          </Button>
+        )}
+        {running && (
+          <Button
+            variant="outlined"
+            color="inherit"
+            startIcon={<RestartAltIcon sx={{ color: "warning.main" }} />}
+            onClick={onRestart}
+          >
+            {t("dashboard.controls.restart")}
+          </Button>
+        )}
+        {canStart ? (
+          <Button
+            variant="contained"
+            color="success"
+            startIcon={<PlayArrowIcon />}
+            onClick={onStart}
+          >
+            {t("dashboard.controls.start")}
+          </Button>
+        ) : (
+          // Démarrage ou arrêt en cours : action possible mais pas à mettre en avant
+          <Button
+            variant={running ? "contained" : "outlined"}
+            color={running ? "error" : "inherit"}
+            startIcon={<StopIcon />}
+            disabled={!canStop}
+            onClick={onStop}
+          >
+            {t("dashboard.controls.stop")}
+          </Button>
+        )}
       </Stack>
-    </Paper>
+    </Box>
   );
 }

@@ -1,6 +1,5 @@
 export default {
   dragonwildsDashboard: {
-    title: "Dashboard RuneScape: Dragonwilds",
     noServerPath: "Aucun chemin configuré",
     ownerMissing:
       "Player ID manquant : renseignez-le dans la page Configuration (il s'affiche en bas du menu Paramètres du jeu). Sans lui, le serveur ne peut pas démarrer.",

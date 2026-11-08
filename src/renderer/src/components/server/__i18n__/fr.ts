@@ -13,7 +13,22 @@ export default {
     copy: "Copier",
     copied: "Copié",
     thisPc: "ce PC",
+    notRunning:
+      "Démarrez le serveur : les adresses à partager apparaîtront ici.",
     hint: "Pour les amis hors de votre réseau : redirigez le(s) port(s) UDP {{range}} sur votre box vers {{ip}}, et appliquez les règles du pare-feu (page Réseau). La plupart des box ne permettent pas de rejoindre sa propre IP publique depuis chez soi : faites tester un ami.",
+  },
+  serverDashboard: {
+    since: "depuis {{duration}}",
+    viewLogs: "Voir les logs",
+    players: "Joueurs connectés",
+    ramServer: "RAM du serveur",
+    ramOf: "sur {{total}} GB installés",
+    onlineFor: "En ligne depuis",
+    nextRestart: "Prochain redémarrage planifié : {{time}}",
+    thisPc: "Ce PC",
+    cpu: "CPU",
+    ram: "RAM",
+    poweredOnFor: "Allumé depuis",
   },
   logs: {
     title: "Logs serveur",

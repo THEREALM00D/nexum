@@ -3,19 +3,17 @@ import { Alert, Box, Stack } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { useTranslation } from "react-i18next";
 import { useServer } from "../../context/ServerContext";
-import { useServerControls } from "../../hooks/useServerControls";
-import ServerControls from "./ServerControls";
-import StatsGrid from "./StatsGrid";
+import ServerHeader from "./ServerHeader";
+import ServerStats from "./ServerStats";
+import SystemStrip from "./SystemStrip";
 import JoinServerCard from "./JoinServerCard";
 import Logs from "./Logs";
-import PageHeader from "../common/PageHeader";
 
 interface Props {
-  titleKey: string;
   noServerPathKey: string;
   /** Bloc d'info du jeu (pas d'API, arrêt, comment rejoindre…). */
   infoKey: string;
-  /** Avertissement propre au jeu, affiché sous le titre (ex : réglage manquant). */
+  /** Avertissement propre au jeu, affiché sous l'en-tête (ex : réglage manquant). */
   warning?: ReactNode;
   /** Log du serveur sous les cartes. */
   showLogs?: boolean;
@@ -23,10 +21,9 @@ interface Props {
 
 /**
  * Dashboard des jeux sans API d'administration (Astroneer, Dragonwilds,
- * Enshrouded) : contrôles, statistiques, carte « Rejoindre », infos du jeu.
+ * Enshrouded) : en-tête, statistiques, carte « Rejoindre », infos du jeu.
  */
 export default function SimpleDashboard({
-  titleKey,
   noServerPathKey,
   infoKey,
   warning,
@@ -34,28 +31,16 @@ export default function SimpleDashboard({
 }: Props) {
   const { t } = useTranslation();
   const { state } = useServer();
-  const { start, stop, restart, canStart, canStop } = useServerControls();
-  const { status, stats, serverPath } = state;
 
   return (
     <Stack spacing={3}>
-      <PageHeader
-        title={t(titleKey)}
-        subtitle={serverPath || t(noServerPathKey)}
-      />
+      <ServerHeader noServerPathKey={noServerPathKey} />
 
       {warning}
 
-      <ServerControls
-        status={status}
-        canStart={canStart}
-        canStop={canStop}
-        onStart={start}
-        onStop={stop}
-        onRestart={restart}
-      />
+      <ServerStats stats={state.stats} />
 
-      <StatsGrid stats={stats} />
+      <SystemStrip stats={state.stats} />
 
       <JoinServerCard />
 

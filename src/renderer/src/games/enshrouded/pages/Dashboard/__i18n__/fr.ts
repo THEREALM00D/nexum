@@ -1,6 +1,5 @@
 export default {
   enshroudedDashboard: {
-    title: "Dashboard Enshrouded",
     noServerPath: "Aucun chemin configuré",
     openGroups:
       "Groupe(s) sans mot de passe : {{groups}}. N'importe qui peut rejoindre le serveur avec leurs droits. Ajoutez un mot de passe dans la page Configuration.",
