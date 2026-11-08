@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Box, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { astroConfigService } from "../../services/configService";
 import { useAstroneerFirewall } from "./hooks/useAstroneerFirewall";
@@ -7,6 +6,7 @@ import AdminBanner from "../../../../components/firewall/AdminBanner";
 import StandardRules from "../../../../components/firewall/StandardRules";
 import CustomRules from "../../../../components/firewall/CustomRules";
 import FormPage from "../../../../components/common/FormPage";
+import PageHeader from "../../../../components/common/PageHeader";
 
 export default function AstroneerNetwork() {
   const { t } = useTranslation();
@@ -34,12 +34,10 @@ export default function AstroneerNetwork() {
 
   return (
     <FormPage>
-      <Box>
-        <Typography variant="h6">{t("astroneerNetwork.title")}</Typography>
-        <Typography variant="body2" sx={{ color: "text.secondary", mt: 0.5 }}>
-          {t("astroneerNetwork.subtitle")}
-        </Typography>
-      </Box>
+      <PageHeader
+        title={t("astroneerNetwork.title")}
+        subtitle={t("astroneerNetwork.subtitle")}
+      />
 
       <AdminBanner isAdmin={isAdmin} />
 

@@ -33,7 +33,7 @@ export default function EnshroudedDashboard() {
       showLogs
       warning={
         openGroups.length > 0 && (
-          <Alert severity="warning" sx={{ fontSize: 13 }}>
+          <Alert severity="warning">
             {t("enshroudedDashboard.openGroups", {
               groups: openGroups.join(", "),
             })}

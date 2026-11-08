@@ -29,7 +29,7 @@ export default function DeprecatedChip({ registry, alternative }: Props) {
         size="small"
         color="error"
         variant="outlined"
-        sx={{ fontSize: 10, height: 18, px: 0 }}
+        sx={{ typography: "micro", height: 18, px: 0 }}
       />
     </Tooltip>
   );

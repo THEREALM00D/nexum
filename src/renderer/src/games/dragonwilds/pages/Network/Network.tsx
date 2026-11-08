@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { Box, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useDragonwildsFirewall } from "./hooks/useDragonwildsFirewall";
 import AdminBanner from "../../../../components/firewall/AdminBanner";
 import StandardRules from "../../../../components/firewall/StandardRules";
 import CustomRules from "../../../../components/firewall/CustomRules";
 import FormPage from "../../../../components/common/FormPage";
+import PageHeader from "../../../../components/common/PageHeader";
 
 export default function DragonwildsNetwork() {
   const { t } = useTranslation();
@@ -33,12 +33,10 @@ export default function DragonwildsNetwork() {
 
   return (
     <FormPage>
-      <Box>
-        <Typography variant="h6">{t("dragonwildsNetwork.title")}</Typography>
-        <Typography variant="body2" sx={{ color: "text.secondary", mt: 0.5 }}>
-          {t("dragonwildsNetwork.subtitle")}
-        </Typography>
-      </Box>
+      <PageHeader
+        title={t("dragonwildsNetwork.title")}
+        subtitle={t("dragonwildsNetwork.subtitle")}
+      />
 
       <AdminBanner isAdmin={isAdmin} />
 

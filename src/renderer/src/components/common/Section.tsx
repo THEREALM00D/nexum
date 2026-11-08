@@ -1,6 +1,7 @@
-import { Paper, Stack, Typography } from "@mui/material";
+import { Paper, Stack } from "@mui/material";
 import type { ReactNode } from "react";
 import { SkeletonChildren } from "./LoadingSkeleton";
+import SectionTitle from "./SectionTitle";
 
 export default function Section({
   label,
@@ -14,18 +15,7 @@ export default function Section({
 }) {
   return (
     <Paper sx={{ p: 2.5 }}>
-      <Typography
-        variant="subtitle2"
-        sx={{
-          mb: 2,
-          color: "text.secondary",
-          textTransform: "uppercase",
-          fontSize: 11,
-          letterSpacing: 0.5,
-        }}
-      >
-        {label}
-      </Typography>
+      <SectionTitle sx={{ mb: 2 }}>{label}</SectionTitle>
       <Stack spacing={2}>
         <SkeletonChildren loading={loading}>{children}</SkeletonChildren>
       </Stack>

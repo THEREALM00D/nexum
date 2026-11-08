@@ -133,7 +133,7 @@ export default function ServersTable({
                       size="small"
                       color={STATUS_COLOR[status]}
                       variant="outlined"
-                      sx={{ height: 22, fontSize: 11 }}
+                      sx={{ typography: "micro", height: 22 }}
                     />
                   </TableCell>
                   <TableCell>

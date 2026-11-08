@@ -54,8 +54,8 @@ export default function LogLines({ lines }: { lines: string[] }) {
         flex: 1,
         minHeight: 0,
         position: "relative",
+        typography: "caption",
         fontFamily: FONT_MONO,
-        fontSize: 12,
         lineHeight: 1.7,
       }}
     >

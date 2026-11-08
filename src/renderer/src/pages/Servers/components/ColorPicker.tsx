@@ -22,7 +22,7 @@ export default function ColorPicker({ value, onChange }: Props) {
   return (
     <Box>
       <Box
-        sx={{ fontSize: 12, color: "text.secondary", mb: 1 }}
+        sx={{ typography: "caption", color: "text.secondary", mb: 1 }}
         component="div"
       >
         {t("servers.dialog.color")}

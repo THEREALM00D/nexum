@@ -1,6 +1,5 @@
-import { Box, Button, IconButton, Tooltip, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
-import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import { useTranslation } from "react-i18next";
 import { useServer } from "../../../../context/ServerContext";
 import { useValheimConfig } from "./hooks/useValheimConfig";
@@ -13,6 +12,7 @@ import AdvancedSection from "./components/AdvancedSection";
 import AdministrationSection from "./components/AdministrationSection";
 import FormPage from "../../../../components/common/FormPage";
 import LoadingSkeleton from "../../../../components/common/LoadingSkeleton";
+import PageHeader from "../../../../components/common/PageHeader";
 
 export default function ValheimConfig() {
   const { t } = useTranslation();
@@ -40,22 +40,12 @@ export default function ValheimConfig() {
 
   return (
     <FormPage>
-      <Box>
-        <Typography variant="h6">{t("valheimConfig.title")}</Typography>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mt: 0.5 }}>
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
-            {t("valheimConfig.subtitle")}
-          </Typography>
-          <Tooltip title={t("valheimConfig.openServerFolder")}>
-            <IconButton
-              size="small"
-              onClick={() => window.api.shell.openPath(state.serverPath)}
-            >
-              <FolderOpenIcon sx={{ fontSize: 16 }} />
-            </IconButton>
-          </Tooltip>
-        </Box>
-      </Box>
+      <PageHeader
+        title={t("valheimConfig.title")}
+        subtitle={t("valheimConfig.subtitle")}
+        onOpenFolder={() => window.api.shell.openPath(state.serverPath)}
+        folderTooltip={t("valheimConfig.openServerFolder")}
+      />
 
       <GeneralSection
         config={config}

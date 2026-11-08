@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useServer } from "../../../../context/ServerContext";
 import { useServerControls } from "../../../../hooks/useServerControls";
@@ -8,6 +8,7 @@ import StatsGrid from "../../../../components/server/StatsGrid";
 import JoinServerCard from "../../../../components/server/JoinServerCard";
 import ServerInfoPanel from "./components/ServerInfoPanel";
 import PlayersPanel from "./components/PlayersPanel";
+import PageHeader from "../../../../components/common/PageHeader";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -18,12 +19,10 @@ export default function Dashboard() {
 
   return (
     <Stack spacing={3}>
-      <Box>
-        <Typography variant="h6">{t("dashboard.title")}</Typography>
-        <Typography variant="body2" sx={{ color: "text.secondary", mt: 0.5 }}>
-          {serverPath || t("dashboard.noServerPath")}
-        </Typography>
-      </Box>
+      <PageHeader
+        title={t("dashboard.title")}
+        subtitle={serverPath || t("dashboard.noServerPath")}
+      />
 
       <ServerControls
         status={status}

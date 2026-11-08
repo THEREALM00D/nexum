@@ -1,4 +1,4 @@
-import { Button, Paper, Stack, TextField, Typography } from "@mui/material";
+import { Button, Paper, Stack, TextField } from "@mui/material";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import DownloadIcon from "@mui/icons-material/Download";
 import UpdateIcon from "@mui/icons-material/Update";
@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import type { GameType } from "@shared/types";
 import InstallDirWarning from "../../../components/common/InstallDirWarning";
 import GameRequirementsHint from "../../../components/common/GameRequirementsHint";
+import SectionTitle from "../../../components/common/SectionTitle";
 
 export default function InstallFolderCard({
   gameType,
@@ -33,9 +34,7 @@ export default function InstallFolderCard({
   const { t } = useTranslation();
   return (
     <Paper sx={{ p: 2.5 }}>
-      <Typography variant="subtitle2" sx={{ mb: 2 }}>
-        {t("install.folder.title")}
-      </Typography>
+      <SectionTitle sx={{ mb: 2 }}>{t("install.folder.title")}</SectionTitle>
       <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
         <TextField
           fullWidth

@@ -15,6 +15,7 @@ import WorldRow from "./WorldRow";
 import LoadingSkeleton, {
   skeletonRows,
 } from "../../../../../components/common/LoadingSkeleton";
+import SectionTitle from "../../../../../components/common/SectionTitle";
 
 // Monde d'exemple des lignes en skeleton (jamais affiché)
 const PLACEHOLDER_WORLD: DragonwildsWorld = {
@@ -52,9 +53,7 @@ export default function WorldsCard({
 
   return (
     <Paper sx={{ p: 2.5 }}>
-      <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-        {t("dragonwildsWorlds.title")}
-      </Typography>
+      <SectionTitle>{t("dragonwildsWorlds.title")}</SectionTitle>
       <LoadingSkeleton loading={loading} sx={{ mb: 1.5 }}>
         <Typography
           variant="body2"
@@ -69,7 +68,7 @@ export default function WorldsCard({
       </LoadingSkeleton>
 
       {!stopped && (
-        <Alert severity="warning" sx={{ fontSize: 13, mb: 1.5 }}>
+        <Alert severity="warning" sx={{ mb: 1.5 }}>
           {t("dragonwildsWorlds.stopFirst")}
         </Alert>
       )}

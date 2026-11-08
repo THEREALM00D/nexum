@@ -2,6 +2,7 @@ import { Box, Button, Chip, Paper, Stack, Typography } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
 import { useTranslation } from "react-i18next";
 import LoadingSkeleton from "../../../components/common/LoadingSkeleton";
+import SectionTitle from "../../../components/common/SectionTitle";
 
 export default function SteamCmdCard({
   steamInstalled,
@@ -22,9 +23,7 @@ export default function SteamCmdCard({
         sx={{ alignItems: "center", justifyContent: "space-between", mb: 2 }}
       >
         <Box>
-          <Typography variant="subtitle2">
-            {t("install.steamcmd.label")}
-          </Typography>
+          <SectionTitle>{t("install.steamcmd.label")}</SectionTitle>
           <LoadingSkeleton loading={loading}>
             <Typography variant="caption" sx={{ color: "text.secondary" }}>
               {steamInstalled === false

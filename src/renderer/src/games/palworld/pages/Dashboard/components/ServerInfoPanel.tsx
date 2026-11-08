@@ -1,6 +1,7 @@
 import { Box, Divider, Paper, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import type { PalServerInfo, PalMetrics } from "@shared/types";
+import SectionTitle from "../../../../../components/common/SectionTitle";
 
 function InfoRow({ label, value }: { label: string; value: string | number }) {
   return (
@@ -39,9 +40,7 @@ export default function ServerInfoPanel({ serverInfo, metrics }: Props) {
   const { t } = useTranslation();
   return (
     <Paper sx={{ p: 2.5, flex: "1 1 360px", minWidth: 0 }}>
-      <Typography variant="subtitle2" sx={{ mb: 1 }}>
-        {t("dashboard.info.title")}
-      </Typography>
+      <SectionTitle sx={{ mb: 1 }}>{t("dashboard.info.title")}</SectionTitle>
       <Divider sx={{ mb: 1 }} />
       <InfoRow label={t("dashboard.info.name")} value={serverInfo.servername} />
       <InfoRow label={t("dashboard.info.version")} value={serverInfo.version} />

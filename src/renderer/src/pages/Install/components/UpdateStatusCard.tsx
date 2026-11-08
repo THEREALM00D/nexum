@@ -2,6 +2,7 @@ import { Alert, Box, Button, Paper, Stack, Typography } from "@mui/material";
 import SyncIcon from "@mui/icons-material/Sync";
 import { useTranslation } from "react-i18next";
 import type { UpdateStatus } from "../hooks/useInstall";
+import SectionTitle from "../../../components/common/SectionTitle";
 
 export default function UpdateStatusCard({
   updateStatus,
@@ -30,9 +31,7 @@ export default function UpdateStatusCard({
         }}
       >
         <Box>
-          <Typography variant="subtitle2">
-            {t("install.update.title")}
-          </Typography>
+          <SectionTitle>{t("install.update.title")}</SectionTitle>
           {updateStatus?.installedBuild && (
             <Typography variant="caption" sx={{ color: "text.secondary" }}>
               {t("install.update.installedBuild", {

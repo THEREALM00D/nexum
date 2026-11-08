@@ -12,6 +12,7 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { useTranslation } from "react-i18next";
 import type { LaunchArgsConfig } from "@shared/types";
 import { SkeletonChildren } from "../../../components/common/LoadingSkeleton";
+import SectionTitle from "../../../components/common/SectionTitle";
 
 export default function LaunchArgsCard({
   launchArgs,
@@ -28,9 +29,9 @@ export default function LaunchArgsCard({
   const { t } = useTranslation();
   return (
     <Paper sx={{ p: 2.5 }}>
-      <Typography variant="subtitle2" sx={{ mb: 2 }}>
+      <SectionTitle sx={{ mb: 2 }}>
         {t("install.launchArgs.title")}
-      </Typography>
+      </SectionTitle>
       <Stack spacing={1.5}>
         <SkeletonChildren loading={loading}>
           <FormControlLabel

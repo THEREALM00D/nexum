@@ -1,10 +1,10 @@
 import type { ReactNode } from "react";
-import { Box, IconButton, Stack, Tooltip, Typography } from "@mui/material";
-import FolderOpenIcon from "@mui/icons-material/FolderOpen";
+import { Stack } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useBackup } from "../../hooks/useBackup";
 import BackupConfigPanel from "./BackupConfig";
 import BackupList from "./BackupList";
+import PageHeader from "../common/PageHeader";
 
 interface BackupPageProps {
   subtitleKey: string;
@@ -38,21 +38,12 @@ export default function BackupPage({
 
   return (
     <Stack spacing={3} sx={{ height: "100%" }}>
-      <div>
-        <Typography variant="h6">{t("backup.title")}</Typography>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mt: 0.5 }}>
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
-            {t(subtitleKey)}
-          </Typography>
-          {onOpenSaveFolder && openFolderTooltipKey && (
-            <Tooltip title={t(openFolderTooltipKey)}>
-              <IconButton size="small" onClick={onOpenSaveFolder}>
-                <FolderOpenIcon sx={{ fontSize: 16 }} />
-              </IconButton>
-            </Tooltip>
-          )}
-        </Box>
-      </div>
+      <PageHeader
+        title={t("backup.title")}
+        subtitle={t(subtitleKey)}
+        onOpenFolder={onOpenSaveFolder}
+        folderTooltip={openFolderTooltipKey && t(openFolderTooltipKey)}
+      />
 
       <BackupConfigPanel
         config={backup.config}

@@ -21,12 +21,11 @@ import { useState } from "react";
 import RuleStatus from "./RuleStatus";
 import LoadingSkeleton from "../common/LoadingSkeleton";
 import { FONT_MONO } from "../../theme";
+import SectionTitle from "../common/SectionTitle";
 
 const HEAD_SX = {
   color: "text.secondary",
-  fontSize: 11,
-  textTransform: "uppercase",
-  letterSpacing: 0.6,
+  typography: "overline",
 };
 
 interface Props {
@@ -78,16 +77,7 @@ export default function StandardRules({
         direction="row"
         sx={{ alignItems: "center", justifyContent: "space-between", mb: 2 }}
       >
-        <Typography
-          variant="subtitle2"
-          sx={{
-            textTransform: "uppercase",
-            letterSpacing: 0.8,
-            color: "text.secondary",
-          }}
-        >
-          {t("network.standard.title")}
-        </Typography>
+        <SectionTitle>{t("network.standard.title")}</SectionTitle>
         <Stack direction="row" spacing={1}>
           {onApplyAll && (
             <Tooltip title={t("network.standard.applyAllTooltip")}>
@@ -175,7 +165,7 @@ export default function StandardRules({
                       label={rule.protocol}
                       size="small"
                       variant="outlined"
-                      sx={{ fontSize: 10 }}
+                      sx={{ typography: "micro" }}
                     />
                   </LoadingSkeleton>
                 </TableCell>

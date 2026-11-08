@@ -27,11 +27,7 @@ export default function DragonwildsConfig() {
         }
       }}
       notice={
-        <Alert
-          severity="info"
-          icon={<InfoOutlinedIcon fontSize="inherit" />}
-          sx={{ fontSize: 13 }}
-        >
+        <Alert severity="info" icon={<InfoOutlinedIcon fontSize="inherit" />}>
           {t("dragonwildsConfig.notice")}
         </Alert>
       }

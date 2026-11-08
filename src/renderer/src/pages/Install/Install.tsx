@@ -1,4 +1,3 @@
-import { Box, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useInstall } from "./hooks/useInstall";
 import SteamCmdCard from "./components/SteamCmdCard";
@@ -7,6 +6,7 @@ import LaunchArgsCard from "./components/LaunchArgsCard";
 import UpdateStatusCard from "./components/UpdateStatusCard";
 import InstallLogs from "./components/InstallLogs";
 import FormPage from "../../components/common/FormPage";
+import PageHeader from "../../components/common/PageHeader";
 
 export default function Install() {
   const { t } = useTranslation();
@@ -34,12 +34,12 @@ export default function Install() {
 
   return (
     <FormPage>
-      <Box>
-        <Typography variant="h6">{t("install.title")}</Typography>
-        <Typography variant="body2" sx={{ color: "text.secondary", mt: 0.5 }}>
-          {t("install.subtitle", { game: t(`servers.games.${gameType}`) })}
-        </Typography>
-      </Box>
+      <PageHeader
+        title={t("install.title")}
+        subtitle={t("install.subtitle", {
+          game: t(`servers.games.${gameType}`),
+        })}
+      />
 
       <SteamCmdCard
         steamInstalled={steamInstalled}

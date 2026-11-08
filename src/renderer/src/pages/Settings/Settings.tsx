@@ -14,6 +14,7 @@ import LaunchAtLoginSwitch from "./components/LaunchAtLoginSwitch";
 import CloseToTraySwitch from "./components/CloseToTraySwitch";
 import BetaUpdatesSwitch from "./components/BetaUpdatesSwitch";
 import FormPage from "../../components/common/FormPage";
+import PageHeader from "../../components/common/PageHeader";
 
 const REPO = "https://github.com/THEREALM00D/nexum";
 const open = (url: string) => window.api.shell.openExternal(url);
@@ -26,12 +27,10 @@ export default function Settings() {
 
   return (
     <FormPage>
-      <Box>
-        <Typography variant="h6">{t("settings.title")}</Typography>
-        <Typography variant="body2" sx={{ color: "text.secondary", mt: 0.5 }}>
-          {t("settings.subtitle")}
-        </Typography>
-      </Box>
+      <PageHeader
+        title={t("settings.title")}
+        subtitle={t("settings.subtitle")}
+      />
 
       <SettingsSection
         title={t("settings.startup.title")}

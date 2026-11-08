@@ -18,6 +18,7 @@ import { useTranslation } from "react-i18next";
 import type { BackupConfig } from "@shared/types";
 import InstallDirWarning from "../common/InstallDirWarning";
 import { SkeletonChildren } from "../common/LoadingSkeleton";
+import SectionTitle from "../common/SectionTitle";
 
 interface Props {
   config: BackupConfig;
@@ -40,9 +41,7 @@ export default function BackupConfigPanel({
 
   return (
     <Paper sx={{ p: 2.5 }}>
-      <Typography variant="subtitle2" sx={{ mb: 1.5 }}>
-        {t("backup.config.title")}
-      </Typography>
+      <SectionTitle sx={{ mb: 1.5 }}>{t("backup.config.title")}</SectionTitle>
       <Stack spacing={2}>
         <SkeletonChildren loading={loading}>
           <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>

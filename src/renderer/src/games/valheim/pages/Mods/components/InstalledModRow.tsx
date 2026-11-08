@@ -108,7 +108,7 @@ export default function InstalledModRow({
               }
               size="small"
               color="warning"
-              sx={{ fontSize: 10, height: 18, px: 0.5 }}
+              sx={{ typography: "micro", height: 18, px: 0.5 }}
             />
           )}
         </Box>

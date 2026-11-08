@@ -1,4 +1,4 @@
-import { Box, Typography, Paper, Button, Stack } from "@mui/material";
+import { Paper, Button, Stack } from "@mui/material";
 import DeleteSweepIcon from "@mui/icons-material/DeleteSweep";
 import { useTranslation } from "react-i18next";
 import { useServer } from "../../context/ServerContext";
@@ -6,8 +6,9 @@ import LogExportButtons from "./LogExportButtons";
 import LogSessionPicker from "./LogSessionPicker";
 import LogLines from "./LogLines";
 import { useLogSessions } from "./hooks/useLogSessions";
+import PageHeader from "../common/PageHeader";
 
-export default function Logs() {
+export default function Logs({ embedded = false }: { embedded?: boolean }) {
   const { t } = useTranslation();
   const { dispatch } = useServer();
   const logs = useLogSessions();
@@ -18,48 +19,39 @@ export default function Logs() {
       spacing={2}
       sx={{ height: "100%", display: "flex", flexDirection: "column" }}
     >
-      <Stack
-        direction="row"
-        sx={{
-          alignItems: "center",
-          justifyContent: "space-between",
-          flexWrap: "wrap",
-          gap: 1,
-        }}
-      >
-        <Box>
-          <Typography variant="h6">{t("logs.title")}</Typography>
-          <Typography variant="body2" sx={{ color: "text.secondary", mt: 0.5 }}>
-            {t("logs.lines", { count: logs.displayed.length })}
-          </Typography>
-        </Box>
-        <Stack
-          direction="row"
-          spacing={1}
-          sx={{ alignItems: "center", flexWrap: "wrap" }}
-        >
-          <LogSessionPicker
-            sessions={logs.sessions}
-            selected={logs.selected}
-            onSelect={logs.setSelected}
-            onOpen={logs.refresh}
-            onOpenDir={logs.openDir}
-          />
-          <LogExportButtons
-            loadLog={logs.loadFullLog}
-            disabled={logs.displayed.length === 0}
-          />
-          <Button
-            size="small"
-            variant="outlined"
-            startIcon={<DeleteSweepIcon />}
-            onClick={() => dispatch({ type: "CLEAR_LOGS" })}
-            disabled={viewingPast}
+      <PageHeader
+        embedded={embedded}
+        title={t("logs.title")}
+        subtitle={t("logs.lines", { count: logs.displayed.length })}
+        actions={
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={{ alignItems: "center", flexWrap: "wrap" }}
           >
-            {t("logs.clear")}
-          </Button>
-        </Stack>
-      </Stack>
+            <LogSessionPicker
+              sessions={logs.sessions}
+              selected={logs.selected}
+              onSelect={logs.setSelected}
+              onOpen={logs.refresh}
+              onOpenDir={logs.openDir}
+            />
+            <LogExportButtons
+              loadLog={logs.loadFullLog}
+              disabled={logs.displayed.length === 0}
+            />
+            <Button
+              size="small"
+              variant="outlined"
+              startIcon={<DeleteSweepIcon />}
+              onClick={() => dispatch({ type: "CLEAR_LOGS" })}
+              disabled={viewingPast}
+            >
+              {t("logs.clear")}
+            </Button>
+          </Stack>
+        }
+      />
 
       <Paper
         sx={{
