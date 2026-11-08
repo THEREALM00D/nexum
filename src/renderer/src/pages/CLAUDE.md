@@ -14,7 +14,7 @@ Démarrage (`LaunchAtLoginSwitch`, `CloseToTraySwitch`), Langue (`components/com
 
 ## Serveurs (`Servers/`)
 
-`ServerDialog` : création, import d'un dossier existant (voir `src/main/servers/CLAUDE.md`), cases `autoStart` / `autoRestart` (`components/common/CheckboxField`). `ServersTable` : `TableContainer`, chemin tronqué avec `Tooltip`. Libellés des jeux : `servers.games.<jeu>` dans `Servers/__i18n__`.
+`ServerDialog` : création, import d'un dossier existant (voir `src/main/servers/CLAUDE.md`), cases `autoStart` / `autoRestart` (`components/common/CheckboxField`). `ServersTable` : `TableContainer`, chemin tronqué avec `Tooltip`. `ServerRow` : le clic sur la ligne active le serveur ; le nom est un `ButtonBase` sans `onClick` pour l'accès clavier (son clic remonte à la ligne). ⚠️ La cellule d'actions arrête la propagation, sinon chaque action activerait aussi le serveur, y compris depuis le `Menu` : un portail React remonte ses clics à ses parents. Supprimer reste dans le menu « ⋯ », loin d'Arrêter. Libellés des jeux : `servers.games.<jeu>` dans `Servers/__i18n__`.
 
 ## Installation (`Install/`)
 

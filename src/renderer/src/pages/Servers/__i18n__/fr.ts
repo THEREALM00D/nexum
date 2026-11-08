@@ -3,8 +3,11 @@ export default {
     title: "Serveurs",
     subtitle:
       "Liste de tous vos serveurs dédiés. Cliquez sur un serveur pour le sélectionner comme actif.",
-    empty:
-      "Aucun serveur configuré. Ajoutez votre premier serveur pour commencer.",
+    emptyTitle: "Aucun serveur pour l'instant",
+    emptyHint:
+      "L'assistant installe le jeu, règle la configuration et ouvre les ports en quelques étapes.",
+    launchWizard: "Lancer l'assistant",
+    importFolder: "Importer un dossier existant",
     active: "Actif",
     addServer: "Ajouter un serveur",
     setupWizard: "Assistant de démarrage",
@@ -36,6 +39,8 @@ export default {
     },
     actions: {
       activate: "Activer",
+      more: "Plus d'actions",
+      openFolder: "Ouvrir le dossier",
       edit: "Modifier",
       delete: "Supprimer",
       deleteConfirm:

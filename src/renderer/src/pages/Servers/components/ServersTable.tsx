@@ -1,41 +1,22 @@
 import {
-  Box,
-  Chip,
-  IconButton,
   Paper,
-  Stack,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Tooltip,
-  Typography,
 } from "@mui/material";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import StopIcon from "@mui/icons-material/Stop";
-import RestartAltIcon from "@mui/icons-material/RestartAlt";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { useTranslation } from "react-i18next";
 import type { Server, ServerStatus } from "@shared/types";
-import { STATUS_COLOR } from "../../../utils/status";
-import ServerTile from "../../../components/common/ServerTile";
-import { FONT_MONO } from "../../../theme";
+import ServerRow from "./ServerRow";
+import type { ServerActionHandlers } from "./ServerRowActions";
 
-interface Props {
+interface Props extends ServerActionHandlers {
   servers: Server[];
   statuses: Record<string, ServerStatus>;
   activeServerId: string | null;
   onActivate: (server: Server) => void;
-  onStart: (server: Server) => void;
-  onStop: (server: Server) => void;
-  onRestart: (server: Server) => void;
-  onEdit: (server: Server) => void;
-  onDelete: (server: Server) => void;
 }
 
 export default function ServersTable({
@@ -43,25 +24,9 @@ export default function ServersTable({
   statuses,
   activeServerId,
   onActivate,
-  onStart,
-  onStop,
-  onRestart,
-  onEdit,
-  onDelete,
+  ...actions
 }: Props) {
   const { t } = useTranslation();
-
-  if (servers.length === 0) {
-    return (
-      <Paper sx={{ overflow: "hidden" }}>
-        <Box sx={{ p: 5, textAlign: "center" }}>
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
-            {t("servers.empty")}
-          </Typography>
-        </Box>
-      </Paper>
-    );
-  }
 
   return (
     <Paper sx={{ overflow: "hidden" }}>
@@ -69,7 +34,6 @@ export default function ServersTable({
         <Table size="small">
           <TableHead>
             <TableRow>
-              <TableCell />
               <TableCell>{t("servers.columns.name")}</TableCell>
               <TableCell>{t("servers.columns.status")}</TableCell>
               <TableCell>{t("servers.columns.game")}</TableCell>
@@ -78,135 +42,16 @@ export default function ServersTable({
             </TableRow>
           </TableHead>
           <TableBody>
-            {servers.map((srv) => {
-              const isActive = srv.id === activeServerId;
-              const status = statuses[srv.id] ?? "stopped";
-              const canStart = status === "stopped" || status === "crashed";
-              const canStop = status === "running" || status === "starting";
-              return (
-                <TableRow key={srv.id} hover selected={isActive}>
-                  <TableCell sx={{ width: 50 }}>
-                    <Tooltip
-                      title={
-                        isActive
-                          ? t("servers.active")
-                          : t("servers.actions.activate")
-                      }
-                    >
-                      <IconButton
-                        size="small"
-                        onClick={() => !isActive && onActivate(srv)}
-                        color={isActive ? "success" : "default"}
-                      >
-                        {isActive ? (
-                          <CheckCircleIcon fontSize="small" />
-                        ) : (
-                          <RadioButtonUncheckedIcon fontSize="small" />
-                        )}
-                      </IconButton>
-                    </Tooltip>
-                  </TableCell>
-                  <TableCell>
-                    <Stack
-                      direction="row"
-                      spacing={1}
-                      sx={{ alignItems: "center" }}
-                    >
-                      <ServerTile name={srv.name} color={srv.color} />
-                      <Typography
-                        variant="body2"
-                        sx={{ fontWeight: isActive ? 600 : 400 }}
-                      >
-                        {srv.name}
-                      </Typography>
-                    </Stack>
-                  </TableCell>
-                  <TableCell>
-                    <Chip
-                      label={t(`servers.status.${status}`)}
-                      size="small"
-                      color={STATUS_COLOR[status]}
-                      variant="outlined"
-                      sx={{ typography: "micro", height: 22 }}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="caption">
-                      {t(`servers.games.${srv.gameType}`)}
-                    </Typography>
-                  </TableCell>
-                  {/* Chemin tronqué (complet au survol) : un long chemin
-                      élargissait le tableau au-delà de la fenêtre. */}
-                  <TableCell sx={{ maxWidth: 280 }}>
-                    <Tooltip title={srv.path}>
-                      <Typography
-                        variant="caption"
-                        noWrap
-                        component="div"
-                        sx={{ fontFamily: FONT_MONO, color: "text.secondary" }}
-                      >
-                        {srv.path}
-                      </Typography>
-                    </Tooltip>
-                  </TableCell>
-                  <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
-                    <Tooltip title={t("servers.serverActions.start")}>
-                      <span>
-                        <IconButton
-                          size="small"
-                          color="success"
-                          disabled={!canStart}
-                          aria-label={t("servers.serverActions.start")}
-                          onClick={() => onStart(srv)}
-                        >
-                          <PlayArrowIcon fontSize="small" />
-                        </IconButton>
-                      </span>
-                    </Tooltip>
-                    <Tooltip title={t("servers.serverActions.restart")}>
-                      <span>
-                        <IconButton
-                          size="small"
-                          color="warning"
-                          disabled={status !== "running"}
-                          aria-label={t("servers.serverActions.restart")}
-                          onClick={() => onRestart(srv)}
-                        >
-                          <RestartAltIcon fontSize="small" />
-                        </IconButton>
-                      </span>
-                    </Tooltip>
-                    <Tooltip title={t("servers.serverActions.stop")}>
-                      <span>
-                        <IconButton
-                          size="small"
-                          color="error"
-                          disabled={!canStop}
-                          aria-label={t("servers.serverActions.stop")}
-                          onClick={() => onStop(srv)}
-                        >
-                          <StopIcon fontSize="small" />
-                        </IconButton>
-                      </span>
-                    </Tooltip>
-                    <Tooltip title={t("servers.actions.edit")}>
-                      <IconButton size="small" onClick={() => onEdit(srv)}>
-                        <EditIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title={t("servers.actions.delete")}>
-                      <IconButton
-                        size="small"
-                        color="error"
-                        onClick={() => onDelete(srv)}
-                      >
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
+            {servers.map((srv) => (
+              <ServerRow
+                key={srv.id}
+                server={srv}
+                status={statuses[srv.id] ?? "stopped"}
+                isActive={srv.id === activeServerId}
+                onActivate={onActivate}
+                {...actions}
+              />
+            ))}
           </TableBody>
         </Table>
       </TableContainer>
