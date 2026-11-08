@@ -1,0 +1,6 @@
+# Historique des joueurs
+
+- `PlayerHistoryTracker` est **générique** : il ne connaît que `{ getPlayers(): Promise<{ players: TrackedPlayer[] }> }` (en tête du fichier). Poll toutes les 30 s, **seulement serveur lancé ET source de données configurée** pour ce jeu. Démarré/arrêté par une boucle de `src/main/ipc/handlers.ts` (`getStatus()` toutes les 5 s) ; à l'arrêt, il ferme les sessions ouvertes et persiste.
+- Sources : Palworld → `PalworldApiClient.getPlayers()` (API REST) ; Valheim → `OdinEyeApiClient.getPlayers()` (plugin BepInEx Odin-Eye, voir `src/main/games/valheim/CLAUDE.md`). Astroneer, Dragonwilds, Enshrouded : aucune (pistes : lignes de connexion des logs, issues #153 et #155). Routage par jeu : `getApiClientForServer` (`src/main/ipc/handlers.ts`).
+- Stockage : `{userData}/servers/<id>/players/history.json`, tableau de `PlayerHistoryEntry` (`firstSeen`, `lastSeen`, `lastIp`, `totalPlaytimeMs`, `sessionCount`, `online`, `currentSessionStart`, `sessions[]` plafonné à 50).
+- IPC `players:getHistory` / `players:clearHistory` / `players:removeEntry`. UI : `src/renderer/src/components/players/` (page « Joueurs » complète), montée dans le manifest des jeux qui ont une source (Palworld, Valheim).
