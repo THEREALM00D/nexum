@@ -1,27 +1,20 @@
 import { Box, IconButton, Tooltip, Typography } from "@mui/material";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import type { ReactNode } from "react";
-import SectionTitle from "./SectionTitle";
 
-/**
- * En-tête de page : titre, sous-titre, bouton « ouvrir le dossier » et
- * actions à droite. `embedded` : page affichée dans une autre (logs du
- * Dashboard), le titre devient un titre de section.
- */
+/** En-tête de page : titre, sous-titre, « ouvrir le dossier », actions à droite. */
 export default function PageHeader({
   title,
   subtitle,
   actions,
   onOpenFolder,
   folderTooltip = "",
-  embedded = false,
 }: {
   title: ReactNode;
   subtitle?: ReactNode;
   actions?: ReactNode;
   onOpenFolder?: () => void;
   folderTooltip?: string;
-  embedded?: boolean;
 }) {
   return (
     <Box
@@ -34,11 +27,7 @@ export default function PageHeader({
       }}
     >
       <Box sx={{ minWidth: 0 }}>
-        {embedded ? (
-          <SectionTitle>{title}</SectionTitle>
-        ) : (
-          <Typography variant="h1">{title}</Typography>
-        )}
+        <Typography variant="h1">{title}</Typography>
         {(subtitle || onOpenFolder) && (
           <Box
             sx={{ display: "flex", alignItems: "center", gap: 0.5, mt: 0.5 }}

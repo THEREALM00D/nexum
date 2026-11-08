@@ -27,6 +27,7 @@ Pour les jeux dont stdout est incomplet (Dragonwilds : ~10 % du log). `ServerMan
 
 - Tampon : toute la session par serveur (`ADD_LOGS` dans `ServerContext`), garde-fou `MAX_LIVE_LINES` (100 000, sorties par paquets de 10 000). Lignes regroupées toutes les 100 ms (`LOG_FLUSH_MS`) : une copie du tableau par ligne serait quadratique. Les lignes en attente passent avant le `CLEAR_LOGS` d'une nouvelle session. Les consommateurs qui parcourent `state.logs` (`JoinServerCard`, `useValheimPlayerCount`) le font depuis la fin.
 - Liste virtualisée `LogLines` (`react-virtuoso`) : `followOutput` seulement en bas (`atBottomThreshold` 24 px), `initialTopMostItemIndex` ouvre en bas, `Logs` remonte `LogLines` (`key` = session) à chaque changement de session. « Nouvelles lignes — revenir au direct » = `scrollToIndex("LAST")`.
+- Dashboard : aperçu seul (`LatestLogsCard`, 5 dernières lignes, couleurs de `logLineColor`). La lecture complète, l'export et les sessions restent sur la page Logs.
 - Sessions passées : `LogSessionPicker` (⚠ = plantée), `hooks/useLogSessions` (session vidée avant chaque lecture pour s'ouvrir en bas).
 - Hors page Logs : `hooks/useStickToBottom.ts` (agit sur `scrollTop` du conteneur). ⚠️ Jamais `scrollIntoView` : il fait défiler **tous les parents**. La zone de log doit avoir une **hauteur contrainte** (wrapper `height: 100%` d'`App.tsx`).
 

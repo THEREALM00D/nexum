@@ -24,7 +24,6 @@ export default function DragonwildsDashboard() {
     <SimpleDashboard
       noServerPathKey="dragonwildsDashboard.noServerPath"
       infoKey="dragonwildsDashboard.noApi"
-      showLogs
       warning={
         ownerMissing && (
           <Alert severity="warning">

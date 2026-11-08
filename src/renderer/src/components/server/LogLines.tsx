@@ -4,18 +4,10 @@ import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import { useTranslation } from "react-i18next";
 import { Virtuoso, type VirtuosoHandle } from "react-virtuoso";
 import { FONT_MONO } from "../../theme";
+import { logLineColor } from "./logLineColor";
 
 // Marge (px) sous laquelle on considère l'utilisateur « en bas » du log.
 const BOTTOM_THRESHOLD = 24;
-
-const lineColor = (line: string) =>
-  line.includes("[ERR]") || line.includes("Error")
-    ? "error.light"
-    : line.includes("[WRN]") || line.includes("Warning")
-      ? "warning.main"
-      : line.includes("[Manager]")
-        ? "primary.main"
-        : "text.secondary";
 
 /**
  * Zone de lignes du log (en direct ou session terminée), virtualisée : seules
@@ -71,7 +63,7 @@ export default function LogLines({ lines }: { lines: string[] }) {
         atBottomStateChange={onBottomChange}
         increaseViewportBy={400}
         itemContent={(_, line) => (
-          <Box sx={{ color: lineColor(line), wordBreak: "break-word" }}>
+          <Box sx={{ color: logLineColor(line), wordBreak: "break-word" }}>
             {line}
           </Box>
         )}

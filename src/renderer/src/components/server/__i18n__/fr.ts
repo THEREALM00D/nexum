@@ -32,6 +32,8 @@ export default {
   },
   logs: {
     title: "Logs serveur",
+    latest: "Derniers logs",
+    viewAll: "Tout voir",
     lines: "{{count}} lignes",
     clear: "Effacer",
     empty: "Aucun log — démarrez le serveur pour voir les logs.",
