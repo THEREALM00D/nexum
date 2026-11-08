@@ -2,7 +2,7 @@ export default {
   valheimDashboard: {
     noServerPath: "No path configured",
     noApi:
-      "Player tracking is off: Valheim has no API, the server console below shows connections. For the online player count and history, install the Odin-Eye plugin and enter its address in Configuration → Network.",
+      "Player tracking is off: Valheim has no API, the Logs page shows connections. For the online player count and history, install the Odin-Eye plugin and enter its address in Configuration → Network.",
     odinEye: {
       idle: "Player tracking through Odin-Eye ({{url}}): it will start with the server.",
       waiting:

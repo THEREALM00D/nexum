@@ -1,11 +1,10 @@
-import { Box, Stack } from "@mui/material";
+import { Stack } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useServer } from "../../../../context/ServerContext";
 import ServerHeader from "../../../../components/server/ServerHeader";
 import ServerStats from "../../../../components/server/ServerStats";
 import SystemStrip from "../../../../components/server/SystemStrip";
-import JoinServerCard from "../../../../components/server/JoinServerCard";
-import Logs from "../../../../components/server/Logs";
+import JoinAndLatestLogs from "../../../../components/server/JoinAndLatestLogs";
 import { useValheimPlayerCount } from "./hooks/useValheimPlayerCount";
 import { useOdinEyeStatus } from "./hooks/useOdinEyeStatus";
 import OdinEyeStatusAlert from "./components/OdinEyeStatusAlert";
@@ -35,15 +34,9 @@ export default function ValheimDashboard() {
 
       <SystemStrip stats={stats} />
 
-      <JoinServerCard />
+      <JoinAndLatestLogs />
 
       <OdinEyeStatusAlert status={odinEye} running={running} />
-
-      {/* Hauteur suivant la fenêtre : 400 px fixes poussaient le bas du
-          log hors de l'écran sur un portable (768 px de haut). */}
-      <Box sx={{ height: "clamp(220px, 40vh, 400px)" }}>
-        <Logs embedded />
-      </Box>
     </Stack>
   );
 }

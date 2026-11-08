@@ -4,7 +4,7 @@ import { usePalApi } from "./hooks/usePalApi";
 import ServerHeader from "../../../../components/server/ServerHeader";
 import ServerStats from "../../../../components/server/ServerStats";
 import SystemStrip from "../../../../components/server/SystemStrip";
-import JoinServerCard from "../../../../components/server/JoinServerCard";
+import JoinAndLatestLogs from "../../../../components/server/JoinAndLatestLogs";
 import ServerInfoPanel from "./components/ServerInfoPanel";
 import PlayersPanel from "./components/PlayersPanel";
 
@@ -27,7 +27,7 @@ export default function Dashboard() {
 
       <SystemStrip stats={stats} />
 
-      <JoinServerCard />
+      <JoinAndLatestLogs />
 
       {serverInfo && (
         // Côte à côte sur grand écran, l'un sous l'autre sur un portable

@@ -8,7 +8,7 @@ import LogLines from "./LogLines";
 import { useLogSessions } from "./hooks/useLogSessions";
 import PageHeader from "../common/PageHeader";
 
-export default function Logs({ embedded = false }: { embedded?: boolean }) {
+export default function Logs() {
   const { t } = useTranslation();
   const { dispatch } = useServer();
   const logs = useLogSessions();
@@ -20,7 +20,6 @@ export default function Logs({ embedded = false }: { embedded?: boolean }) {
       sx={{ height: "100%", display: "flex", flexDirection: "column" }}
     >
       <PageHeader
-        embedded={embedded}
         title={t("logs.title")}
         subtitle={t("logs.lines", { count: logs.displayed.length })}
         actions={

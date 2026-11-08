@@ -116,7 +116,7 @@ export default function JoinServerCard() {
   const loading = info === null;
   const data = info ?? PLACEHOLDER_INFO;
   return (
-    <Paper sx={{ p: 2.5 }}>
+    <Paper sx={{ p: 2.5, height: "100%" }}>
       <SectionTitle sx={{ mb: 1.5 }}>{t("join.title")}</SectionTitle>
       {state.status === "running" ? (
         <Stack spacing={1}>

@@ -2,7 +2,7 @@ export default {
   valheimDashboard: {
     noServerPath: "Aucun chemin configuré",
     noApi:
-      "Suivi des joueurs désactivé : Valheim n'a pas d'API, la console du serveur ci-dessous affiche les connexions. Pour le nombre de joueurs en ligne et l'historique, installez le plugin Odin-Eye et renseignez son adresse dans Configuration → Réseau.",
+      "Suivi des joueurs désactivé : Valheim n'a pas d'API, la page Logs affiche les connexions. Pour le nombre de joueurs en ligne et l'historique, installez le plugin Odin-Eye et renseignez son adresse dans Configuration → Réseau.",
     odinEye: {
       idle: "Suivi des joueurs par Odin-Eye ({{url}}) : il démarrera avec le serveur.",
       waiting:

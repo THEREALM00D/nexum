@@ -60,6 +60,10 @@ The **Join the server** card (all games) gives the address to share with your fr
 
 The note below reminds you which UDP ports to forward on your router (e.g. `2456-2458` for Valheim) and to which PC. Most routers don't let you join your own public IP from inside your network: ask a friend outside to test it.
 
+## Latest logs
+
+The **Latest logs** card, next to **Join the server**, shows the last 5 lines of the current session with the same colors as the Logs page. **View all** opens the [Logs page](logs.md).
+
 ## Server information (Palworld)
 
 Shown only when the server is **Online** and the REST API is reachable:

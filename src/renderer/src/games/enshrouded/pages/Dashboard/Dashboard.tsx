@@ -29,7 +29,6 @@ export default function EnshroudedDashboard() {
     <SimpleDashboard
       noServerPathKey="enshroudedDashboard.noServerPath"
       infoKey="enshroudedDashboard.noApi"
-      showLogs
       warning={
         openGroups.length > 0 && (
           <Alert severity="warning">

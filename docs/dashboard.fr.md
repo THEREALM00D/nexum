@@ -60,6 +60,10 @@ La carte **Rejoindre le serveur** (tous les jeux) donne l'adresse à partager av
 
 La note en dessous rappelle les ports UDP à rediriger sur votre box (ex. `2456-2458` pour Valheim) et vers quel PC. La plupart des box ne permettent pas de rejoindre sa propre IP publique depuis chez soi : faites tester un ami à l'extérieur.
 
+## Derniers logs
+
+La carte **Derniers logs**, à côté de **Rejoindre le serveur**, affiche les 5 dernières lignes de la session en cours, avec les mêmes couleurs que la page Logs. **Tout voir** ouvre la [page Logs](logs.fr.md).
+
 ## Informations du serveur (Palworld)
 
 Affichées uniquement quand le serveur est **En ligne** et que l'API REST est accessible :
