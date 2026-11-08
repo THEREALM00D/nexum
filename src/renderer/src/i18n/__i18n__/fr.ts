@@ -12,6 +12,9 @@ export default {
     change: "Modifier",
     or: "OU",
     clearSearch: "Effacer la recherche",
+    minimize: "Réduire",
+    maximize: "Agrandir",
+    close: "Fermer",
   },
   serverControls: {
     startFailed: "Impossible de démarrer le serveur",

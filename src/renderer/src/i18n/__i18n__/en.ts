@@ -12,6 +12,9 @@ export default {
     change: "Change",
     or: "OR",
     clearSearch: "Clear search",
+    minimize: "Minimize",
+    maximize: "Maximize",
+    close: "Close",
   },
   serverControls: {
     startFailed: "Couldn't start the server",

@@ -162,6 +162,7 @@ export default function ServersTable({
                           size="small"
                           color="success"
                           disabled={!canStart}
+                          aria-label={t("servers.serverActions.start")}
                           onClick={() => onStart(srv)}
                         >
                           <PlayArrowIcon fontSize="small" />
@@ -174,6 +175,7 @@ export default function ServersTable({
                           size="small"
                           color="warning"
                           disabled={status !== "running"}
+                          aria-label={t("servers.serverActions.restart")}
                           onClick={() => onRestart(srv)}
                         >
                           <RestartAltIcon fontSize="small" />
@@ -186,6 +188,7 @@ export default function ServersTable({
                           size="small"
                           color="error"
                           disabled={!canStop}
+                          aria-label={t("servers.serverActions.stop")}
                           onClick={() => onStop(srv)}
                         >
                           <StopIcon fontSize="small" />

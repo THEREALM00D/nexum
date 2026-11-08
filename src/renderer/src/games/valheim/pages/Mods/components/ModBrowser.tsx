@@ -190,7 +190,7 @@ export default function ModBrowser({
       )}
 
       {error && !loading && (
-        <Typography variant="body2" sx={{ color: "error.main", py: 2 }}>
+        <Typography variant="body2" sx={{ color: "error.light", py: 2 }}>
           {t("valheimMods.browse.error", {
             registry: REGISTRY_LABEL[registry],
           })}

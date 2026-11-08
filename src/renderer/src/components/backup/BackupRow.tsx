@@ -68,6 +68,7 @@ export default function BackupRow({
               color="primary"
               disabled={restoreDisabled}
               onClick={() => onRestore(entry)}
+              aria-label={t("backup.list.restoreTooltip")}
             >
               {restoring ? (
                 <CircularProgress size={18} />

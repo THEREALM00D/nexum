@@ -10,10 +10,12 @@ const BOTTOM_THRESHOLD = 24;
 
 const lineColor = (line: string) =>
   line.includes("[ERR]") || line.includes("Error")
-    ? "error.main"
-    : line.includes("[Manager]")
-      ? "primary.main"
-      : "text.secondary";
+    ? "error.light"
+    : line.includes("[WRN]") || line.includes("Warning")
+      ? "warning.main"
+      : line.includes("[Manager]")
+        ? "primary.main"
+        : "text.secondary";
 
 /**
  * Zone de lignes du log (en direct ou session terminée), virtualisée : seules

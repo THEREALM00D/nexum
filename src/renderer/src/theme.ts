@@ -41,6 +41,7 @@ export const NEXUM = {
   signalDeep: "#16A34A", // vert du logo sur fond clair / variante foncée
   alert: "#F2A33A", // avertissements, redémarrage
   critical: "#E5484D", // erreurs, crash, actions destructives
+  criticalLight: "#F07175", // texte d'erreur sur une surface (6,0:1)
   line: "#252B35", // séparateurs, bordures
   // Pastilles de registre de mods Valheim (RegistryChip) : hors des couleurs
   // de statut (vert/orange/rouge) pour ne pas être lues comme un état.
@@ -64,6 +65,15 @@ export const FONT_MONO =
 export const FONT_DISPLAY =
   '"Archivo Variable", "Segoe UI", system-ui, sans-serif';
 
+// Contour au clavier d'un ButtonBase nu, qui n'a aucun retour de focus visible
+export const FOCUS_RING_SX = {
+  "&.Mui-focusVisible": {
+    outline: "2px solid",
+    outlineColor: "primary.main",
+    outlineOffset: 2,
+  },
+} as const;
+
 const rem = (px: number) => `${px / 16}rem`;
 
 const DISPLAY_TEXT = {
@@ -83,7 +93,11 @@ export const darkTheme = createTheme({
     },
     success: { main: NEXUM.signal, contrastText: NEXUM.ink },
     warning: { main: NEXUM.alert, contrastText: NEXUM.ink },
-    error: { main: NEXUM.critical },
+    error: {
+      main: NEXUM.critical,
+      light: NEXUM.criticalLight,
+      contrastText: NEXUM.ink,
+    },
     background: {
       default: NEXUM.ink,
       paper: NEXUM.graphite,

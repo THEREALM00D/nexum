@@ -7,6 +7,7 @@ import {
 } from "react";
 import { Snackbar, Alert, AlertColor, Button, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import { useTranslation } from "react-i18next";
 
 /** Bouton facultatif dans la notification (ex : « Mettre à jour »). */
 export interface NotificationAction {
@@ -32,6 +33,7 @@ interface NotificationContextType {
 const NotificationContext = createContext<NotificationContextType | null>(null);
 
 export function NotificationProvider({ children }: { children: ReactNode }) {
+  const { t } = useTranslation();
   const [notification, setNotification] = useState<Notification | null>(null);
   const [open, setOpen] = useState(false);
 
@@ -67,6 +69,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
           severity={notification?.severity ?? "error"}
           variant="filled"
           onClose={() => setOpen(false)}
+          closeText={t("common.close")}
           // `action` remplace la croix par défaut de l'Alert : on la remet
           action={
             notification?.action && (
@@ -85,6 +88,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
                   color="inherit"
                   size="small"
                   onClick={() => setOpen(false)}
+                  aria-label={t("common.close")}
                 >
                   <CloseIcon fontSize="small" />
                 </IconButton>
