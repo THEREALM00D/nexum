@@ -2444,10 +2444,10 @@ electron-vite@^5.0.0:
     magic-string "^0.30.19"
     picocolors "^1.1.1"
 
-electron@45.1.0:
-  version "45.1.0"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-45.1.0.tgz#0958d57fdc504123396bfb6ca1563b31e35b67d4"
-  integrity sha512-i7qKVAh/KR5v1pf56NhGGX2QYHcdjvLgS7koL6ui50c+zUDGLRunR95nXcTpHPURKOQ4GDBG8BmXiDgOQ8DD0A==
+electron@45.2.3:
+  version "45.2.3"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-45.2.3.tgz#8281326387373d595832cb13b7ae5a61ca8ca11d"
+  integrity sha512-Vurzu5UOA5nTGT4LqIwXD16QFGrOZdiXxF+1UP4KNsAOo/YtDcT3/u0jhP4WSwNJ0iLrLDi85hzBJ0arnGDhyw==
   dependencies:
     "@electron-internal/extract-zip" "^1.0.1"
     "@electron/get" "^5.0.0"
@@ -3195,17 +3195,17 @@ https-proxy-agent@7.0.6, https-proxy-agent@^7.0.0:
     agent-base "^7.1.2"
     debug "4"
 
-i18next-browser-languagedetector@^8.2.3:
-  version "8.2.3"
-  resolved "https://registry.yarnpkg.com/i18next-browser-languagedetector/-/i18next-browser-languagedetector-8.2.3.tgz#5e4c4f4903b2320f8079982bff9ca9ce19480487"
-  integrity sha512-0jSTK3ncpXj9MFdxRz+TVTKDkSvYH8ifB/OCmUdEMprvXC3vy7kEvdKpj0yYB72B0UKEHJLPMEeRVC/UXroWnw==
+i18next-browser-languagedetector@^8.3.0:
+  version "8.3.0"
+  resolved "https://registry.yarnpkg.com/i18next-browser-languagedetector/-/i18next-browser-languagedetector-8.3.0.tgz#92bdc1003e4cbec36c3205eccd47edce39f896d7"
+  integrity sha512-t7FtF+VyQ+XSy+GI1O9TXWsMzP4U2u0m27yxJcCbG4LaAbTQa3CXFXgG3LvRivS+ZoYah8yPv5NhMl+Wg6I8Fg==
   dependencies:
     "@babel/runtime" "^7.29.2"
 
-i18next@^26.5.11:
-  version "26.5.11"
-  resolved "https://registry.yarnpkg.com/i18next/-/i18next-26.5.11.tgz#8361e494a897194fcf41ac28b5427d3d42e622df"
-  integrity sha512-Wc0klBPKxqZ2tL2qdAnF8xvvnWgr1IMGSY2ikTiAvaFVbz7xiFARtkoU4RidBDw1SyziGROp0qxu6qnJ7l2Wug==
+i18next@^26.7.2:
+  version "26.7.2"
+  resolved "https://registry.yarnpkg.com/i18next/-/i18next-26.7.2.tgz#56e7550d479f05d0150479fbb345e6c29b78bbd1"
+  integrity sha512-RsOY3BeaCDdkk52NeJSFAXELQ2rQXBO/tOub6L8ue2ICPfR/FRDWDOfEDg4xMPd1SqO5goVYQ6i72qWEUB/PPw==
 
 ieee754@^1.2.1:
   version "1.2.1"
@@ -4079,10 +4079,10 @@ react-dom@^19.3.1:
   dependencies:
     scheduler "^0.28.0"
 
-react-i18next@^17.1.9:
-  version "17.1.9"
-  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-17.1.9.tgz#3db6287382329088ea794ca870d63d3339cf2776"
-  integrity sha512-OgYqIH13XHPlWTaaI795Dz+k2AdKnXcOxNQVnf750T8Ij0TYWp1nYvXRpoJBulPqlyk2OAbn1PM4tFKiIj/byA==
+react-i18next@^17.1.13:
+  version "17.1.13"
+  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-17.1.13.tgz#00cb81fe874fd0b272c229c4c7ff93087fb705d6"
+  integrity sha512-ZxhOSlyKSKPtbUNPLwYMmE3w3bhoc0jaZJZ6bc7wGOT6cLbrbs//6m01HxCLtFdSjHvFpwFwoPhxxzIlHSs9cw==
   dependencies:
     "@babel/runtime" "^7.29.7"
     html-parse-stringify "^4.0.1"
@@ -4113,10 +4113,10 @@ react-transition-group@^4.4.5:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
-react-virtuoso@4.18.19:
-  version "4.18.19"
-  resolved "https://registry.yarnpkg.com/react-virtuoso/-/react-virtuoso-4.18.19.tgz#1cc918ba0179550f0129edd05af0d3855ec6c64b"
-  integrity sha512-dewyZisA5IiQTldh7eHM5KpI+qxi0nKRVYi2iM01XmPkNa5tjvVUKJKAIc6ted1hAK1/NFlXuhXpVYqGHHdcdQ==
+react-virtuoso@4.18.20:
+  version "4.18.20"
+  resolved "https://registry.yarnpkg.com/react-virtuoso/-/react-virtuoso-4.18.20.tgz#115d90706ce1ed73b1ef2a9b545bbdf0663a4b73"
+  integrity sha512-2G/Hdi/QHRtJtzSZOkAwJFdUzBmhNIQCAmw6gLGUZTGbjVL6+TOBIFJOCnpm6xgWGBfrrMiZV5rJNkQ9gEgAdQ==
 
 react@^19.3.1:
   version "19.3.1"
@@ -4586,10 +4586,10 @@ synckit@^0.11.12:
   dependencies:
     "@pkgr/core" "^0.2.9"
 
-systeminformation@^5.33.18:
-  version "5.33.18"
-  resolved "https://registry.yarnpkg.com/systeminformation/-/systeminformation-5.33.18.tgz#cae5983875ba291f6f036cfde86a26b422c5b71c"
-  integrity sha512-SF8DBQx3ypa8zDqZlezpHQ6M2g7TrqSEWpAtC4OsHCdLmi7J2WdxaSbA8/DJyEn2l/CHPrW0VFenoqoDccrw6g==
+systeminformation@^5.33.19:
+  version "5.33.19"
+  resolved "https://registry.yarnpkg.com/systeminformation/-/systeminformation-5.33.19.tgz#b956e75ff6d7bdc6019ca4fc13c78b01f47cc415"
+  integrity sha512-Zm7wGeCG7PqfvzegMJIzrxICopWqYCeLATVmvxOOci1isLcNVKgY4Fr0hhYQzvc7cgtK3377jQVChTFAnznOiA==
 
 tagged-tag@^1.0.0:
   version "1.0.0"
