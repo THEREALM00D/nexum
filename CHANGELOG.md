@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.22.0](https://github.com/THEREALM00D/nexum/compare/v0.21.0...v0.22.0) (2026-11-10)
+
+
+### Features
+
+* export and import Nexum settings and servers to move to another PC ([#227](https://github.com/THEREALM00D/nexum/issues/227)) ([0b38b8c](https://github.com/THEREALM00D/nexum/commit/0b38b8c1c5ac1e06eff559b63187360e415e7dc7))
+
+
+### Bug Fixes
+
+* harden server and settings import after review ([#234](https://github.com/THEREALM00D/nexum/issues/234)) ([8588a28](https://github.com/THEREALM00D/nexum/commit/8588a286aff0745f7255b5884bf2ee0a8f588046))
+* leave no empty folder behind when a Valheim mod install fails ([#236](https://github.com/THEREALM00D/nexum/issues/236)) ([c71c6c7](https://github.com/THEREALM00D/nexum/commit/c71c6c784183563a1e16f2d2e3049bd890417760))
+* move the legacy server-forge data folder to %APPDATA%\Nexum ([#237](https://github.com/THEREALM00D/nexum/issues/237)) ([d3100ef](https://github.com/THEREALM00D/nexum/commit/d3100efe3fefbb6a7b4e18c4493d8a7bb8bf6789))
+
 ## [0.21.0](https://github.com/THEREALM00D/nexum/compare/v0.20.0...v0.21.0) (2026-11-08)
 
 
