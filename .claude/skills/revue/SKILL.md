@@ -10,12 +10,12 @@ Règles de travail (langue, public, PR) : `.claude/CLAUDE.md`. Échanges avec l'
 
 ## 1. Cible
 
-| `$ARGUMENTS`         | Cible                                                                    |
-| -------------------- | ------------------------------------------------------------------------ |
-| vide                 | branche courante vs `origin/main`, modifications non commitées comprises |
-| nombre (`42`, `#42`) | PR GitHub n°42                                                           |
-| nom de branche       | `origin/main...<branche>`                                                |
-| chemin(s)            | ces fichiers / dossiers en entier (audit, pas de diff)                   |
+| `$ARGUMENTS`         | Cible                                                                                  |
+| -------------------- | -------------------------------------------------------------------------------------- |
+| vide                 | branche courante vs `origin/main`, modifications non commitées comprises               |
+| nombre (`42`, `#42`) | PR GitHub n°42                                                                         |
+| nom de branche       | `origin/main...<branche>` ; le disque n'a pas son code : `git show <branche>:<chemin>` |
+| chemin(s)            | ces fichiers / dossiers en entier (audit, pas de diff)                                 |
 
 ```bash
 git fetch origin --quiet
@@ -29,7 +29,7 @@ Diff vide → dis-le et arrête-toi. PR : `gh pr view <N> --repo THEREALM00D/nex
 Dans le **même** message :
 
 - **Agent `nexum-reviewer`** (`Agent`, `subagent_type: "nexum-reviewer"`) avec la cible exacte (commande de diff, ou PR + `refs/review/pr-<N>`), la liste des fichiers touchés et, si connue, l'issue liée. Diff de plus de ~800 lignes qui touche le main **et** le renderer → deux agents, l'un sur `src/main` + `src/shared` + `src/preload`, l'autre sur `src/renderer` ; la doc et la PR vont au premier.
-- **Vérifications** (branche locale ou branche nommée seulement ; pour une PR, la CI les fait : lire `gh pr checks <N>`) :
+- **Vérifications** sur le code du disque, donc seulement quand la cible est la branche courante. PR : la CI les fait, lire `gh pr checks <N>`. Autre branche : pas de vérification (le dire dans le rapport), ou proposer de basculer dessus si l'arbre de travail est propre.
 
 ```bash
 yarn typecheck
