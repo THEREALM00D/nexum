@@ -1,6 +1,6 @@
 # Règles de travail
 
-Doc technique : `CLAUDE.md` racine et les `CLAUDE.md` de chaque dossier. Ce fichier = comment on travaille. Les skills (`/issue`, `/nexum`, `/test-app`, `/new-game`) appliquent ces règles sans les répéter.
+Doc technique : `CLAUDE.md` racine et les `CLAUDE.md` de chaque dossier. Ce fichier = comment on travaille. Les skills (`/issue`, `/nexum`, `/test-app`, `/new-game`, `/revue`) et l'agent `nexum-reviewer` appliquent ces règles sans les répéter.
 
 ## Langue
 
