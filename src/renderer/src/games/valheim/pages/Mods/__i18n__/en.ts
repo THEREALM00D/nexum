@@ -29,6 +29,18 @@ export default {
       close: "Close",
       error: "Couldn't create the profile code: {{error}}",
     },
+    pending: {
+      message:
+        "Server imported from another PC: {{count}} mod to reinstall from its registry.",
+      message_other:
+        "Server imported from another PC: {{count}} mods to reinstall from their registry.",
+      install: "Reinstall",
+      installing: "Installing…",
+      dismiss: "Dismiss",
+      success: "Mods reinstalled: {{count}}",
+      errors:
+        "{{count}} mod(s) couldn't be reinstalled: they stay in the list for another try.",
+    },
     bepinex: {
       warning:
         "BepInEx not detected in the server folder. Most Valheim mods require BepInEx to work.",

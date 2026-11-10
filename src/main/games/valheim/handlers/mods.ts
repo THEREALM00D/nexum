@@ -6,7 +6,12 @@ import type { IpcContext } from "../../../ipc/context";
 import type { ModRegistry } from "../../../../shared/types";
 import { ModRegistryClient } from "../ModRegistryClient";
 import { ValheimModsManager } from "../ValheimModsManager";
-import { REGISTRIES } from "../registries";
+import { installCodes } from "../installCodes";
+import {
+  installPendingMods,
+  readPendingMods,
+  writePendingMods,
+} from "../pendingMods";
 import { shareModpack } from "../modpackExport";
 
 function getManager(ctx: IpcContext, serverId?: string): ValheimModsManager {
@@ -16,44 +21,37 @@ function getManager(ctx: IpcContext, serverId?: string): ValheimModsManager {
   );
 }
 
-// Installe une liste de codes de packages ("Auteur-Nom-Version") en série,
-// en continuant sur erreur — partagé entre l'import de profil par code et
-// par fichier, qui ne diffèrent que dans la résolution initiale des codes.
-// Un profil r2modman/Gale peut mélanger Thunderstore et Hexium dans les mêmes
-// codes (voir resolveProfileCodeViaApi) : on ne sait pas d'où vient chaque
-// mod, donc on essaie chaque registre jusqu'à ce que l'un accepte le code.
-async function installCodes(
+const progressTo = (event: Electron.IpcMainInvokeEvent) => (msg: string) =>
+  event.sender.send("valheim:mods:progress", msg);
+
+// Import de profil : le r2x ne dit pas d'où vient chaque mod.
+const installProfileCodes = (
   manager: ValheimModsManager,
   codes: string[],
   event: Electron.IpcMainInvokeEvent,
-) {
-  const results: Awaited<ReturnType<typeof manager.installMod>>[] = [];
-  const errors: string[] = [];
-  for (const code of codes) {
-    let installed = false;
-    let lastError: unknown;
-    for (const registry of REGISTRIES) {
-      try {
-        const mod = await manager.installMod(registry, code, (msg) =>
-          event.sender.send("valheim:mods:progress", msg),
-        );
-        results.push(mod);
-        installed = true;
-        break;
-      } catch (e) {
-        lastError = e;
-      }
-    }
-    if (!installed) {
-      const message = (lastError as Error)?.message ?? "?";
-      errors.push(`${code}: ${message}`);
-      event.sender.send("valheim:mods:progress", `⚠ ${code} — ${message}`);
-    }
-  }
-  return { installed: results, errors };
-}
+) =>
+  installCodes(
+    manager,
+    codes.map((code) => ({ code })),
+    progressTo(event),
+  );
 
 export function registerValheimModsHandlers(ctx: IpcContext): void {
+  // --- Mods d'un serveur importé depuis un autre PC (pendingMods.ts) ---
+  ipcMain.handle("valheim:mods:getPending", (_, serverId?: string) =>
+    readPendingMods(ctx.getModsDataDir(serverId)),
+  );
+  ipcMain.handle("valheim:mods:installPending", (event, serverId?: string) =>
+    installPendingMods(
+      getManager(ctx, serverId),
+      ctx.getModsDataDir(serverId),
+      progressTo(event),
+    ),
+  );
+  ipcMain.handle("valheim:mods:dismissPending", (_, serverId?: string) =>
+    writePendingMods(ctx.getModsDataDir(serverId), []),
+  );
+
   // --- Parcourir un registre (public, sans clé API) ---
 
   ipcMain.handle("valheim:mods:getTrending", (_, registry: ModRegistry) =>
@@ -145,7 +143,7 @@ export function registerValheimModsHandlers(ctx: IpcContext): void {
     async (event, base64Code: string, serverId?: string) => {
       const manager = getManager(ctx, serverId);
       const codes = await manager.parseThunderstoreProfile(base64Code);
-      return installCodes(manager, codes, event);
+      return installProfileCodes(manager, codes, event);
     },
   );
 
@@ -156,7 +154,7 @@ export function registerValheimModsHandlers(ctx: IpcContext): void {
     async (event, filePath: string, serverId?: string) => {
       const manager = getManager(ctx, serverId);
       const codes = await manager.parseThunderstoreProfileFile(filePath);
-      return installCodes(manager, codes, event);
+      return installProfileCodes(manager, codes, event);
     },
   );
 

@@ -118,6 +118,17 @@ export function useValheimMods() {
     [],
   );
 
+  // Relit BepInEx et les mods installés (réinstallation après un import)
+  const reloadInstalled = useCallback(async () => {
+    window.api.valheim.mods
+      .detectBepInEx()
+      .then(setBepInEx)
+      .catch(() => {});
+    const fresh = await window.api.valheim.mods.list();
+    setInstalledMods(fresh);
+    refreshUpdates(fresh);
+  }, [refreshUpdates]);
+
   // Chargement initial
   useEffect(() => {
     loadBrowse("thunderstore", "trending");
@@ -449,5 +460,6 @@ export function useValheimMods() {
     handleUpdateMod,
     handleInstallAllDeps,
     handleDismissDeps: () => setPendingDeps(null),
+    reloadInstalled,
   };
 }

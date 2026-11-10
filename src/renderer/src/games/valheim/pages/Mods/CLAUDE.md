@@ -9,6 +9,7 @@ Registres, installation, mises à jour, partage et import : `src/main/games/valh
 - **Parcourir** : `ToggleButtonGroup` Thunderstore/Hexium (`ModBrowser.tsx`), deux listes indépendantes. Même sélecteur dans le dialogue « coller un code » (`Mods.tsx`) : `Auteur-Nom-Version` est ambigu entre les deux.
 - **Mettre à jour / Tout mettre à jour** : `hooks/useBackupBeforeUpdate` (une sauvegarde pour la série, voir `src/main/backup/CLAUDE.md`).
 - `ShareModpackButton` : partage du modpack.
+- `PendingModsBanner` (`usePendingMods`) : mods d'un serveur importé d'un autre PC, affiché seulement quand le jeu est installé ; relit la liste via `reloadInstalled` (`useValheimMods`).
 
 ## Onglet Configs
 

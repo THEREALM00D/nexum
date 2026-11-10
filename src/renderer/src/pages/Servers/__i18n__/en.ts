@@ -46,6 +46,33 @@ export default {
         'Delete server "{{name}}"? Game files stay intact, only Nexum configuration is removed.',
       deleteTypeToConfirm: 'Type "{{name}}" to confirm',
     },
+    transfer: {
+      exportMenu: "Export to another PC",
+      exportStopFirst: "Stop the server to export it",
+      importButton: "Import a server",
+      exportTitle: "Export “{{name}}”",
+      exportDescription:
+        "A ZIP file with the server's Nexum settings, its world, the game's configuration files and its mod list (reinstalled on the other PC). The game isn't included: install it on the other PC from the Installation page.",
+      gameFilesWarning:
+        "The game's configuration files are copied as they are, with any passwords they contain (Palworld admin password, Enshrouded group passwords…).",
+      importTitle: "Import a server",
+      name: "Name",
+      contents: "File contents ({{game}})",
+      world: "Server world",
+      noWorld: "No world",
+      configFiles: "{{count}} game configuration file",
+      configFiles_other: "{{count}} game configuration files",
+      mods: "{{count}} mod to reinstall",
+      mods_other: "{{count}} mods to reinstall",
+      replaceWorld: "Replace the world already there",
+      replaceWorldHelper:
+        "Files with the same name already exist in the worlds folder. Unchecked, the imported world isn't copied.",
+      done: "Server “{{name}}” imported.",
+      worldSkipped:
+        "The world wasn't copied: one with the same name already exists.",
+      modsPending:
+        "Install the game, then reinstall the mods from the Mods page.",
+    },
     dialog: {
       autoStart: "Start automatically when Nexum opens",
       autoStartHelper:

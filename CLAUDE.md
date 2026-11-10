@@ -20,6 +20,7 @@ Ce fichier ne contient que ce qui vaut partout. Le détail d'un domaine est dans
 | Redémarrage planifié                                                           | `src/main/scheduler/CLAUDE.md`                        |
 | Zone de notification, garde de fermeture, instance unique, lancer avec Windows | `src/main/tray/CLAUDE.md`                             |
 | Pare-feu et droits admin                                                       | `src/main/firewall/CLAUDE.md`                         |
+| Changer de PC : export / import des réglages et d'un serveur                   | `src/main/transfer/CLAUDE.md`                         |
 | Monitoring CPU/RAM (coût de `systeminformation`)                               | `src/main/monitor/CLAUDE.md`                          |
 | Historique des joueurs                                                         | `src/main/players/CLAUDE.md`                          |
 | Mise à jour in-app (electron-updater, bêtas)                                   | `src/main/update/CLAUDE.md`                           |

@@ -10,11 +10,11 @@
 
 ## Paramètres (`Settings/`)
 
-Démarrage (`LaunchAtLoginSwitch`, `CloseToTraySwitch`), Langue (`components/common/LanguageToggle`, seul endroit où la changer), Mises à jour (`UpdateIndicator`, `BetaUpdatesSwitch`), Aide et à propos (Discord, docs, bug, confidentialité). Règle : réglage **de l'app** → Paramètres ; réglage **d'un serveur** → `ServerDialog` ou les pages du jeu.
+Démarrage (`LaunchAtLoginSwitch`, `CloseToTraySwitch`), Langue (`components/common/LanguageToggle`, seul endroit où la changer), Mises à jour (`UpdateIndicator`, `BetaUpdatesSwitch`), Changer de PC (`TransferSection` : export / import des réglages, `ImportSettingsDialog`), Aide et à propos (Discord, docs, bug, confidentialité). Après un import, les interrupteurs sont remontés (`key={revision}`) pour relire les réglages importés. Règle : réglage **de l'app** → Paramètres ; réglage **d'un serveur** → `ServerDialog` ou les pages du jeu.
 
 ## Serveurs (`Servers/`)
 
-`ServerDialog` : création, import d'un dossier existant (voir `src/main/servers/CLAUDE.md`), cases `autoStart` / `autoRestart` (`components/common/CheckboxField`). `ServersTable` : `TableContainer`, chemin tronqué avec `Tooltip`. `ServerRow` : le clic sur la ligne active le serveur ; le nom est un `ButtonBase` sans `onClick` pour l'accès clavier (son clic remonte à la ligne). ⚠️ La cellule d'actions arrête la propagation, sinon chaque action activerait aussi le serveur, y compris depuis le `Menu` : un portail React remonte ses clics à ses parents. Supprimer reste dans le menu « ⋯ », loin d'Arrêter. Libellés des jeux : `servers.games.<jeu>` dans `Servers/__i18n__`.
+`ServerDialog` : création, import d'un dossier existant (voir `src/main/servers/CLAUDE.md`), cases `autoStart` / `autoRestart` (`components/common/CheckboxField`). `ServersTable` : `TableContainer`, chemin tronqué avec `Tooltip`. `ServerRow` : le clic sur la ligne active le serveur ; le nom est un `ButtonBase` sans `onClick` pour l'accès clavier (son clic remonte à la ligne). ⚠️ La cellule d'actions arrête la propagation, sinon chaque action activerait aussi le serveur, y compris depuis le `Menu` : un portail React remonte ses clics à ses parents. Supprimer reste dans le menu « ⋯ », loin d'Arrêter. « Exporter pour un autre PC » (menu « ⋯ », serveur arrêté) et « Importer un serveur » (en-tête) : `useServerTransfer`, `ImportServerDialog` ; champs de dossiers partagés avec l'import des réglages dans `components/transfer/` (`ServerPathsFields` : un champ n'apparaît que s'il était rempli sur l'ancien PC, pour rester sans nom de jeu). Libellés des jeux : `servers.games.<jeu>` dans `Servers/__i18n__`.
 
 ## Installation (`Install/`)
 

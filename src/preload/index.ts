@@ -9,6 +9,9 @@ import type {
   AutoRestartGaveUpNotice,
   ModRegistry,
   RestartConfig,
+  ServerArchiveImportChoice,
+  SettingsImportChoice,
+  TransferServerPaths,
 } from "../shared/types";
 
 const api = {
@@ -291,6 +294,13 @@ const api = {
         ipcRenderer.invoke("valheim:mods:installBepInEx", serverId),
       installMod: (registry: ModRegistry, code: string, serverId?: string) =>
         ipcRenderer.invoke("valheim:mods:installMod", registry, code, serverId),
+      // Mods d'un serveur importé depuis un autre PC
+      getPending: (serverId?: string) =>
+        ipcRenderer.invoke("valheim:mods:getPending", serverId),
+      installPending: (serverId?: string) =>
+        ipcRenderer.invoke("valheim:mods:installPending", serverId),
+      dismissPending: (serverId?: string) =>
+        ipcRenderer.invoke("valheim:mods:dismissPending", serverId),
       shareModpack: (serverId?: string) =>
         ipcRenderer.invoke("valheim:mods:shareModpack", serverId),
       importProfile: (base64Code: string, serverId?: string) =>
@@ -394,6 +404,25 @@ const api = {
     read: () => ipcRenderer.invoke("enshroudedconfig:read"),
     write: (settings: Record<string, unknown>) =>
       ipcRenderer.invoke("enshroudedconfig:write", settings),
+  },
+  // Changer de PC : export / import des réglages et d'un serveur
+  transfer: {
+    exportSettings: (includePasswords: boolean) =>
+      ipcRenderer.invoke("transfer:exportSettings", includePasswords),
+    previewSettings: (filePath: string) =>
+      ipcRenderer.invoke("transfer:previewSettings", filePath),
+    importSettings: (choice: SettingsImportChoice) =>
+      ipcRenderer.invoke("transfer:importSettings", choice),
+    exportServer: (serverId: string, includePasswords: boolean) =>
+      ipcRenderer.invoke("transfer:exportServer", serverId, includePasswords),
+    previewServer: (zipPath: string) =>
+      ipcRenderer.invoke("transfer:previewServer", zipPath),
+    serverWorldConflict: (token: string, paths: TransferServerPaths) =>
+      ipcRenderer.invoke("transfer:serverWorldConflict", token, paths),
+    importServer: (choice: ServerArchiveImportChoice) =>
+      ipcRenderer.invoke("transfer:importServer", choice),
+    cancelServerImport: (token: string) =>
+      ipcRenderer.invoke("transfer:cancelServerImport", token),
   },
   // App
   app: {

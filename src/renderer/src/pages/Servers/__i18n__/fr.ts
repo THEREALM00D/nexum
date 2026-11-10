@@ -47,6 +47,33 @@ export default {
         "Supprimer le serveur « {{name}} » ? Les fichiers du jeu restent intacts, seules les configurations Nexum sont effacées.",
       deleteTypeToConfirm: "Tapez « {{name}} » pour confirmer",
     },
+    transfer: {
+      exportMenu: "Exporter pour un autre PC",
+      exportStopFirst: "Arrêtez le serveur pour l'exporter",
+      importButton: "Importer un serveur",
+      exportTitle: "Exporter « {{name}} »",
+      exportDescription:
+        "Un fichier ZIP avec les réglages Nexum du serveur, son monde, les fichiers de configuration du jeu et la liste de ses mods (réinstallés sur l'autre PC). Le jeu n'y est pas : installez-le sur l'autre PC depuis la page Installation.",
+      gameFilesWarning:
+        "Les fichiers de configuration du jeu sont copiés tels quels, avec les mots de passe qu'ils contiennent (mot de passe admin Palworld, mots de passe des groupes Enshrouded…).",
+      importTitle: "Importer un serveur",
+      name: "Nom",
+      contents: "Contenu du fichier ({{game}})",
+      world: "Monde du serveur",
+      noWorld: "Aucun monde",
+      configFiles: "{{count}} fichier de configuration du jeu",
+      configFiles_other: "{{count}} fichiers de configuration du jeu",
+      mods: "{{count}} mod à réinstaller",
+      mods_other: "{{count}} mods à réinstaller",
+      replaceWorld: "Remplacer le monde déjà présent",
+      replaceWorldHelper:
+        "Des fichiers du même nom existent déjà dans le dossier des mondes. Décoché, le monde importé n'est pas copié.",
+      done: "Serveur « {{name}} » importé.",
+      worldSkipped:
+        "Le monde n'a pas été copié : il en existait déjà un du même nom.",
+      modsPending:
+        "Installez le jeu, puis réinstallez les mods depuis la page Mods.",
+    },
     dialog: {
       autoStart: "Démarrer automatiquement à l'ouverture de Nexum",
       autoStartHelper:

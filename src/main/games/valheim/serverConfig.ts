@@ -12,13 +12,17 @@ export const valheimServerConfig = {
   // Steam), le serveur s'arrête quelques secondes après le démarrage.
   env: { SteamAppId: "892970" } as Record<string, string>,
 
-  // Valheim stocke ses mondes hors de `serverPath` : dossier custom (savedir)
-  // ou %LOCALAPPDATA_LOW%/IronGate/Valheim/worlds_local par défaut.
+  // Dossier des données Valheim (mondes, listes admin/bannis/autorisés) :
+  // dossier custom (savedir) ou %LOCALAPPDATA_LOW%/IronGate/Valheim.
+  getDataDir(savedir: string): string {
+    return (
+      savedir || join(homedir(), "AppData", "LocalLow", "IronGate", "Valheim")
+    );
+  },
+
+  // Valheim stocke ses mondes hors de `serverPath`.
   getSavePath(cfg: ValheimLaunchConfig): string {
-    const base =
-      cfg.savedir ||
-      join(homedir(), "AppData", "LocalLow", "IronGate", "Valheim");
-    return join(base, "worlds_local");
+    return join(valheimServerConfig.getDataDir(cfg.savedir), "worlds_local");
   },
 
   buildArgs(cfg: ValheimLaunchConfig): string[] {
