@@ -63,7 +63,7 @@ node .claude/scripts/project-status.mjs $ARGUMENTS "In dev"
 
 ## 7. Développer
 
-Conventions : `CLAUDE.md` racine + `src/renderer/src/CLAUDE.md` (UI) + `CLAUDE.md` du domaine. Les pièges les plus fréquents : string hors `t()`, erreur affichée sans `errorMessage` / `appErrorMessage`, phrase en dur dans le main au lieu d'un code `AppError` ou de `logStrings`, import statique d'une dépendance ESM dans le main, texte « Chargement... » au lieu d'un skeleton, import depuis un autre jeu, fichier > 200 lignes.
+Conventions : `CLAUDE.md` racine + `src/renderer/src/CLAUDE.md` (UI) + `CLAUDE.md` du domaine. Les pièges les plus fréquents : string hors `t()`, erreur affichée sans `errorMessage` / `appErrorMessage`, phrase en dur dans le main au lieu d'un code `AppError` ou de `logStrings`, import statique d'une dépendance ESM dans le main, texte « Chargement... » au lieu d'un skeleton, import depuis un autre jeu, fichier > 200 lignes, nom d'une lettre ou abrégé (`(m) => m.code`, `catch (e)`, `cfg` : voir « Noms lisibles » de `.claude/CLAUDE.md`).
 
 Si le plan ne tient plus (portée, nouvelle décision), arrête-toi et demande avant de dévier. Un autre sujet découvert en route → propose une issue séparée, ne l'ajoute pas ici.
 
