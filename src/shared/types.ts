@@ -349,6 +349,7 @@ export type AppErrorCode =
   // Mods Valheim
   | "MOD_NOT_FOUND"
   | "MOD_CODE_INVALID"
+  | "MOD_FILES_IN_USE"
   | "BEPINEX_VERSION_UNAVAILABLE"
   | "BEPINEX_ZIP_INVALID"
   | "PROFILE_NO_R2X"

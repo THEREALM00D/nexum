@@ -21,6 +21,7 @@ import type {
   ValheimModConfigFile,
 } from "../../../shared/types";
 import { ModRegistryClient } from "./ModRegistryClient";
+import { extractModArchive } from "./extractModArchive";
 import { REGISTRIES, REGISTRY_API_BASE, USER_AGENT } from "./registries";
 import { backupBeforeWrite } from "../../utils/ini";
 import { AppError, networkError } from "../../utils/appError";
@@ -405,14 +406,14 @@ export class ValheimModsManager {
     onProgress(`Téléchargement de ${namespace}-${name} v${version}…`);
     await this.downloadFile(downloadUrl, tempZip, onProgress);
 
-    const targetPath = join(this.pluginsPath, installDir);
-    if (existsSync(targetPath))
-      rmSync(targetPath, { recursive: true, force: true });
-    mkdirSync(targetPath, { recursive: true });
-
     onProgress("Extraction…");
     try {
-      await extractZip(tempZip, { dir: targetPath });
+      await extractModArchive(
+        tempZip,
+        join(this.pluginsPath, installDir),
+        this.dataDir,
+        join(this.serverPath, "BepInEx"),
+      );
     } finally {
       try {
         unlinkSync(tempZip);
@@ -704,6 +705,25 @@ export class ValheimModsManager {
           this.downloadFile(res.headers.location, dest, onProgress)
             .then(resolve)
             .catch(reject);
+          return;
+        }
+        // ⚠️ Sans ce test, la page d'erreur (404 HTML d'un code inexistant)
+        // était enregistrée comme ZIP et l'échec n'arrivait qu'à l'extraction
+        if (res.statusCode && res.statusCode >= 400) {
+          res.resume();
+          file.close(() => {
+            try {
+              unlinkSync(dest);
+            } catch {
+              /* ignore */
+            }
+          });
+          reject(
+            new AppError("HTTP_ERROR", {
+              host: new URL(url).host,
+              status: res.statusCode,
+            }),
+          );
           return;
         }
 
