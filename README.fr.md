@@ -88,6 +88,7 @@ Voir [docs/installation.fr.md](docs/installation.fr.md) pour le guide complet.
 - [Mods Valheim](docs/valheim-mods.fr.md)
 - [RuneScape: Dragonwilds](docs/dragonwilds.fr.md)
 - [Enshrouded](docs/enshrouded.fr.md)
+- [Changer de PC](docs/moving.fr.md)
 - [Politique de signature et confidentialité](docs/code-signing.fr.md)
 - [Architecture technique](CLAUDE.md)
 

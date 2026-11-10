@@ -35,6 +35,30 @@ export default {
         off: "Only stable versions will be offered to you",
       },
     },
+    transfer: {
+      title: "Move to another PC",
+      description:
+        "Take your servers and their Nexum settings to another PC. To also take a server's world and game configuration: Servers page, the server's “⋯” menu.",
+      exportButton: "Export settings",
+      importButton: "Import settings",
+      exportDescription:
+        "A file with your servers and their Nexum settings (launch, backups, scheduled restart, auto-start and auto-restart), the app settings and your custom firewall rules. Without the game files, worlds or backups.",
+      servers: "Servers",
+      serversHelper:
+        "Each server is added to the list, never in place of an existing one. Check its folders on this PC.",
+      noServers: "No server in this file.",
+      appSettings: "App settings",
+      appSettingsHelper:
+        "Language, notification area, beta versions, launch at Windows startup.",
+      firewall: "Custom firewall rules ({{count}})",
+      firewallHelper: "Added to the list on the Network page.",
+      applyFirewall: "Also create them in the Windows firewall",
+      applyFirewallHelper: "Windows will ask for permission, once.",
+      done: "Import complete: {{count}} server added.",
+      done_other: "Import complete: {{count}} servers added.",
+      firewallFailed:
+        "The firewall rules weren't created in Windows ({{error}}). Create them from the Network page.",
+    },
     help: {
       title: "Help & about",
       docs: "Documentation",

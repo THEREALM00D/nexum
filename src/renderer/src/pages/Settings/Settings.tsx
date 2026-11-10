@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import BugReportIcon from "@mui/icons-material/BugReport";
@@ -13,6 +14,7 @@ import SettingsSection from "./components/SettingsSection";
 import LaunchAtLoginSwitch from "./components/LaunchAtLoginSwitch";
 import CloseToTraySwitch from "./components/CloseToTraySwitch";
 import BetaUpdatesSwitch from "./components/BetaUpdatesSwitch";
+import TransferSection from "./components/TransferSection";
 import FormPage from "../../components/common/FormPage";
 import PageHeader from "../../components/common/PageHeader";
 
@@ -24,6 +26,8 @@ const open = (url: string) => window.api.shell.openExternal(url);
 export default function Settings() {
   const { t, i18n } = useTranslation();
   const docsSuffix = i18n.resolvedLanguage === "en" ? "" : ".fr";
+  // Après un import des réglages : les interrupteurs relisent leur état
+  const [revision, setRevision] = useState(0);
 
   return (
     <FormPage>
@@ -36,8 +40,8 @@ export default function Settings() {
         title={t("settings.startup.title")}
         description={t("settings.startup.description")}
       >
-        <LaunchAtLoginSwitch />
-        <CloseToTraySwitch />
+        <LaunchAtLoginSwitch key={`login-${revision}`} />
+        <CloseToTraySwitch key={`tray-${revision}`} />
       </SettingsSection>
 
       <SettingsSection title={t("settings.language.title")}>
@@ -48,8 +52,10 @@ export default function Settings() {
 
       <SettingsSection title={t("settings.updates.title")}>
         <UpdateIndicator />
-        <BetaUpdatesSwitch />
+        <BetaUpdatesSwitch key={`beta-${revision}`} />
       </SettingsSection>
+
+      <TransferSection onImported={() => setRevision((r) => r + 1)} />
 
       <SettingsSection title={t("settings.help.title")}>
         <Stack direction="row" sx={{ flexWrap: "wrap", gap: 1 }}>

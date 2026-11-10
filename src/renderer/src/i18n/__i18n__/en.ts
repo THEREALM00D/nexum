@@ -112,6 +112,12 @@ export default {
       "Every group needs a name, and two groups can't share the same one.",
     ENSHROUDED_SLOTS_INVALID:
       "Invalid number of slots: between 1 and {{max}} players, and the groups' reserved slots can't add up to more than that.",
+    TRANSFER_FILE_INVALID:
+      "This file isn't a valid Nexum export, or it has been edited.",
+    TRANSFER_FILE_TOO_NEW:
+      "This file comes from a newer version of Nexum: update Nexum to import it.",
+    STOP_BEFORE_EXPORT:
+      "Stop the server before exporting it: its world must not change during the copy.",
   },
   gameRequirements: {
     hint: "{{game}} needs a solid PC: about {{ram}} GB of RAM for the server alone and {{disk}} GB of free disk space.",

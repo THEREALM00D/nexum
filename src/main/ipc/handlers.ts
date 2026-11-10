@@ -35,6 +35,7 @@ import { registerFirewallHandlers } from "./handlers/firewall";
 import { registerBackupHandlers } from "./handlers/backup";
 import { registerScheduleHandlers } from "./handlers/schedule";
 import { registerServersHandlers } from "./handlers/servers";
+import { registerTransferHandlers } from "./handlers/transfer";
 import { registerAutoUpdater } from "../update/AutoUpdater";
 import { confirmAndStopServers } from "../server/quitGuard";
 import { registerPalapiHandlers } from "../games/palworld/handlers/palapi";
@@ -393,6 +394,7 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
   registerScheduleHandlers(ctx);
   registerPlayersHandlers(ctx);
   registerServersHandlers(ctx, servers);
+  registerTransferHandlers(ctx);
   registerValheimHandlers(ctx);
   registerValheimModsHandlers(ctx);
   registerAstroneerHandlers(ctx);

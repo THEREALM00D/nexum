@@ -1,6 +1,5 @@
 import { ipcMain } from "electron/main";
 import { join } from "path";
-import { homedir } from "os";
 import {
   existsSync,
   mkdirSync,
@@ -12,17 +11,14 @@ import {
 import { shell } from "electron";
 import type { IpcContext } from "../../../ipc/context";
 import { OdinEyeApiClient } from "../OdinEyeApiClient";
+import { valheimServerConfig } from "../serverConfig";
 import type {
   ValheimLaunchConfig,
   ValheimWorldInfo,
 } from "../../../../shared/types";
 
-// Retourne le dossier de base des données Valheim (custom savedir ou LocalAppData\Low\IronGate\Valheim).
-function getValheimDataDir(savedir: string): string {
-  return (
-    savedir || join(homedir(), "AppData", "LocalLow", "IronGate", "Valheim")
-  );
-}
+const getValheimDataDir = (savedir: string): string =>
+  valheimServerConfig.getDataDir(savedir);
 
 function readList(filePath: string): string[] {
   if (!existsSync(filePath)) return [];

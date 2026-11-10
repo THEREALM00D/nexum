@@ -35,6 +35,31 @@ export default {
         off: "Seules les versions stables vous seront proposées",
       },
     },
+    transfer: {
+      title: "Changer de PC",
+      description:
+        "Emportez vos serveurs et leurs réglages Nexum sur un autre PC. Pour emporter aussi le monde et la configuration du jeu d'un serveur : page Serveurs, menu « ⋯ » du serveur.",
+      exportButton: "Exporter les réglages",
+      importButton: "Importer des réglages",
+      exportDescription:
+        "Un fichier avec vos serveurs et leurs réglages Nexum (lancement, sauvegardes, redémarrage planifié, démarrage et relance automatiques), les réglages de l'app et vos règles de pare-feu perso. Sans les fichiers du jeu, les mondes ni les sauvegardes.",
+      servers: "Serveurs",
+      serversHelper:
+        "Chaque serveur est ajouté à la liste, jamais à la place d'un serveur existant. Vérifiez ses dossiers sur ce PC.",
+      noServers: "Aucun serveur dans ce fichier.",
+      appSettings: "Réglages de l'app",
+      appSettingsHelper:
+        "Langue, zone de notification, versions bêta, lancement au démarrage de Windows.",
+      firewall: "Règles de pare-feu perso ({{count}})",
+      firewallHelper: "Ajoutées à la liste de la page Réseau.",
+      applyFirewall: "Les créer aussi dans le pare-feu de Windows",
+      applyFirewallHelper:
+        "Windows demandera une autorisation, une seule fois.",
+      done: "Import terminé : {{count}} serveur ajouté.",
+      done_other: "Import terminé : {{count}} serveurs ajoutés.",
+      firewallFailed:
+        "Les règles de pare-feu n'ont pas été créées dans Windows ({{error}}). Créez-les depuis la page Réseau.",
+    },
     help: {
       title: "Aide et à propos",
       docs: "Documentation",

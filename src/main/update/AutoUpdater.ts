@@ -153,15 +153,25 @@ export function registerAutoUpdater(
   ipcMain.handle("update:getBetaUpdates", () =>
     store.get("betaUpdates", false),
   );
-  // Revérifie tout de suite : la bêta (ou le retour au canal stable) est
-  // visible sans attendre le prochain lancement. Une bêta déjà installée
-  // reste en place jusqu'à la stable suivante (pas de retour en arrière).
-  ipcMain.handle("update:setBetaUpdates", (_, enabled: boolean) => {
-    store.set("betaUpdates", enabled);
-    autoUpdater.allowPrerelease = enabled;
-    if (!pendingCheck && current.state !== "downloading") checkNow();
-    return enabled;
-  });
+  ipcMain.handle("update:setBetaUpdates", (_, enabled: boolean) =>
+    setBetaUpdates(store, enabled),
+  );
+}
+
+/**
+ * Canal bêta (Paramètres et import des réglages). Revérifie tout de suite :
+ * la bêta (ou le retour au canal stable) est visible sans attendre le
+ * prochain lancement. Une bêta déjà installée reste en place jusqu'à la
+ * stable suivante (pas de retour en arrière).
+ */
+export function setBetaUpdates(
+  store: Store<AppStore>,
+  enabled: boolean,
+): boolean {
+  store.set("betaUpdates", enabled);
+  autoUpdater.allowPrerelease = enabled;
+  if (!pendingCheck && current.state !== "downloading") checkNow();
+  return enabled;
 }
 
 export function checkForUpdateOnStartup(): void {

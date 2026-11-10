@@ -379,7 +379,11 @@ export type AppErrorCode =
   | "ODIN_EYE_NO_ENDPOINT"
   | "ENSHROUDED_CONFIG_INVALID"
   | "ENSHROUDED_GROUP_INVALID"
-  | "ENSHROUDED_SLOTS_INVALID";
+  | "ENSHROUDED_SLOTS_INVALID"
+  // Changer de PC
+  | "TRANSFER_FILE_INVALID"
+  | "TRANSFER_FILE_TOO_NEW"
+  | "STOP_BEFORE_EXPORT";
 
 // --- RuneScape: Dragonwilds ---
 // Ports passés en arguments (-Port / -BeaconPort), le reste vit dans
@@ -559,4 +563,92 @@ export interface PlayerHistoryEntry {
   online: boolean;
   currentSessionStart: number | null;
   sessions: PlayerSession[];
+}
+
+// --- Changer de PC : export / import (issue #172, src/main/transfer/) ---
+export interface TransferAppSettings {
+  language?: "fr" | "en";
+  closeToTray?: boolean;
+  betaUpdates?: boolean;
+  launchAtLogin?: boolean;
+}
+
+/** Dossiers d'un serveur, à confirmer sur le nouveau PC ("" = défaut). */
+export interface TransferServerPaths {
+  path: string;
+  backupDir: string;
+  /** Valheim seulement. */
+  savedir: string;
+  /** Valheim seulement. */
+  logFile: string;
+}
+
+export interface SettingsImportServer {
+  /** Position dans le fichier : identifie le serveur dans `SettingsImportChoice`. */
+  index: number;
+  name: string;
+  gameType: GameType;
+  paths: TransferServerPaths;
+}
+
+export interface SettingsImportPreview {
+  filePath: string;
+  exportedAt: number;
+  includesPasswords: boolean;
+  app: TransferAppSettings;
+  customFirewallRules: FirewallNamedRule[];
+  servers: SettingsImportServer[];
+}
+
+export interface SettingsImportChoice {
+  filePath: string;
+  /** Serveurs cochés seulement, avec leurs dossiers confirmés. */
+  servers: { index: number; paths: TransferServerPaths }[];
+  applyAppSettings: boolean;
+  importFirewallRules: boolean;
+  /** Crée aussi les règles dans le pare-feu de Windows (une invite UAC). */
+  applyFirewallRules: boolean;
+}
+
+export interface SettingsImportResult {
+  serverIds: string[];
+  /** Réglages appliqués (le renderer change sa langue), null si non cochés. */
+  app: TransferAppSettings | null;
+  /** Code FW_ERROR si l'application dans le pare-feu a échoué. */
+  firewallError?: string;
+}
+
+export interface ServerArchivePreview {
+  /** Dossier d'extraction temporaire, à passer à l'import ou à l'annulation. */
+  token: string;
+  name: string;
+  gameType: GameType;
+  exportedAt: number;
+  includesPasswords: boolean;
+  hasWorld: boolean;
+  configFiles: number;
+  mods: number;
+  /** Dossiers sur le PC d'origine. */
+  paths: TransferServerPaths;
+}
+
+export interface ServerArchiveImportChoice {
+  token: string;
+  name: string;
+  paths: TransferServerPaths;
+  /** Écrase les fichiers du monde déjà présents dans le dossier cible. */
+  replaceWorld: boolean;
+}
+
+export interface ServerArchiveImportResult {
+  serverId: string;
+  world: "copied" | "skipped" | "none";
+  pendingMods: number;
+}
+
+/** Mod Valheim à réinstaller après l'import d'un serveur. */
+export interface PendingMod {
+  code: string;
+  registry: ModRegistry;
+  enabled: boolean;
 }

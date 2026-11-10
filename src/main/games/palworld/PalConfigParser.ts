@@ -32,7 +32,8 @@ const INTEGER_FIELDS = new Set([
   "AdditionalDropItemNumWhenPlayerKillingInPvPMode",
 ]);
 
-const CONFIG_REL_PATH = "Pal/Saved/Config/WindowsServer/PalWorldSettings.ini";
+export const CONFIG_REL_PATH =
+  "Pal/Saved/Config/WindowsServer/PalWorldSettings.ini";
 
 /**
  * Default values sourced from https://docs.palworldgame.com/settings-and-operation/configuration/

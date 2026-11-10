@@ -51,7 +51,11 @@ function getRuleName(
 // cmd.exe (pas de " & | < > ^ % …) — sinon injection de commande élevée.
 const SAFE_NAME = /^[\p{L}\p{N} _().:-]{1,80}$/u;
 
-function isValidRule(name: string, port?: number, protocol?: string): boolean {
+export function isValidRule(
+  name: string,
+  port?: number,
+  protocol?: string,
+): boolean {
   if (!SAFE_NAME.test(name)) return false;
   if (
     port !== undefined &&
@@ -312,5 +316,38 @@ export class FirewallManager {
         active: await this.ruleExists(r.name),
       })),
     );
+  }
+
+  /** Règles perso enregistrées, sans interroger netsh (export des réglages). */
+  async getCustomRules(): Promise<FirewallNamedRule[]> {
+    const store = await this.getStore();
+    return store.get("customRules").map(({ name, port, protocol }) => ({
+      name,
+      port,
+      protocol,
+    }));
+  }
+
+  /**
+   * Ajoute des règles perso à la liste (import des réglages), sans toucher au
+   * pare-feu de Windows. Règle invalide (fichier modifié à la main) ou déjà
+   * présente (même nom et protocole) pas dupliquée. Renvoie les règles
+   * valides du lot, ajoutées ou déjà présentes (à appliquer si demandé).
+   */
+  async addCustomRules(
+    rules: FirewallNamedRule[],
+  ): Promise<FirewallNamedRule[]> {
+    const same = (a: FirewallNamedRule) => (b: FirewallNamedRule) =>
+      a.name === b.name && a.protocol === b.protocol;
+    const valid = rules.filter(
+      (r, i) =>
+        isValidRule(r.name, r.port, r.protocol) &&
+        rules.findIndex(same(r)) === i,
+    );
+    const store = await this.getStore();
+    const existing = store.get("customRules");
+    const added = valid.filter((r) => !existing.some(same(r)));
+    if (added.length > 0) store.set("customRules", [...existing, ...added]);
+    return valid;
   }
 }

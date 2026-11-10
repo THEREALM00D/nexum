@@ -39,6 +39,14 @@ import type {
   ServerLogEvent,
   JoinInfo,
   LogSession,
+  PendingMod,
+  ServerArchiveImportChoice,
+  ServerArchiveImportResult,
+  ServerArchivePreview,
+  SettingsImportChoice,
+  SettingsImportPreview,
+  SettingsImportResult,
+  TransferServerPaths,
 } from "../shared/types";
 
 interface API {
@@ -285,6 +293,12 @@ interface API {
         code: string,
         serverId?: string,
       ) => Promise<ValheimMod>;
+      /** Mods d'un serveur importé depuis un autre PC, à réinstaller. */
+      getPending: (serverId?: string) => Promise<PendingMod[]>;
+      installPending: (
+        serverId?: string,
+      ) => Promise<{ installed: ValheimMod[]; errors: string[] }>;
+      dismissPending: (serverId?: string) => Promise<void>;
       /** Crée un code de profil r2modman/Gale avec les mods actifs du serveur. */
       shareModpack: (serverId?: string) => Promise<ModpackShare>;
       importProfile: (
@@ -371,6 +385,27 @@ interface API {
     write: (
       settings: EnshroudedSettings,
     ) => Promise<{ success: boolean; error?: string }>;
+  };
+  /** Changer de PC. Les exports renvoient le chemin écrit, null si annulé. */
+  transfer: {
+    exportSettings: (includePasswords: boolean) => Promise<string | null>;
+    previewSettings: (filePath: string) => Promise<SettingsImportPreview>;
+    importSettings: (
+      choice: SettingsImportChoice,
+    ) => Promise<SettingsImportResult>;
+    exportServer: (
+      serverId: string,
+      includePasswords: boolean,
+    ) => Promise<string | null>;
+    previewServer: (zipPath: string) => Promise<ServerArchivePreview>;
+    serverWorldConflict: (
+      token: string,
+      paths: TransferServerPaths,
+    ) => Promise<boolean>;
+    importServer: (
+      choice: ServerArchiveImportChoice,
+    ) => Promise<ServerArchiveImportResult>;
+    cancelServerImport: (token: string) => Promise<void>;
   };
   app: {
     getVersion: () => Promise<string>;

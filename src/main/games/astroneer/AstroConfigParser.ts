@@ -4,8 +4,8 @@ import type { AstroneerSettings } from "../../../shared/types";
 import { parseIniValue, backupBeforeWrite } from "../../utils/ini";
 import { patchIniSection } from "../../utils/iniText";
 
-const ENGINE_REL_PATH = "Astro/Saved/Config/WindowsServer/Engine.ini";
-const SETTINGS_REL_PATH =
+export const ENGINE_REL_PATH = "Astro/Saved/Config/WindowsServer/Engine.ini";
+export const SETTINGS_REL_PATH =
   "Astro/Saved/Config/WindowsServer/AstroServerSettings.ini";
 
 const ENGINE_SECTION = "URL";

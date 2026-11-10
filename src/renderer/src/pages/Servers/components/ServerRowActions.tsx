@@ -15,6 +15,7 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import EditIcon from "@mui/icons-material/Edit";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import DeleteIcon from "@mui/icons-material/Delete";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
 import { useTranslation } from "react-i18next";
 import type { Server, ServerStatus } from "@shared/types";
 
@@ -23,6 +24,7 @@ export interface ServerActionHandlers {
   onStop: (server: Server) => void;
   onRestart: (server: Server) => void;
   onEdit: (server: Server) => void;
+  onExport: (server: Server) => void;
   onDelete: (server: Server) => void;
 }
 
@@ -37,6 +39,7 @@ export default function ServerRowActions({
   onStop,
   onRestart,
   onEdit,
+  onExport,
   onDelete,
 }: ServerActionHandlers & { server: Server; status: ServerStatus }) {
   const { t } = useTranslation();
@@ -110,6 +113,21 @@ export default function ServerRowActions({
             <FolderOpenIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText primary={t("servers.actions.openFolder")} />
+        </MenuItem>
+        {/* Monde copié serveur arrêté seulement (refusé par le main sinon) */}
+        <MenuItem
+          disabled={!isDown}
+          onClick={closeThen(() => onExport(server))}
+        >
+          <ListItemIcon>
+            <FileUploadIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText
+            primary={t("servers.transfer.exportMenu")}
+            secondary={
+              isDown ? undefined : t("servers.transfer.exportStopFirst")
+            }
+          />
         </MenuItem>
         <Divider />
         <MenuItem

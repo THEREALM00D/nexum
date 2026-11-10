@@ -26,7 +26,7 @@ Noter les résultats : ils deviennent le `CLAUDE.md` du jeu. Si quelque chose ne
 
 ## 2. Types partagés
 
-`src/shared/types.ts` : le jeu dans `GameType`, sa config de lancement dans `ServerConfig` (+ types qui traversent l'IPC, codes `AppErrorCode`). Puis **`yarn typecheck`** : il liste tous les `Record<GameType, …>` à compléter (`GAME_SERVER_CONFIGS` et les dispatchs de `src/main/games/registry.ts`, `SAVE_REQUESTS`, `STEAM_APP_IDS`, `PROCESS_NAME_PREFIXES`, `DEFAULT_INSTALL_PATHS`…).
+`src/shared/types.ts` : le jeu dans `GameType`, sa config de lancement dans `ServerConfig` (+ types qui traversent l'IPC, codes `AppErrorCode`). Puis **`yarn typecheck`** : il liste tous les `Record<GameType, …>` à compléter (`GAME_SERVER_CONFIGS` et les dispatchs de `src/main/games/registry.ts`, `SAVE_REQUESTS`, `GAME_TRANSFERS` (fichiers de config qui suivent « déplacer un serveur »), `STEAM_APP_IDS`, `PROCESS_NAME_PREFIXES`, `DEFAULT_INSTALL_PATHS`…).
 
 ## 3. Main
 
