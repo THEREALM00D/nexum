@@ -27,6 +27,7 @@ Doc technique : `CLAUDE.md` racine et les `CLAUDE.md` de chaque dossier. Ce fich
 
 - Pages = affichage, composants et hooks = logique. Fichiers < 200 lignes.
 - Pas de duplication : chercher le composant, hook ou helper existant avant d'en écrire un ; extraire un composant réutilisable plutôt que copier.
+- **Noms lisibles** : pas de variable, paramètre ou propriété d'une lettre ni abrégé, même dans un callback d'une ligne. `mods.map((mod) => mod.code)` et non `(m) => m.code` ; `catch (error)`, `(event) => …`, `config`, `result`, `isDirectory` et non `e`, `cfg`, `res`, `dir?: boolean`. Seule exception : `t` de react-i18next. Sinon il faut remonter au type pour comprendre la ligne. Vaut pour le code ajouté ou modifié (on renomme ce qu'on touche, sans PR de renommage générale).
 - Avant d'ajouter un comportement à un domaine, lire son `CLAUDE.md` (tableau « Où est la doc » du `CLAUDE.md` racine).
 - Questions MUI : serveur MCP MUI s'il est configuré (`claude mcp add mui-mcp -- npx -y @mui/mcp@latest`) : `useMuiDocs` pour le paquet concerné, puis `fetchDocs` uniquement sur les URL renvoyées, jusqu'à avoir tout ce qu'il faut. Sinon, la doc de mui.com.
 - Pour un jeu ou une API externe : la doc officielle ci-dessous, puis vérifier sur un vrai serveur. Les guides officiels se trompent souvent (écarts notés dans le `CLAUDE.md` du jeu).
