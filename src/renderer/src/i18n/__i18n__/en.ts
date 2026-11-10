@@ -62,6 +62,8 @@ export default {
     MOD_NOT_FOUND: "Mod {{name}} not found on the mod registries.",
     MOD_CODE_INVALID:
       "Invalid format. Expected: Author-ModName-Version (e.g. denikson-BepInExPack_Valheim-5.4.2202).",
+    MOD_FILES_IN_USE:
+      "The files of mod {{name}} are in use (is the server running?). Stop the server and try again: the installed version was left unchanged.",
     BEPINEX_VERSION_UNAVAILABLE:
       "Couldn't get the BepInExPack_Valheim version from Thunderstore.",
     BEPINEX_ZIP_INVALID:
