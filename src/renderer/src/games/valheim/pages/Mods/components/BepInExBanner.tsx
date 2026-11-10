@@ -4,12 +4,15 @@ import { useTranslation } from "react-i18next";
 interface Props {
   detected: boolean | null;
   installing: boolean;
+  /** Une autre installation est en cours. */
+  disabled?: boolean;
   onInstall: () => void;
 }
 
 export default function BepInExBanner({
   detected,
   installing,
+  disabled,
   onInstall,
 }: Props) {
   const { t } = useTranslation();
@@ -22,7 +25,7 @@ export default function BepInExBanner({
           color="inherit"
           size="small"
           onClick={onInstall}
-          disabled={installing}
+          disabled={installing || disabled}
           startIcon={
             installing ? (
               <CircularProgress size={14} color="inherit" />

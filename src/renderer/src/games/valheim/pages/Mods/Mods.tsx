@@ -30,6 +30,7 @@ import { useValheimMods } from "./hooks/useValheimMods";
 import { useValheimModConfigs } from "./hooks/useValheimModConfigs";
 import BepInExBanner from "./components/BepInExBanner";
 import PendingModsBanner from "./components/PendingModsBanner";
+import { usePendingMods } from "./hooks/usePendingMods";
 import ClientModsHint from "./components/ClientModsHint";
 import ShareModpackButton from "./components/ShareModpackButton";
 import InstalledModsList from "./components/InstalledModsList";
@@ -85,6 +86,10 @@ export default function ValheimMods() {
     handleDismissDeps,
     reloadInstalled,
   } = useValheimMods();
+  // Réinstallation après un import : installe BepInEx s'il manque, donc
+  // exclusive avec « Installer BepInEx » et les autres installations.
+  const pendingMods = usePendingMods(reloadInstalled);
+  const busy = installing || installingBepInEx || pendingMods.installing;
 
   const {
     files: configFiles,
@@ -130,12 +135,15 @@ export default function ValheimMods() {
         subtitle={t("valheimMods.subtitle")}
       />
 
-      <BepInExBanner
-        detected={bepInEx}
-        installing={installingBepInEx}
-        onInstall={handleInstallBepInEx}
-      />
-      <PendingModsBanner onInstalled={reloadInstalled} />
+      {pendingMods.count === 0 && (
+        <BepInExBanner
+          detected={bepInEx}
+          installing={installingBepInEx}
+          disabled={busy}
+          onInstall={handleInstallBepInEx}
+        />
+      )}
+      <PendingModsBanner {...pendingMods} disabled={busy} />
       <ClientModsHint />
 
       {/* Boutons Thunderstore */}
@@ -152,7 +160,7 @@ export default function ValheimMods() {
           size="small"
           startIcon={<DownloadIcon />}
           onClick={() => setThunderstoreDialog(true)}
-          disabled={installing}
+          disabled={busy}
         >
           {t("valheimMods.thunderstore.title")}
         </Button>
@@ -161,11 +169,11 @@ export default function ValheimMods() {
           size="small"
           startIcon={<DownloadIcon />}
           onClick={() => setProfileDialog(true)}
-          disabled={installing}
+          disabled={busy}
         >
           {t("valheimMods.thunderstore.importProfile")}
         </Button>
-        <ShareModpackButton disabled={installing} />
+        <ShareModpackButton disabled={busy} />
         <Button
           variant="outlined"
           size="small"
@@ -189,7 +197,7 @@ export default function ValheimMods() {
             checkingUpdates ? <CircularProgress size={14} /> : <RefreshIcon />
           }
           onClick={handleRefreshUpdates}
-          disabled={installing || checkingUpdates}
+          disabled={busy || checkingUpdates}
         >
           {t("valheimMods.updates.refresh")}
         </Button>
@@ -200,7 +208,7 @@ export default function ValheimMods() {
             color="warning"
             startIcon={<SystemUpdateAltIcon />}
             onClick={handleUpdateAll}
-            disabled={installing}
+            disabled={busy}
           >
             {t("valheimMods.updates.updateAll", { count: updates.length })}
           </Button>

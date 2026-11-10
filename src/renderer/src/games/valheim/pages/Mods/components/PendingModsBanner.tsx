@@ -1,15 +1,25 @@
 import { Alert, Button, CircularProgress, Stack } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { usePendingMods } from "../hooks/usePendingMods";
 
-// Mods à réinstaller après l'import d'un serveur depuis un autre PC.
+interface Props {
+  count: number;
+  installing: boolean;
+  /** Une installation est en cours (celle-ci ou une autre de la page). */
+  disabled: boolean;
+  install: () => void;
+  dismiss: () => void;
+}
+
+// Mods à réinstaller après l'import d'un serveur depuis un autre PC
+// (état : `usePendingMods`, remonté dans la page).
 export default function PendingModsBanner({
-  onInstalled,
-}: {
-  onInstalled: () => void;
-}) {
+  count,
+  installing,
+  disabled,
+  install,
+  dismiss,
+}: Props) {
   const { t } = useTranslation();
-  const { count, installing, install, dismiss } = usePendingMods(onInstalled);
   if (count === 0) return null;
   return (
     <Alert
@@ -20,7 +30,7 @@ export default function PendingModsBanner({
             color="inherit"
             size="small"
             onClick={dismiss}
-            disabled={installing}
+            disabled={disabled}
           >
             {t("valheimMods.pending.dismiss")}
           </Button>
@@ -28,7 +38,7 @@ export default function PendingModsBanner({
             color="inherit"
             size="small"
             onClick={install}
-            disabled={installing}
+            disabled={disabled}
             startIcon={
               installing ? (
                 <CircularProgress size={14} color="inherit" />

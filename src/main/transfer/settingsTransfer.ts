@@ -55,26 +55,27 @@ export async function buildSettingsFile(
     customFirewallRules: await ctx.firewall.getCustomRules(),
     servers: ctx.servers
       .list()
-      .map((s) =>
-        toServerEntry(s, ctx.getServerConfig(s.id), includePasswords),
+      .map((server) =>
+        toServerEntry(server, ctx.getServerConfig(server.id), includePasswords),
       ),
   };
   return JSON.stringify(file, null, 2);
 }
 
-const bool = (v: unknown) => (typeof v === "boolean" ? v : undefined);
+const booleanOrUndefined = (value: unknown) =>
+  typeof value === "boolean" ? value : undefined;
 
 function parseApp(raw: unknown): TransferAppSettings {
-  const a = (typeof raw === "object" && raw !== null ? raw : {}) as Record<
+  const app = (typeof raw === "object" && raw !== null ? raw : {}) as Record<
     string,
     unknown
   >;
   return {
     language:
-      a.language === "fr" || a.language === "en" ? a.language : undefined,
-    closeToTray: bool(a.closeToTray),
-    betaUpdates: bool(a.betaUpdates),
-    launchAtLogin: bool(a.launchAtLogin),
+      app.language === "fr" || app.language === "en" ? app.language : undefined,
+    closeToTray: booleanOrUndefined(app.closeToTray),
+    betaUpdates: booleanOrUndefined(app.betaUpdates),
+    launchAtLogin: booleanOrUndefined(app.launchAtLogin),
   };
 }
 
@@ -83,8 +84,9 @@ function parseRules(raw: unknown): FirewallNamedRule[] {
   // Mêmes règles que le pare-feu (noms passés à netsh en admin) : une règle
   // modifiée à la main est écartée dès l'aperçu. addCustomRules revalide.
   return raw.filter(
-    (r): r is FirewallNamedRule =>
-      typeof r?.name === "string" && isValidRule(r.name, r.port, r.protocol),
+    (rule): rule is FirewallNamedRule =>
+      typeof rule?.name === "string" &&
+      isValidRule(rule.name, rule.port, rule.protocol),
   );
 }
 
@@ -117,11 +119,11 @@ export async function previewSettingsFile(
     includesPasswords: file.includesPasswords,
     app: file.app,
     customFirewallRules: file.customFirewallRules,
-    servers: file.servers.map((e, index) => ({
+    servers: file.servers.map((entry, index) => ({
       index,
-      name: e.server.name,
-      gameType: e.server.gameType,
-      paths: entryPaths(e),
+      name: entry.server.name,
+      gameType: entry.server.gameType,
+      paths: entryPaths(entry),
     })),
   };
 }
@@ -146,7 +148,19 @@ export async function importSettingsFile(
   choice: SettingsImportChoice,
 ): Promise<SettingsImportResult> {
   const file = await readSettingsFile(choice.filePath);
-  const serverIds: string[] = [];
+  const result: SettingsImportResult = { serverIds: [], app: null };
+
+  // Ce qui peut échouer (store du pare-feu, démarrage avec Windows) passe
+  // avant la création des serveurs : sinon un nouvel essai les dupliquerait.
+  if (choice.applyAppSettings) {
+    applyAppSettings(ctx, file.app);
+    result.app = file.app;
+  }
+  const rules =
+    choice.importFirewallRules && file.customFirewallRules.length > 0
+      ? await ctx.firewall.addCustomRules(file.customFirewallRules)
+      : [];
+
   for (const { index, paths } of choice.servers) {
     const entry = file.servers[index];
     if (!entry) continue;
@@ -155,20 +169,13 @@ export async function importSettingsFile(
       path: paths.path.trim(),
     });
     ctx.updateServerConfig(created.id, configWithPaths(entry.config, paths));
-    serverIds.push(created.id);
+    result.serverIds.push(created.id);
   }
 
-  const result: SettingsImportResult = { serverIds, app: null };
-  if (choice.applyAppSettings) {
-    applyAppSettings(ctx, file.app);
-    result.app = file.app;
-  }
-  if (choice.importFirewallRules && file.customFirewallRules.length > 0) {
-    const rules = await ctx.firewall.addCustomRules(file.customFirewallRules);
-    if (choice.applyFirewallRules && rules.length > 0) {
-      const res = await ctx.firewall.applyNamedRules(rules);
-      if (!res.success) result.firewallError = res.error;
-    }
+  // En dernier : une invite UAC refusée renvoie une erreur, sans lever
+  if (choice.applyFirewallRules && rules.length > 0) {
+    const applyResult = await ctx.firewall.applyNamedRules(rules);
+    if (!applyResult.success) result.firewallError = applyResult.error;
   }
   return result;
 }

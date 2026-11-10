@@ -18,7 +18,7 @@ import {
   clearTransferTmp,
   importServerArchive,
   previewServerArchive,
-  serverWorldConflict,
+  serverImportConflicts,
 } from "../../transfer/serverArchiveImport";
 import { dateStamp, safeFileName } from "../../transfer/transferFormat";
 
@@ -62,7 +62,9 @@ export function registerTransferHandlers(ctx: IpcContext): void {
   ipcMain.handle(
     "transfer:exportServer",
     async (_, serverId: string, includePasswords: boolean) => {
-      const name = ctx.servers.list().find((s) => s.id === serverId)?.name;
+      const name = ctx.servers
+        .list()
+        .find((server) => server.id === serverId)?.name;
       const out = await askSavePath(
         `${safeFileName(name ?? "")}-${dateStamp()}.nexum-server.zip`,
         { name: "ZIP", extensions: ["zip"] },
@@ -76,9 +78,9 @@ export function registerTransferHandlers(ctx: IpcContext): void {
     previewServerArchive(ctx, zipPath),
   );
   ipcMain.handle(
-    "transfer:serverWorldConflict",
+    "transfer:serverImportConflicts",
     (_, token: string, paths: TransferServerPaths) =>
-      serverWorldConflict(ctx, token, paths),
+      serverImportConflicts(ctx, token, paths),
   );
   ipcMain.handle(
     "transfer:importServer",

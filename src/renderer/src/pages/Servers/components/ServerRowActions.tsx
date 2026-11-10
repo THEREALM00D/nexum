@@ -88,7 +88,7 @@ export default function ServerRowActions({
         <IconButton
           size="small"
           aria-haspopup="menu"
-          onClick={(e) => setAnchor(e.currentTarget)}
+          onClick={(event) => setAnchor(event.currentTarget)}
         >
           <MoreHorizIcon fontSize="small" />
         </IconButton>

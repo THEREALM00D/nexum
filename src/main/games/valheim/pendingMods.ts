@@ -3,6 +3,7 @@ import { join } from "path";
 import type { PendingMod, ValheimMod } from "../../../shared/types";
 import type { ValheimModsManager } from "./ValheimModsManager";
 import { installCodes } from "./installCodes";
+import { REGISTRIES } from "./registries";
 
 // Mods d'un serveur importé depuis un autre PC (`src/main/transfer/`), à
 // réinstaller par leur code une fois le jeu installé (bandeau de la page
@@ -12,9 +13,31 @@ const pendingPath = (dataDir: string) => join(dataDir, PENDING_FILE);
 
 /** Mods qu'un autre PC peut réinstaller : ceux qui ont un code de registre. */
 export function exportableMods(mods: ValheimMod[]): PendingMod[] {
-  return mods.flatMap((m) =>
-    m.thunderstoreCode && m.source && m.source !== "manual"
-      ? [{ code: m.thunderstoreCode, registry: m.source, enabled: m.enabled }]
+  return mods.flatMap((mod) =>
+    mod.thunderstoreCode && mod.source && mod.source !== "manual"
+      ? [
+          {
+            code: mod.thunderstoreCode,
+            registry: mod.source,
+            enabled: mod.enabled,
+          },
+        ]
+      : [],
+  );
+}
+
+/** Mods lus dans le manifest d'un ZIP importé (fichier venu d'ailleurs : revalidé). */
+export function parsePendingMods(raw: unknown): PendingMod[] {
+  if (!Array.isArray(raw)) return [];
+  return raw.flatMap((mod) =>
+    typeof mod?.code === "string" && REGISTRIES.includes(mod?.registry)
+      ? [
+          {
+            code: mod.code,
+            registry: mod.registry,
+            enabled: mod.enabled !== false,
+          },
+        ]
       : [],
   );
 }
@@ -45,7 +68,7 @@ export function writePendingMods(dataDir: string, mods: PendingMod[]): void {
 export async function installPendingMods(
   manager: ValheimModsManager,
   dataDir: string,
-  onProgress: (msg: string) => void,
+  onProgress: (message: string) => void,
 ): Promise<{ installed: ValheimMod[]; errors: string[] }> {
   const pending = readPendingMods(dataDir);
   if (pending.length === 0) return { installed: [], errors: [] };
@@ -53,15 +76,17 @@ export async function installPendingMods(
 
   const result = await installCodes(manager, pending, onProgress);
   const installedCodes = new Set(
-    result.installed.map((m) => m.thunderstoreCode),
+    result.installed.map((mod) => mod.thunderstoreCode),
   );
   for (const mod of result.installed) {
-    const wanted = pending.find((p) => p.code === mod.thunderstoreCode);
+    const wanted = pending.find(
+      (pendingMod) => pendingMod.code === mod.thunderstoreCode,
+    );
     if (wanted && !wanted.enabled) manager.toggle(mod.modId, false);
   }
   writePendingMods(
     dataDir,
-    pending.filter((p) => !installedCodes.has(p.code)),
+    pending.filter((pendingMod) => !installedCodes.has(pendingMod.code)),
   );
   return result;
 }

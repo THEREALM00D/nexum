@@ -67,6 +67,10 @@ export default {
       replaceWorld: "Replace the world already there",
       replaceWorldHelper:
         "Files with the same name already exist in the worlds folder. Unchecked, the imported world isn't copied.",
+      targetRunning:
+        "The server “{{name}}” uses these folders and is running: stop it or choose other folders.",
+      configReplaced:
+        "These files already exist and will be replaced (a .backup copy is kept next to them): {{files}}.",
       done: "Server “{{name}}” imported.",
       worldSkipped:
         "The world wasn't copied: one with the same name already exists.",

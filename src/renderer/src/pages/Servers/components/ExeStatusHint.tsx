@@ -3,7 +3,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import { useTranslation } from "react-i18next";
 import type { GameType } from "@shared/types";
-import type { ExeStatus } from "../hooks/useExeDetection";
+import type { ExeStatus } from "../../../hooks/useExeDetection";
 import LoadingSkeleton from "../../../components/common/LoadingSkeleton";
 
 interface Props {

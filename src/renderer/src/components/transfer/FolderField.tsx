@@ -36,16 +36,16 @@ export default function FolderField({
         label={label}
         size="small"
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(event) => onChange(event.target.value)}
         helperText={helper}
         error={error}
         fullWidth
       />
-      <Tooltip title={t("transfer.browse")}>
+      <Tooltip title={t("common.browse")}>
         <IconButton
           onClick={browse}
           sx={{ mt: 0.5 }}
-          aria-label={t("transfer.browse")}
+          aria-label={t("common.browse")}
         >
           <FolderOpenIcon />
         </IconButton>

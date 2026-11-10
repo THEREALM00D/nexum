@@ -1,7 +1,5 @@
 export default {
   transfer: {
-    browse: "Browse",
-    cancel: "Cancel",
     export: "Export",
     import: "Import",
     exportedAt: "Exported on {{date}}",
@@ -21,7 +19,6 @@ export default {
       savedir: "Game data folder (-savedir)",
       savedirHelper: "Empty = the game's default folder",
       logFile: "Log file (-logFile)",
-      notInstalled: "Game not found in this folder",
       notInstalledHelper:
         "The server will be imported anyway: install the game from the Installation page.",
       duplicate: "Already added",

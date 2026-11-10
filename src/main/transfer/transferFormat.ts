@@ -23,8 +23,8 @@ export interface TransferServerEntry {
 }
 
 type Obj = Record<string, unknown>;
-const isObj = (v: unknown): v is Obj =>
-  typeof v === "object" && v !== null && !Array.isArray(v);
+const isObj = (value: unknown): value is Obj =>
+  typeof value === "object" && value !== null && !Array.isArray(value);
 
 const invalid = () => new AppError("TRANSFER_FILE_INVALID");
 
@@ -53,74 +53,79 @@ export function parseJson(text: string): unknown {
  */
 function pickLike<T extends Obj>(defaults: T, raw: unknown): Partial<T> {
   if (!isObj(raw)) return {};
-  const out: Obj = {};
-  for (const [key, def] of Object.entries(defaults)) {
+  const picked: Obj = {};
+  for (const [key, defaultValue] of Object.entries(defaults)) {
     const value = raw[key];
-    if (isObj(def)) out[key] = { ...def, ...pickLike(def, value) };
-    else if (typeof value === typeof def) out[key] = value;
+    if (isObj(defaultValue))
+      picked[key] = { ...defaultValue, ...pickLike(defaultValue, value) };
+    else if (typeof value === typeof defaultValue) picked[key] = value;
   }
-  return out as Partial<T>;
+  return picked as Partial<T>;
 }
 
 export function parseServerEntry(raw: unknown): TransferServerEntry {
   if (!isObj(raw) || !isObj(raw.server)) throw invalid();
-  const s = raw.server;
-  if (typeof s.name !== "string" || typeof s.path !== "string") throw invalid();
-  if (!GAME_TYPES.includes(s.gameType as Server["gameType"])) throw invalid();
+  const server = raw.server;
+  if (typeof server.name !== "string" || typeof server.path !== "string")
+    throw invalid();
+  if (!GAME_TYPES.includes(server.gameType as Server["gameType"]))
+    throw invalid();
   const config = {
     ...DEFAULT_SERVER_CONFIG,
     ...pickLike(DEFAULT_SERVER_CONFIG as unknown as Obj, raw.config),
   } as ServerConfig;
   return {
     server: {
-      name: s.name,
-      gameType: s.gameType as Server["gameType"],
-      path: s.path,
-      color: typeof s.color === "string" ? s.color : null,
-      autoStart: s.autoStart === true,
-      autoRestart: s.autoRestart === true,
+      name: server.name,
+      gameType: server.gameType as Server["gameType"],
+      path: server.path,
+      color: typeof server.color === "string" ? server.color : null,
+      autoStart: server.autoStart === true,
+      autoRestart: server.autoRestart === true,
     },
     config,
   };
 }
 
 /** Mots de passe stockés par Nexum (pas ceux des fichiers du jeu). */
-export function stripPasswords(cfg: ServerConfig): ServerConfig {
+export function stripPasswords(config: ServerConfig): ServerConfig {
   return {
-    ...cfg,
-    valheimConfig: { ...cfg.valheimConfig, password: "" },
-    dragonwildsConfig: { ...cfg.dragonwildsConfig, adminPassword: "" },
+    ...config,
+    valheimConfig: { ...config.valheimConfig, password: "" },
+    dragonwildsConfig: { ...config.dragonwildsConfig, adminPassword: "" },
   };
 }
 
 export function toServerEntry(
   server: Server,
-  cfg: ServerConfig,
+  config: ServerConfig,
   includePasswords: boolean,
 ): TransferServerEntry {
   const { name, gameType, path, color, autoStart, autoRestart } = server;
   return {
     server: { name, gameType, path, color, autoStart, autoRestart },
-    config: includePasswords ? cfg : stripPasswords(cfg),
+    config: includePasswords ? config : stripPasswords(config),
   };
 }
 
-export const entryPaths = (e: TransferServerEntry): TransferServerPaths => ({
-  path: e.server.path,
-  backupDir: e.config.backup.backupDir,
-  savedir: e.config.valheimConfig.savedir,
-  logFile: e.config.valheimConfig.logFile,
+export const entryPaths = (
+  entry: TransferServerEntry,
+): TransferServerPaths => ({
+  path: entry.server.path,
+  backupDir: entry.config.backup.backupDir,
+  savedir: entry.config.valheimConfig.savedir,
+  logFile: entry.config.valheimConfig.logFile,
 });
 
 /** Config de l'entrée avec les dossiers confirmés sur le nouveau PC. */
 export const configWithPaths = (
-  cfg: ServerConfig,
+  config: ServerConfig,
   paths: TransferServerPaths,
 ): ServerConfig => ({
-  ...cfg,
-  backup: { ...cfg.backup, backupDir: paths.backupDir.trim() },
+  ...config,
+  backup: { ...config.backup, backupDir: paths.backupDir.trim() },
   valheimConfig: {
-    ...cfg.valheimConfig,
+    ...config.valheimConfig,
     savedir: paths.savedir.trim(),
     logFile: paths.logFile.trim(),
   },

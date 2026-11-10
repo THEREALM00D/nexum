@@ -417,8 +417,8 @@ const api = {
       ipcRenderer.invoke("transfer:exportServer", serverId, includePasswords),
     previewServer: (zipPath: string) =>
       ipcRenderer.invoke("transfer:previewServer", zipPath),
-    serverWorldConflict: (token: string, paths: TransferServerPaths) =>
-      ipcRenderer.invoke("transfer:serverWorldConflict", token, paths),
+    serverImportConflicts: (token: string, paths: TransferServerPaths) =>
+      ipcRenderer.invoke("transfer:serverImportConflicts", token, paths),
     importServer: (choice: ServerArchiveImportChoice) =>
       ipcRenderer.invoke("transfer:importServer", choice),
     cancelServerImport: (token: string) =>

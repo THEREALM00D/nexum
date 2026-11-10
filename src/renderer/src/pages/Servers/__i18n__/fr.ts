@@ -68,6 +68,10 @@ export default {
       replaceWorld: "Remplacer le monde déjà présent",
       replaceWorldHelper:
         "Des fichiers du même nom existent déjà dans le dossier des mondes. Décoché, le monde importé n'est pas copié.",
+      targetRunning:
+        "Le serveur « {{name}} » utilise ces dossiers et il est lancé : arrêtez-le ou choisissez d'autres dossiers.",
+      configReplaced:
+        "Déjà présents, ces fichiers seront remplacés (copie .backup à côté) : {{files}}.",
       done: "Serveur « {{name}} » importé.",
       worldSkipped:
         "Le monde n'a pas été copié : il en existait déjà un du même nom.",

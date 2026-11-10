@@ -35,7 +35,9 @@ export default function ImportServerRow({
         control={
           <Checkbox
             checked={value.include}
-            onChange={(e) => onChange({ ...value, include: e.target.checked })}
+            onChange={(event) =>
+              onChange({ ...value, include: event.target.checked })
+            }
           />
         }
         label={

@@ -10,7 +10,7 @@ import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import { useTranslation } from "react-i18next";
 import type { GameType } from "@shared/types";
 import { GAMES } from "../../../games/registry";
-import { useExeDetection } from "../../Servers/hooks/useExeDetection";
+import { useExeDetection } from "../../../hooks/useExeDetection";
 import ExeStatusHint from "../../Servers/components/ExeStatusHint";
 import InstallDirWarning from "../../../components/common/InstallDirWarning";
 import GameRequirementsHint from "../../../components/common/GameRequirementsHint";

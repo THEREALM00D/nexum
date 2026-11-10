@@ -34,3 +34,5 @@ Sans API REST activée : arrêt et redémarrage planifié en `taskkill` sans sau
 `launchArgs: { publicLobby, performanceFlags, customArgs }` (`LaunchArgsConfig`). `-publiclobby` active le lobby EOS (crossplay Xbox). Seul jeu avec la section « Arguments de lancement » de la page Installation.
 
 Sauvegardes : `{serverPath}/Pal/Saved/SaveGames/`.
+
+⚠️ Le monde chargé est choisi par `DedicatedServerName` (GUID du dossier `SaveGames/0/<GUID>`) dans `Pal/Saved/Config/WindowsServer/GameUserSettings.ini` : sans ce fichier, le serveur crée un monde neuf. D'où sa présence dans `GAME_TRANSFERS` (`src/main/games/transferFiles.ts`). Pas encore vérifié sur un vrai serveur.

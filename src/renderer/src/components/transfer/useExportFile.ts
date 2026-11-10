@@ -22,8 +22,8 @@ export function useExportFile() {
         onClick: () => window.api.shell.showItemInFolder(path),
       });
       return true;
-    } catch (e) {
-      notify(errorMessage(t, e), "error");
+    } catch (error) {
+      notify(errorMessage(t, error), "error");
       return false;
     }
   };

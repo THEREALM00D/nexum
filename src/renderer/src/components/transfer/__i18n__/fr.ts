@@ -2,8 +2,6 @@
 // d'un serveur), utilisés par les pages Paramètres et Serveurs.
 export default {
   transfer: {
-    browse: "Parcourir",
-    cancel: "Annuler",
     export: "Exporter",
     import: "Importer",
     exportedAt: "Exporté le {{date}}",
@@ -23,7 +21,6 @@ export default {
       savedir: "Dossier des données du jeu (-savedir)",
       savedirHelper: "Vide = dossier par défaut du jeu",
       logFile: "Fichier de log (-logFile)",
-      notInstalled: "Jeu absent de ce dossier",
       notInstalledHelper:
         "Le serveur sera importé quand même : installez le jeu depuis la page Installation.",
       duplicate: "Déjà présent",

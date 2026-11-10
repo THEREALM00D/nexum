@@ -9,7 +9,7 @@ Registres, installation, mises à jour, partage et import : `src/main/games/valh
 - **Parcourir** : `ToggleButtonGroup` Thunderstore/Hexium (`ModBrowser.tsx`), deux listes indépendantes. Même sélecteur dans le dialogue « coller un code » (`Mods.tsx`) : `Auteur-Nom-Version` est ambigu entre les deux.
 - **Mettre à jour / Tout mettre à jour** : `hooks/useBackupBeforeUpdate` (une sauvegarde pour la série, voir `src/main/backup/CLAUDE.md`).
 - `ShareModpackButton` : partage du modpack.
-- `PendingModsBanner` (`usePendingMods`) : mods d'un serveur importé d'un autre PC, affiché seulement quand le jeu est installé ; relit la liste via `reloadInstalled` (`useValheimMods`).
+- `PendingModsBanner` : mods d'un serveur importé d'un autre PC, affiché seulement quand le jeu est installé ; relit la liste via `reloadInstalled` (`useValheimMods`). `usePendingMods` est dans la page : sa réinstallation installe BepInEx s'il manque, donc tous les boutons d'installation sont désactivés pendant l'une ou l'autre (`busy`) et le bandeau BepInEx est masqué tant que des mods sont en attente (deux `installBepInEx` en parallèle écrivent le même ZIP).
 
 ## Onglet Configs
 
