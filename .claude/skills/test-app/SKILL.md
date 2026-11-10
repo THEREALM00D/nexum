@@ -8,7 +8,7 @@ argument-hint: [dev|packaged] [ce qu'il faut vérifier]
 
 Demande : $ARGUMENTS
 
-⚠️ **Règle absolue** : sans `NEXUM_USER_DATA_DIR`, `yarn dev` et `electron.exe` ouvrent `%APPDATA%\server-forge`, les **vraies** données de l'app installée (ses serveurs, leur config, leurs logs). Ne jamais lancer Nexum sans cette variable, et ne jamais lancer `dist/win-unpacked/nexum.exe` (vraies données + démarrage auto des serveurs).
+⚠️ **Règle absolue** : sans `NEXUM_USER_DATA_DIR`, `yarn dev` et `electron.exe` ouvrent `%APPDATA%\Nexum` (ou `%APPDATA%\server-forge` si l'app installée ne l'a pas encore déplacé), les **vraies** données de l'app installée (ses serveurs, leur config, leurs logs). Ne jamais lancer Nexum sans cette variable, et ne jamais lancer `dist/win-unpacked/nexum.exe` (vraies données + démarrage auto des serveurs).
 
 ## 1. Choisir le mode
 
