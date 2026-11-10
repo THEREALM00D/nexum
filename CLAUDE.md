@@ -32,7 +32,7 @@ Ce fichier ne contient que ce qui vaut partout. Le détail d'un domaine est dans
 | CI, release-please, bêtas, signature, Discord                                  | `.github/CLAUDE.md`                                   |
 | Icône, installeur et désinstalleur NSIS                                        | `resources/CLAUDE.md`                                 |
 
-Skills du projet (`.claude/skills/`) : `/issue` (créer une issue), `/nexum <N>` (traiter une issue de bout en bout), `/test-app` (lancer Nexum sur un dossier de données isolé), `/new-game` (ajouter un jeu).
+Skills du projet (`.claude/skills/`) : `/issue` (créer une issue), `/nexum <N>` (traiter une issue de bout en bout), `/test-app` (lancer Nexum sur un dossier de données isolé), `/new-game` (ajouter un jeu), `/revue [PR]` (revue de code par l'agent `nexum-reviewer`, `.claude/agents/`).
 
 ## Stack
 

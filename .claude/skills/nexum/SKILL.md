@@ -76,7 +76,7 @@ yarn lint:check
 
 Corrige jusqu'à ce que les deux passent (les avertissements déjà présents sur `main` ne sont pas à corriger ici). Changement visible ou comportement du main → teste-le avec `/test-app` (jamais sur les données de l'app installée) et garde les captures utiles. Dis clairement ce qui n'a pas pu être testé (vrai serveur, vrai joueur…).
 
-Relis ton diff (`git diff origin/main`) comme un relecteur : duplication, strings en dur, fichiers trop longs, code de test temporaire oublié, doc manquante.
+Puis lance `/revue` (agent `nexum-reviewer` sur la branche) et corrige ses 🔴 et 🟠 avant de passer à la suite, ou explique à l'utilisateur pourquoi un constat est écarté.
 
 ## 9. Documenter
 
