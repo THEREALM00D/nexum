@@ -1,8 +1,8 @@
 import { app, BrowserWindow, screen, session } from "electron/main";
 import { shell } from "electron";
 import { join } from "path";
-import { existsSync } from "fs";
 import { registerIpcHandlers } from "./ipc/handlers";
+import { resolveUserDataDir } from "./startup/userDataMigration";
 import { checkForUpdateOnStartup } from "./update/AutoUpdater";
 import { launchedAtLogin } from "./startup/launchAtLogin";
 import { appIconPath } from "./utils/appIcon";
@@ -14,33 +14,9 @@ import {
   showWindow,
 } from "./tray/windowLifecycle";
 
-// Dossier de données — doit être fixé avant `ready` et avant tout accès à
-// userData.
-// - Rebrand ServerForge → Nexum : une installation existante garde son dossier
-//   (serveurs, historique joueurs, SteamCMD, backups par défaut). Le déplacer
-//   casserait les chemins absolus persistés (dossier de backup, etc.) : on le
-//   réutilise tel quel. ⚠️ Jusqu'à la 0.2.0, Electron nommait ce dossier
-//   d'après le `name` du package.json (`server-forge`), PAS d'après le
-//   productName « ServerForge » : c'est `%APPDATA%\server-forge` qu'il faut
-//   retrouver (la 0.3.0 ne cherchait que `ServerForge` et démarrait à vide).
-//   `ServerForge` reste en repli par sécurité. `config.json` = fichier
-//   electron-store, présent dès qu'un dossier a réellement servi.
-// - Dev : même dossier que l'app installée avant le rebrand (`server-forge`).
-const LEGACY_USER_DATA_DIRS = ["server-forge", "ServerForge"];
-if (!app.isPackaged) {
-  // NEXUM_USER_DATA_DIR : dossier de données isolé (tests, premier lancement)
-  // pour ne pas toucher aux vrais serveurs de l'app installée.
-  app.setPath(
-    "userData",
-    process.env.NEXUM_USER_DATA_DIR ||
-      join(app.getPath("appData"), "server-forge"),
-  );
-} else if (!existsSync(join(app.getPath("userData"), "config.json"))) {
-  const legacy = LEGACY_USER_DATA_DIRS.map((d) =>
-    join(app.getPath("appData"), d),
-  ).find((dir) => existsSync(join(dir, "config.json")));
-  if (legacy) app.setPath("userData", legacy);
-}
+// Dossier de données (et migration de `%APPDATA%\server-forge`) : avant
+// `ready`, avant tout accès à userData et avant le verrou d'instance.
+resolveUserDataDir();
 
 // Une seule instance : avec l'icône de la zone de notification, rouvrir le
 // raccourci doit ramener la fenêtre existante, pas lancer un 2e Nexum qui

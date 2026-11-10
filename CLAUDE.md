@@ -63,7 +63,7 @@ Skills du projet (`.claude/skills/`) : `/issue` (créer une issue), `/nexum <N>`
 
 ## ⚠️ Ne jamais toucher aux vrais serveurs en dev
 
-`yarn dev` et `electron.exe` partagent `%APPDATA%\server-forge` avec l'**app installée** (ses vrais serveurs et sa config). D'où les garde-fous : pas de démarrage auto (`NEXUM_DEV_AUTOSTART=1` pour forcer), pas d'adoption (`NEXUM_DEV_ADOPT=1`), pas de verrou d'instance. Pour tout test qui lance l'app : **skill `/test-app`** (`NEXUM_USER_DATA_DIR` = dossier isolé). Jamais `dist/win-unpacked/nexum.exe` : il ouvre les vraies données et démarre les serveurs en démarrage auto.
+`yarn dev` et `electron.exe` partagent le dossier de données de l'**app installée** (ses vrais serveurs et sa config) : `%APPDATA%\Nexum`, ou `%APPDATA%\server-forge` tant qu'elle ne l'a pas déplacé (`src/main/CLAUDE.md`). D'où les garde-fous : pas de démarrage auto (`NEXUM_DEV_AUTOSTART=1` pour forcer), pas d'adoption (`NEXUM_DEV_ADOPT=1`), pas de verrou d'instance. Pour tout test qui lance l'app : **skill `/test-app`** (`NEXUM_USER_DATA_DIR` = dossier isolé). Jamais `dist/win-unpacked/nexum.exe` : il ouvre les vraies données et démarre les serveurs en démarrage auto.
 
 ## Architecture
 
