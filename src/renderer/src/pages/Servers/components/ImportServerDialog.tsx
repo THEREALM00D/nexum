@@ -21,6 +21,8 @@ import { useServer } from "../../../context/ServerContext";
 import CheckboxField from "../../../components/common/CheckboxField";
 import ServerPathsFields from "../../../components/transfer/ServerPathsFields";
 import { isUsedPath } from "../../../components/transfer/samePath";
+import { formatDate } from "../../../utils/format";
+import { useImportConflicts } from "../hooks/useImportConflicts";
 
 interface Props {
   preview: ServerArchivePreview | null;
@@ -33,13 +35,13 @@ export default function ImportServerDialog({
   onCancel,
   onImport,
 }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { state } = useServer();
   const [name, setName] = useState("");
   const [paths, setPaths] = useState<TransferServerPaths | null>(null);
-  const [conflict, setConflict] = useState(false);
   const [replaceWorld, setReplaceWorld] = useState(false);
   const [busy, setBusy] = useState(false);
+  const conflicts = useImportConflicts(preview, paths);
 
   useEffect(() => {
     if (!preview) return;
@@ -48,26 +50,8 @@ export default function ImportServerDialog({
     setReplaceWorld(false);
   }, [preview]);
 
-  // Monde du même nom déjà dans le dossier des mondes cible ?
-  useEffect(() => {
-    if (!preview?.hasWorld || !paths?.path.trim()) {
-      setConflict(false);
-      return;
-    }
-    let cancelled = false;
-    const timer = setTimeout(() => {
-      window.api.transfer
-        .serverWorldConflict(preview.token, paths)
-        .then((c) => !cancelled && setConflict(c))
-        .catch(() => !cancelled && setConflict(false));
-    }, 300);
-    return () => {
-      cancelled = true;
-      clearTimeout(timer);
-    };
-  }, [preview, paths]);
-
   if (!preview || !paths) return null;
+  const conflict = conflicts.world;
 
   const submit = async () => {
     setBusy(true);
@@ -108,7 +92,10 @@ export default function ImportServerDialog({
               {contents}
               {" · "}
               {t("transfer.exportedAt", {
-                date: new Date(preview.exportedAt).toLocaleString(),
+                date: formatDate(
+                  preview.exportedAt,
+                  i18n.resolvedLanguage ?? "fr",
+                ),
               })}
             </Typography>
           </div>
@@ -119,7 +106,7 @@ export default function ImportServerDialog({
             label={t("servers.transfer.name")}
             size="small"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(event) => setName(event.target.value)}
             fullWidth
           />
           <ServerPathsFields
@@ -129,6 +116,20 @@ export default function ImportServerDialog({
             onChange={setPaths}
             duplicate={isUsedPath(state.servers, paths.path)}
           />
+          {conflicts.runningServer && (
+            <Alert severity="error">
+              {t("servers.transfer.targetRunning", {
+                name: conflicts.runningServer,
+              })}
+            </Alert>
+          )}
+          {conflicts.configFiles.length > 0 && (
+            <Alert severity="warning">
+              {t("servers.transfer.configReplaced", {
+                files: conflicts.configFiles.join(", "),
+              })}
+            </Alert>
+          )}
           {conflict && (
             <CheckboxField
               checked={replaceWorld}
@@ -141,12 +142,17 @@ export default function ImportServerDialog({
       </DialogContent>
       <DialogActions>
         <Button onClick={onCancel} disabled={busy}>
-          {t("transfer.cancel")}
+          {t("common.cancel")}
         </Button>
         <Button
           variant="contained"
           onClick={submit}
-          disabled={busy || !name.trim() || !paths.path.trim()}
+          disabled={
+            busy ||
+            !name.trim() ||
+            !paths.path.trim() ||
+            !!conflicts.runningServer
+          }
           startIcon={busy ? <CircularProgress size={16} /> : undefined}
         >
           {t("transfer.import")}

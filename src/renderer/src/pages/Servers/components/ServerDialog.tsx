@@ -16,7 +16,7 @@ import {
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import { useTranslation } from "react-i18next";
 import type { GameType, Server } from "@shared/types";
-import { useExeDetection } from "../hooks/useExeDetection";
+import { useExeDetection } from "../../../hooks/useExeDetection";
 import ExeStatusHint from "./ExeStatusHint";
 import InstallDirWarning from "../../../components/common/InstallDirWarning";
 import CheckboxField from "../../../components/common/CheckboxField";

@@ -43,6 +43,7 @@ import type {
   ServerArchiveImportChoice,
   ServerArchiveImportResult,
   ServerArchivePreview,
+  ServerImportConflicts,
   SettingsImportChoice,
   SettingsImportPreview,
   SettingsImportResult,
@@ -398,10 +399,10 @@ interface API {
       includePasswords: boolean,
     ) => Promise<string | null>;
     previewServer: (zipPath: string) => Promise<ServerArchivePreview>;
-    serverWorldConflict: (
+    serverImportConflicts: (
       token: string,
       paths: TransferServerPaths,
-    ) => Promise<boolean>;
+    ) => Promise<ServerImportConflicts>;
     importServer: (
       choice: ServerArchiveImportChoice,
     ) => Promise<ServerArchiveImportResult>;

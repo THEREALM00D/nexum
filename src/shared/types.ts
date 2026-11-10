@@ -383,6 +383,8 @@ export type AppErrorCode =
   // Changer de PC
   | "TRANSFER_FILE_INVALID"
   | "TRANSFER_FILE_TOO_NEW"
+  | "TRANSFER_TARGET_RUNNING"
+  | "TRANSFER_WRITE_FAILED"
   | "STOP_BEFORE_EXPORT";
 
 // --- RuneScape: Dragonwilds ---
@@ -630,6 +632,16 @@ export interface ServerArchivePreview {
   mods: number;
   /** Dossiers sur le PC d'origine. */
   paths: TransferServerPaths;
+}
+
+/** Ce que l'import d'un serveur toucherait dans les dossiers choisis. */
+export interface ServerImportConflicts {
+  /** Fichiers du monde importé déjà présents (non copiés sans `replaceWorld`). */
+  world: boolean;
+  /** Fichiers de config déjà présents, remplacés (copie `.backup`). */
+  configFiles: string[];
+  /** Serveur lancé qui utilise ces dossiers : import refusé. */
+  runningServer: string | null;
 }
 
 export interface ServerArchiveImportChoice {

@@ -36,6 +36,7 @@ Jeu le plus testé : **modèle principal** pour un nouveau jeu. Mods côté UI :
 
 ## Mods : installation et mises à jour (`ValheimModsManager.ts`)
 
+- ⚠️ `installBepInEx` remplace chaque dossier du pack, donc tout `BepInEx/` : `BepInEx/config` (réglages des mods, ceux d'un serveur importé compris) est mis de côté puis remis, même en cas d'échec.
 - Dossier `BepInEx/plugins/<namespace>_<nomSafe>/`, métadonnées dans `{dataDir}/mods.json`. Mods installés à la main détectés par scan, `source: "manual"` (pas de MàJ possible, pas de code).
 - `thunderstoreCode` (nom historique, persisté, vaut pour les deux registres) : son segment « auteur » est `owner`. Registre d'origine : `source`.
 - `installMod(registry, code, onProgress)` : `download_url` de l'API pour la **version demandée** (repli sur `getFreshLatest`, puis URL de convention `{base}/package/download/{ns}/{name}/{version}/`). ⚠️ Ne jamais retomber sur `versions[0]` : l'ancienne version était enregistrée sous le nouveau numéro.

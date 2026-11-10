@@ -1,32 +1,25 @@
 import { randomUUID } from "crypto";
-import {
-  copyFileSync,
-  cpSync,
-  existsSync,
-  mkdirSync,
-  readdirSync,
-  readFileSync,
-  rmSync,
-  statSync,
-} from "fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync } from "fs";
 import { join } from "path";
 import extractZip from "extract-zip";
 import type {
-  PendingMod,
   ServerArchiveImportChoice,
   ServerArchiveImportResult,
   ServerArchivePreview,
-  ServerConfig,
+  ServerImportConflicts,
   TransferServerPaths,
 } from "../../shared/types";
 import type { IpcContext } from "../ipc/context";
 import { getGameSavePath } from "../games/registry";
-import { getGameTransferFiles } from "../games/transferFiles";
-import { REGISTRIES } from "../games/valheim/registries";
-import { writePendingMods } from "../games/valheim/pendingMods";
-import { backupBeforeWrite } from "../utils/ini";
+import {
+  getGameTransferFiles,
+  parseGameTransferMods,
+  restoreGameTransferMods,
+} from "../games/transferFiles";
 import { AppError } from "../utils/appError";
 import { CONFIG_DIR, MANIFEST, WORLD_DIR } from "./serverArchive";
+import { existingConfigFiles, runningServerUsing } from "./importTargets";
+import { copyWithBackup, copyWorld, writeFailed } from "./importFiles";
 import {
   SERVER_FORMAT,
   checkHeader,
@@ -38,157 +31,143 @@ import {
 
 // ZIP extrait ici entre l'aperçu et l'import (le dialogue laisse choisir les
 // dossiers). Vidé à l'import, à l'annulation et au démarrage de Nexum.
-const tmpRoot = (ctx: IpcContext) =>
+const tempRoot = (ctx: IpcContext) =>
   join(ctx.app.getPath("userData"), "transfer-tmp");
 
 const TOKEN = /^[0-9a-f-]{36}$/;
 function tokenDir(ctx: IpcContext, token: string): string {
   // Le jeton revient du renderer : jamais un chemin arbitraire à supprimer
   if (!TOKEN.test(token)) throw new AppError("TRANSFER_FILE_INVALID");
-  const dir = join(tmpRoot(ctx), token);
-  if (!existsSync(dir)) throw new AppError("TRANSFER_FILE_INVALID");
-  return dir;
+  const extractDir = join(tempRoot(ctx), token);
+  if (!existsSync(extractDir)) throw new AppError("TRANSFER_FILE_INVALID");
+  return extractDir;
 }
 
 export function clearTransferTmp(ctx: IpcContext): void {
-  rmSync(tmpRoot(ctx), { recursive: true, force: true });
+  rmSync(tempRoot(ctx), { recursive: true, force: true });
 }
 
 export function cancelServerImport(ctx: IpcContext, token: string): void {
   if (TOKEN.test(token))
-    rmSync(join(tmpRoot(ctx), token), { recursive: true, force: true });
+    rmSync(join(tempRoot(ctx), token), { recursive: true, force: true });
 }
 
-function parsePendingMods(raw: unknown): PendingMod[] {
-  if (!Array.isArray(raw)) return [];
-  return raw.flatMap((m) =>
-    typeof m?.code === "string" && REGISTRIES.includes(m?.registry)
-      ? [{ code: m.code, registry: m.registry, enabled: m.enabled !== false }]
-      : [],
-  );
-}
-
-function readManifest(dir: string) {
-  const file = join(dir, MANIFEST);
-  if (!existsSync(file)) throw new AppError("TRANSFER_FILE_INVALID");
+function readManifest(extractDir: string) {
+  const manifestPath = join(extractDir, MANIFEST);
+  if (!existsSync(manifestPath)) throw new AppError("TRANSFER_FILE_INVALID");
   const root = checkHeader(
-    parseJson(readFileSync(file, "utf-8")),
+    parseJson(readFileSync(manifestPath, "utf-8")),
     SERVER_FORMAT,
   );
+  const entry = parseServerEntry(root);
   return {
-    entry: parseServerEntry(root),
+    entry,
     exportedAt: Number(root.exportedAt) || 0,
     includesPasswords: root.includesPasswords === true,
-    mods: parsePendingMods(root.mods),
+    mods: parseGameTransferMods(entry.server.gameType, root.mods),
   };
 }
 
-const entries = (dir: string): string[] =>
-  existsSync(dir) ? readdirSync(dir) : [];
+const entries = (folder: string): string[] =>
+  existsSync(folder) ? readdirSync(folder) : [];
 
 export async function previewServerArchive(
   ctx: IpcContext,
   zipPath: string,
 ): Promise<ServerArchivePreview> {
   const token = randomUUID();
-  const dir = join(tmpRoot(ctx), token);
-  mkdirSync(dir, { recursive: true });
+  const extractDir = join(tempRoot(ctx), token);
+  mkdirSync(extractDir, { recursive: true });
   try {
     // extract-zip refuse les chemins qui sortent du dossier (« zip slip »)
-    await extractZip(zipPath, { dir });
-    const { entry, exportedAt, includesPasswords, mods } = readManifest(dir);
+    await extractZip(zipPath, { dir: extractDir });
+    const { entry, exportedAt, includesPasswords, mods } =
+      readManifest(extractDir);
     return {
       token,
       name: entry.server.name,
       gameType: entry.server.gameType,
       exportedAt,
       includesPasswords,
-      hasWorld: entries(join(dir, WORLD_DIR)).length > 0,
-      configFiles: entries(join(dir, CONFIG_DIR)).length,
+      hasWorld: entries(join(extractDir, WORLD_DIR)).length > 0,
+      configFiles: entries(join(extractDir, CONFIG_DIR)).length,
       mods: mods.length,
       paths: entryPaths(entry),
     };
-  } catch (err) {
-    rmSync(dir, { recursive: true, force: true });
+  } catch (error) {
+    rmSync(extractDir, { recursive: true, force: true });
     // ZIP illisible (pas un ZIP, tronqué) : même message qu'un manifest faux
-    if (err instanceof AppError) throw err;
+    if (error instanceof AppError) throw error;
     throw new AppError("TRANSFER_FILE_INVALID");
   }
 }
 
-/** Fichier ou dossier copié, avec `.backup` de tout fichier déjà présent. */
-function copyWithBackup(src: string, dest: string): void {
-  if (statSync(src).isDirectory()) {
-    mkdirSync(dest, { recursive: true });
-    for (const name of readdirSync(src))
-      copyWithBackup(join(src, name), join(dest, name));
-    return;
-  }
-  backupBeforeWrite(dest);
-  copyFileSync(src, dest);
-}
-
-const targetSavePath = (
-  gameType: ServerArchivePreview["gameType"],
-  paths: TransferServerPaths,
-  cfg: ServerConfig,
-) => getGameSavePath(gameType, paths.path.trim(), configWithPaths(cfg, paths));
-
-/** Des fichiers du monde importé existent déjà dans le dossier cible ? */
-export function serverWorldConflict(
+/** Ce que l'import toucherait dans ces dossiers (dialogue, avant l'import). */
+export function serverImportConflicts(
   ctx: IpcContext,
   token: string,
   paths: TransferServerPaths,
-): boolean {
-  const dir = tokenDir(ctx, token);
-  const { entry } = readManifest(dir);
-  const save = targetSavePath(entry.server.gameType, paths, entry.config);
-  return entries(join(dir, WORLD_DIR)).some((n) => existsSync(join(save, n)));
+): ServerImportConflicts {
+  const extractDir = tokenDir(ctx, token);
+  const { entry } = readManifest(extractDir);
+  const { gameType } = entry.server;
+  const serverPath = paths.path.trim();
+  const config = configWithPaths(entry.config, paths);
+  const savePath = getGameSavePath(gameType, serverPath, config);
+  return {
+    world: entries(join(extractDir, WORLD_DIR)).some((name) =>
+      existsSync(join(savePath, name)),
+    ),
+    configFiles: existingConfigFiles(extractDir, gameType, serverPath, config),
+    runningServer: runningServerUsing(ctx, gameType, serverPath, config),
+  };
 }
 
+/**
+ * Fichiers copiés d'abord, serveur créé en dernier : un échec de copie ne
+ * laisse pas de serveur à moitié importé (un nouvel essai en créerait un
+ * second). Refusé si un serveur lancé utilise ces dossiers.
+ */
 export function importServerArchive(
   ctx: IpcContext,
   choice: ServerArchiveImportChoice,
 ): ServerArchiveImportResult {
-  const dir = tokenDir(ctx, choice.token);
-  const { entry, mods } = readManifest(dir);
+  const extractDir = tokenDir(ctx, choice.token);
+  const { entry, mods } = readManifest(extractDir);
   const { gameType } = entry.server;
   const serverPath = choice.paths.path.trim();
-  const cfg = configWithPaths(entry.config, choice.paths);
+  const config = configWithPaths(entry.config, choice.paths);
+
+  const running = runningServerUsing(ctx, gameType, serverPath, config);
+  if (running) throw new AppError("TRANSFER_TARGET_RUNNING", { name: running });
+
+  let world: ServerArchiveImportResult["world"];
+  try {
+    // Cibles recalculées pour ce jeu : un nom inconnu sous config/ est ignoré.
+    // Avant le monde : le dossier des mondes d'Enshrouded se lit dans son JSON.
+    for (const file of getGameTransferFiles(gameType, serverPath, config)) {
+      const source = join(extractDir, CONFIG_DIR, file.key);
+      if (existsSync(source)) copyWithBackup(source, file.path);
+    }
+    const savePath = getGameSavePath(gameType, serverPath, config);
+    world = copyWorld(extractDir, savePath, choice.replaceWorld);
+  } catch (error) {
+    throw writeFailed(error);
+  }
 
   const server = ctx.servers.create({
     ...entry.server,
     name: choice.name,
     path: serverPath,
   });
-  ctx.updateServerConfig(server.id, cfg);
-
-  // Cibles recalculées pour ce jeu : un nom inconnu sous config/ est ignoré.
-  // Avant le monde : le dossier des mondes d'Enshrouded se lit dans son JSON.
-  for (const f of getGameTransferFiles(gameType, serverPath, cfg)) {
-    const src = join(dir, CONFIG_DIR, f.key);
-    if (existsSync(src)) copyWithBackup(src, f.path);
+  try {
+    ctx.updateServerConfig(server.id, config);
+    restoreGameTransferMods(gameType, ctx.getModsDataDir(server.id), mods);
+  } catch (error) {
+    ctx.servers.delete(server.id);
+    ctx.removeServerConfig(server.id);
+    throw writeFailed(error);
   }
-
-  const worldEntries = entries(join(dir, WORLD_DIR));
-  let world: ServerArchiveImportResult["world"] = "none";
-  if (worldEntries.length > 0) {
-    const save = getGameSavePath(gameType, serverPath, cfg);
-    const conflict = worldEntries.some((n) => existsSync(join(save, n)));
-    if (conflict && !choice.replaceWorld) {
-      world = "skipped";
-    } else {
-      mkdirSync(save, { recursive: true });
-      for (const n of worldEntries)
-        cpSync(join(dir, WORLD_DIR, n), join(save, n), {
-          recursive: true,
-          force: true,
-        });
-      world = "copied";
-    }
-  }
-
-  writePendingMods(ctx.getModsDataDir(server.id), mods);
-  rmSync(dir, { recursive: true, force: true });
+  rmSync(extractDir, { recursive: true, force: true });
   return { serverId: server.id, world, pendingMods: mods.length };
 }

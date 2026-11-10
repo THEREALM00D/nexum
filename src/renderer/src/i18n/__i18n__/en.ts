@@ -116,6 +116,10 @@ export default {
       "This file isn't a valid Nexum export, or it has been edited.",
     TRANSFER_FILE_TOO_NEW:
       "This file comes from a newer version of Nexum: update Nexum to import it.",
+    TRANSFER_TARGET_RUNNING:
+      "The server “{{name}}” uses these folders and is running: stop it or choose other folders.",
+    TRANSFER_WRITE_FAILED:
+      "Can't write {{path}} ({{detail}}): check that the folder exists and that you're allowed to write to it. No server was added.",
     STOP_BEFORE_EXPORT:
       "Stop the server before exporting it: its world must not change during the copy.",
   },

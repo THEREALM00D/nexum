@@ -10,11 +10,13 @@ import { errorMessage } from "../../../../../utils/appErrorMessage";
  * réinstallés par leur code. Rien n'est proposé tant que le jeu n'est pas
  * installé dans le dossier du serveur (BepInEx s'installe dedans).
  */
-export function usePendingMods(onInstalled: () => void) {
+export function usePendingMods(onInstalled: () => Promise<void>) {
   const { t } = useTranslation();
   const { notify } = useNotification();
   const { state } = useServer();
-  const server = state.servers.find((s) => s.id === state.activeServerId);
+  const server = state.servers.find(
+    (candidate) => candidate.id === state.activeServerId,
+  );
   const [pending, setPending] = useState<PendingMod[]>([]);
   const [gameInstalled, setGameInstalled] = useState(false);
   const [installing, setInstalling] = useState(false);
@@ -38,7 +40,11 @@ export function usePendingMods(onInstalled: () => void) {
       const { installed, errors } =
         await window.api.valheim.mods.installPending(server.id);
       setPending(await window.api.valheim.mods.getPending(server.id));
-      onInstalled();
+      // BepInEx et les mods sont installés : un échec de relecture ne doit
+      // pas être annoncé comme un échec d'installation
+      await onInstalled().catch(() =>
+        notify(t("valheimMods.installed.loadFailed"), "error"),
+      );
       if (errors.length > 0)
         notify(
           t("valheimMods.pending.errors", { count: errors.length }),
@@ -49,8 +55,8 @@ export function usePendingMods(onInstalled: () => void) {
           t("valheimMods.pending.success", { count: installed.length }),
           "success",
         );
-    } catch (e) {
-      notify(errorMessage(t, e), "error");
+    } catch (error) {
+      notify(errorMessage(t, error), "error");
     } finally {
       setInstalling(false);
     }
@@ -58,8 +64,12 @@ export function usePendingMods(onInstalled: () => void) {
 
   const dismiss = async () => {
     if (!server) return;
-    await window.api.valheim.mods.dismissPending(server.id);
-    setPending([]);
+    try {
+      await window.api.valheim.mods.dismissPending(server.id);
+      setPending([]);
+    } catch (error) {
+      notify(errorMessage(t, error), "error");
+    }
   };
 
   return {

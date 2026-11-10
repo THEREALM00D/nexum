@@ -7,6 +7,8 @@ interface Props {
   path: string;
   /** Chemin lu par le serveur du jeu : relatif à son dossier (`./savegame`). */
   serverRelative?: boolean;
+  /** Dossier du serveur pour `serverRelative` quand ce n'est pas le serveur actif (import). */
+  basePath?: string;
   sx?: SxProps<Theme>;
 }
 
@@ -18,12 +20,13 @@ interface Props {
 export default function InstallDirWarning({
   path,
   serverRelative = false,
+  basePath: base,
   sx,
 }: Props) {
   const { t } = useTranslation();
   const { state } = useServer();
   const [installDir, setInstallDir] = useState<string | null>(null);
-  const basePath = serverRelative ? state.serverPath : undefined;
+  const basePath = serverRelative ? (base ?? state.serverPath) : undefined;
 
   useEffect(() => {
     let cancelled = false;

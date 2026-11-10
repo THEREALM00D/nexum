@@ -37,23 +37,25 @@ export async function writeServerArchive(
   includePasswords: boolean,
   outPath: string,
 ): Promise<void> {
-  const server = ctx.servers.list().find((s) => s.id === serverId);
+  const server = ctx.servers
+    .list()
+    .find((candidate) => candidate.id === serverId);
   if (!server) throw new AppError("SERVER_NOT_FOUND", { id: serverId });
   const status = ctx.serverManagers
     .entries()
-    .find((e) => e.serverId === serverId)
+    .find((entry) => entry.serverId === serverId)
     ?.manager.getStatus();
   if (status && status !== "stopped" && status !== "crashed")
     throw new AppError("STOP_BEFORE_EXPORT");
 
-  const cfg = ctx.getServerConfig(serverId);
+  const config = ctx.getServerConfig(serverId);
   const manifest = {
     format: SERVER_FORMAT,
     version: TRANSFER_VERSION,
     appVersion: ctx.app.getVersion(),
     exportedAt: Date.now(),
     includesPasswords: includePasswords,
-    ...toServerEntry(server, cfg, includePasswords),
+    ...toServerEntry(server, config, includePasswords),
     mods: getGameTransferMods(
       server.gameType,
       server.path,
@@ -66,9 +68,9 @@ export async function writeServerArchive(
   const archive = new ZipArchive({ zlib: { level: 6 } });
   archive.append(JSON.stringify(manifest, null, 2), { name: MANIFEST });
 
-  const savePath = getGameSavePath(server.gameType, server.path, cfg);
+  const savePath = getGameSavePath(server.gameType, server.path, config);
   if (existsSync(savePath)) {
-    const keep = getGameWorldFilter(server.gameType, cfg);
+    const keep = getGameWorldFilter(server.gameType, config);
     for (const entry of readdirSync(savePath, { withFileTypes: true })) {
       if (!keep(entry.name)) continue;
       const src = join(savePath, entry.name);
@@ -77,11 +79,15 @@ export async function writeServerArchive(
       else archive.file(src, { name });
     }
   }
-  for (const f of getGameTransferFiles(server.gameType, server.path, cfg)) {
-    if (!existsSync(f.path)) continue;
-    const name = `${CONFIG_DIR}/${f.key}`;
-    if (f.dir) archive.directory(f.path, name);
-    else archive.file(f.path, { name });
+  for (const file of getGameTransferFiles(
+    server.gameType,
+    server.path,
+    config,
+  )) {
+    if (!existsSync(file.path)) continue;
+    const name = `${CONFIG_DIR}/${file.key}`;
+    if (file.isDirectory) archive.directory(file.path, name);
+    else archive.file(file.path, { name });
   }
 
   // .tmp puis renommage : jamais de ZIP à moitié écrit sous le nom choisi
@@ -97,8 +103,8 @@ export async function writeServerArchive(
       archive.finalize();
     });
     renameSync(tempPath, outPath);
-  } catch (err) {
+  } catch (error) {
     rmSync(tempPath, { force: true });
-    throw err;
+    throw error;
   }
 }

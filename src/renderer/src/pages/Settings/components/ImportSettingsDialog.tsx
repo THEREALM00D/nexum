@@ -20,6 +20,7 @@ import { useServer } from "../../../context/ServerContext";
 import CheckboxField from "../../../components/common/CheckboxField";
 import SectionTitle from "../../../components/common/SectionTitle";
 import { isUsedPath } from "../../../components/transfer/samePath";
+import { formatDate } from "../../../utils/format";
 import ImportServerRow, { type ImportRowState } from "./ImportServerRow";
 
 interface Props {
@@ -33,26 +34,26 @@ export default function ImportSettingsDialog({
   onClose,
   onImport,
 }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { state } = useServer();
   const [rows, setRows] = useState<ImportRowState[]>([]);
   const [applyApp, setApplyApp] = useState(true);
-  const [importFw, setImportFw] = useState(true);
-  const [applyFw, setApplyFw] = useState(false);
+  const [importFirewall, setImportFirewall] = useState(true);
+  const [applyFirewall, setApplyFirewall] = useState(false);
   const [busy, setBusy] = useState(false);
 
   // Nouveau fichier : un serveur déjà présent (même dossier) est décoché
   useEffect(() => {
     if (!preview) return;
     setRows(
-      preview.servers.map((s) => ({
-        include: !isUsedPath(state.servers, s.paths.path),
-        paths: s.paths,
+      preview.servers.map((server) => ({
+        include: !isUsedPath(state.servers, server.paths.path),
+        paths: server.paths,
       })),
     );
     setApplyApp(true);
-    setImportFw(preview.customFirewallRules.length > 0);
-    setApplyFw(false);
+    setImportFirewall(preview.customFirewallRules.length > 0);
+    setApplyFirewall(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- seulement à l'ouverture
   }, [preview]);
 
@@ -64,12 +65,12 @@ export default function ImportSettingsDialog({
     try {
       await onImport({
         filePath: preview.filePath,
-        servers: rows.flatMap((r, index) =>
-          r.include ? [{ index, paths: r.paths }] : [],
+        servers: rows.flatMap((row, index) =>
+          row.include ? [{ index, paths: row.paths }] : [],
         ),
         applyAppSettings: applyApp,
-        importFirewallRules: importFw,
-        applyFirewallRules: importFw && applyFw,
+        importFirewallRules: importFirewall,
+        applyFirewallRules: importFirewall && applyFirewall,
       });
     } finally {
       setBusy(false);
@@ -77,7 +78,9 @@ export default function ImportSettingsDialog({
   };
 
   const nothing =
-    !rows.some((r) => r.include) && !applyApp && !(importFw && ruleCount);
+    !rows.some((row) => row.include) &&
+    !applyApp &&
+    !(importFirewall && ruleCount);
 
   return (
     <Dialog open onClose={busy ? undefined : onClose} maxWidth="sm" fullWidth>
@@ -86,7 +89,10 @@ export default function ImportSettingsDialog({
         <Stack spacing={2}>
           <Typography variant="body2" sx={{ color: "text.secondary" }}>
             {t("transfer.exportedAt", {
-              date: new Date(preview.exportedAt).toLocaleString(),
+              date: formatDate(
+                preview.exportedAt,
+                i18n.resolvedLanguage ?? "fr",
+              ),
             })}
           </Typography>
           {!preview.includesPasswords && preview.servers.length > 0 && (
@@ -101,15 +107,22 @@ export default function ImportSettingsDialog({
                 : t("settings.transfer.noServers")}
             </Typography>
           </div>
-          {preview.servers.map((s, i) =>
-            rows[i] ? (
+          {preview.servers.map((server, serverIndex) =>
+            rows[serverIndex] ? (
               <ImportServerRow
-                key={s.index}
-                server={s}
-                value={rows[i]}
-                duplicate={isUsedPath(state.servers, rows[i].paths.path)}
+                key={server.index}
+                server={server}
+                value={rows[serverIndex]}
+                duplicate={isUsedPath(
+                  state.servers,
+                  rows[serverIndex].paths.path,
+                )}
                 onChange={(next) =>
-                  setRows((all) => all.map((r, j) => (j === i ? next : r)))
+                  setRows((all) =>
+                    all.map((row, rowIndex) =>
+                      rowIndex === serverIndex ? next : row,
+                    ),
+                  )
                 }
               />
             ) : null,
@@ -124,17 +137,17 @@ export default function ImportSettingsDialog({
           />
           {ruleCount > 0 && (
             <CheckboxField
-              checked={importFw}
-              onChange={setImportFw}
+              checked={importFirewall}
+              onChange={setImportFirewall}
               label={t("settings.transfer.firewall", { count: ruleCount })}
               helper={t("settings.transfer.firewallHelper")}
             />
           )}
-          {ruleCount > 0 && importFw && (
+          {ruleCount > 0 && importFirewall && (
             <Stack sx={{ pl: 4 }}>
               <CheckboxField
-                checked={applyFw}
-                onChange={setApplyFw}
+                checked={applyFirewall}
+                onChange={setApplyFirewall}
                 label={t("settings.transfer.applyFirewall")}
                 helper={t("settings.transfer.applyFirewallHelper")}
               />
@@ -144,7 +157,7 @@ export default function ImportSettingsDialog({
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} disabled={busy}>
-          {t("transfer.cancel")}
+          {t("common.cancel")}
         </Button>
         <Button
           variant="contained"

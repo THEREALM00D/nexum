@@ -303,6 +303,13 @@ export class ValheimModsManager {
     // Les ZIPs Thunderstore ont souvent un dossier racine unique (ex: BepInExPack_Valheim/)
     // On extrait d'abord dans un dossier temporaire pour aplatir si nécessaire.
     const tempExtract = join(this.dataDir, "_bepinex_extract_" + Date.now());
+    // Le pack remplace tout `BepInEx/` : sans ça, les réglages des mods
+    // (`BepInEx/config`, ceux d'un serveur importé d'un autre PC compris)
+    // repartiraient à leurs valeurs par défaut.
+    const configDir = join(this.serverPath, "BepInEx", "config");
+    const savedConfig = join(this.dataDir, "_bepinex_config_" + Date.now());
+    if (existsSync(configDir))
+      cpSync(configDir, savedConfig, { recursive: true });
     try {
       mkdirSync(tempExtract, { recursive: true });
       await extractZip(tempZip, { dir: tempExtract });
@@ -321,6 +328,11 @@ export class ValheimModsManager {
         cpSync(src, dest, { recursive: true });
       }
     } finally {
+      // Même en cas d'échec : la config ne doit jamais être perdue
+      if (existsSync(savedConfig)) {
+        cpSync(savedConfig, configDir, { recursive: true, force: true });
+        rmSync(savedConfig, { recursive: true, force: true });
+      }
       try {
         rmSync(tempExtract, { recursive: true, force: true });
         unlinkSync(tempZip);

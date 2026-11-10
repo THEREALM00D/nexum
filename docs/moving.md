@@ -32,7 +32,7 @@ Settings stored in the game's own files (`PalWorldSettings.ini`, Astroneer INI f
 - **Game not found in this folder**: the server is imported anyway; install the game from the **Installation** page.
 - **Already added**: a Nexum server already uses this folder. Each import adds new servers, it never replaces an existing one.
 - **App settings**: language, notification area, beta versions, launch at Windows startup.
-- **Custom firewall rules**: added to the Network page list. Check **Also create them in the Windows firewall** to create them right away (Windows asks for permission once); otherwise create them from the Network page.
+- **Custom firewall rules**: added to the Network page list. Check **Also create them in the Windows firewall** to create them right away (Windows asks for permission once); otherwise create them from the Network page. A rule with the same name and protocol as a rule already on this PC but another port is left out: the rule of this PC is kept.
 
 ## Server export ("move a server")
 
@@ -42,7 +42,7 @@ The ZIP contains:
 
 - the server's Nexum settings;
 - its world (the game's save folder). For Valheim, only the server's world: not the other worlds of the same folder, nor Valheim's automatic backups;
-- the game's config files: `PalWorldSettings.ini` (Palworld), `AstroServerSettings.ini` and `Engine.ini` (Astroneer), `DedicatedServer.ini` (RuneScape: Dragonwilds), `enshrouded_server.json` (Enshrouded), the admin / banned / permitted lists and the mod settings (`BepInEx/config`) for Valheim;
+- the game's config files: `PalWorldSettings.ini` and `GameUserSettings.ini` (Palworld, the latter tells the server which world to load), `AstroServerSettings.ini` and `Engine.ini` (Astroneer), `DedicatedServer.ini` (RuneScape: Dragonwilds), `enshrouded_server.json` (Enshrouded), the admin / banned / permitted lists and the mod settings (`BepInEx/config`) for Valheim;
 - for Valheim, the list of mods installed from Thunderstore or Hexium (manually installed mods are left out).
 
 ### Import
@@ -51,9 +51,11 @@ The ZIP contains:
 
 1. Check the name and the folders (server folder, and Valheim game data folder if it was set).
 2. If a world with the same name is already in the worlds folder, Nexum doesn't overwrite it unless you check **Replace the world already there**.
-3. Existing game config files are kept next to the new ones as `.backup` copies.
+3. Existing game config files are listed in the dialog before the import, and kept next to the new ones as `.backup` copies.
+4. If a running server uses these folders (same server folder, or for Valheim the same game data folder), the import is refused: stop that server or choose other folders.
+5. If a file can't be written (folder without write permission, missing drive), the import stops and no server is added: fix the folder and import again.
 
-Recommended order on the new PC: import the server, install the game from the **Installation** page, then (Valheim) open the **Mods** page and click **Reinstall** in the "mods to reinstall" banner. Nexum installs BepInEx if needed, then each mod from its registry; mods that were disabled stay disabled. A mod that fails stays in the list for another try, or click **Dismiss**.
+Recommended order on the new PC: import the server, install the game from the **Installation** page, then (Valheim) open the **Mods** page and click **Reinstall** in the "mods to reinstall" banner. Nexum installs BepInEx if needed (the imported mod settings in `BepInEx/config` are kept), then each mod from its registry; mods that were disabled stay disabled. A mod that fails stays in the list for another try, or click **Dismiss**.
 
 ## Passwords
 

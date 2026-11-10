@@ -1,4 +1,4 @@
-import { Alert, Button, Stack } from "@mui/material";
+import { Alert, Button, CircularProgress, Stack } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
@@ -50,8 +50,15 @@ export default function Servers({ onOpenSetup }: { onOpenSetup: () => void }) {
           >
             <Button
               variant="outlined"
-              startIcon={<FileDownloadIcon />}
+              startIcon={
+                transfer.previewing ? (
+                  <CircularProgress size={16} color="inherit" />
+                ) : (
+                  <FileDownloadIcon />
+                )
+              }
               onClick={transfer.pickFile}
+              disabled={transfer.previewing}
             >
               {t("servers.transfer.importButton")}
             </Button>

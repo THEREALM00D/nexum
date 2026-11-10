@@ -78,7 +78,7 @@ export default function ExportDialog({
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} disabled={busy}>
-          {t("transfer.cancel")}
+          {t("common.cancel")}
         </Button>
         <Button
           variant="contained"

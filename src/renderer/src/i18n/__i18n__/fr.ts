@@ -120,6 +120,10 @@ export default {
       "Ce fichier n'est pas un export Nexum valide, ou il a été modifié.",
     TRANSFER_FILE_TOO_NEW:
       "Ce fichier vient d'une version plus récente de Nexum : mettez Nexum à jour pour l'importer.",
+    TRANSFER_TARGET_RUNNING:
+      "Le serveur « {{name}} » utilise ces dossiers et il est lancé : arrêtez-le ou choisissez d'autres dossiers.",
+    TRANSFER_WRITE_FAILED:
+      "Impossible d'écrire {{path}} ({{detail}}) : vérifiez que le dossier existe et que vous avez le droit d'y écrire. Aucun serveur n'a été ajouté.",
     STOP_BEFORE_EXPORT:
       "Arrêtez le serveur avant de l'exporter : son monde ne doit pas changer pendant la copie.",
   },

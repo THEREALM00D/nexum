@@ -2,6 +2,12 @@ import { exec } from "child_process";
 import { promisify } from "util";
 import type Store from "electron-store";
 import type { FirewallNamedRule } from "../../shared/types";
+import {
+  mergeImportedRules,
+  sameRule,
+  withRule,
+  withoutRule,
+} from "./customRules";
 
 const execAsync = promisify(exec);
 
@@ -12,14 +18,8 @@ export interface FirewallPort {
   active: boolean;
 }
 
-interface StoredCustomRule {
-  name: string;
-  port: number;
-  protocol: "TCP" | "UDP";
-}
-
 interface FWStore {
-  customRules: StoredCustomRule[];
+  customRules: FirewallNamedRule[];
 }
 
 type Result = { success: boolean; error?: string };
@@ -279,13 +279,8 @@ export class FirewallManager {
     const result = await this.applyNamedRules([{ name, port, protocol }]);
     if (result.success) {
       const store = await this.getStore();
-      const existing = store.get("customRules");
-      const alreadyStored = existing.some(
-        (r) => r.name === name && r.protocol === protocol,
-      );
-      if (!alreadyStored) {
-        store.set("customRules", [...existing, { name, port, protocol }]);
-      }
+      const rule = { name, port, protocol };
+      store.set("customRules", withRule(store.get("customRules"), rule));
     }
     return result;
   }
@@ -297,10 +292,8 @@ export class FirewallManager {
     const result = await this.removeNamedRules([{ name, protocol }]);
     if (result.success) {
       const store = await this.getStore();
-      const remaining = store
-        .get("customRules")
-        .filter((r) => !(r.name === name && r.protocol === protocol));
-      store.set("customRules", remaining);
+      const stored = store.get("customRules");
+      store.set("customRules", withoutRule(stored, name, protocol));
     }
     return result;
   }
@@ -329,25 +322,24 @@ export class FirewallManager {
   }
 
   /**
-   * Ajoute des règles perso à la liste (import des réglages), sans toucher au
-   * pare-feu de Windows. Règle invalide (fichier modifié à la main) ou déjà
-   * présente (même nom et protocole) pas dupliquée. Renvoie les règles
-   * valides du lot, ajoutées ou déjà présentes (à appliquer si demandé).
+   * Import des réglages : ajoute les règles perso à la liste, sans toucher au
+   * pare-feu de Windows (voir `mergeImportedRules`). Règle invalide (fichier
+   * modifié à la main) écartée. Renvoie les règles à appliquer si demandé.
    */
   async addCustomRules(
     rules: FirewallNamedRule[],
   ): Promise<FirewallNamedRule[]> {
-    const same = (a: FirewallNamedRule) => (b: FirewallNamedRule) =>
-      a.name === b.name && a.protocol === b.protocol;
     const valid = rules.filter(
-      (r, i) =>
-        isValidRule(r.name, r.port, r.protocol) &&
-        rules.findIndex(same(r)) === i,
+      (rule, index) =>
+        isValidRule(rule.name, rule.port, rule.protocol) &&
+        rules.findIndex(sameRule(rule)) === index,
     );
     const store = await this.getStore();
-    const existing = store.get("customRules");
-    const added = valid.filter((r) => !existing.some(same(r)));
-    if (added.length > 0) store.set("customRules", [...existing, ...added]);
-    return valid;
+    const { next, toApply } = mergeImportedRules(
+      store.get("customRules"),
+      valid,
+    );
+    if (next) store.set("customRules", next);
+    return toApply;
   }
 }
