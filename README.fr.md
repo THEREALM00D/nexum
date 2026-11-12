@@ -14,7 +14,7 @@ Application Windows gratuite et open source pour héberger des serveurs dédiés
 [![Discord](https://img.shields.io/badge/Discord-join-5865F2?logo=discord&logoColor=white)](https://discord.gg/DbJ3WkK5QU)
 
 <p align="center">
-  <img src="docs/images/demo.gif" alt="Démo de Nexum : mods Valheim installés, recherche sur Hexium et Thunderstore, mods dépréciés signalés, éditeur de configs BepInEx, règles de pare-feu" width="960">
+  <img src="docs/images/demo.gif" alt="Démo de Nexum : serveurs Valheim, Palworld, Astroneer, RuneScape: Dragonwilds et Enshrouded lancés côte à côte, puis le tableau de bord de chaque jeu" width="960">
 </p>
 
 ## Fonctionnalités
@@ -45,7 +45,11 @@ Application Windows gratuite et open source pour héberger des serveurs dédiés
   </tr>
   <tr>
     <td><img src="docs/images/players.png" alt="Historique des joueurs" width="420"/><br/><sub>Historique des joueurs</sub></td>
-    <td></td>
+    <td><img src="docs/images/backups.png" alt="Sauvegardes" width="420"/><br/><sub>Sauvegardes</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/images/schedule.png" alt="Redémarrage planifié" width="420"/><br/><sub>Redémarrage planifié</sub></td>
+    <td><img src="docs/images/setup-wizard.png" alt="Assistant de configuration" width="420"/><br/><sub>Assistant de configuration</sub></td>
   </tr>
 </table>
 
