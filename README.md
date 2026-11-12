@@ -14,7 +14,7 @@ Free, open-source Windows app to run **Valheim**, **Palworld**, **Astroneer**, *
 [![Discord](https://img.shields.io/badge/Discord-join-5865F2?logo=discord&logoColor=white)](https://discord.gg/DbJ3WkK5QU)
 
 <p align="center">
-  <img src="docs/images/demo.gif" alt="Nexum demo: installed Valheim mods, searching Hexium and Thunderstore, deprecated mods flagged, BepInEx config editor, firewall rules" width="960">
+  <img src="docs/images/demo.gif" alt="Nexum demo: Valheim, Palworld, Astroneer, RuneScape: Dragonwilds and Enshrouded servers running side by side, then each game dashboard" width="960">
 </p>
 
 ## Features
@@ -45,7 +45,11 @@ Free, open-source Windows app to run **Valheim**, **Palworld**, **Astroneer**, *
   </tr>
   <tr>
     <td><img src="docs/images/players.png" alt="Player history" width="420"/><br/><sub>Player history</sub></td>
-    <td></td>
+    <td><img src="docs/images/backups.png" alt="Backups" width="420"/><br/><sub>Backups</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/images/schedule.png" alt="Scheduled restart" width="420"/><br/><sub>Scheduled restart</sub></td>
+    <td><img src="docs/images/setup-wizard.png" alt="Setup wizard" width="420"/><br/><sub>Setup wizard</sub></td>
   </tr>
 </table>
 
