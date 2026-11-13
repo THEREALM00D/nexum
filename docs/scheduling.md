@@ -21,7 +21,7 @@ Toggle at the top of the page. When disabled, no automatic restart occurs.
 
 ### Time (24h)
 
-Time picker in `HH:MM` format. The restart triggers **every day** at that time.
+Time picker in `HH:MM` format. The restart triggers **every day** at that time. Type the time in the field, or click the clock icon to pick the hour and minutes from lists (minutes in 5-minute steps; any minute can be typed), then **OK**.
 
 > Pick an off-peak hour (e.g. 4:00 AM) to minimize impact on players.
 

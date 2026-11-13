@@ -5,6 +5,7 @@ Règles générales et architecture : `CLAUDE.md` racine. Ce fichier = conventio
 ## Base
 
 - **MUI uniquement** (pas de Tailwind, pas de CSS custom sauf `index.css` minimal). Questions MUI : voir `.claude/CLAUDE.md` (serveur MCP MUI).
+- ⚠️ Pas de `TextField type="time"` / `"date"` : leur popup est dessinée par Chromium (blanche et bleue) et ignore le thème. Prendre `@mui/x-date-pickers` avec `AdapterDateFns` (exemple : `components/schedule/ScheduleTimePicker.tsx`, `LocalizationProvider` local avec la locale date-fns et `localeText` FR/EN).
 - **Jamais d'import depuis `src/main/`** : passer par `window.api` (IPC), types dans `@shared/types`.
 - **Pages = affichage, composants et hooks = logique.** Fichiers < 200 lignes : au-delà, extraire hooks / components / data.
 - Composants partagés entre jeux : `components/common/`, `server/`, `config/`, `backup/`, `schedule/`, `firewall/`, `players/`. **Ne jamais importer depuis `games/<autre-jeu>/`** : extraire le composant dans `components/`.
