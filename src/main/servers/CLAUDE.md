@@ -28,3 +28,5 @@ Pas de flow dédié : `ServerDialog` accepte un dossier existant. `servers:detec
 ## Config persistée (`ServerConfigStore.ts`)
 
 Valeurs par défaut de chaque jeu + fusion dans `get` / `update` / `migrateLegacy`. Une valeur par défaut qui change doit rester compatible avec les configs déjà enregistrées (ex. `LEGACY_RESTART_MESSAGE`, `src/main/scheduler/CLAUDE.md`).
+
+⚠️ `update()` réécrit **toute** la config du serveur : une valeur par défaut fusionnée par `get()` finit enregistrée au premier réglage changé, même sans rapport. Un défaut qui doit suivre la langue est donc stocké vide et résolu à la lecture. Nom Valheim : `""` en stockage, `lt().valheimDefaultServerName` à la lecture ; `storedValheimConfig` remet `""` pour tout nom par défaut (FR, EN ou l'ancien `LEGACY_VALHEIM_NAME`), sinon il se figerait dans la langue du moment.

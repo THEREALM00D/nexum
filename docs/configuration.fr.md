@@ -4,7 +4,7 @@
 
 Chaque jeu a sa propre page **Configuration**. Cette page concerne **Palworld** : un éditeur graphique du fichier `PalWorldSettings.ini`.
 
-- **Valheim** : réglages de lancement (nom, monde, mot de passe, modificateurs), transmis au serveur au démarrage
+- **Valheim** : réglages de lancement (nom, monde, mot de passe, modificateurs), transmis au serveur au démarrage. Tant que vous n'avez pas choisi de nom, le serveur s'appelle « Serveur Valheim - hébergé par Nexum », dans la langue de Nexum
 - **Astroneer** : les fichiers `Engine.ini` et `AstroServerSettings.ini`. Modifiez-les uniquement serveur arrêté : Astroneer ne conserve pas les changements faits pendant qu'il tourne
 - **RuneScape: Dragonwilds** : voir [sa page](dragonwilds.fr.md)
 - **Enshrouded** : voir [sa page](enshrouded.fr.md)
