@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.23.0](https://github.com/THEREALM00D/nexum/compare/v0.22.0...v0.23.0) (2026-11-13)
+
+
+### Features
+
+* theme the scheduled restart time picker ([#243](https://github.com/THEREALM00D/nexum/issues/243)) ([da7df8d](https://github.com/THEREALM00D/nexum/commit/da7df8d3e6ca4db6c7286a0f5b3650eec4cbddfa))
+
+
+### Bug Fixes
+
+* keep the default backup folder implicit when backup settings change ([#247](https://github.com/THEREALM00D/nexum/issues/247)) ([1b36d86](https://github.com/THEREALM00D/nexum/commit/1b36d86bd39736ef92c2d07454c81d5a68aae65d))
+* use a default Valheim server name in the app language ([#246](https://github.com/THEREALM00D/nexum/issues/246)) ([0dac43f](https://github.com/THEREALM00D/nexum/commit/0dac43f68672d43600471ae9b35f84c795dd4048))
+
 ## [0.22.0](https://github.com/THEREALM00D/nexum/compare/v0.21.0...v0.22.0) (2026-11-10)
 
 
