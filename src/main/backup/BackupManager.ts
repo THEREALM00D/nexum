@@ -267,10 +267,6 @@ export class BackupManager {
     return join(userDataPath, "backups");
   }
 
-  getDefaultBackupDirForServer(userDataPath: string, serverId: string): string {
-    return join(userDataPath, "servers", serverId, "backups");
-  }
-
   basename(p: string): string {
     return basename(p);
   }

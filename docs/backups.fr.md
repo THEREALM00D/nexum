@@ -35,7 +35,7 @@ Ce dossier contient :
 
 Par défaut : `{userData}/servers/<id du serveur>/backups` (typiquement `%APPDATA%\Nexum\servers\<id du serveur>\backups`). Les installations d'origine ServerForge y sont déplacées automatiquement depuis `%APPDATA%\server-forge`, avec leurs sauvegardes et leurs réglages.
 
-Vous pouvez choisir un autre dossier (disque externe, NAS) via le bouton **dossier**.
+Vous pouvez choisir un autre dossier (disque externe, NAS) via le bouton **dossier**. Rechoisir le dossier par défaut revient au réglage par défaut : le dossier suit alors le dossier de données de Nexum.
 
 ### Rotation
 

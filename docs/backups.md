@@ -35,7 +35,7 @@ This folder contains:
 
 Default: `{userData}/servers/<server id>/backups` (typically `%APPDATA%\Nexum\servers\<server id>\backups`). Installs that started as ServerForge are moved there from `%APPDATA%\server-forge` automatically, with their backups and settings.
 
-You can choose a different folder (external drive, NAS) via the **folder** button.
+You can choose a different folder (external drive, NAS) via the **folder** button. Choosing the default folder again goes back to the default: the folder then follows Nexum's data folder.
 
 ### Rotation
 

@@ -4,6 +4,7 @@ import type { BackupConfig } from "../../../shared/types";
 import { getGameSavePath } from "../../games/registry";
 import { backupBeforeUpdate, backupServer } from "../../backup/serverBackup";
 import { AppError } from "../../utils/appError";
+import { isDefaultBackupDir } from "../../backup/defaultBackupDir";
 
 export function registerBackupHandlers(ctx: IpcContext): void {
   ipcMain.handle("backup:getConfig", (): BackupConfig => {
@@ -11,9 +12,16 @@ export function registerBackupHandlers(ctx: IpcContext): void {
     return { ...cfg, backupDir: ctx.getBackupDir() };
   });
 
-  ipcMain.handle("backup:setConfig", (_, cfg: BackupConfig) => {
-    // Relu à chaque tick par BackupScheduler : rien à réarmer.
-    ctx.updateServerConfig(undefined, { backup: cfg });
+  ipcMain.handle("backup:setConfig", (_, config: BackupConfig) => {
+    // Relu à chaque tick par BackupScheduler : rien à réarmer. getConfig
+    // renvoie le dossier effectif : le défaut n'est jamais enregistré.
+    const serverId = ctx.getActiveServer()?.id;
+    const userDataPath = ctx.app.getPath("userData");
+    const backupDir =
+      serverId && isDefaultBackupDir(config.backupDir, userDataPath, serverId)
+        ? ""
+        : config.backupDir;
+    ctx.updateServerConfig(serverId, { backup: { ...config, backupDir } });
   });
 
   ipcMain.handle("backup:list", () => ctx.backup.list(ctx.getBackupDir()));
