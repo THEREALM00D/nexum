@@ -14,6 +14,7 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { useRestartSchedule } from "./useRestartSchedule";
+import ScheduleTimePicker from "./ScheduleTimePicker";
 import LoadingSkeleton from "../common/LoadingSkeleton";
 import PageHeader from "../common/PageHeader";
 
@@ -62,15 +63,11 @@ export default function RestartSchedulePage({ infoKey, notice }: Props) {
 
         <Stack spacing={2}>
           <LoadingSkeleton loading={loading} fullWidth sx={{ maxWidth: 200 }}>
-            <TextField
+            <ScheduleTimePicker
               label={t("schedule.time")}
-              type="time"
-              size="small"
               value={cfg.time}
-              onChange={(e) => update({ time: e.target.value })}
+              onChange={(time) => update({ time })}
               disabled={!cfg.enabled}
-              sx={{ maxWidth: 200 }}
-              slotProps={{ inputLabel: { shrink: true } }}
             />
           </LoadingSkeleton>
           <LoadingSkeleton loading={loading} fullWidth sx={{ maxWidth: 280 }}>

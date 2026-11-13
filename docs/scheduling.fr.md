@@ -21,7 +21,7 @@ Toggle en haut de la page. Quand désactivé, aucun redémarrage automatique n'a
 
 ### Heure (24h)
 
-Sélecteur d'heure au format `HH:MM`. Le redémarrage se déclenche **chaque jour** à cette heure.
+Sélecteur d'heure au format `HH:MM`. Le redémarrage se déclenche **chaque jour** à cette heure. Tapez l'heure dans le champ, ou cliquez sur l'icône d'horloge pour choisir l'heure et les minutes dans des listes (minutes par pas de 5 ; toute minute peut être tapée), puis **OK**.
 
 > Choisissez une heure creuse (ex: 04:00 du matin) pour minimiser l'impact sur les joueurs.
 
