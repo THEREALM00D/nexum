@@ -7,6 +7,7 @@ import { AstroConfigParser } from "../games/astroneer/AstroConfigParser";
 import { SystemMonitor } from "../monitor/SystemMonitor";
 import { FirewallManager } from "../firewall/FirewallManager";
 import { BackupManager } from "../backup/BackupManager";
+import { clearSavedDefaultBackupDirs } from "../backup/defaultBackupDir";
 import { RestartScheduler } from "../scheduler/RestartScheduler";
 import { BackupScheduler } from "../scheduler/BackupScheduler";
 import { PalworldApiClient } from "../games/palworld/PalworldApiClient";
@@ -79,6 +80,7 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
     const legacyBackupDefault = join(app.getPath("userData"), "backups");
     serverConfigs.migrateLegacy(firstServer.id, legacyBackupDefault);
   }
+  clearSavedDefaultBackupDirs(servers, serverConfigs, app.getPath("userData"));
 
   // Helpers utilisés partout : centralisent la résolution du serveur "actif".
   // Tant qu'on n'a pas la Phase 2 (handlers paramétrés par serverId), tout le

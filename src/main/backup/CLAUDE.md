@@ -2,7 +2,7 @@
 
 - **Point d'entrée unique** : `backupServer(ctx, serverId, { beforeUpdate?, log? })` (`serverBackup.ts`) : dossier des mondes (`getGameSavePath`, `src/main/games/registry.ts`, toujours un chemin) + rotation + ligne `[Manager]` « Sauvegarde créée ». Utilisé par le bouton, la sauvegarde auto et celle d'avant mise à jour. **Ne pas appeler `BackupManager.create` directement.**
 - Format : ZIP niveau 9, `backup-YYYY-MM-DD_HH-MM-SS.zip` (`…-before-update.zip` avant une mise à jour). `archiver` est ESM pur : `await import()` dans `BackupManager.create()`.
-- Dossier cible configurable : `ctx.getBackupDir(serverId?)` (défaut `{userData}/servers/<id>/backups`, `{userData}/backups` sans serveur actif).
+- Dossier cible configurable : `ctx.getBackupDir(serverId?)` (défaut `{userData}/servers/<id>/backups`, `{userData}/backups` sans serveur actif). `backupDir` vide = défaut. ⚠️ `backup:getConfig` renvoie le dossier **effectif** et la page renvoie toute la config à chaque changement : `backup:setConfig` remet à vide un dossier égal au défaut (`isDefaultBackupDir`, `defaultBackupDir.ts`, sans casse), sinon changer la rotation figeait le défaut en chemin absolu. `clearSavedDefaultBackupDirs` nettoie au démarrage les configs déjà touchées.
 - Rotation : N dernières (0 = infini), **comptées séparément** pour les sauvegardes normales et d'avant mise à jour (`BackupEntry.beforeUpdate`, d'après le suffixe) : une série de sauvegardes auto ne doit pas effacer la copie d'avant un patch.
 
 ## Serveur lancé (`backupRunningServer`, issue #194)
