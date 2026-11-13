@@ -5,43 +5,21 @@ import type {
   LaunchArgsConfig,
   RestartConfig,
   ServerConfig,
-  ValheimLaunchConfig,
-  ValheimModifiers,
   AstroneerLaunchConfig,
   DragonwildsLaunchConfig,
   EnshroudedLaunchConfig,
 } from "../../shared/types";
 import type { AppStore } from "../ipc/context";
+import {
+  DEFAULT_VALHEIM_CONFIG,
+  storedValheimConfig,
+  withValheimDefaults,
+} from "./valheimDefaults";
 
 const DEFAULT_LAUNCH_ARGS: LaunchArgsConfig = {
   publicLobby: false,
   performanceFlags: false,
   customArgs: "",
-};
-
-const DEFAULT_MODIFIERS: ValheimModifiers = {
-  combat: "",
-  deathpenalty: "",
-  resources: "",
-  raids: "",
-  portals: "",
-};
-
-const DEFAULT_VALHEIM_CONFIG: ValheimLaunchConfig = {
-  name: "Mon Serveur Valheim",
-  world: "Dedicated",
-  password: "",
-  port: 2456,
-  public: true,
-  savedir: "",
-  crossplay: false,
-  logFile: "",
-  customArgs: "",
-  worldSeed: "",
-  worldSize: "",
-  modifierPreset: "",
-  modifiers: DEFAULT_MODIFIERS,
-  odinEyeUrl: "",
 };
 
 const DEFAULT_ASTRONEER_CONFIG: AstroneerLaunchConfig = {
@@ -106,10 +84,11 @@ export class ServerConfigStore {
       {} as Record<string, ServerConfig>,
     );
     const existing = all[serverId];
-    if (!existing) return DEFAULT_SERVER_CONFIG;
+    if (!existing)
+      return { ...DEFAULT_SERVER_CONFIG, valheimConfig: withValheimDefaults() };
     return {
       launchArgs: { ...DEFAULT_LAUNCH_ARGS, ...existing.launchArgs },
-      valheimConfig: { ...DEFAULT_VALHEIM_CONFIG, ...existing.valheimConfig },
+      valheimConfig: withValheimDefaults(existing.valheimConfig),
       astroneerConfig: {
         ...DEFAULT_ASTRONEER_CONFIG,
         ...existing.astroneerConfig,
@@ -151,7 +130,13 @@ export class ServerConfigStore {
       "serversConfig",
       {} as Record<string, ServerConfig>,
     );
-    this.store.set("serversConfig", { ...all, [serverId]: next });
+    this.store.set("serversConfig", {
+      ...all,
+      [serverId]: {
+        ...next,
+        valheimConfig: storedValheimConfig(next.valheimConfig),
+      },
+    });
     return next;
   }
 

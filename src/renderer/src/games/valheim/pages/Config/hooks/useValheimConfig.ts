@@ -11,7 +11,7 @@ const DEFAULT_MODIFIERS: ValheimModifiers = {
 };
 
 const DEFAULT_CONFIG: ValheimLaunchConfig = {
-  name: "Mon Serveur Valheim",
+  name: "",
   world: "Dedicated",
   password: "",
   port: 2456,

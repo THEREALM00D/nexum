@@ -107,6 +107,9 @@ const FR = {
   // redémarrage planifié est vide. Même texte en placeholder côté renderer
   // (`schedule.messageDefault`).
   restartAnnounceDefault: "Le serveur va redémarrer dans {minutes} minutes",
+  // Nom d'un serveur Valheim tant que l'utilisateur n'en a pas choisi
+  // (`ServerConfigStore`), visible dans la liste des serveurs du jeu.
+  valheimDefaultServerName: "Serveur Valheim - hébergé par Nexum",
   autoUpdateSkippedSteam:
     "Mise à jour automatique ignorée : serveur installé via la bibliothèque Steam, c'est Steam qui le met à jour.",
   autoUpdateSkippedNoSteamCmd:
@@ -227,6 +230,7 @@ const EN: typeof FR = {
     "Enable the REST API (Config page) so Nexum makes the server save right before.",
 
   restartAnnounceDefault: "The server will restart in {minutes} minutes",
+  valheimDefaultServerName: "Valheim Server - hosted by Nexum",
   autoUpdateSkippedSteam:
     "Automatic update skipped: the server was installed through the Steam library, Steam updates it.",
   autoUpdateSkippedNoSteamCmd:
@@ -259,6 +263,13 @@ const EN: typeof FR = {
 /** Textes dans la langue courante de l'interface. */
 export function lt(): typeof FR {
   return getLanguage() === "en" ? EN : FR;
+}
+
+/** Un texte dans toutes les langues (reconnaître une valeur par défaut). */
+export function inAllLanguages<Key extends keyof typeof FR>(
+  key: Key,
+): (typeof FR)[Key][] {
+  return [FR[key], EN[key]];
 }
 
 /**
