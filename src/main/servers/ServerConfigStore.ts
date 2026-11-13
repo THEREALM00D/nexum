@@ -5,46 +5,21 @@ import type {
   LaunchArgsConfig,
   RestartConfig,
   ServerConfig,
-  ValheimLaunchConfig,
-  ValheimModifiers,
   AstroneerLaunchConfig,
   DragonwildsLaunchConfig,
   EnshroudedLaunchConfig,
 } from "../../shared/types";
 import type { AppStore } from "../ipc/context";
-import { inAllLanguages, lt } from "../i18n/logStrings";
+import {
+  DEFAULT_VALHEIM_CONFIG,
+  storedValheimConfig,
+  withValheimDefaults,
+} from "./valheimDefaults";
 
 const DEFAULT_LAUNCH_ARGS: LaunchArgsConfig = {
   publicLobby: false,
   performanceFlags: false,
   customArgs: "",
-};
-
-const DEFAULT_MODIFIERS: ValheimModifiers = {
-  combat: "",
-  deathpenalty: "",
-  resources: "",
-  raids: "",
-  portals: "",
-};
-
-// Nom vide = nom par défaut, dans la langue de Nexum au moment de la lecture
-// (`valheimDefaultServerName`, main/i18n/logStrings.ts).
-const DEFAULT_VALHEIM_CONFIG: ValheimLaunchConfig = {
-  name: "",
-  world: "Dedicated",
-  password: "",
-  port: 2456,
-  public: true,
-  savedir: "",
-  crossplay: false,
-  logFile: "",
-  customArgs: "",
-  worldSeed: "",
-  worldSize: "",
-  modifierPreset: "",
-  modifiers: DEFAULT_MODIFIERS,
-  odinEyeUrl: "",
 };
 
 const DEFAULT_ASTRONEER_CONFIG: AstroneerLaunchConfig = {
@@ -88,37 +63,6 @@ function withRestartDefaults(stored?: Partial<RestartConfig>): RestartConfig {
   const restart = { ...DEFAULT_RESTART, ...stored };
   if (restart.message === LEGACY_RESTART_MESSAGE) restart.message = "";
   return restart;
-}
-
-// Ancien nom par défaut, enregistré en français dans la config de chaque
-// serveur jusqu'à la 0.22 : relu comme « nom par défaut » (vide).
-const LEGACY_VALHEIM_NAME = "Mon Serveur Valheim";
-
-function isDefaultValheimName(name: string): boolean {
-  return (
-    name === "" ||
-    name === LEGACY_VALHEIM_NAME ||
-    inAllLanguages("valheimDefaultServerName").includes(name)
-  );
-}
-
-/** Config lue : le nom par défaut est résolu dans la langue courante. */
-function withValheimDefaults(
-  stored?: Partial<ValheimLaunchConfig>,
-): ValheimLaunchConfig {
-  const valheim = { ...DEFAULT_VALHEIM_CONFIG, ...stored };
-  if (isDefaultValheimName(valheim.name))
-    valheim.name = lt().valheimDefaultServerName;
-  return valheim;
-}
-
-/** Config enregistrée : le nom par défaut n'est jamais figé. */
-function storedValheimConfig(
-  valheim: ValheimLaunchConfig,
-): ValheimLaunchConfig {
-  return isDefaultValheimName(valheim.name)
-    ? { ...valheim, name: "" }
-    : valheim;
 }
 
 export const DEFAULT_SERVER_CONFIG: ServerConfig = {
