@@ -21,7 +21,7 @@ export function registerBackupHandlers(ctx: IpcContext): void {
       serverId && isDefaultBackupDir(config.backupDir, userDataPath, serverId)
         ? ""
         : config.backupDir;
-    ctx.updateServerConfig(undefined, { backup: { ...config, backupDir } });
+    ctx.updateServerConfig(serverId, { backup: { ...config, backupDir } });
   });
 
   ipcMain.handle("backup:list", () => ctx.backup.list(ctx.getBackupDir()));

@@ -15,7 +15,6 @@ import {
 import extractZip from "extract-zip";
 import type { BackupEntry } from "../../shared/types";
 import { AppError } from "../utils/appError";
-import { defaultBackupDirForServer } from "./defaultBackupDir";
 
 // Suffixe des sauvegardes faites avant une mise à jour du jeu ou des mods :
 // reconnues dans la liste et comptées à part par la rotation, pour qu'une
@@ -266,10 +265,6 @@ export class BackupManager {
 
   getDefaultBackupDir(userDataPath: string): string {
     return join(userDataPath, "backups");
-  }
-
-  getDefaultBackupDirForServer(userDataPath: string, serverId: string): string {
-    return defaultBackupDirForServer(userDataPath, serverId);
   }
 
   basename(p: string): string {

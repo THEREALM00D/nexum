@@ -7,7 +7,10 @@ import { AstroConfigParser } from "../games/astroneer/AstroConfigParser";
 import { SystemMonitor } from "../monitor/SystemMonitor";
 import { FirewallManager } from "../firewall/FirewallManager";
 import { BackupManager } from "../backup/BackupManager";
-import { clearSavedDefaultBackupDirs } from "../backup/defaultBackupDir";
+import {
+  clearSavedDefaultBackupDirs,
+  defaultBackupDirForServer,
+} from "../backup/defaultBackupDir";
 import { RestartScheduler } from "../scheduler/RestartScheduler";
 import { BackupScheduler } from "../scheduler/BackupScheduler";
 import { PalworldApiClient } from "../games/palworld/PalworldApiClient";
@@ -196,9 +199,7 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
     const id = serverId ?? servers.getActive()?.id;
     if (!id) return backup.getDefaultBackupDir(app.getPath("userData"));
     const stored = serverConfigs.get(id).backup.backupDir;
-    return (
-      stored || backup.getDefaultBackupDirForServer(app.getPath("userData"), id)
-    );
+    return stored || defaultBackupDirForServer(app.getPath("userData"), id);
   };
 
   const getRestartConfig = (): RestartConfig => {
