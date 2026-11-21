@@ -1,10 +1,9 @@
-import { Button, Paper, Stack, TextField } from "@mui/material";
-import FolderOpenIcon from "@mui/icons-material/FolderOpen";
+import { Button, Paper, Stack } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
 import UpdateIcon from "@mui/icons-material/Update";
 import { useTranslation } from "react-i18next";
 import type { GameType } from "@shared/types";
-import InstallDirWarning from "../../../components/common/InstallDirWarning";
+import FolderField from "../../../components/common/FolderField";
 import GameRequirementsHint from "../../../components/common/GameRequirementsHint";
 import SectionTitle from "../../../components/common/SectionTitle";
 
@@ -16,7 +15,6 @@ export default function InstallFolderCard({
   steamInstalled,
   hasServerPath,
   onInstallPathChange,
-  onBrowse,
   onInstallGame,
   onUpdate,
 }: {
@@ -27,7 +25,6 @@ export default function InstallFolderCard({
   steamInstalled: boolean | null;
   hasServerPath: boolean;
   onInstallPathChange: (path: string) => void;
-  onBrowse: () => void;
   onInstallGame: () => void;
   onUpdate: () => void;
 }) {
@@ -35,49 +32,39 @@ export default function InstallFolderCard({
   return (
     <Paper sx={{ p: 2.5 }}>
       <SectionTitle sx={{ mb: 2 }}>{t("install.folder.title")}</SectionTitle>
-      <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
-        <TextField
-          fullWidth
-          size="small"
+      <Stack spacing={2}>
+        <FolderField
           value={installPath}
-          onChange={(e) => onInstallPathChange(e.target.value)}
+          onChange={onInstallPathChange}
           placeholder={defaultInstallPath}
+          installDirWarning
         />
-        <Button
-          variant="outlined"
-          onClick={onBrowse}
-          startIcon={<FolderOpenIcon />}
-          sx={{ whiteSpace: "nowrap" }}
-        >
-          {t("common.browse")}
-        </Button>
-      </Stack>
-      <InstallDirWarning path={installPath} sx={{ mb: 2 }} />
-      <GameRequirementsHint gameType={gameType} sx={{ mb: 2 }} />
-      <Stack direction="row" spacing={1}>
-        <Button
-          fullWidth
-          variant="contained"
-          color="success"
-          startIcon={<DownloadIcon />}
-          disabled={running || !steamInstalled}
-          onClick={onInstallGame}
-        >
-          {running
-            ? t("install.folder.installing")
-            : t("install.folder.installGame", {
-                game: t(`servers.games.${gameType}`),
-              })}
-        </Button>
-        <Button
-          fullWidth
-          variant="outlined"
-          startIcon={<UpdateIcon />}
-          disabled={running || !steamInstalled || !hasServerPath}
-          onClick={onUpdate}
-        >
-          {t("install.folder.update")}
-        </Button>
+        <GameRequirementsHint gameType={gameType} />
+        <Stack direction="row" spacing={1}>
+          <Button
+            fullWidth
+            variant="contained"
+            color="success"
+            startIcon={<DownloadIcon />}
+            disabled={running || !steamInstalled}
+            onClick={onInstallGame}
+          >
+            {running
+              ? t("install.folder.installing")
+              : t("install.folder.installGame", {
+                  game: t(`servers.games.${gameType}`),
+                })}
+          </Button>
+          <Button
+            fullWidth
+            variant="outlined"
+            startIcon={<UpdateIcon />}
+            disabled={running || !steamInstalled || !hasServerPath}
+            onClick={onUpdate}
+          >
+            {t("install.folder.update")}
+          </Button>
+        </Stack>
       </Stack>
     </Paper>
   );

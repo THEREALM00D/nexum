@@ -1,18 +1,16 @@
 import {
-  Button,
   Stack,
   TextField,
   ToggleButton,
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
-import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import { useTranslation } from "react-i18next";
 import type { GameType } from "@shared/types";
 import { GAMES } from "../../../games/registry";
 import { useExeDetection } from "../../../hooks/useExeDetection";
 import ExeStatusHint from "../../Servers/components/ExeStatusHint";
-import InstallDirWarning from "../../../components/common/InstallDirWarning";
+import FolderField from "../../../components/common/FolderField";
 import GameRequirementsHint from "../../../components/common/GameRequirementsHint";
 import { DEFAULT_INSTALL_PATHS } from "../../Install/hooks/useInstall";
 
@@ -58,9 +56,7 @@ export default function StepGame({
           : value.path,
     });
 
-  const browse = async () => {
-    const folder = await window.api.dialog.selectFolder();
-    if (!folder) return;
+  const handlePicked = async (folder: string) => {
     // Serveur existant : on devine le jeu d'après l'exécutable du dossier
     const detected =
       value.mode === "existing"
@@ -118,36 +114,25 @@ export default function StepGame({
         sx={{ maxWidth: 420 }}
       />
 
-      <Stack direction="row" spacing={1} sx={{ alignItems: "flex-start" }}>
-        <TextField
-          label={t(
-            value.mode === "new"
-              ? "setup.game.pathNew"
-              : "setup.game.pathExisting",
-          )}
-          helperText={t(
-            value.mode === "new"
-              ? "setup.game.pathNewHelper"
-              : "setup.game.pathExistingHelper",
-          )}
-          value={value.path}
-          onChange={(e) => onChange({ ...value, path: e.target.value })}
-          size="small"
-          fullWidth
-        />
-        <Button
-          variant="outlined"
-          startIcon={<FolderOpenIcon />}
-          onClick={browse}
-          sx={{ flexShrink: 0 }}
-        >
-          {t("setup.game.browse")}
-        </Button>
-      </Stack>
+      <FolderField
+        label={t(
+          value.mode === "new"
+            ? "setup.game.pathNew"
+            : "setup.game.pathExisting",
+        )}
+        helper={t(
+          value.mode === "new"
+            ? "setup.game.pathNewHelper"
+            : "setup.game.pathExistingHelper",
+        )}
+        value={value.path}
+        onChange={(path) => onChange({ ...value, path })}
+        onPicked={handlePicked}
+        installDirWarning
+      />
       {value.mode === "existing" && (
         <ExeStatusHint status={exeStatus} gameType={value.gameType} />
       )}
-      <InstallDirWarning path={value.path} />
       {value.mode === "new" && (
         <GameRequirementsHint gameType={value.gameType} />
       )}

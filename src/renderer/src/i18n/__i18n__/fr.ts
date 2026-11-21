@@ -170,7 +170,6 @@ export default {
     config: {
       title: "Configuration",
       dir: "Dossier de sauvegarde",
-      dirTooltip: "Choisir un dossier",
       dirOpen: "Ouvrir dans l'explorateur",
       keep: "Sauvegardes à conserver (rotation)",
       keepHelper:

@@ -24,7 +24,6 @@ export default function Install() {
     launchArgsLoading,
     setLaunchArgs,
     updateLaunchArgs,
-    handleBrowse,
     handleInstallSteam,
     handleInstallGame,
     handleUpdate,
@@ -55,7 +54,6 @@ export default function Install() {
         steamInstalled={steamInstalled}
         hasServerPath={!!state.serverPath}
         onInstallPathChange={setInstallPath}
-        onBrowse={handleBrowse}
         onInstallGame={handleInstallGame}
         onUpdate={handleUpdate}
       />

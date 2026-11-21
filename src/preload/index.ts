@@ -9,6 +9,7 @@ import type {
   AutoRestartGaveUpNotice,
   ModRegistry,
   RestartConfig,
+  SelectFolderOptions,
   ServerArchiveImportChoice,
   SettingsImportChoice,
   TransferServerPaths,
@@ -246,7 +247,8 @@ const api = {
   },
   // Dialog
   dialog: {
-    selectFolder: () => ipcRenderer.invoke("dialog:selectFolder"),
+    selectFolder: (options?: SelectFolderOptions) =>
+      ipcRenderer.invoke("dialog:selectFolder", options),
     selectFile: (
       filters?: { name: string; extensions: string[] }[],
       defaultPath?: string,
@@ -260,6 +262,7 @@ const api = {
       ipcRenderer.invoke("valheim:setConfig", cfg, serverId),
     openSaveFolder: (customSavedir: string) =>
       ipcRenderer.invoke("valheim:openSaveFolder", customSavedir),
+    getDefaultDataDir: () => ipcRenderer.invoke("valheim:getDefaultDataDir"),
     listExistingWorlds: (customSavedir: string) =>
       ipcRenderer.invoke("valheim:listExistingWorlds", customSavedir),
     testOdinEye: (url?: string, serverId?: string) =>

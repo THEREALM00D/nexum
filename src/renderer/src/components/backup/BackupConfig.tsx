@@ -12,11 +12,10 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import LaunchIcon from "@mui/icons-material/Launch";
 import { useTranslation } from "react-i18next";
 import type { BackupConfig } from "@shared/types";
-import InstallDirWarning from "../common/InstallDirWarning";
+import FolderField from "../common/FolderField";
 import { SkeletonChildren } from "../common/LoadingSkeleton";
 import SectionTitle from "../common/SectionTitle";
 
@@ -24,7 +23,8 @@ interface Props {
   config: BackupConfig;
   /** Config pas encore lue : chaque champ en skeleton. */
   loading: boolean;
-  onSelectDir: () => void;
+  /** Dossier choisi avec le bouton Parcourir, enregistré tout de suite. */
+  onSelectDir: (folder: string) => void;
   onConfigChange: (patch: Partial<BackupConfig>) => void;
   /** Ce que contient une sauvegarde faite serveur lancé, propre au jeu. */
   autoNoteKey: string;
@@ -44,32 +44,27 @@ export default function BackupConfigPanel({
       <SectionTitle sx={{ mb: 1.5 }}>{t("backup.config.title")}</SectionTitle>
       <Stack spacing={2}>
         <SkeletonChildren loading={loading}>
-          <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
-            <TextField
-              label={t("backup.config.dir")}
-              size="small"
-              value={config.backupDir}
-              fullWidth
-              slotProps={{ input: { readOnly: true } }}
-            />
-            <Tooltip title={t("backup.config.dirTooltip")}>
-              <IconButton onClick={onSelectDir}>
-                <FolderOpenIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title={t("backup.config.dirOpen")}>
-              <span>
-                <IconButton
-                  disabled={!config.backupDir}
-                  onClick={() => window.api.shell.openPath(config.backupDir)}
-                  aria-label={t("backup.config.dirOpen")}
-                >
-                  <LaunchIcon />
-                </IconButton>
-              </span>
-            </Tooltip>
-          </Stack>
-          <InstallDirWarning path={config.backupDir} />
+          <FolderField
+            label={t("backup.config.dir")}
+            value={config.backupDir}
+            onChange={onSelectDir}
+            readOnly
+            installDirWarning
+            actions={
+              <Tooltip title={t("backup.config.dirOpen")}>
+                <span>
+                  <IconButton
+                    disabled={!config.backupDir}
+                    onClick={() => window.api.shell.openPath(config.backupDir)}
+                    aria-label={t("backup.config.dirOpen")}
+                    sx={{ mt: 0.5 }}
+                  >
+                    <LaunchIcon />
+                  </IconButton>
+                </span>
+              </Tooltip>
+            }
+          />
 
           <TextField
             label={t("backup.config.keep")}

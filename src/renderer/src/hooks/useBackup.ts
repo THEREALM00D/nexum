@@ -86,17 +86,14 @@ export function useBackup() {
     }
   };
 
-  const handleSelectDir = async () => {
-    const dir = await window.api.dialog.selectFolder();
-    if (dir) {
-      const next = { ...config, backupDir: dir };
-      setConfig(next);
-      try {
-        await window.api.backup.setConfig(next);
-        await refresh();
-      } catch {
-        notify(t("backup.notify.configFailed"));
-      }
+  const handleSelectDir = async (folder: string) => {
+    const next = { ...config, backupDir: folder };
+    setConfig(next);
+    try {
+      await window.api.backup.setConfig(next);
+      await refresh();
+    } catch {
+      notify(t("backup.notify.configFailed"));
     }
   };
 

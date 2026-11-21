@@ -92,7 +92,6 @@ export default {
       path: "Dossier du serveur",
       pathHelper:
         "Dossier contenant l'exécutable du serveur — nouvelle installation ou existante, ex : E:\\Server\\Palworld_Freeport",
-      pathBrowse: "Parcourir",
       gameType: "Jeu",
       color: "Couleur",
       save: "Enregistrer",

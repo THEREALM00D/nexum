@@ -568,6 +568,16 @@ export interface PlayerHistoryEntry {
   sessions: PlayerSession[];
 }
 
+/** Sélecteur de dossier (`dialog:selectFolder`). */
+export interface SelectFolderOptions {
+  /** Dossier du champ, sur lequel ouvrir le sélecteur (ou son parent existant). */
+  defaultPath?: string;
+  /** Dossier depuis lequel résoudre un `defaultPath` relatif (dossier du serveur). */
+  basePath?: string;
+  /** Renvoyer un chemin relatif (`./x`) quand le dossier choisi est dans `basePath`. */
+  relativeToBase?: boolean;
+}
+
 // --- Changer de PC : export / import (issue #172, src/main/transfer/) ---
 export interface TransferAppSettings {
   language?: "fr" | "en";
