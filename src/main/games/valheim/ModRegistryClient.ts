@@ -6,6 +6,7 @@ import type {
   ThunderstoreModVersion,
   ModUpdate,
   ModUpdateCheck,
+  ModBrowsePage,
 } from "../../../shared/types";
 import { compareVersions } from "./versionCompare";
 import { REGISTRIES, REGISTRY_API_BASE, USER_AGENT } from "./registries";
@@ -47,6 +48,10 @@ interface RegistryPackage extends Omit<
 // Requêtes simultanées max vers un registre pour la vérification des mises à
 // jour (une par mod installé).
 const FRESH_CHECK_CONCURRENCY = 6;
+
+// Mods par page dans l'onglet Parcourir (onglets / recherche).
+const BROWSE_PAGE_SIZE = 20;
+const SEARCH_PAGE_SIZE = 50;
 
 // La plus récente de deux versions (l'une ou l'autre peut manquer).
 function newest(a?: string, b?: string): string | undefined {
@@ -262,75 +267,98 @@ export class ModRegistryClient {
       }));
   }
 
+  // Une page de la liste déjà triée. La liste entière est en cache
+  // (`listPackages`) : paginer ici ne coûte aucun appel réseau, et les
+  // registres n'offrent pas de pagination utilisable pour une communauté.
+  private static toPage(
+    sorted: RegistryPackage[],
+    registry: ModRegistry,
+    offset: number,
+    limit: number,
+  ): ModBrowsePage {
+    // `offset` vient du renderer : entier positif, sinon première page.
+    const start =
+      Number.isInteger(offset) && offset > 0
+        ? Math.min(offset, sorted.length)
+        : 0;
+    return {
+      mods: sorted
+        .slice(start, start + limit)
+        .map((pkg) => ModRegistryClient.toModInfo(pkg, registry)),
+      total: sorted.length,
+    };
+  }
+
   static async getTrending(
     registry: ModRegistry,
-    limit = 20,
-  ): Promise<ThunderstoreModInfo[]> {
-    const pkgs = ModRegistryClient.active(
+    offset = 0,
+    limit = BROWSE_PAGE_SIZE,
+  ): Promise<ModBrowsePage> {
+    const packages = ModRegistryClient.active(
       await ModRegistryClient.listPackages(registry),
     );
-    return pkgs
-      .sort((a, b) => b.rating_score - a.rating_score)
-      .slice(0, limit)
-      .map((p) => ModRegistryClient.toModInfo(p, registry));
+    packages.sort((first, second) => second.rating_score - first.rating_score);
+    return ModRegistryClient.toPage(packages, registry, offset, limit);
   }
 
   static async getLatestAdded(
     registry: ModRegistry,
-    limit = 20,
-  ): Promise<ThunderstoreModInfo[]> {
-    const pkgs = ModRegistryClient.active(
+    offset = 0,
+    limit = BROWSE_PAGE_SIZE,
+  ): Promise<ModBrowsePage> {
+    const packages = ModRegistryClient.active(
       await ModRegistryClient.listPackages(registry),
     );
-    return pkgs
-      .sort(
-        (a, b) =>
-          new Date(b.date_created).getTime() -
-          new Date(a.date_created).getTime(),
-      )
-      .slice(0, limit)
-      .map((p) => ModRegistryClient.toModInfo(p, registry));
+    packages.sort(
+      (first, second) =>
+        new Date(second.date_created).getTime() -
+        new Date(first.date_created).getTime(),
+    );
+    return ModRegistryClient.toPage(packages, registry, offset, limit);
   }
 
   static async getLatestUpdated(
     registry: ModRegistry,
-    limit = 20,
-  ): Promise<ThunderstoreModInfo[]> {
-    const pkgs = ModRegistryClient.active(
+    offset = 0,
+    limit = BROWSE_PAGE_SIZE,
+  ): Promise<ModBrowsePage> {
+    const packages = ModRegistryClient.active(
       await ModRegistryClient.listPackages(registry),
     );
-    return pkgs
-      .sort(
-        (a, b) =>
-          new Date(b.date_updated).getTime() -
-          new Date(a.date_updated).getTime(),
-      )
-      .slice(0, limit)
-      .map((p) => ModRegistryClient.toModInfo(p, registry));
+    packages.sort(
+      (first, second) =>
+        new Date(second.date_updated).getTime() -
+        new Date(first.date_updated).getTime(),
+    );
+    return ModRegistryClient.toPage(packages, registry, offset, limit);
   }
 
   static async search(
     registry: ModRegistry,
     query: string,
-    limit = 50,
-  ): Promise<ThunderstoreModInfo[]> {
-    const q = query.trim().toLowerCase();
-    if (!q) return [];
-    const pkgs = await ModRegistryClient.listPackages(registry);
-    return pkgs
-      .map((p) => ({ p, rank: ModRegistryClient.searchRank(p, q) }))
-      .filter((r) => r.rank !== null)
+    offset = 0,
+    limit = SEARCH_PAGE_SIZE,
+  ): Promise<ModBrowsePage> {
+    const normalizedQuery = query.trim().toLowerCase();
+    if (!normalizedQuery) return { mods: [], total: 0 };
+    const packages = await ModRegistryClient.listPackages(registry);
+    const matches = packages
+      .map((pkg) => ({
+        pkg,
+        rank: ModRegistryClient.searchRank(pkg, normalizedQuery),
+      }))
+      .filter((match) => match.rank !== null)
       .sort(
-        (a, b) =>
-          a.rank! - b.rank! ||
+        (first, second) =>
+          first.rank! - second.rank! ||
           // Déprécié après le maintenu, mais seulement à pertinence égale :
           // un mod déprécié cherché par son nom exact doit rester en tête
-          // (sinon il peut disparaître derrière la limite de résultats).
-          Number(a.p.is_deprecated) - Number(b.p.is_deprecated) ||
-          b.p.rating_score - a.p.rating_score,
+          // (sinon il peut disparaître derrière la première page).
+          Number(first.pkg.is_deprecated) - Number(second.pkg.is_deprecated) ||
+          second.pkg.rating_score - first.pkg.rating_score,
       )
-      .slice(0, limit)
-      .map((r) => ModRegistryClient.toModInfo(r.p, registry));
+      .map((match) => match.pkg);
+    return ModRegistryClient.toPage(matches, registry, offset, limit);
   }
 
   // Pertinence d'un package pour une recherche (plus petit = plus pertinent,

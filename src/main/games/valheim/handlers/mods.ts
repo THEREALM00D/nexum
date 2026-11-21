@@ -54,22 +54,29 @@ export function registerValheimModsHandlers(ctx: IpcContext): void {
 
   // --- Parcourir un registre (public, sans clé API) ---
 
-  ipcMain.handle("valheim:mods:getTrending", (_, registry: ModRegistry) =>
-    ModRegistryClient.getTrending(registry),
+  // `offset` : pagination sur la liste en cache (aucun appel réseau en plus).
+  ipcMain.handle(
+    "valheim:mods:getTrending",
+    (_, registry: ModRegistry, offset?: number) =>
+      ModRegistryClient.getTrending(registry, offset),
   );
 
-  ipcMain.handle("valheim:mods:getLatestAdded", (_, registry: ModRegistry) =>
-    ModRegistryClient.getLatestAdded(registry),
+  ipcMain.handle(
+    "valheim:mods:getLatestAdded",
+    (_, registry: ModRegistry, offset?: number) =>
+      ModRegistryClient.getLatestAdded(registry, offset),
   );
 
-  ipcMain.handle("valheim:mods:getLatestUpdated", (_, registry: ModRegistry) =>
-    ModRegistryClient.getLatestUpdated(registry),
+  ipcMain.handle(
+    "valheim:mods:getLatestUpdated",
+    (_, registry: ModRegistry, offset?: number) =>
+      ModRegistryClient.getLatestUpdated(registry, offset),
   );
 
   ipcMain.handle(
     "valheim:mods:search",
-    (_, registry: ModRegistry, query: string) =>
-      ModRegistryClient.search(registry, query),
+    (_, registry: ModRegistry, query: string, offset?: number) =>
+      ModRegistryClient.search(registry, query, offset),
   );
 
   ipcMain.handle(

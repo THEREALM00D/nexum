@@ -508,6 +508,13 @@ export interface ThunderstoreModInfo {
   deprecated?: boolean;
 }
 
+/** Une page de l'onglet Parcourir (tendances, récents ou recherche). */
+export interface ModBrowsePage {
+  mods: ThunderstoreModInfo[];
+  /** Nombre total de mods de la liste ou de résultats de la recherche. */
+  total: number;
+}
+
 export interface ThunderstoreModVersion {
   file_id: number;
   file_name: string;
