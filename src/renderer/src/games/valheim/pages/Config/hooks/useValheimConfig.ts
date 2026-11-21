@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useNotification } from "../../../../../context/NotificationContext";
+import { errorMessage } from "../../../../../utils/appErrorMessage";
 import type { ValheimLaunchConfig, ValheimModifiers } from "@shared/types";
 
 const DEFAULT_MODIFIERS: ValheimModifiers = {
@@ -28,6 +30,7 @@ const DEFAULT_CONFIG: ValheimLaunchConfig = {
 };
 
 export function useValheimConfig() {
+  const { t } = useTranslation();
   const { notify } = useNotification();
   const [config, setConfig] = useState<ValheimLaunchConfig>(DEFAULT_CONFIG);
   const [loading, setLoading] = useState(true);
@@ -36,13 +39,19 @@ export function useValheimConfig() {
   useEffect(() => {
     window.api.valheim
       .getConfig()
-      .then((cfg) => setConfig({ ...DEFAULT_CONFIG, ...cfg }))
-      .catch(() => notify("Impossible de charger la configuration", "error"))
+      .then((savedConfig) => setConfig({ ...DEFAULT_CONFIG, ...savedConfig }))
+      .catch((error) =>
+        notify(
+          t("valheimConfig.loadFailed", { error: errorMessage(t, error) }),
+          "error",
+        ),
+      )
       .finally(() => setLoading(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleChange = (patch: Partial<ValheimLaunchConfig>) => {
-    setConfig((prev) => ({ ...prev, ...patch }));
+    setConfig((previous) => ({ ...previous, ...patch }));
   };
 
   const handleSave = async () => {
@@ -50,8 +59,11 @@ export function useValheimConfig() {
       await window.api.valheim.setConfig(config);
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
-    } catch {
-      notify("Impossible de sauvegarder la configuration", "error");
+    } catch (error) {
+      notify(
+        t("valheimConfig.saveFailed", { error: errorMessage(t, error) }),
+        "error",
+      );
     }
   };
 

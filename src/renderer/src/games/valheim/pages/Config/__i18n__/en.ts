@@ -6,6 +6,8 @@ export default {
     save: "Save",
     saved: "Saved!",
     noServerPath: "Configure the server path in the Installation tab.",
+    loadFailed: "Unable to load the configuration: {{error}}",
+    saveFailed: "Unable to save the configuration: {{error}}",
     sections: {
       general: "General",
       world: "World",
