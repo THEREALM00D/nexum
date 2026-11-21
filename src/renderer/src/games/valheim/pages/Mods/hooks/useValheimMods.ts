@@ -12,8 +12,6 @@ import { REGISTRY_LABEL } from "../utils/modPageUrl";
 import { useBackupBeforeUpdate } from "../../../../../hooks/useBackupBeforeUpdate";
 import { errorMessage } from "../../../../../utils/appErrorMessage";
 
-type BrowseTab = "trending" | "latest" | "updated";
-
 export function useValheimMods() {
   const { t, i18n } = useTranslation();
   const { notify } = useNotification();
@@ -34,12 +32,6 @@ export function useValheimMods() {
   const [installedMods, setInstalledMods] = useState<ValheimMod[]>([]);
   // Liste des mods installés pas encore lue (skeletons dans l'onglet)
   const [installedLoading, setInstalledLoading] = useState(true);
-  const [browseTab, setBrowseTab] = useState<BrowseTab>("trending");
-  const [browseRegistry, setBrowseRegistry] =
-    useState<ModRegistry>("thunderstore");
-  const [browseMods, setBrowseMods] = useState<ThunderstoreModInfo[]>([]);
-  const [browseLoading, setBrowseLoading] = useState(false);
-  const [browseError, setBrowseError] = useState(false);
   const [installing, setInstalling] = useState(false);
   const [installingBepInEx, setInstallingBepInEx] = useState(false);
   const [checkingUpdates, setCheckingUpdates] = useState(false);
@@ -89,35 +81,6 @@ export function useValheimMods() {
     [notify, t],
   );
 
-  const loadBrowse = useCallback(
-    async (registry: ModRegistry, tab: BrowseTab, searchQuery = "") => {
-      setBrowseLoading(true);
-      setBrowseError(false);
-      try {
-        let mods: ThunderstoreModInfo[];
-        if (searchQuery.trim()) {
-          mods = await window.api.valheim.mods.search(
-            registry,
-            searchQuery.trim(),
-          );
-        } else if (tab === "trending") {
-          mods = await window.api.valheim.mods.getTrending(registry);
-        } else if (tab === "latest") {
-          mods = await window.api.valheim.mods.getLatestAdded(registry);
-        } else {
-          mods = await window.api.valheim.mods.getLatestUpdated(registry);
-        }
-        setBrowseMods(mods);
-      } catch {
-        setBrowseError(true);
-        setBrowseMods([]);
-      } finally {
-        setBrowseLoading(false);
-      }
-    },
-    [],
-  );
-
   // Relit BepInEx et les mods installés (réinstallation après un import)
   const reloadInstalled = useCallback(async () => {
     window.api.valheim.mods
@@ -131,7 +94,6 @@ export function useValheimMods() {
 
   // Chargement initial
   useEffect(() => {
-    loadBrowse("thunderstore", "trending");
     window.api.valheim.mods
       .detectBepInEx()
       .then(setBepInEx)
@@ -146,29 +108,6 @@ export function useValheimMods() {
       .finally(() => setInstalledLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const handleTabChange = useCallback(
-    (tab: BrowseTab) => {
-      setBrowseTab(tab);
-      loadBrowse(browseRegistry, tab);
-    },
-    [loadBrowse, browseRegistry],
-  );
-
-  const handleBrowseRegistryChange = useCallback(
-    (registry: ModRegistry) => {
-      setBrowseRegistry(registry);
-      loadBrowse(registry, browseTab);
-    },
-    [loadBrowse, browseTab],
-  );
-
-  const handleSearch = useCallback(
-    (query: string) => {
-      loadBrowse(browseRegistry, browseTab, query);
-    },
-    [loadBrowse, browseRegistry, browseTab],
-  );
 
   const handleInstallBepInEx = useCallback(async () => {
     setInstallingBepInEx(true);
@@ -434,11 +373,6 @@ export function useValheimMods() {
     bepInEx,
     installedMods,
     installedLoading,
-    browseTab,
-    browseRegistry,
-    browseMods,
-    browseLoading,
-    browseError,
     installing,
     installingBepInEx,
     checkingUpdates,
@@ -446,9 +380,6 @@ export function useValheimMods() {
     pendingDeps,
     updates,
     deprecatedCodes,
-    handleTabChange,
-    handleBrowseRegistryChange,
-    handleSearch,
     handleRemoveMod,
     handleToggleMod,
     handleInstallBepInEx,

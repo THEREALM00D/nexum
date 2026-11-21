@@ -30,6 +30,7 @@ import type {
   ModRegistry,
   ThunderstoreModInfo,
   ThunderstoreModVersion,
+  ModBrowsePage,
   ModUpdateCheck,
   ModpackShare,
   PlayerHistoryEntry,
@@ -270,15 +271,24 @@ interface API {
     /** Nombre de joueurs en ligne selon Odin-Eye ; rejette avec un code ODIN_EYE_*. */
     testOdinEye: (url?: string, serverId?: string) => Promise<number>;
     mods: {
-      getTrending: (registry: ModRegistry) => Promise<ThunderstoreModInfo[]>;
-      getLatestAdded: (registry: ModRegistry) => Promise<ThunderstoreModInfo[]>;
+      /** `offset` : premier mod de la page (0 par défaut). */
+      getTrending: (
+        registry: ModRegistry,
+        offset?: number,
+      ) => Promise<ModBrowsePage>;
+      getLatestAdded: (
+        registry: ModRegistry,
+        offset?: number,
+      ) => Promise<ModBrowsePage>;
       getLatestUpdated: (
         registry: ModRegistry,
-      ) => Promise<ThunderstoreModInfo[]>;
+        offset?: number,
+      ) => Promise<ModBrowsePage>;
       search: (
         registry: ModRegistry,
         query: string,
-      ) => Promise<ThunderstoreModInfo[]>;
+        offset?: number,
+      ) => Promise<ModBrowsePage>;
       getModFiles: (
         registry: ModRegistry,
         namespace: string,

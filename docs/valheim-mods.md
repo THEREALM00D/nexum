@@ -54,8 +54,9 @@ Manually installed mods are not covered: without a known registry, Nexum can che
 
 ## Browse tab
 
-- Pick the registry (**Thunderstore** or **Hexium**): the two lists are independent.
+- Pick the registry (**Thunderstore** or **Hexium**): the two lists are independent. Switching registries runs the current search again on the other one.
 - **Trending**, **New**, **Updated** tabs, or free search. Search results are sorted by relevance: exact name first, then names starting with or containing your search, then author and description matches (spaces and dashes are ignored, so `azu auto` finds AzuAutoStore). Deprecated mods only show up in search results, with the **Deprecated** badge, after maintained mods that match just as well.
+- Each tab shows 20 mods, a search 50 results. **Load more**, below the list, adds the next ones; the counter next to it shows how many are displayed out of the total ("40 of 8,896").
 - Each mod shows the date of its **last update** next to the author. It turns **orange** with a ⚠ when the mod hasn't been updated in over a year: it may not work with the current version of Valheim, so check the comments on its page before installing. (A registry page may also show the date the mod was _first_ uploaded; Nexum shows the latest update.)
 - Install the latest version in one click, or pick a specific one via **Versions**.
 - If the mod has dependencies that aren't installed, Nexum offers to install them (**Install all**), including when they come from the other registry.

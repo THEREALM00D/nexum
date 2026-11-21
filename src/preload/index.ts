@@ -269,14 +269,14 @@ const api = {
       ipcRenderer.invoke("valheim:testOdinEye", url, serverId),
     mods: {
       // Parcourir un registre (public, sans clé API)
-      getTrending: (registry: ModRegistry) =>
-        ipcRenderer.invoke("valheim:mods:getTrending", registry),
-      getLatestAdded: (registry: ModRegistry) =>
-        ipcRenderer.invoke("valheim:mods:getLatestAdded", registry),
-      getLatestUpdated: (registry: ModRegistry) =>
-        ipcRenderer.invoke("valheim:mods:getLatestUpdated", registry),
-      search: (registry: ModRegistry, query: string) =>
-        ipcRenderer.invoke("valheim:mods:search", registry, query),
+      getTrending: (registry: ModRegistry, offset?: number) =>
+        ipcRenderer.invoke("valheim:mods:getTrending", registry, offset),
+      getLatestAdded: (registry: ModRegistry, offset?: number) =>
+        ipcRenderer.invoke("valheim:mods:getLatestAdded", registry, offset),
+      getLatestUpdated: (registry: ModRegistry, offset?: number) =>
+        ipcRenderer.invoke("valheim:mods:getLatestUpdated", registry, offset),
+      search: (registry: ModRegistry, query: string, offset?: number) =>
+        ipcRenderer.invoke("valheim:mods:search", registry, query, offset),
       getModFiles: (registry: ModRegistry, namespace: string, name: string) =>
         ipcRenderer.invoke(
           "valheim:mods:getModFiles",

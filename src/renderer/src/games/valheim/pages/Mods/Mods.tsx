@@ -31,6 +31,7 @@ import { useValheimModConfigs } from "./hooks/useValheimModConfigs";
 import BepInExBanner from "./components/BepInExBanner";
 import PendingModsBanner from "./components/PendingModsBanner";
 import { usePendingMods } from "./hooks/usePendingMods";
+import { useModBrowser } from "./hooks/useModBrowser";
 import ClientModsHint from "./components/ClientModsHint";
 import ShareModpackButton from "./components/ShareModpackButton";
 import InstalledModsList from "./components/InstalledModsList";
@@ -58,11 +59,6 @@ export default function ValheimMods() {
     bepInEx,
     installedMods,
     installedLoading,
-    browseTab,
-    browseRegistry,
-    browseMods,
-    browseLoading,
-    browseError,
     installing,
     installingBepInEx,
     checkingUpdates,
@@ -70,9 +66,6 @@ export default function ValheimMods() {
     pendingDeps,
     updates,
     deprecatedCodes,
-    handleTabChange,
-    handleBrowseRegistryChange,
-    handleSearch,
     handleRemoveMod,
     handleToggleMod,
     handleInstallBepInEx,
@@ -86,6 +79,8 @@ export default function ValheimMods() {
     handleDismissDeps,
     reloadInstalled,
   } = useValheimMods();
+  // Dans la page : l'onglet Parcourir garde sa liste quand on change d'onglet.
+  const browser = useModBrowser();
   // Réinstallation après un import : installe BepInEx s'il manque, donc
   // exclusive avec « Installer BepInEx » et les autres installations.
   const pendingMods = usePendingMods(reloadInstalled);
@@ -272,17 +267,7 @@ export default function ValheimMods() {
         )}
 
         {mainTab === "browse" && (
-          <ModBrowser
-            tab={browseTab}
-            registry={browseRegistry}
-            mods={browseMods}
-            loading={browseLoading}
-            error={browseError}
-            onTabChange={handleTabChange}
-            onRegistryChange={handleBrowseRegistryChange}
-            onSearch={handleSearch}
-            onInstallVersion={handleInstallMod}
-          />
+          <ModBrowser browser={browser} onInstallVersion={handleInstallMod} />
         )}
 
         {mainTab === "configs" && (

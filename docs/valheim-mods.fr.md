@@ -54,8 +54,9 @@ Les mods installés manuellement ne sont pas concernés : sans registre connu, N
 
 ## Onglet Parcourir
 
-- Choisissez le registre (**Thunderstore** ou **Hexium**) : les deux listes sont indépendantes.
+- Choisissez le registre (**Thunderstore** ou **Hexium**) : les deux listes sont indépendantes. Changer de registre relance la recherche en cours sur l'autre.
 - Onglets **Tendances**, **Nouveaux**, **Mis à jour**, ou recherche libre. Les résultats sont triés par pertinence : nom identique d'abord, puis noms qui commencent par votre recherche ou la contiennent, puis auteur et description (les espaces et tirets sont ignorés : `azu auto` trouve AzuAutoStore). Les mods dépréciés n'apparaissent que dans la recherche, avec le badge **Déprécié**, après les mods maintenus aussi pertinents.
+- Chaque onglet affiche 20 mods, une recherche 50 résultats. **Charger plus**, sous la liste, ajoute les suivants ; le compteur à côté indique combien sont affichés sur le total (« 40 sur 8 896 »).
 - Chaque mod affiche la date de sa **dernière mise à jour** à côté de l'auteur. Elle passe en **orange** avec un ⚠ quand le mod n'a pas été mis à jour depuis plus d'un an : il ne fonctionne peut-être plus avec la version actuelle de Valheim, consultez les commentaires sur sa page avant de l'installer. (La page d'un registre peut aussi afficher la date de _première_ publication du mod ; Nexum affiche la dernière mise à jour.)
 - Installez la dernière version en un clic, ou choisissez une version précise via **Versions**.
 - Si le mod a des dépendances non installées, Nexum propose de les installer (**Tout installer**), y compris quand elles viennent de l'autre registre.
