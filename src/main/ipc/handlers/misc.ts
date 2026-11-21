@@ -1,7 +1,16 @@
-import { ipcMain, BrowserWindow, dialog } from "electron/main";
+import {
+  ipcMain,
+  BrowserWindow,
+  dialog,
+  type OpenDialogOptions,
+  type OpenDialogReturnValue,
+  type WebContents,
+} from "electron/main";
 import { setLanguage } from "../../i18n/language";
 import { shell } from "electron";
 import type { IpcContext } from "../context";
+import type { SelectFolderOptions } from "../../../shared/types";
+import { relativeToBase, startFolder } from "../../utils/folderDialog";
 import {
   getLaunchAtLogin,
   setLaunchAtLogin,
@@ -27,22 +36,40 @@ export function registerMiscHandlers(ctx: IpcContext): void {
     BrowserWindow.getFocusedWindow()?.close();
   });
 
-  // Dialog
-  ipcMain.handle("dialog:selectFolder", async () => {
-    const result = await dialog.showOpenDialog({
-      properties: ["openDirectory"],
-    });
-    return result.canceled ? null : result.filePaths[0];
-  });
+  // Dialog : modal sur la fenêtre qui le demande
+  const showOpenDialog = (
+    sender: WebContents,
+    options: OpenDialogOptions,
+  ): Promise<OpenDialogReturnValue> => {
+    const window = BrowserWindow.fromWebContents(sender);
+    return window
+      ? dialog.showOpenDialog(window, options)
+      : dialog.showOpenDialog(options);
+  };
+
+  ipcMain.handle(
+    "dialog:selectFolder",
+    async (event, options: SelectFolderOptions = {}) => {
+      const result = await showOpenDialog(event.sender, {
+        properties: ["openDirectory"],
+        defaultPath: startFolder(options.defaultPath, options.basePath),
+      });
+      if (result.canceled || !result.filePaths[0]) return null;
+      const picked = result.filePaths[0];
+      return options.relativeToBase && options.basePath
+        ? relativeToBase(picked, options.basePath)
+        : picked;
+    },
+  );
 
   ipcMain.handle(
     "dialog:selectFile",
     async (
-      _,
+      event,
       filters?: { name: string; extensions: string[] }[],
       defaultPath?: string,
     ) => {
-      const result = await dialog.showOpenDialog({
+      const result = await showOpenDialog(event.sender, {
         properties: ["openFile"],
         filters,
         defaultPath,

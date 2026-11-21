@@ -166,7 +166,6 @@ export default {
     config: {
       title: "Configuration",
       dir: "Backup folder",
-      dirTooltip: "Choose a folder",
       dirOpen: "Open in explorer",
       keep: "Backups to keep (rotation)",
       keepHelper: "0 = no rotation. Pre-update backups are counted separately.",

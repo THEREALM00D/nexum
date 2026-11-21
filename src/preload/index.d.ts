@@ -38,6 +38,7 @@ import type {
   ServerStatus,
   ServerLogEvent,
   JoinInfo,
+  SelectFolderOptions,
   LogSession,
   PendingMod,
   ServerArchiveImportChoice,
@@ -249,7 +250,8 @@ interface API {
     ) => Promise<string | null>;
   };
   dialog: {
-    selectFolder: () => Promise<string | null>;
+    /** Dossier choisi (relatif si `relativeToBase`), ou null si annulé. */
+    selectFolder: (options?: SelectFolderOptions) => Promise<string | null>;
     selectFile: (
       filters?: { name: string; extensions: string[] }[],
       defaultPath?: string,
@@ -262,6 +264,8 @@ interface API {
       serverId?: string,
     ) => Promise<void>;
     openSaveFolder: (customSavedir: string) => Promise<void>;
+    /** Dossier des données de Valheim quand `savedir` est vide. */
+    getDefaultDataDir: () => Promise<string>;
     listExistingWorlds: (customSavedir: string) => Promise<ValheimWorldInfo[]>;
     /** Nombre de joueurs en ligne selon Odin-Eye ; rejette avec un code ODIN_EYE_*. */
     testOdinEye: (url?: string, serverId?: string) => Promise<number>;

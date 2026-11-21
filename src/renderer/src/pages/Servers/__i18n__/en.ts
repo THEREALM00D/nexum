@@ -91,7 +91,6 @@ export default {
       path: "Server folder",
       pathHelper:
         "Folder containing the server executable — new install or an existing one, e.g. E:\\Server\\Palworld_Freeport",
-      pathBrowse: "Browse",
       gameType: "Game",
       color: "Color",
       save: "Save",

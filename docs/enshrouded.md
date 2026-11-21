@@ -28,6 +28,8 @@ The **Configuration** page edits `enshrouded_server.json` (next to `enshrouded_s
 | Advanced             | Save folder, game log folder, extra launch arguments                                                                             |
 | Groups and passwords | The user groups, saved with their own button (see below)                                                                         |
 
+**Folders (Advanced)**: type the path or pick the folder with the folder icon. A folder picked inside the server folder is saved relative to it (`./savegame`, like the default); a folder elsewhere is saved as a full path, which the server accepts too.
+
 **Presets and gameplay settings**: the server only reads the gameplay settings when the preset is **Custom**. Changing one of them switches the preset to Custom automatically. Day, night and hunger durations are shown in minutes (the file stores them in nanoseconds, Nexum converts). A value outside the allowed range is brought back to the limit by the server.
 
 **Stop the server before changing the configuration**: the server rewrites `enshrouded_server.json` every time it starts. Nexum locks the **Save** buttons while the server is running and reads the file again once it stops. Before every save, the previous file is kept as `enshrouded_server.json.backup`. Keys Nexum doesn't manage (tags, bans…) are left untouched.

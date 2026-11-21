@@ -35,7 +35,6 @@ export default {
       pathExisting: "Dossier du serveur",
       pathExistingHelper:
         "Le dossier qui contient l'exécutable du serveur. Nexum détecte le jeu.",
-      browse: "Parcourir",
     },
     create: "Créer le serveur",
     next: "Suivant",

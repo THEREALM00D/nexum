@@ -6,19 +6,17 @@ import {
   DialogContent,
   DialogTitle,
   FormControl,
-  IconButton,
   InputLabel,
   MenuItem,
   Select,
   Stack,
   TextField,
 } from "@mui/material";
-import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import { useTranslation } from "react-i18next";
 import type { GameType, Server } from "@shared/types";
 import { useExeDetection } from "../../../hooks/useExeDetection";
 import ExeStatusHint from "./ExeStatusHint";
-import InstallDirWarning from "../../../components/common/InstallDirWarning";
+import FolderField from "../../../components/common/FolderField";
 import CheckboxField from "../../../components/common/CheckboxField";
 import ColorPicker from "./ColorPicker";
 import { SERVER_COLORS } from "@shared/serverColors";
@@ -71,14 +69,12 @@ export default function ServerDialog({
     }
   }, [open, initial]);
 
-  const handleBrowse = async () => {
-    const folder = await window.api.dialog.selectFolder();
-    if (!folder) return;
+  const handlePicked = async (folder: string) => {
     const detected = await window.api.servers.detectGameType(folder);
-    setValues((v) => ({
-      ...v,
+    setValues((current) => ({
+      ...current,
       path: folder,
-      gameType: detected ?? v.gameType,
+      gameType: detected ?? current.gameType,
     }));
   };
 
@@ -110,28 +106,16 @@ export default function ServerDialog({
             autoFocus
           />
 
-          <Stack direction="row" spacing={1} sx={{ alignItems: "flex-start" }}>
-            <TextField
-              label={t("servers.dialog.path")}
-              size="small"
-              value={values.path}
-              onChange={(e) =>
-                setValues((v) => ({ ...v, path: e.target.value }))
-              }
-              helperText={t("servers.dialog.pathHelper")}
-              fullWidth
-            />
-            <IconButton
-              onClick={handleBrowse}
-              sx={{ mt: 0.5 }}
-              title={t("servers.dialog.pathBrowse")}
-            >
-              <FolderOpenIcon />
-            </IconButton>
-          </Stack>
+          <FolderField
+            label={t("servers.dialog.path")}
+            value={values.path}
+            onChange={(path) => setValues((current) => ({ ...current, path }))}
+            onPicked={handlePicked}
+            helper={t("servers.dialog.pathHelper")}
+            installDirWarning
+          />
 
           <ExeStatusHint status={exeStatus} gameType={values.gameType} />
-          <InstallDirWarning path={values.path} />
 
           <FormControl size="small" fullWidth>
             <InputLabel>{t("servers.dialog.gameType")}</InputLabel>

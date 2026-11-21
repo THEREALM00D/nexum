@@ -104,6 +104,9 @@ export function registerValheimHandlers(ctx: IpcContext): void {
     return shell.openPath(target);
   });
 
+  // Dossier des données quand `savedir` est vide (ouverture du sélecteur)
+  ipcMain.handle("valheim:getDefaultDataDir", () => getValheimDataDir(""));
+
   ipcMain.handle("valheim:listExistingWorlds", (_, customSavedir: string) =>
     listExistingWorlds(customSavedir),
   );

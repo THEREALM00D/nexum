@@ -28,6 +28,8 @@ La page **Configuration** modifie `enshrouded_server.json` (à côté de `enshro
 | Avancé                   | Dossier des sauvegardes, dossier des logs du jeu, arguments de lancement supplémentaires                                                      |
 | Groupes et mots de passe | Les groupes d'utilisateurs, enregistrés avec leur propre bouton (voir plus bas)                                                               |
 
+**Dossiers (Avancé)** : tapez le chemin ou choisissez le dossier avec l'icône de dossier. Un dossier choisi dans le dossier du serveur est enregistré relativement à lui (`./savegame`, comme par défaut) ; un dossier ailleurs est enregistré en chemin complet, que le serveur accepte aussi.
+
 **Presets et réglages de partie** : le serveur ne lit les réglages de partie qu'avec le preset **Personnalisé**. En modifier un passe automatiquement le preset en Personnalisé. Les durées du jour, de la nuit et de la faim sont affichées en minutes (le fichier les stocke en nanosecondes, Nexum convertit). Une valeur hors limites est ramenée à la limite par le serveur.
 
 **Arrêtez le serveur avant de modifier la configuration** : le serveur réécrit `enshrouded_server.json` à chaque démarrage. Nexum bloque les boutons **Enregistrer** tant que le serveur tourne et relit le fichier à l'arrêt. Avant chaque enregistrement, l'ancien fichier est gardé en `enshrouded_server.json.backup`. Les clés que Nexum ne gère pas (tags, bannissements…) ne sont pas touchées.

@@ -4,7 +4,6 @@ import { useServer } from "../../../context/ServerContext";
 import { useNotification } from "../../../context/NotificationContext";
 import { steamService } from "../../../services/steamService";
 import { appErrorMessage, errorMessage } from "../../../utils/appErrorMessage";
-import { dialogService } from "../../../services/dialogService";
 import { DEFAULT_GAME } from "../../../games/registry";
 import type { GameType, LaunchArgsConfig } from "@shared/types";
 
@@ -78,11 +77,6 @@ export function useInstall() {
   };
 
   const addLog = (msg: string) => setLogs((p) => [...p, msg]);
-
-  const handleBrowse = async () => {
-    const folder = await dialogService.selectFolder();
-    if (folder) setInstallPath(folder);
-  };
 
   const handleInstallSteam = async () => {
     setRunning(true);
@@ -171,7 +165,6 @@ export function useInstall() {
     launchArgs,
     setLaunchArgs,
     updateLaunchArgs,
-    handleBrowse,
     handleInstallSteam,
     handleInstallGame,
     handleUpdate,

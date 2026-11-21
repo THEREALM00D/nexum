@@ -1,9 +1,8 @@
 import { Stack } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import type { GameType, TransferServerPaths } from "@shared/types";
-import FolderField from "./FolderField";
+import FolderField from "../common/FolderField";
 import { useExeDetection } from "../../hooks/useExeDetection";
-import InstallDirWarning from "../common/InstallDirWarning";
 
 interface Props {
   gameType: GameType;
@@ -45,30 +44,26 @@ export default function ServerPathsFields({
         onChange={set("path")}
         helper={serverHelper}
         error={duplicate}
+        installDirWarning
       />
-      <InstallDirWarning path={paths.path} />
       {original.backupDir && (
         <FolderField
           label={t("transfer.paths.backupDir")}
           value={paths.backupDir}
           onChange={set("backupDir")}
           helper={t("transfer.paths.backupDirHelper")}
+          installDirWarning
         />
       )}
-      {original.backupDir && <InstallDirWarning path={paths.backupDir} />}
       {original.savedir && (
         <FolderField
           label={t("transfer.paths.savedir")}
           value={paths.savedir}
           onChange={set("savedir")}
           helper={t("transfer.paths.savedirHelper")}
-        />
-      )}
-      {original.savedir && (
-        <InstallDirWarning
-          path={paths.savedir}
           serverRelative
           basePath={paths.path}
+          installDirWarning
         />
       )}
       {original.logFile && (

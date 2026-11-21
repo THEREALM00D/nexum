@@ -9,8 +9,9 @@ import {
 import { useTranslation } from "react-i18next";
 import type { ValheimLaunchConfig } from "@shared/types";
 import { useExistingWorlds } from "../hooks/useExistingWorlds";
+import { useValheimDefaultDataDir } from "../hooks/useValheimDefaultDataDir";
 import Section from "../../../../../components/common/Section";
-import InstallDirWarning from "../../../../../components/common/InstallDirWarning";
+import FolderField from "../../../../../components/common/FolderField";
 
 export default function WorldSection({
   config,
@@ -23,6 +24,7 @@ export default function WorldSection({
 }) {
   const { t } = useTranslation();
   const existingWorlds = useExistingWorlds(config.savedir);
+  const defaultDataDir = useValheimDefaultDataDir();
   return (
     <Section label={t("valheimConfig.sections.world")} loading={loading}>
       <Autocomplete
@@ -47,16 +49,16 @@ export default function WorldSection({
           />
         )}
       />
-      <TextField
+      <FolderField
         label={t("valheimConfig.fields.savedir.label")}
-        helperText={t("valheimConfig.fields.savedir.description")}
+        helper={t("valheimConfig.fields.savedir.description")}
         value={config.savedir}
-        onChange={(e) => onChange({ savedir: e.target.value })}
-        size="small"
-        fullWidth
+        onChange={(savedir) => onChange({ savedir })}
         placeholder="%LOCALAPPDATA%\..\LocalLow\IronGate\Valheim"
+        fallbackPath={defaultDataDir}
+        serverRelative
+        installDirWarning
       />
-      <InstallDirWarning path={config.savedir} serverRelative />
       <TextField
         label={t("valheimConfig.fields.worldSeed.label")}
         helperText={t("valheimConfig.fields.worldSeed.description")}
