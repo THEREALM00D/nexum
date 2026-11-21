@@ -469,6 +469,23 @@ export interface EnshroudedUserGroup {
 // namespace) donc les deux sont traités par le même client, voir ModRegistryClient.
 export type ModRegistry = "thunderstore" | "hexium";
 
+/**
+ * Progression d'une installation de BepInEx ou d'un mod (`valheim:mods:progress`),
+ * traduite par le renderer. `batch` : position dans une série (import de
+ * profil, mods d'un serveur importé).
+ */
+export type ModInstallProgress = (
+  | { step: "resolving"; name: string }
+  | { step: "downloading"; name: string; version: string; percent?: number }
+  | { step: "extracting"; name: string }
+) & { batch?: InstallBatch };
+
+/** Position d'un mod dans une série (« Mod 3/12 »). */
+export interface InstallBatch {
+  index: number;
+  total: number;
+}
+
 export interface ValheimMod {
   modId: number;
   fileId: number;

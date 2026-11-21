@@ -15,7 +15,6 @@ import {
   TextField,
   ToggleButton,
   ToggleButtonGroup,
-  Typography,
 } from "@mui/material";
 import type { ModRegistry } from "@shared/types";
 import DownloadIcon from "@mui/icons-material/Download";
@@ -33,6 +32,8 @@ import PendingModsBanner from "./components/PendingModsBanner";
 import { usePendingMods } from "./hooks/usePendingMods";
 import { useModBrowser } from "./hooks/useModBrowser";
 import ClientModsHint from "./components/ClientModsHint";
+import ModInstallProgress from "./components/ModInstallProgress";
+import { useModInstallProgress } from "./hooks/useModInstallProgress";
 import ShareModpackButton from "./components/ShareModpackButton";
 import InstalledModsList from "./components/InstalledModsList";
 import ModBrowser from "./components/ModBrowser";
@@ -61,6 +62,7 @@ export default function ValheimMods() {
     installedLoading,
     installing,
     installingBepInEx,
+    installingDependencies,
     checkingUpdates,
     locale,
     pendingDeps,
@@ -84,7 +86,12 @@ export default function ValheimMods() {
   // Réinstallation après un import : installe BepInEx s'il manque, donc
   // exclusive avec « Installer BepInEx » et les autres installations.
   const pendingMods = usePendingMods(reloadInstalled);
-  const busy = installing || installingBepInEx || pendingMods.installing;
+  const busy =
+    installing ||
+    installingBepInEx ||
+    installingDependencies ||
+    pendingMods.installing;
+  const installProgress = useModInstallProgress(busy);
 
   const {
     files: configFiles,
@@ -210,14 +217,7 @@ export default function ValheimMods() {
         )}
       </Stack>
 
-      {installing && (
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <CircularProgress size={16} />
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
-            {t("valheimMods.nxm.installing")}
-          </Typography>
-        </Box>
-      )}
+      {busy && <ModInstallProgress progress={installProgress} />}
 
       {/* Remplit le reste de la page : chaque liste défile seule, ses
           filtres et ces onglets restent visibles (ScrollPanel). */}

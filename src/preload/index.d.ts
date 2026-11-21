@@ -27,6 +27,8 @@ import type {
   EnshroudedUserGroup,
   ValheimMod,
   ValheimModConfigFile,
+  InstallBatch,
+  ModInstallProgress,
   ModRegistry,
   ThunderstoreModInfo,
   ThunderstoreModVersion,
@@ -303,10 +305,12 @@ interface API {
         serverId?: string,
       ) => Promise<void>;
       installBepInEx: (serverId?: string) => Promise<void>;
+      /** `batch` : position dans une série, jointe à chaque étape de progression. */
       installMod: (
         registry: ModRegistry,
         code: string,
         serverId?: string,
+        batch?: InstallBatch,
       ) => Promise<ValheimMod>;
       /** Mods d'un serveur importé depuis un autre PC, à réinstaller. */
       getPending: (serverId?: string) => Promise<PendingMod[]>;
@@ -342,7 +346,13 @@ interface API {
         content: string,
         serverId?: string,
       ) => Promise<void>;
-      onProgress: (cb: (msg: string) => void) => () => void;
+      /** `serverId` : serveur sur lequel l'installation a été lancée. */
+      onProgress: (
+        callback: (
+          progress: ModInstallProgress,
+          serverId: string | null,
+        ) => void,
+      ) => () => void;
     };
     getAdminList: (serverId?: string) => Promise<string[]>;
     setAdminList: (list: string[], serverId?: string) => Promise<void>;

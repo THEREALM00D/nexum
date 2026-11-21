@@ -16,6 +16,7 @@ import https from "https";
 import http from "http";
 import extractZip from "extract-zip";
 import type {
+  ModInstallProgress,
   ModRegistry,
   ValheimMod,
   ValheimModConfigFile,
@@ -25,6 +26,8 @@ import { extractModArchive } from "./extractModArchive";
 import { REGISTRIES, REGISTRY_API_BASE, USER_AGENT } from "./registries";
 import { backupBeforeWrite } from "../../utils/ini";
 import { AppError, networkError } from "../../utils/appError";
+
+const BEPINEX_PACK = "BepInExPack_Valheim";
 
 interface TSVersion {
   version_number: string;
@@ -277,8 +280,10 @@ export class ValheimModsManager {
     return body;
   }
 
-  async installBepInEx(onProgress: (msg: string) => void): Promise<void> {
-    onProgress("Récupération de BepInExPack_Valheim depuis Thunderstore…");
+  async installBepInEx(
+    onProgress: (progress: ModInstallProgress) => void,
+  ): Promise<void> {
+    onProgress({ step: "resolving", name: BEPINEX_PACK });
     interface TSPkg {
       versions?: TSVersion[];
       latest?: TSVersion;
@@ -291,14 +296,18 @@ export class ValheimModsManager {
     if (!latest?.version_number || !latest?.download_url)
       throw new AppError("BEPINEX_VERSION_UNAVAILABLE");
 
-    onProgress(
-      `Téléchargement de BepInExPack_Valheim v${latest.version_number}…`,
-    );
     mkdirSync(this.dataDir, { recursive: true });
     const tempZip = join(this.dataDir, "bepinex_install.zip");
-    await this.downloadFile(latest.download_url, tempZip, onProgress);
+    await this.downloadFile(latest.download_url, tempZip, (percent) =>
+      onProgress({
+        step: "downloading",
+        name: BEPINEX_PACK,
+        version: latest.version_number,
+        percent,
+      }),
+    );
 
-    onProgress("Extraction de BepInEx…");
+    onProgress({ step: "extracting", name: BEPINEX_PACK });
     mkdirSync(this.serverPath, { recursive: true });
 
     // Les ZIPs Thunderstore ont souvent un dossier racine unique (ex: BepInExPack_Valheim/)
@@ -341,21 +350,20 @@ export class ValheimModsManager {
         // ignore
       }
     }
-    onProgress(
-      `BepInExPack_Valheim v${latest.version_number} installé avec succès.`,
-    );
   }
 
   async installMod(
     registry: ModRegistry,
     packageCode: string,
-    onProgress: (msg: string) => void,
+    onProgress: (progress: ModInstallProgress) => void,
   ): Promise<ValheimMod> {
     const parts = packageCode.trim().split("-");
     if (parts.length < 3) throw new AppError("MOD_CODE_INVALID");
     const version = parts[parts.length - 1];
     const name = parts[parts.length - 2];
     const namespace = parts.slice(0, parts.length - 2).join("-");
+    const fullName = `${namespace}-${name}`;
+    onProgress({ step: "resolving", name: fullName });
 
     mkdirSync(this.pluginsPath, { recursive: true });
 
@@ -403,10 +411,11 @@ export class ValheimModsManager {
       // pas bloquant — le mod s'installe sans icône/date si l'API est indisponible
     }
 
-    onProgress(`Téléchargement de ${namespace}-${name} v${version}…`);
-    await this.downloadFile(downloadUrl, tempZip, onProgress);
+    await this.downloadFile(downloadUrl, tempZip, (percent) =>
+      onProgress({ step: "downloading", name: fullName, version, percent }),
+    );
 
-    onProgress("Extraction…");
+    onProgress({ step: "extracting", name: fullName });
     try {
       await extractModArchive(
         tempZip,
@@ -425,7 +434,7 @@ export class ValheimModsManager {
     const entry: ValheimMod = {
       modId: Date.now(),
       fileId: 0,
-      name: `${namespace}-${name}`,
+      name: fullName,
       version,
       author: namespace,
       summary: "",
@@ -444,8 +453,6 @@ export class ValheimModsManager {
     );
     mods.push(entry);
     this.save(mods);
-
-    onProgress(`${entry.name} v${version} installé depuis ${registry}.`);
     return entry;
   }
 
@@ -680,7 +687,8 @@ export class ValheimModsManager {
   private downloadFile(
     url: string,
     dest: string,
-    onProgress: (msg: string) => void,
+    /** Pourcentage reçu (`undefined` tant que la taille est inconnue). */
+    onProgress: (percent?: number) => void,
   ): Promise<void> {
     return new Promise((resolve, reject) => {
       mkdirSync(this.dataDir, { recursive: true });
@@ -729,15 +737,17 @@ export class ValheimModsManager {
 
         const total = parseInt(res.headers["content-length"] ?? "0", 10);
         let received = 0;
-        let lastPct = -1;
+        let lastPercent = 0;
+        // Taille inconnue : étape affichée sans pourcentage.
+        onProgress(total > 0 ? 0 : undefined);
 
         res.on("data", (chunk: Buffer) => {
           received += chunk.length;
           if (total > 0) {
-            const pct = Math.floor((received / total) * 100);
-            if (pct !== lastPct && pct % 10 === 0) {
-              lastPct = pct;
-              onProgress(`Téléchargement… ${pct}%`);
+            const percent = Math.floor((received / total) * 100);
+            if (percent !== lastPercent) {
+              lastPercent = percent;
+              onProgress(percent);
             }
           }
         });

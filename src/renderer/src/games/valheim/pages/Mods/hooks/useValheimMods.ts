@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useNotification } from "../../../../../context/NotificationContext";
 import { useServer } from "../../../../../context/ServerContext";
 import type {
+  InstallBatch,
   ThunderstoreModInfo,
   ValheimMod,
   ModUpdate,
@@ -34,6 +35,9 @@ export function useValheimMods() {
   const [installedLoading, setInstalledLoading] = useState(true);
   const [installing, setInstalling] = useState(false);
   const [installingBepInEx, setInstallingBepInEx] = useState(false);
+  // « Tout installer » (dépendances) : `handleInstallMod` remet `installing`
+  // à faux après chaque mod, la page reste occupée jusqu'au dernier.
+  const [installingDependencies, setInstallingDependencies] = useState(false);
   const [checkingUpdates, setCheckingUpdates] = useState(false);
 
   // Dépendances manquantes après une installation
@@ -154,10 +158,15 @@ export function useValheimMods() {
   );
 
   const handleInstallMod = useCallback(
-    async (registry: ModRegistry, code: string) => {
+    async (registry: ModRegistry, code: string, batch?: InstallBatch) => {
       setInstalling(true);
       try {
-        const mod = await window.api.valheim.mods.installMod(registry, code);
+        const mod = await window.api.valheim.mods.installMod(
+          registry,
+          code,
+          undefined,
+          batch,
+        );
         setInstalledMods((prev) => {
           const next = [
             ...prev.filter(
@@ -326,11 +335,13 @@ export function useValheimMods() {
     try {
       // Une seule sauvegarde pour toute la série.
       if (!(await backupBeforeUpdate())) return;
-      for (const update of updates) {
+      for (const [index, update] of updates.entries()) {
         try {
           await window.api.valheim.mods.installMod(
             update.registry,
             update.latestCode,
+            undefined,
+            { index: index + 1, total: updates.length },
           );
           successCount++;
         } catch {
@@ -361,11 +372,17 @@ export function useValheimMods() {
     if (!pendingDeps) return;
     const deps = pendingDeps.deps;
     setPendingDeps(null);
-    for (const dep of deps) {
-      await handleInstallMod(
-        dep.registry,
-        `${dep.author}-${dep.name}-${dep.version}`,
-      );
+    setInstallingDependencies(true);
+    try {
+      for (const [index, dependency] of deps.entries()) {
+        await handleInstallMod(
+          dependency.registry,
+          `${dependency.author}-${dependency.name}-${dependency.version}`,
+          { index: index + 1, total: deps.length },
+        );
+      }
+    } finally {
+      setInstallingDependencies(false);
     }
   }, [pendingDeps, handleInstallMod]);
 
@@ -375,6 +392,7 @@ export function useValheimMods() {
     installedLoading,
     installing,
     installingBepInEx,
+    installingDependencies,
     checkingUpdates,
     locale,
     pendingDeps,

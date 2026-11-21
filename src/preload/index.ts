@@ -7,6 +7,8 @@ import type {
   GameUpdateNotice,
   ModUpdateNotice,
   AutoRestartGaveUpNotice,
+  InstallBatch,
+  ModInstallProgress,
   ModRegistry,
   RestartConfig,
   SelectFolderOptions,
@@ -295,8 +297,19 @@ const api = {
         ipcRenderer.invoke("valheim:mods:toggle", modId, enabled, serverId),
       installBepInEx: (serverId?: string) =>
         ipcRenderer.invoke("valheim:mods:installBepInEx", serverId),
-      installMod: (registry: ModRegistry, code: string, serverId?: string) =>
-        ipcRenderer.invoke("valheim:mods:installMod", registry, code, serverId),
+      installMod: (
+        registry: ModRegistry,
+        code: string,
+        serverId?: string,
+        batch?: InstallBatch,
+      ) =>
+        ipcRenderer.invoke(
+          "valheim:mods:installMod",
+          registry,
+          code,
+          serverId,
+          batch,
+        ),
       // Mods d'un serveur importé depuis un autre PC
       getPending: (serverId?: string) =>
         ipcRenderer.invoke("valheim:mods:getPending", serverId),
@@ -344,8 +357,19 @@ const api = {
           content,
           serverId,
         ),
-      onProgress: (cb: (msg: string) => void) => {
-        ipcRenderer.on("valheim:mods:progress", (_e, msg) => cb(msg));
+      onProgress: (
+        callback: (
+          progress: ModInstallProgress,
+          serverId: string | null,
+        ) => void,
+      ) => {
+        ipcRenderer.on(
+          "valheim:mods:progress",
+          (
+            _event,
+            payload: { serverId: string | null; progress: ModInstallProgress },
+          ) => callback(payload.progress, payload.serverId),
+        );
         return () => ipcRenderer.removeAllListeners("valheim:mods:progress");
       },
     },

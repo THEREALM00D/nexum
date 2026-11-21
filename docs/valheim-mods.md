@@ -10,6 +10,8 @@ The **Mods** page of a Valheim server lets you install, update and configure Bep
 
 Most Valheim mods require **BepInEx**. If Nexum doesn't find it in the server folder, a banner says so, with an **Install BepInEx** button.
 
+During any install (BepInEx, a mod, a profile or the mods of an imported server), a line under the buttons shows the current step and the download progress, with the mod's position in the series ("Mod 3/12") when several are installed in a row.
+
 > Mods are only loaded when the server starts: restart it after any install, uninstall, or enable/disable.
 
 ## Server and players
