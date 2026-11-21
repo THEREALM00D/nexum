@@ -16,6 +16,8 @@ Three sources are merged into the same view:
 
 `[Manager]` messages are written in the app's language (French or English) at the time they're logged: a session saved before you switch languages keeps the previous one.
 
+When a `[Manager]` line reports an error, the message ends with its code in brackets, such as `[NETWORK_ERROR]`: keep it when you copy the line into a bug report.
+
 ## Colors
 
 - **Red**: lines containing `[ERR]` or `Error`
@@ -128,7 +130,7 @@ Very little output as long as there's no connection or error.
 ### On forced shutdown (without API)
 
 ```
-[Manager] API unavailable: PAL_API_TIMEOUT
+[Manager] API unavailable: The Palworld REST API did not answer within 8 seconds. [PAL_API_TIMEOUT]
 [Manager] Forcing the stop (taskkill)...
 [Manager] Server exited with code 1.
 ```

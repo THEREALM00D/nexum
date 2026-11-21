@@ -86,7 +86,7 @@ const FR = {
   // Sauvegarde d'un serveur lancé
   saveRequested: "Demande de sauvegarde au serveur avant de zipper le monde...",
   saveRequestFailed: (err: string) =>
-    `Le serveur n'a pas pu sauvegarder (${err}) : la sauvegarde contiendra sa dernière sauvegarde automatique.`,
+    `Le serveur n'a pas pu sauvegarder, la sauvegarde contiendra sa dernière sauvegarde automatique : ${err}`,
   saveNotWritten:
     "Le serveur a accepté la demande de sauvegarde mais n'a écrit aucun fichier en 30 s : la sauvegarde contiendra sa dernière sauvegarde automatique.",
   saveStillWriting:
@@ -116,11 +116,11 @@ const FR = {
     "Mise à jour automatique ignorée : SteamCMD n'est pas installé.",
   gameUpToDateRestart: "Jeu à jour : simple redémarrage.",
   updateBackupFailed: (err: string) =>
-    `Mise à jour du jeu annulée, la sauvegarde a échoué : ${err}. Le serveur a redémarré sur la version installée.`,
+    `Le serveur a redémarré sur la version installée, sans mise à jour : ${err}`,
   updatedByScheduledRestart: (from: string, to: string) =>
     `Jeu mis à jour par le redémarrage planifié (build ${from} → ${to}).`,
   updateFailed: (err: string) =>
-    `Échec de la mise à jour du jeu (${err}) : le serveur a redémarré sur la version installée.`,
+    `Échec de la mise à jour du jeu, le serveur a redémarré sur la version installée : ${err}`,
   scheduledRestartWithUpdate: (from: string, to: string) =>
     `Redémarrage planifié avec mise à jour du jeu (build ${from} → ${to}).`,
   updateCancelledNotStopped: (err: string) =>
@@ -214,7 +214,7 @@ const EN: typeof FR = {
 
   saveRequested: "Asking the server to save before zipping the world...",
   saveRequestFailed: (err) =>
-    `The server could not save (${err}): the backup will contain its last autosave.`,
+    `The server could not save, the backup will contain its last autosave: ${err}`,
   saveNotWritten:
     "The server accepted the save request but wrote no file within 30 s: the backup will contain its last autosave.",
   saveStillWriting:
@@ -237,11 +237,11 @@ const EN: typeof FR = {
     "Automatic update skipped: SteamCMD is not installed.",
   gameUpToDateRestart: "Game up to date: plain restart.",
   updateBackupFailed: (err) =>
-    `Game update cancelled, the backup failed: ${err}. The server restarted on the installed version.`,
+    `The server restarted on the installed version, without updating: ${err}`,
   updatedByScheduledRestart: (from, to) =>
     `Game updated by the scheduled restart (build ${from} → ${to}).`,
   updateFailed: (err) =>
-    `Game update failed (${err}): the server restarted on the installed version.`,
+    `Game update failed, the server restarted on the installed version: ${err}`,
   scheduledRestartWithUpdate: (from, to) =>
     `Scheduled restart with a game update (build ${from} → ${to}).`,
   updateCancelledNotStopped: (err) =>

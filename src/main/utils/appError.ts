@@ -1,4 +1,7 @@
 import type { AppErrorCode } from "../../shared/types";
+import { APP_ERRORS_FR } from "../../shared/appErrors/fr";
+import { APP_ERRORS_EN } from "../../shared/appErrors/en";
+import { getLanguage, type AppLanguage } from "../i18n/language";
 
 // Message d'erreur destiné à l'utilisateur : le main n'a pas i18n, il renvoie
 // donc un code (+ paramètres) que le renderer traduit dans la langue de l'UI
@@ -37,27 +40,57 @@ export function networkError(url: string | URL, err: unknown): AppError {
   });
 }
 
-/**
- * Version lisible pour les logs du serveur (non traduits, comme toutes les
- * lignes `[Manager]`) : le code suivi de ses paramètres. Un paramètre qui
- * est lui-même une erreur codée (ex. `msg` de BACKUP_BEFORE_UPDATE_FAILED)
- * est déplié de la même façon.
- */
-export function appErrorLogText(raw: string): string {
-  const i = raw.indexOf(PREFIX);
-  if (i === -1) return raw;
+const MESSAGES: Record<AppLanguage, Record<AppErrorCode, string>> = {
+  fr: APP_ERRORS_FR,
+  en: APP_ERRORS_EN,
+};
+
+interface DecodedError {
+  message: string;
+  /** Codes de l'erreur puis de ses paramètres codés, de l'extérieur vers l'intérieur. */
+  codes: string[];
+}
+
+function decode(raw: string): DecodedError {
+  const start = raw.indexOf(PREFIX);
+  if (start === -1) return { message: raw, codes: [] };
   try {
-    const { code, params } = JSON.parse(raw.slice(i + PREFIX.length)) as {
+    const { code, params } = JSON.parse(raw.slice(start + PREFIX.length)) as {
       code: string;
       params?: Params;
     };
-    const values = params
-      ? Object.values(params)
-          .map((v) => appErrorLogText(String(v)))
-          .join(", ")
-      : "";
-    return values ? `${code} (${values})` : code;
+    const codes = [code];
+    const values: Record<string, string> = {};
+    for (const [key, value] of Object.entries(params ?? {})) {
+      const nested = decode(String(value));
+      values[key] = nested.message;
+      codes.push(...nested.codes);
+    }
+    const template = MESSAGES[getLanguage()][code as AppErrorCode];
+    if (!template) {
+      const list = Object.values(values).join(", ");
+      return { message: list ? `${code} (${list})` : code, codes: [] };
+    }
+    const message = template.replace(
+      /\{\{(\w+)\}\}/g,
+      (placeholder, key: string) => values[key] ?? placeholder,
+    );
+    return { message, codes };
   } catch {
-    return raw;
+    return { message: raw, codes: [] };
   }
+}
+
+/**
+ * Version lisible pour les logs du serveur : le même texte que la
+ * notification du renderer (`src/shared/appErrors/`), dans la langue du
+ * moment comme toutes les lignes `[Manager]`, suivi du code entre crochets
+ * pour qu'un rapport de bug reste facile à chercher. Un paramètre qui est
+ * lui-même une erreur codée (ex. `msg` de BACKUP_BEFORE_UPDATE_FAILED) est
+ * traduit aussi et son code ajouté : `[BACKUP_BEFORE_UPDATE_FAILED > NETWORK_ERROR]`.
+ * Un texte non codé est renvoyé tel quel.
+ */
+export function appErrorLogText(raw: string): string {
+  const { message, codes } = decode(raw);
+  return codes.length > 0 ? `${message} [${codes.join(" > ")}]` : message;
 }
