@@ -1,4 +1,8 @@
-import type { ModRegistry, ValheimMod } from "../../../shared/types";
+import type {
+  ModInstallProgress,
+  ModRegistry,
+  ValheimMod,
+} from "../../../shared/types";
 import type { ValheimModsManager } from "./ValheimModsManager";
 import { REGISTRIES } from "./registries";
 
@@ -17,22 +21,25 @@ export interface CodeToInstall {
 export async function installCodes(
   manager: ValheimModsManager,
   items: CodeToInstall[],
-  onProgress: (msg: string) => void,
+  onProgress: (progress: ModInstallProgress) => void,
 ): Promise<{ installed: ValheimMod[]; errors: string[] }> {
   const installed: ValheimMod[] = [];
   const errors: string[] = [];
-  for (const { code, registry } of items) {
+  for (const [index, { code, registry }] of items.entries()) {
+    const batch = { index: index + 1, total: items.length };
     const order = registry
-      ? [registry, ...REGISTRIES.filter((r) => r !== registry)]
+      ? [registry, ...REGISTRIES.filter((other) => other !== registry)]
       : REGISTRIES;
     let lastError: unknown;
     let mod: ValheimMod | null = null;
-    for (const r of order) {
+    for (const candidateRegistry of order) {
       try {
-        mod = await manager.installMod(r, code, onProgress);
+        mod = await manager.installMod(candidateRegistry, code, (progress) =>
+          onProgress({ ...progress, batch }),
+        );
         break;
-      } catch (e) {
-        lastError = e;
+      } catch (error) {
+        lastError = error;
       }
     }
     if (mod) {
@@ -40,7 +47,6 @@ export async function installCodes(
     } else {
       const message = (lastError as Error)?.message ?? "?";
       errors.push(`${code}: ${message}`);
-      onProgress(`⚠ ${code} — ${message}`);
     }
   }
   return { installed, errors };

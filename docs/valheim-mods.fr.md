@@ -10,6 +10,8 @@ La page **Mods** d'un serveur Valheim permet d'installer, mettre à jour et conf
 
 La plupart des mods Valheim nécessitent **BepInEx**. Si Nexum ne le détecte pas dans le dossier du serveur, un bandeau le signale avec un bouton **Installer BepInEx**.
 
+Pendant toute installation (BepInEx, un mod, un profil ou les mods d'un serveur importé), une ligne sous les boutons indique l'étape en cours et la progression du téléchargement, avec la position du mod dans la série (« Mod 3/12 ») quand plusieurs s'installent à la suite.
+
 > Les mods ne sont chargés qu'au démarrage du serveur : redémarrez-le après toute installation, désinstallation ou activation/désactivation.
 
 ## Serveur et joueurs

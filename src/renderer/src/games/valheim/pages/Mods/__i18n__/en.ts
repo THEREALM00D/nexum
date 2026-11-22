@@ -130,6 +130,12 @@ export default {
       success: "{{name}} installed successfully",
       error: "Installation error: {{error}}",
     },
+    progress: {
+      resolving: "Looking up {{name}}…",
+      downloading: "Downloading {{name}} v{{version}}…",
+      extracting: "Extracting {{name}}…",
+      batch: "Mod {{index}}/{{total}}",
+    },
     deps: {
       title: "Required dependencies",
       subtitle:

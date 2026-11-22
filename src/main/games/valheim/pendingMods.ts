@@ -1,6 +1,10 @@
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "fs";
 import { join } from "path";
-import type { PendingMod, ValheimMod } from "../../../shared/types";
+import type {
+  ModInstallProgress,
+  PendingMod,
+  ValheimMod,
+} from "../../../shared/types";
 import type { ValheimModsManager } from "./ValheimModsManager";
 import { installCodes } from "./installCodes";
 import { REGISTRIES } from "./registries";
@@ -68,7 +72,7 @@ export function writePendingMods(dataDir: string, mods: PendingMod[]): void {
 export async function installPendingMods(
   manager: ValheimModsManager,
   dataDir: string,
-  onProgress: (message: string) => void,
+  onProgress: (progress: ModInstallProgress) => void,
 ): Promise<{ installed: ValheimMod[]; errors: string[] }> {
   const pending = readPendingMods(dataDir);
   if (pending.length === 0) return { installed: [], errors: [] };

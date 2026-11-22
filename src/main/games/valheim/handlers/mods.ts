@@ -3,7 +3,11 @@ import { shell } from "electron";
 import { join } from "path";
 import { mkdirSync } from "fs";
 import type { IpcContext } from "../../../ipc/context";
-import type { ModRegistry } from "../../../../shared/types";
+import type {
+  InstallBatch,
+  ModInstallProgress,
+  ModRegistry,
+} from "../../../../shared/types";
 import { ModRegistryClient } from "../ModRegistryClient";
 import { ValheimModsManager } from "../ValheimModsManager";
 import { installCodes } from "../installCodes";
@@ -21,19 +25,27 @@ function getManager(ctx: IpcContext, serverId?: string): ValheimModsManager {
   );
 }
 
-const progressTo = (event: Electron.IpcMainInvokeEvent) => (msg: string) =>
-  event.sender.send("valheim:mods:progress", msg);
+// Progression envoyée avec l'id du serveur : une installation lancée sur un
+// autre serveur (page quittée en cours de route) ne doit pas s'afficher sur
+// la page Mods du serveur affiché.
+const progressTo =
+  (ctx: IpcContext, event: Electron.IpcMainInvokeEvent, serverId?: string) =>
+  (progress: ModInstallProgress) =>
+    event.sender.send("valheim:mods:progress", {
+      serverId: serverId ?? ctx.getActiveServer()?.id ?? null,
+      progress,
+    });
 
 // Import de profil : le r2x ne dit pas d'où vient chaque mod.
 const installProfileCodes = (
   manager: ValheimModsManager,
   codes: string[],
-  event: Electron.IpcMainInvokeEvent,
+  onProgress: (progress: ModInstallProgress) => void,
 ) =>
   installCodes(
     manager,
     codes.map((code) => ({ code })),
-    progressTo(event),
+    onProgress,
   );
 
 export function registerValheimModsHandlers(ctx: IpcContext): void {
@@ -45,7 +57,7 @@ export function registerValheimModsHandlers(ctx: IpcContext): void {
     installPendingMods(
       getManager(ctx, serverId),
       ctx.getModsDataDir(serverId),
-      progressTo(event),
+      progressTo(ctx, event, serverId),
     ),
   );
   ipcMain.handle("valheim:mods:dismissPending", (_, serverId?: string) =>
@@ -122,8 +134,8 @@ export function registerValheimModsHandlers(ctx: IpcContext): void {
   ipcMain.handle(
     "valheim:mods:installBepInEx",
     async (event, serverId?: string) =>
-      getManager(ctx, serverId).installBepInEx((msg) =>
-        event.sender.send("valheim:mods:progress", msg),
+      getManager(ctx, serverId).installBepInEx(
+        progressTo(ctx, event, serverId),
       ),
   );
 
@@ -139,10 +151,20 @@ export function registerValheimModsHandlers(ctx: IpcContext): void {
 
   ipcMain.handle(
     "valheim:mods:installMod",
-    async (event, registry: ModRegistry, code: string, serverId?: string) =>
-      getManager(ctx, serverId).installMod(registry, code, (msg) =>
-        event.sender.send("valheim:mods:progress", msg),
-      ),
+    // `batch` : position dans une série lancée par le renderer (« Tout
+    // mettre à jour », dépendances), jointe à chaque étape.
+    async (
+      event,
+      registry: ModRegistry,
+      code: string,
+      serverId?: string,
+      batch?: InstallBatch,
+    ) => {
+      const onProgress = progressTo(ctx, event, serverId);
+      return getManager(ctx, serverId).installMod(registry, code, (progress) =>
+        onProgress(batch ? { ...progress, batch } : progress),
+      );
+    },
   );
 
   ipcMain.handle(
@@ -150,7 +172,11 @@ export function registerValheimModsHandlers(ctx: IpcContext): void {
     async (event, base64Code: string, serverId?: string) => {
       const manager = getManager(ctx, serverId);
       const codes = await manager.parseThunderstoreProfile(base64Code);
-      return installProfileCodes(manager, codes, event);
+      return installProfileCodes(
+        manager,
+        codes,
+        progressTo(ctx, event, serverId),
+      );
     },
   );
 
@@ -161,7 +187,11 @@ export function registerValheimModsHandlers(ctx: IpcContext): void {
     async (event, filePath: string, serverId?: string) => {
       const manager = getManager(ctx, serverId);
       const codes = await manager.parseThunderstoreProfileFile(filePath);
-      return installProfileCodes(manager, codes, event);
+      return installProfileCodes(
+        manager,
+        codes,
+        progressTo(ctx, event, serverId),
+      );
     },
   );
 
