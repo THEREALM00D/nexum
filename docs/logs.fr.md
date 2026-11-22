@@ -16,6 +16,8 @@ Trois sources sont fusionnées dans la même vue :
 
 Les messages `[Manager]` sont écrits dans la langue de l'application (français ou anglais) au moment où ils sont enregistrés : une session enregistrée avant un changement de langue garde la précédente.
 
+Quand une ligne `[Manager]` signale une erreur, le message se termine par son code entre crochets, par exemple `[NETWORK_ERROR]` : gardez-le en copiant la ligne dans un rapport de bug.
+
 ## Couleurs
 
 - **Rouge** : lignes contenant `[ERR]` ou `Error`
@@ -128,7 +130,7 @@ Très peu de sortie tant qu'il n'y a pas de connexion ou d'erreur.
 ### À l'arrêt forcé (sans API)
 
 ```
-[Manager] API indisponible : PAL_API_TIMEOUT
+[Manager] API indisponible : L'API REST de Palworld n'a pas répondu en 8 secondes. [PAL_API_TIMEOUT]
 [Manager] Arrêt forcé via taskkill...
 [Manager] Le serveur s'est arrêté (code 1).
 ```
