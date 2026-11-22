@@ -6,6 +6,8 @@ export default {
     save: "Sauvegarder",
     saved: "Sauvegardé !",
     noServerPath: "Configurez le chemin du serveur dans l'onglet Installation.",
+    loadFailed: "Impossible de charger la configuration : {{error}}",
+    saveFailed: "Impossible de sauvegarder la configuration : {{error}}",
     sections: {
       general: "Général",
       world: "Monde",
