@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.24.0](https://github.com/THEREALM00D/nexum/compare/v0.23.0...v0.24.0) (2026-11-22)
+
+
+### Features
+
+* add a folder picker to every folder field ([#250](https://github.com/THEREALM00D/nexum/issues/250)) ([7e95777](https://github.com/THEREALM00D/nexum/commit/7e95777c70268e1c7230c011300903723a230207))
+* load more results in the Valheim mods Browse tab ([#252](https://github.com/THEREALM00D/nexum/issues/252)) ([591839e](https://github.com/THEREALM00D/nexum/commit/591839e9634684ca7e91e52c82299b492ba50b06))
+* show mod and BepInEx install progress on the Valheim Mods page ([#258](https://github.com/THEREALM00D/nexum/issues/258)) ([242f6fb](https://github.com/THEREALM00D/nexum/commit/242f6fb41223a257c8ae334fada65ba2cf146e8e))
+
+
+### Bug Fixes
+
+* keep and report automatic start failures ([#260](https://github.com/THEREALM00D/nexum/issues/260)) ([347904c](https://github.com/THEREALM00D/nexum/commit/347904c5b15159ece6e329ebec874f8ab06c7734))
+* translate the Valheim Config page load and save errors ([#256](https://github.com/THEREALM00D/nexum/issues/256)) ([8f0b9cc](https://github.com/THEREALM00D/nexum/commit/8f0b9cc31eb1f1551ee919568d12302e42d6355b))
+* write readable error messages in server logs ([#257](https://github.com/THEREALM00D/nexum/issues/257)) ([04bd696](https://github.com/THEREALM00D/nexum/commit/04bd696ffbe11ea5286a4010efb849aa1989a078))
+
 ## [0.23.0](https://github.com/THEREALM00D/nexum/compare/v0.22.0...v0.23.0) (2026-11-13)
 
 
