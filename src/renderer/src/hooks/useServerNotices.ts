@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useServer } from "../context/ServerContext";
 import { useNotification } from "../context/NotificationContext";
 import { serverService } from "../services/serverService";
+import { appErrorMessage } from "../utils/appErrorMessage";
 
 /**
  * Notifications envoyées par le main pour un serveur (vérifications faites au
@@ -12,8 +13,8 @@ import { serverService } from "../services/serverService";
  *   met à jour) ;
  * - mods Valheim à mettre à jour ou dépréciés (`checkModUpdatesOnStart`) →
  *   bouton vers la page Mods ;
- * - relance après un plantage abandonnée (`crashRestart.ts`) → bouton vers
- *   la page Logs.
+ * - relance après un plantage abandonnée (`crashRestart.ts`), démarrage
+ *   auto ou relance qui échoue (`serverAlerts.ts`) → bouton vers la page Logs.
  * Le bouton sélectionne d'abord le serveur concerné.
  */
 export function useServerNotices(pages: {
@@ -84,10 +85,29 @@ export function useServerNotices(pages: {
       });
     });
 
+    const stopStartFailed = serverService.onAutoStartFailed((notice) => {
+      const { notify, t, pages } = latest.current;
+      const params = {
+        name: serverName(notice.serverId),
+        error: appErrorMessage(t, notice.error),
+      };
+      notify(
+        notice.kind === "autoStart"
+          ? t("autoStart.failed", params)
+          : t("autoRestart.failed", params),
+        "error",
+        {
+          label: t("autoRestart.viewLogs"),
+          onClick: () => goTo(notice.serverId, pages.openLogsPage),
+        },
+      );
+    });
+
     return () => {
       stopGame();
       stopMods();
       stopCrash();
+      stopStartFailed();
     };
   }, []);
 }

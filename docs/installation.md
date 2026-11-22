@@ -104,11 +104,11 @@ To have your servers come back on their own after a PC restart:
 1. In **Servers**, edit a server and check **Start automatically when Nexum opens**. Repeat for each server you want started.
 2. In **Settings**, turn on **Launch Nexum when Windows starts** (only available in the installed app).
 
-When you log in to Windows, Nexum starts in the background (its icon near the clock, see below) and starts the checked servers, a few seconds apart. A server that is already running is left as is. The same checks as a manual start apply (port conflicts, Valheim password rules, Dragonwilds Player ID): if a server can't start, the reason is written in its log.
+When you log in to Windows, Nexum starts in the background (its icon near the clock, see below) and starts the checked servers, a few seconds apart. A server that is already running is left as is. The same checks as a manual start apply (port conflicts, Valheim password rules, Dragonwilds Player ID): if a server can't start, Nexum tells you with a notification (with a **View logs** button), and with a Windows notification if the Nexum window is hidden or in the background. The reason is written in a short session of the server's log, listed on the **Logs** page.
 
 ## Restarting after a crash
 
-In **Servers**, edit a server and check **Restart automatically after a crash**: when the server stops on its own with an error, Nexum starts it again 10 seconds later, with the same checks as a manual start. A server that stops cleanly, or that you stop yourself, is not restarted.
+In **Servers**, edit a server and check **Restart automatically after a crash**: when the server stops on its own with an error, Nexum starts it again 10 seconds later, with the same checks as a manual start. A server that stops cleanly, or that you stop yourself, is not restarted. If the restart itself fails (missing executable, port taken…), Nexum tells you the same way as a failed automatic start, and the reason is written in a new session of the server's log.
 
 To avoid an endless loop with a server that crashes as soon as it starts (corrupted world, broken mod), Nexum gives up after 3 crashes within 30 minutes. It tells you with a notification (with a **View logs** button), and with a Windows notification if the Nexum window is hidden or in the background. Giving up is also written at the end of the last crashed session, like each "Restarting automatically in 10 s", so it's still there after Nexum is closed. Find out what's wrong (see [Logs → Diagnostics](logs.md#diagnostics)), then start the server yourself.
 

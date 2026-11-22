@@ -1,4 +1,4 @@
-import { BrowserWindow } from "electron/main";
+import { sendToRenderer } from "../ipc/rendererEvents";
 import type { IpcContext } from "../ipc/context";
 import type { GameUpdateNotice } from "../../shared/types";
 import { STEAM_APP_IDS } from "../steamcmd/SteamCMD";
@@ -54,7 +54,5 @@ export async function checkGameUpdateOnStart(
     latestBuild: result.requiredBuild,
     steamLibrary: result.steamLibrary,
   };
-  BrowserWindow.getAllWindows().forEach((w) =>
-    w.webContents.send("server:gameUpdateAvailable", notice),
-  );
+  sendToRenderer("server:gameUpdateAvailable", notice);
 }

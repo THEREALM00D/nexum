@@ -188,6 +188,18 @@ export interface AutoRestartGaveUpNotice {
   minutes: number;
 }
 
+/**
+ * Envoyé au renderer (`server:autoStartFailed`) quand un démarrage que Nexum
+ * a tenté seul échoue : démarrage auto à l'ouverture ou relance après un
+ * plantage (`server/serverAlerts.ts`).
+ */
+export interface AutoStartFailedNotice {
+  serverId: string;
+  kind: "autoStart" | "crashRestart";
+  /** Erreur telle que renvoyée par `startServer` (codée, traduite par le renderer). */
+  error: string;
+}
+
 /** Infos pour rejoindre un serveur (carte « Rejoindre le serveur »). */
 export interface JoinInfo {
   /** IPv4 de ce PC sur le réseau local, pour les joueurs du même réseau. */

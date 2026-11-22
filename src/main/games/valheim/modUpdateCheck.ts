@@ -1,4 +1,4 @@
-import { BrowserWindow } from "electron/main";
+import { sendToRenderer } from "../../ipc/rendererEvents";
 import type { IpcContext } from "../../ipc/context";
 import type { ModRegistry, ModUpdateNotice } from "../../../shared/types";
 import { ModRegistryClient } from "./ModRegistryClient";
@@ -66,7 +66,5 @@ export async function checkModUpdatesOnStart(
     updates: updates.length,
     deprecated: deprecatedCodes.length,
   };
-  BrowserWindow.getAllWindows().forEach((w) =>
-    w.webContents.send("valheim:modUpdatesAvailable", notice),
-  );
+  sendToRenderer("valheim:modUpdatesAvailable", notice);
 }

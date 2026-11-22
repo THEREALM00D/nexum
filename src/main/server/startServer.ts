@@ -12,6 +12,7 @@ import { checkModUpdatesOnStart } from "../games/valheim/modUpdateCheck";
 import { checkGameUpdateOnStart } from "./gameUpdateCheck";
 import { appError, appErrorLogText } from "../utils/appError";
 import { lt, managerLine } from "../i18n/logStrings";
+import { notifyStartFailed } from "./serverAlerts";
 
 // Liste les mods BepInEx actifs dans la console au démarrage — Valheim ne
 // donne aucune indication en jeu de ce qui est chargé côté serveur.
@@ -165,21 +166,28 @@ export async function autoStartServers(
   if (!ctx.app.isPackaged && process.env.NEXUM_DEV_AUTOSTART !== "1") return;
 
   const toStart = ctx.servers.list().filter((s) => s.autoStart);
-  for (const [i, server] of toStart.entries()) {
+  for (const [index, server] of toStart.entries()) {
+    if (index > 0) await new Promise((resolve) => setTimeout(resolve, 5000));
+    // Statut lu après l'attente : un serveur démarré à la main entre-temps
+    // ne doit pas déclencher une alerte « démarrage impossible ».
     const status = ctx.serverManagers.getOrCreate(server.id).getStatus();
     if (status === "running" || status === "starting") continue;
-    if (i > 0) await new Promise((r) => setTimeout(r, 5000));
-    const log = (line: string) => broadcastLog(server.id, line);
-    const res = await startServer(ctx, server.id, log).catch((e: Error) => ({
-      success: false,
-      error: e.message,
-    }));
-    if (res.success) {
-      ctx.serverManagers
-        .getOrCreate(server.id)
-        .log(managerLine(lt().autoStarted));
-    } else {
-      log(managerLine(lt().autoStartFailed(appErrorLogText(res.error ?? ""))));
+    const sendLog = (line: string) => broadcastLog(server.id, line);
+    const result = await startServer(ctx, server.id, sendLog).catch(
+      (error: Error) => ({ success: false, error: error.message }),
+    );
+    const manager = ctx.serverManagers.getOrCreate(server.id);
+    if (result.success) {
+      manager.log(managerLine(lt().autoStarted));
+      continue;
     }
+    // Refusé avant d'ouvrir une session : compte rendu dans une session à
+    // lui, sinon la ligne n'est écrite nulle part (issue #259).
+    const error = result.error ?? "";
+    manager.logStartFailure(
+      managerLine(lt().autoStartFailed(appErrorLogText(error))),
+      sendLog,
+    );
+    notifyStartFailed(server, "autoStart", error);
   }
 }

@@ -1,6 +1,7 @@
 import type { OperationResult, ServerStatus, ServerLogEvent } from "../types";
 import type {
   AutoRestartGaveUpNotice,
+  AutoStartFailedNotice,
   GameUpdateNotice,
   ModUpdateNotice,
 } from "@shared/types";
@@ -24,4 +25,6 @@ export const serverService = {
     window.api.server.onModUpdatesAvailable(cb),
   onAutoRestartGaveUp: (cb: (notice: AutoRestartGaveUpNotice) => void) =>
     window.api.server.onAutoRestartGaveUp(cb),
+  onAutoStartFailed: (callback: (notice: AutoStartFailedNotice) => void) =>
+    window.api.server.onAutoStartFailed(callback),
 };

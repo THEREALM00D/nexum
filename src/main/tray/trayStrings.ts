@@ -3,8 +3,8 @@ import type { AppLanguage } from "../i18n/language";
 
 // Le main n'a pas react-i18next : textes du menu de l'icône, de la
 // notification « Nexum continue en arrière-plan », de la confirmation avant
-// de quitter (`server/quitGuard.ts`) et de l'abandon de la relance après un
-// plantage (`server/crashRestart.ts`), en FR et EN. La langue vient du
+// de quitter (`server/quitGuard.ts`) et des alertes d'un serveur
+// (`server/serverAlerts.ts` : relance abandonnée, démarrage auto raté), en FR et EN. La langue vient du
 // renderer (IPC `app:setLanguage`), mémorisée dans le store.
 export type TrayLanguage = AppLanguage;
 
@@ -39,6 +39,10 @@ Ils s'arrêtent avec Nexum : Nexum va d'abord les arrêter proprement (sauvegard
     crashGaveUpTitle: "Relance automatique abandonnée",
     crashGaveUpBody: (name: string, crashes: number, minutes: number) =>
       `« ${name} » a planté ${crashes} fois en moins de ${minutes} min : Nexum ne le relance plus. Consultez ses logs puis démarrez-le à la main.`,
+    autoStartFailedTitle: "Démarrage automatique impossible",
+    autoRestartFailedTitle: "Relance automatique impossible",
+    startFailedBody: (name: string) =>
+      `« ${name} » n'a pas démarré. Consultez ses logs pour savoir pourquoi.`,
     status: {
       running: "En ligne",
       starting: "Démarrage…",
@@ -78,6 +82,10 @@ They stop with Nexum: Nexum will first stop them cleanly (the world is saved), t
     crashGaveUpTitle: "Auto-restart stopped",
     crashGaveUpBody: (name: string, crashes: number, minutes: number) =>
       `"${name}" crashed ${crashes} times in less than ${minutes} min: Nexum no longer restarts it. Check its logs, then start it manually.`,
+    autoStartFailedTitle: "Automatic start failed",
+    autoRestartFailedTitle: "Automatic restart failed",
+    startFailedBody: (name: string) =>
+      `"${name}" did not start. Check its logs to see why.`,
     status: {
       running: "Online",
       starting: "Starting…",

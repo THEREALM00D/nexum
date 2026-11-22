@@ -27,7 +27,8 @@ const CRASHED_SUFFIX = ".crashed.log";
 
 /** Ce que ServerManager voit d'une session : il ne connaît pas les fichiers. */
 export interface SessionLogSink {
-  begin(): void;
+  /** `clearView` faux : la vue en direct de l'app n'est pas vidée. */
+  begin(clearView?: boolean): void;
   line(text: string): void;
   end(crashed: boolean): void;
 }
@@ -65,13 +66,13 @@ export class SessionLogStore {
 
   sink(serverId: string): SessionLogSink {
     return {
-      begin: () => this.begin(serverId),
+      begin: (clearView = true) => this.begin(serverId, clearView),
       line: (text) => this.line(serverId, text),
       end: (crashed) => this.end(serverId, crashed),
     };
   }
 
-  private begin(serverId: string): void {
+  private begin(serverId: string, clearView: boolean): void {
     // Une session encore ouverte (ex. relance auto après crash) est close
     // comme plantée : le serveur n'est pas passé par un arrêt normal.
     if (this.open.has(serverId)) this.end(serverId, true);
@@ -82,7 +83,7 @@ export class SessionLogStore {
       timer: null,
     });
     this.rotate(serverId);
-    this.onSessionStart(serverId);
+    if (clearView) this.onSessionStart(serverId);
   }
 
   /** Crée (vide) le fichier d'une session ou de sa suite et renvoie son chemin. */
