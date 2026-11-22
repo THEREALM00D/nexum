@@ -36,7 +36,7 @@ Règles générales et architecture : `CLAUDE.md` racine. Ce fichier = conventio
 
 - `useNotification().notify()` avec `t()`, jamais `alert()` ni état d'erreur local. `notify()` accepte une `action` (bouton + croix, 15 s).
 - **Toute erreur affichée** : `errorMessage(t, e, fallback?)` dans un `catch`, ou `appErrorMessage(t, res.error)` pour un champ `error` (`utils/appErrorMessage.ts`, textes dans `src/shared/appErrors/`, partagés avec le main pour les logs, branchés sous `appErrors` dans `i18n/__i18n__`). Jamais `notify((e as Error).message)` : un texte non codé garde le préfixe « Error invoking remote method… » d'Electron. Les codes viennent du main (`AppError`, voir `CLAUDE.md` racine).
-- Notifications envoyées par le main pour un serveur : un seul hook, `hooks/useServerNotices` (MàJ du jeu → Installation, mods → Mods, abandon de relance → Logs).
+- Notifications envoyées par le main pour un serveur : un seul hook, `hooks/useServerNotices` (MàJ du jeu → Installation, mods → Mods, abandon de relance, démarrage auto ou relance ratés → Logs). Ils peuvent sortir de la file du main au chargement (`src/main/ipc/rendererEvents.ts`).
 
 ## États de chargement : skeletons (`components/common/LoadingSkeleton.tsx`)
 

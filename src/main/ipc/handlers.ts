@@ -56,6 +56,7 @@ import { registerCrashRestart } from "../server/crashRestart";
 import { runScheduledRestart } from "../scheduler/scheduledRestart";
 import { backupServer } from "../backup/serverBackup";
 import { AppError, appErrorLogText } from "../utils/appError";
+import { sendToRenderer } from "./rendererEvents";
 import { lt, managerLine } from "../i18n/logStrings";
 
 export async function registerIpcHandlers(): Promise<IpcContext> {
@@ -162,10 +163,7 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
   // vue Logs de l'app (« server:logSession »).
   const sessionLogs = new SessionLogStore(
     (serverId) => join(app.getPath("userData"), "servers", serverId),
-    (serverId) =>
-      BrowserWindow.getAllWindows().forEach((w) =>
-        w.webContents.send("server:logSession", { serverId }),
-      ),
+    (serverId) => sendToRenderer("server:logSession", { serverId }),
   );
   app.on("will-quit", () => sessionLogs.flushAll());
   const serverManagers = new ServerManagerRegistry(servers, sessionLogs);
@@ -189,11 +187,8 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
   // Phase 2c : migre l'ancien history.json partagé vers le premier serveur
   if (firstServer) playerHistories.migrateLegacy(firstServer.id);
 
-  const broadcastLog = (serverId: string, line: string): void => {
-    BrowserWindow.getAllWindows().forEach((w) =>
-      w.webContents.send("server:log", { serverId, line }),
-    );
-  };
+  const broadcastLog = (serverId: string, line: string): void =>
+    sendToRenderer("server:log", { serverId, line });
 
   const getBackupDir = (serverId?: string): string => {
     const id = serverId ?? servers.getActive()?.id;

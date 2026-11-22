@@ -13,6 +13,7 @@ import type {
   GameUpdateNotice,
   ModUpdateNotice,
   AutoRestartGaveUpNotice,
+  AutoStartFailedNotice,
   AppUpdateStatus,
   LaunchArgsConfig,
   ValheimLaunchConfig,
@@ -139,6 +140,10 @@ interface API {
     ) => () => void;
     onAutoRestartGaveUp: (
       cb: (notice: AutoRestartGaveUpNotice) => void,
+    ) => () => void;
+    /** Démarrage auto ou relance après plantage qui a échoué. */
+    onAutoStartFailed: (
+      callback: (notice: AutoStartFailedNotice) => void,
     ) => () => void;
   };
   palconfig: {
@@ -441,6 +446,11 @@ interface API {
     setCloseToTray: (enabled: boolean) => Promise<boolean>;
     /** Langue de l'UI, pour les textes du main (menu de l'icône). */
     setLanguage: (lang: string) => Promise<void>;
+    /**
+     * Le renderer écoute : le main envoie les événements mis en file pendant
+     * son chargement (`src/main/ipc/rendererEvents.ts`).
+     */
+    rendererReady: () => void;
     /** Dossier d'installation de Nexum si `path` est dedans, sinon null. */
     installDirConflict: (
       path: string,

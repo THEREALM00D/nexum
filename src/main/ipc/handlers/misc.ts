@@ -7,6 +7,7 @@ import {
   type WebContents,
 } from "electron/main";
 import { setLanguage } from "../../i18n/language";
+import { markRendererReady } from "../rendererEvents";
 import { shell } from "electron";
 import type { IpcContext } from "../context";
 import type { SelectFolderOptions } from "../../../shared/types";
@@ -98,6 +99,10 @@ export function registerMiscHandlers(ctx: IpcContext): void {
     ctx.store.set("closeToTray", enabled);
     return enabled;
   });
+  // Le renderer a posé ses écouteurs et lu la liste des serveurs : les
+  // événements mis en file pendant son chargement partent (`rendererEvents.ts`).
+  ipcMain.on("app:rendererReady", () => markRendererReady());
+
   // Langue de l'UI, pour les textes écrits par le main (menu de l'icône,
   // lignes [Manager] des logs, progression de SteamCMD) : le main n'a pas i18n.
   ipcMain.handle("app:setLanguage", (_, lang: string) => {

@@ -7,6 +7,7 @@ Chaque domaine a son `CLAUDE.md` dans son dossier (`server/`, `servers/`, `logs/
 - Les services (`ServerManager`, `BackupManager`, schedulers…) sont instanciés **une seule fois** dans `registerIpcHandlers()` (`ipc/handlers.ts`) puis passés aux sous-handlers via `IpcContext` (`ipc/context.ts`). **Ne jamais les instancier ailleurs.**
 - Sous-handlers par domaine dans `ipc/handlers/*.ts`, par jeu dans `games/<jeu>/handlers/`.
 - Tout type qui traverse l'IPC est dans `src/shared/types.ts` (`import type { … } from "../../shared/types"`).
+- **Événement du main vers le renderer** : `sendToRenderer(channel, payload)` (`ipc/rendererEvents.ts`), pas `webContents.send` direct pour ce qui peut partir au démarrage (logs, sessions, notices d'un serveur). La fenêtre existe tout de suite mais son renderer pose ses écouteurs quelques secondes plus tard : un envoi fait avant était perdu (lignes d'une adoption, échec d'un démarrage auto). File plafonnée (5 000), vidée à `app:rendererReady`. ⚠️ Côté renderer, `rendererReady()` part d'un effet de `ServerProvider` sur `state.loaded` : écouteurs déjà posés (montage du provider et `useServerNotices` d'`AppShell`, enfant) **et** liste des serveurs lue, sinon une notice sortie de la file s'affiche sans le nom du serveur. Un écouteur posé ailleurs ou plus tard (une page) ne profite pas de la file.
 
 ## Textes et erreurs (le main n'a pas i18n)
 

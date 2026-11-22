@@ -79,15 +79,35 @@ export class ServerManager {
   }
 
   /**
+   * Compte rendu d'un démarrage que Nexum a tenté seul et qui a échoué
+   * (démarrage auto, relance après plantage). Hors session, `log()` ne va
+   * dans aucun fichier : le démarrage a été refusé avant d'en ouvrir une, ou
+   * la session plantée est déjà close. D'où une courte session à lui, listée
+   * sur la page Logs et incluse dans l'export. Sans vider la vue en direct :
+   * après un plantage, les lignes qui en donnent la cause restent affichées
+   * au-dessus de l'échec de la relance.
+   */
+  logStartFailure(line: string, onLog: (line: string) => void): void {
+    if (this.status === "running" || this.status === "starting") {
+      this.log(line);
+      return;
+    }
+    this.beginSession(onLog, undefined, false)(line);
+    this.endSession(false);
+  }
+
+  /**
    * Ouvre une nouvelle session de log et renvoie le logger à utiliser. Le
    * fichier reçoit tout ; les lignes techniques du jeu (`noise`) ne sont pas
-   * envoyées à l'écran (voir `logs/logNoise.ts`).
+   * envoyées à l'écran (voir `logs/logNoise.ts`). `clearView` faux : la vue
+   * en direct de l'app garde les lignes précédentes.
    */
   private beginSession(
     onLog: (line: string) => void,
     noise?: LogNoiseRules,
+    clearView = true,
   ): (line: string) => void {
-    this.sessionLog?.begin();
+    this.sessionLog?.begin(clearView);
     const hide = createNoiseFilter(noise);
     const log = (line: string) => {
       this.sessionLog?.line(line);

@@ -7,6 +7,7 @@ import type {
   GameUpdateNotice,
   ModUpdateNotice,
   AutoRestartGaveUpNotice,
+  AutoStartFailedNotice,
   InstallBatch,
   ModInstallProgress,
   ModRegistry,
@@ -145,6 +146,15 @@ const api = {
       ipcRenderer.on("server:autoRestartGaveUp", listener);
       return () =>
         ipcRenderer.removeListener("server:autoRestartGaveUp", listener);
+    },
+    onAutoStartFailed: (callback: (notice: AutoStartFailedNotice) => void) => {
+      const listener = (
+        _event: IpcRendererEvent,
+        notice: AutoStartFailedNotice,
+      ) => callback(notice);
+      ipcRenderer.on("server:autoStartFailed", listener);
+      return () =>
+        ipcRenderer.removeListener("server:autoStartFailed", listener);
     },
   },
   // Palworld config (serverId optionnel — par défaut actif)
@@ -459,6 +469,7 @@ const api = {
     setCloseToTray: (enabled: boolean) =>
       ipcRenderer.invoke("app:setCloseToTray", enabled),
     setLanguage: (lang: string) => ipcRenderer.invoke("app:setLanguage", lang),
+    rendererReady: () => ipcRenderer.send("app:rendererReady"),
     setLaunchAtLogin: (enabled: boolean) =>
       ipcRenderer.invoke("app:setLaunchAtLogin", enabled),
     installDirConflict: (path: string, basePath?: string) =>

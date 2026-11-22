@@ -267,6 +267,14 @@ export function ServerProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  // Le main envoie alors ce qu'il a mis en file pendant le chargement (lignes,
+  // notices). ⚠️ Seulement une fois les serveurs lus : sinon une notice sortie
+  // de la file s'affiche sans le nom du serveur. Écouteurs déjà posés : ceux
+  // du montage ci-dessus et ceux de `useServerNotices` (AppShell, enfant).
+  useEffect(() => {
+    if (state.loaded) window.api.app.rendererReady();
+  }, [state.loaded]);
+
   return (
     <ServerContext.Provider
       value={{ state, dispatch, refreshServers, switchActive }}

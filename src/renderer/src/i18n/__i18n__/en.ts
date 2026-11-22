@@ -42,7 +42,11 @@ export default {
   autoRestart: {
     gaveUp:
       "{{name}}: auto-restart stopped after {{crashes}} crashes in less than {{minutes}} min. Check the logs of the crashed sessions, then start the server manually.",
+    failed: "{{name}} could not be restarted after its crash: {{error}}",
     viewLogs: "View logs",
+  },
+  autoStart: {
+    failed: "{{name}} could not start automatically: {{error}}",
   },
   modUpdate: {
     available_one:

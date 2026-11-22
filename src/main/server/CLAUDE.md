@@ -11,13 +11,15 @@ Validations (conflits de ports tous jeux confondus, règles du jeu), `getLaunchS
 ## Démarrage automatique (issue #57)
 
 - ⚠️ **Jamais en dev** : `autoStartServers` ne fait rien quand `!app.isPackaged` (sauf `NEXUM_DEV_AUTOSTART=1`) : `yarn dev` partage le dossier de données de l'app installée, donc ses vrais serveurs, qu'il couperait net à la fermeture.
-- Par serveur (`Server.autoStart`, case dans `ServerDialog`). Tourne **après** `tryAdoptAll` (promesse `adoption`, `ipc/handlers.ts`) : un serveur adopté n'est pas relancé. Démarrages espacés de 5 s, échec écrit dans les logs du serveur.
+- Par serveur (`Server.autoStart`, case dans `ServerDialog`). Tourne **après** `tryAdoptAll` (promesse `adoption`, `ipc/handlers.ts`) : un serveur adopté n'est pas relancé. Démarrages espacés de 5 s.
+- **Échec d'un démarrage tenté par Nexum seul** (démarrage auto, relance après plantage) : `ServerManager.logStartFailure` + `notifyStartFailed` (`serverAlerts.ts`). ⚠️ Pas `log()` / `mgr.log()` : le refus arrive avant toute session (validations de `startServer`, exe absent, `prepare`) ou après la fermeture de la session plantée, et `SessionLogStore.line` ignore une ligne hors session. `logStartFailure` ouvre une courte session à lui (listée sur la page Logs, exportée), **sans vider la vue en direct** (`SessionLogSink.begin(false)`, pas de `server:logSession`) : après un plantage, les lignes qui en donnent la cause restent affichées au-dessus de l'échec de la relance. Puis `server:autoStartFailed` (`AutoStartFailedNotice`, erreur codée brute traduite par le renderer) → toast « Voir les logs », et notification Windows si la fenêtre n'est pas regardée.
 
 ## Relance après un plantage (`crashRestart.ts`, `registerCrashRestart`, `Server.autoRestart`)
 
 - `ServerManager` appelle `onCrash` (via `ServerManagerRegistry.onCrash`) quand le serveur s'arrête seul avec une erreur (statut `crashed`, lancé **ou** adopté), **avant** la fermeture de la session : « Relance automatique dans 10 s » et l'abandon vont dans son `.crashed.log` (issue #146).
-- Relance par `startServer` 10 s plus tard, sauf serveur supprimé, option décochée ou relancé à la main entre-temps. Au plus 3 relances en 30 min, puis abandon écrit dans les logs et `notifyGaveUp` : événement `server:autoRestartGaveUp` (`AutoRestartGaveUpNotice`) → toast « Voir les logs » (`hooks/useServerNotices`), plus une notification Windows (textes `trayStrings.ts`, clic → `showWindow`, référence gardée sinon le ramasse-miettes perd le `click`) si aucune fenêtre n'est visible et au premier plan.
-- Compte rendu (`autoRestarted` / `autoRestartFailed`) écrit **après** `startServer`, dans la nouvelle session.
+- Relance par `startServer` 10 s plus tard, sauf serveur supprimé, option décochée ou relancé à la main entre-temps. Au plus 3 relances en 30 min, puis abandon écrit dans les logs et `notifyGaveUp` : événement `server:autoRestartGaveUp` (`AutoRestartGaveUpNotice`) → toast « Voir les logs » (`hooks/useServerNotices`), plus une notification Windows si aucune fenêtre n'est visible et au premier plan.
+- Alertes d'un serveur : `serverAlerts.ts` (`notifyGaveUp`, `notifyStartFailed`, `alertIfUnwatched` : textes `trayStrings.ts`, clic → `showWindow`, référence gardée sinon le ramasse-miettes perd le `click`).
+- Compte rendu `autoRestarted` écrit **après** `startServer`, dans la nouvelle session ; `autoRestartFailed` par `logStartFailure` (voir plus haut).
 
 ## Messages de fin (`exitText`, `src/main/i18n/logStrings.ts`)
 

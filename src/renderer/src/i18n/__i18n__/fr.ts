@@ -42,7 +42,11 @@ export default {
   autoRestart: {
     gaveUp:
       "{{name}} : relance automatique abandonnée après {{crashes}} plantages en moins de {{minutes}} min. Consultez les logs des sessions plantées, puis démarrez le serveur à la main.",
+    failed: "{{name}} n'a pas pu être relancé après son plantage : {{error}}",
     viewLogs: "Voir les logs",
+  },
+  autoStart: {
+    failed: "{{name}} n'a pas pu démarrer automatiquement : {{error}}",
   },
   modUpdate: {
     available_one:

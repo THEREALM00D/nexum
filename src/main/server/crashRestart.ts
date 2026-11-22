@@ -1,9 +1,5 @@
-import { BrowserWindow, Notification } from "electron/main";
-import type { AutoRestartGaveUpNotice, Server } from "../../shared/types";
 import type { IpcContext } from "../ipc/context";
-import { getLanguage } from "../i18n/language";
-import { showWindow } from "../tray/windowLifecycle";
-import { trayStrings } from "../tray/trayStrings";
+import { notifyGaveUp, notifyStartFailed } from "./serverAlerts";
 import { startServer } from "./startServer";
 import { appErrorLogText } from "../utils/appError";
 import { lt, managerLine } from "../i18n/logStrings";
@@ -15,9 +11,6 @@ const RESTART_DELAY_MS = 10_000;
 // un serveur qui plante au démarrage (monde corrompu, mod cassé) bouclerait.
 const MAX_RESTARTS = 3;
 const WINDOW_MS = 30 * 60_000;
-// Référence gardée : une Notification libérée par le ramasse-miettes ne
-// reçoit plus son `click`.
-let gaveUpNotification: Notification | null = null;
 
 /**
  * Relance automatique d'un serveur planté (`Server.autoRestart`, case de
@@ -41,7 +34,7 @@ export function registerCrashRestart(ctx: IpcContext): void {
       mgr.log(
         managerLine(lt().autoRestartGaveUp(MAX_RESTARTS, WINDOW_MS / 60_000)),
       );
-      notifyGaveUp(server);
+      notifyGaveUp(server, MAX_RESTARTS, WINDOW_MS / 60_000);
       return;
     }
     recent.push(now);
@@ -57,43 +50,21 @@ export function registerCrashRestart(ctx: IpcContext): void {
       // Entre-temps : serveur supprimé, option décochée ou relancé à la main.
       const current = ctx.servers.list().find((s) => s.id === id);
       if (!current?.autoRestart || mgr.getStatus() !== "crashed") return;
-      const res = await startServer(ctx, id, (line) =>
-        ctx.broadcastLog(id, line),
-      ).catch((e: Error) => ({ success: false, error: e.message }));
-      mgr.log(
-        managerLine(
-          res.success
-            ? lt().autoRestarted(attempt, MAX_RESTARTS)
-            : lt().autoRestartFailed(appErrorLogText(res.error ?? "")),
-        ),
+      const sendLog = (line: string) => ctx.broadcastLog(id, line);
+      const result = await startServer(ctx, id, sendLog).catch(
+        (error: Error) => ({ success: false, error: error.message }),
       );
+      if (result.success) {
+        mgr.log(managerLine(lt().autoRestarted(attempt, MAX_RESTARTS)));
+        return;
+      }
+      // La session plantée est close : compte rendu dans une session à lui.
+      const error = result.error ?? "";
+      mgr.logStartFailure(
+        managerLine(lt().autoRestartFailed(appErrorLogText(error))),
+        sendLog,
+      );
+      notifyStartFailed(current, "crashRestart", error);
     }, RESTART_DELAY_MS);
   });
-}
-
-/**
- * Abandon de la relance : toast dans l'app (bouton vers les logs) et, si
- * personne ne regarde la fenêtre (cachée dans la zone de notification ou en
- * arrière-plan), notification Windows qui la rouvre au clic.
- */
-function notifyGaveUp(server: Server): void {
-  const notice: AutoRestartGaveUpNotice = {
-    serverId: server.id,
-    crashes: MAX_RESTARTS,
-    minutes: WINDOW_MS / 60_000,
-  };
-  const windows = BrowserWindow.getAllWindows();
-  windows.forEach((w) =>
-    w.webContents.send("server:autoRestartGaveUp", notice),
-  );
-
-  const watched = windows.some((w) => w.isVisible() && w.isFocused());
-  if (watched || !Notification.isSupported()) return;
-  const s = trayStrings(getLanguage());
-  gaveUpNotification = new Notification({
-    title: s.crashGaveUpTitle,
-    body: s.crashGaveUpBody(server.name, notice.crashes, notice.minutes),
-  });
-  gaveUpNotification.on("click", () => showWindow(windows[0] ?? null));
-  gaveUpNotification.show();
 }
