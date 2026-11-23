@@ -21,6 +21,7 @@ import type {
   AstroneerLaunchConfig,
   DragonwildsLaunchConfig,
   EnshroudedLaunchConfig,
+  ArkLaunchConfig,
 } from "../../shared/types";
 
 export interface AppStore {
@@ -121,6 +122,12 @@ export interface IpcContext {
     patch: Partial<DragonwildsLaunchConfig>,
   ) => void;
 
+  // Config ARK par-serveur (ligne de commande ; le reste est dans l'INI)
+  getArkConfig: (serverId?: string) => ArkLaunchConfig;
+  updateArkConfig: (
+    serverId: string | undefined,
+    patch: Partial<ArkLaunchConfig>,
+  ) => ServerConfig;
   // Config Enshrouded par-serveur (arguments libres, le reste est dans le JSON)
   getEnshroudedConfig: (serverId?: string) => EnshroudedLaunchConfig;
   updateEnshroudedConfig: (

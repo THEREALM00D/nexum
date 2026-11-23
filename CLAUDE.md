@@ -4,7 +4,7 @@ Doc technique pour Claude Code (et les devs). Règles de travail (langue, issues
 
 ## Nexum
 
-Gestionnaire de serveurs dédiés de jeux vidéo pour Windows : Palworld, Valheim, Astroneer, RuneScape: Dragonwilds et Enshrouded.
+Gestionnaire de serveurs dédiés de jeux vidéo pour Windows : Palworld, Valheim, Astroneer, RuneScape: Dragonwilds, Enshrouded et ARK: Survival Ascended.
 
 ## Où est la doc
 

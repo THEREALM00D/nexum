@@ -35,6 +35,6 @@ It only connects to the following services, to provide the feature named next to
 | Thunderstore (`thunderstore.io`)                                      | Only when you click **Share modpack** on the Valheim Mods page                                                                                                                                                  | Upload the list of the server's active mods and versions (with the server name as profile name) to get a profile code for Gale / r2modman. Nothing else is sent. |
 | ipify (`api.ipify.org`)                                               | Only when you click **Show my public IP** on the Dashboard                                                                                                                                                      | Get your public IP address so you can share it with friends. ipify sees your IP address, as with any web request; nothing else is sent.                          |
 
-Connections to `127.0.0.1` (the Palworld REST API, the Odin-Eye plugin) stay on your computer.
+Connections to `127.0.0.1` (the Palworld REST API, the Odin-Eye plugin, ARK's RCON) stay on your computer.
 
 The game servers that Nexum starts are separate programs: their own network traffic is governed by each game's publisher.

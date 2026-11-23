@@ -7,9 +7,11 @@ import { lt, managerLine } from "../i18n/logStrings";
 import { trayStrings } from "../tray/trayStrings";
 
 // Au-delà, on quitte quand même : `stop()` a déjà ses propres délais (30 s
-// pour un signal de console, puis taskkill), ceci ne couvre que le cas d'un
-// serveur déjà en cours d'arrêt dont on attend seulement la fin.
-const STOPPING_WAIT_MS = 45_000;
+// pour un signal de console, 120 s pour le DoExit d'ARK, puis taskkill), ceci
+// ne couvre que le cas d'un serveur déjà en cours d'arrêt dont on attend
+// seulement la fin. ⚠️ Plus court que le délai d'ARK : le serveur, tué avec
+// Nexum, le serait en pleine sauvegarde.
+const STOPPING_WAIT_MS = 130_000;
 
 interface OwnedServer {
   id: string;
@@ -46,7 +48,12 @@ async function waitWhileStopping(manager: ServerManager): Promise<void> {
 
 /** Arrête un serveur avec SA config d'arrêt (CTRL+C, CTRL+Pause, API REST…). */
 async function stopForQuit(ctx: IpcContext, s: OwnedServer): Promise<void> {
-  if (s.manager.getStatus() === "stopping") return waitWhileStopping(s.manager);
+  if (s.manager.getStatus() === "stopping") {
+    // Annonce d'un redémarrage planifié en cours (ARK) : arrêt demandé tout
+    // de suite plutôt qu'après le délai.
+    s.manager.hurryStop();
+    return waitWhileStopping(s.manager);
+  }
   s.manager.log(managerLine(lt().stoppingBeforeQuit));
   await s.manager.stop(ctx.getStopConfig(s.id)).catch(() => undefined);
 }

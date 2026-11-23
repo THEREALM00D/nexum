@@ -5,6 +5,7 @@ import type {
 } from "../../shared/types";
 import { DEFAULT_SERVER_CONFIG } from "../servers/ServerConfigStore";
 import { GAME_TYPES } from "../games/registry";
+import { sanitizeArkLaunch } from "../games/ark/launchConfig";
 import { AppError } from "../utils/appError";
 
 // Version du format des deux fichiers (réglages et serveur). Un fichier d'une
@@ -70,10 +71,16 @@ export function parseServerEntry(raw: unknown): TransferServerEntry {
     throw invalid();
   if (!GAME_TYPES.includes(server.gameType as Server["gameType"]))
     throw invalid();
-  const config = {
+  const picked = {
     ...DEFAULT_SERVER_CONFIG,
     ...pickLike(DEFAULT_SERVER_CONFIG as unknown as Obj, raw.config),
   } as ServerConfig;
+  // La carte ARK finit dans un chemin (dossier du monde) et dans la ligne de
+  // commande : valeurs hors format remplacées par celles par défaut.
+  const config: ServerConfig = {
+    ...picked,
+    arkConfig: sanitizeArkLaunch(picked.arkConfig),
+  };
   return {
     server: {
       name: server.name,

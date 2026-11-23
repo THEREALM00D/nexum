@@ -12,6 +12,7 @@ body:
         - Astroneer
         - "RuneScape: Dragonwilds"
         - "Enshrouded"
+        - "ARK: Survival Ascended"
         - Not game-specific
     validations:
       required: true

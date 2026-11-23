@@ -29,6 +29,8 @@ This folder contains:
 
 **Enshrouded**: Nexum zips the server's save folder (`savegame` by default, or the folder set in **Configuration → Advanced**): the world `world0.ksd` and the copies the game keeps in `savegame/backup`. See [Enshrouded](enshrouded.md).
 
+**ARK: Survival Ascended**: Nexum zips the world folder of the chosen map (`ShooterGame\Saved\SavedArks\<map>`), without the full copies the game keeps next to it (`.arkrbf` and `.bak` files, about 6 times the size of the world). With RCON on, Nexum asks the server to save (`SaveWorld`) right before zipping a running server. See [ARK: Survival Ascended](ark.md).
+
 ## Configuration
 
 ### Backup folder
@@ -78,6 +80,7 @@ A backup made while the server runs (automatic backup, **Create a backup** butto
    | Astroneer              | `AutoSaveGameInterval` (900 s by default, **Configuration**) |
    | RuneScape: Dragonwilds | Every 5 min                                                  |
    | Enshrouded             | About every 5 min, and on shutdown                           |
+   | ARK (without RCON)     | `AutoSavePeriodMinutes` (15 min by default)                  |
 
 3. Nexum waits until the game has finished writing its save files (no file changed for 5 s, 30 s at most) before zipping, so a file is never caught half-written. If the game writes again while the ZIP is being created, the ZIP is made a second time.
 

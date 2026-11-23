@@ -29,6 +29,7 @@ Only the actions that make sense for the current status are shown:
 | Palworld               | REST API: announcement, save, shutdown                                                                  |
 | Valheim                | CTRL+Break: the game saves the world before closing                                                     |
 | Enshrouded             | CTRL+Break: the game saves the world before closing                                                     |
+| ARK: Survival Ascended | RCON: announcement, save, `DoExit` (the game saves the world again before closing)                      |
 | Astroneer              | Immediate stop with `taskkill`                                                                          |
 | RuneScape: Dragonwilds | Immediate stop with `taskkill`: the game has no clean stop on Windows, but it autosaves every 5 minutes |
 
@@ -97,7 +98,7 @@ At the bottom of the players panel:
 
 > The User ID is visible in the logs or via Palworld's ban list (`Pal/Saved/SaveGames/{GUID}/banlist.txt`).
 
-Valheim shows a player count instead, see [Valheim player tracking](valheim-players.md). Astroneer, Dragonwilds and Enshrouded have no player list in Nexum.
+Valheim shows a player count instead, see [Valheim player tracking](valheim-players.md). ARK: Survival Ascended has the Players page when RCON is on. Astroneer, Dragonwilds and Enshrouded have no player list in Nexum.
 
 ## Limitations (Palworld)
 

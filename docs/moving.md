@@ -22,7 +22,7 @@ The file contains:
 - the app settings: language, notification area, beta versions, launch at Windows startup;
 - your custom firewall rules (Network page).
 
-Settings stored in the game's own files (`PalWorldSettings.ini`, Astroneer INI files, `DedicatedServer.ini`, `enshrouded_server.json`) live in the server folder: they come along if you copy that folder, or with a server export.
+Settings stored in the game's own files (`PalWorldSettings.ini`, Astroneer INI files, `DedicatedServer.ini`, `enshrouded_server.json`, ARK's `GameUserSettings.ini`) live in the server folder: they come along if you copy that folder, or with a server export.
 
 ### Import
 
@@ -42,7 +42,7 @@ The ZIP contains:
 
 - the server's Nexum settings;
 - its world (the game's save folder). For Valheim, only the server's world: not the other worlds of the same folder, nor Valheim's automatic backups;
-- the game's config files: `PalWorldSettings.ini` and `GameUserSettings.ini` (Palworld, the latter tells the server which world to load), `AstroServerSettings.ini` and `Engine.ini` (Astroneer), `DedicatedServer.ini` (RuneScape: Dragonwilds), `enshrouded_server.json` (Enshrouded), the admin / banned / permitted lists and the mod settings (`BepInEx/config`) for Valheim;
+- the game's config files: `PalWorldSettings.ini` and `GameUserSettings.ini` (Palworld, the latter tells the server which world to load), `AstroServerSettings.ini` and `Engine.ini` (Astroneer), `DedicatedServer.ini` (RuneScape: Dragonwilds), `enshrouded_server.json` (Enshrouded), `GameUserSettings.ini` and `Game.ini` (ARK: Survival Ascended), the admin / banned / permitted lists and the mod settings (`BepInEx/config`) for Valheim;
 - for Valheim, the list of mods installed from Thunderstore or Hexium (manually installed mods are left out).
 
 ### Import
@@ -61,4 +61,4 @@ Recommended order on the new PC: import the server, install the game from the **
 
 By default, passwords stored by Nexum (Valheim server password, Dragonwilds admin password) are **not** exported: enter them again on the server's Configuration page after the import. Check **Include passwords** to export them: the file then contains them in plain text, don't share it and delete it after the import.
 
-The game's config files in a server export are copied as they are, with any passwords they contain (Palworld admin password, Enshrouded group passwords…).
+The game's config files in a server export are copied as they are, with any passwords they contain (Palworld admin password, Enshrouded group passwords, ARK server and admin passwords…).

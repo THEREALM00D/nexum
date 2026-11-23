@@ -3,7 +3,7 @@
 
 // --- Serveurs ---
 export type GameType =
-  "palworld" | "valheim" | "astroneer" | "dragonwilds" | "enshrouded";
+  "palworld" | "valheim" | "astroneer" | "dragonwilds" | "enshrouded" | "ark";
 
 export interface Server {
   id: string;
@@ -33,6 +33,7 @@ export interface ServerConfig {
   astroneerConfig: AstroneerLaunchConfig;
   dragonwildsConfig: DragonwildsLaunchConfig;
   enshroudedConfig: EnshroudedLaunchConfig;
+  arkConfig: ArkLaunchConfig;
   backup: BackupConfig;
   restart: RestartConfig;
 }
@@ -346,6 +347,13 @@ export type AppErrorCode =
   | "PAL_API_HTTP"
   | "PAL_API_TIMEOUT"
   | "PAL_API_UNREACHABLE"
+  // RCON (ARK: Survival Ascended)
+  | "RCON_AUTH_FAILED"
+  | "RCON_TIMEOUT"
+  | "RCON_UNREACHABLE"
+  | "ARK_MAP_INVALID"
+  | "ARK_PORTS_SAME"
+  | "ARK_MAX_PLAYERS_INVALID"
   // Réseau / téléchargements (registres de mods, SteamCMD, IP publique)
   | "NETWORK_ERROR"
   | "HTTP_ERROR"
@@ -431,6 +439,25 @@ export interface DragonwildsWorld {
   sizeBytes: number;
   lastModified: number;
 }
+
+// --- ARK: Survival Ascended ---
+// Ligne de commande : carte, ports, joueurs max (seul -WinLiveMaxPlayers est
+// pris en compte), BattlEye. Le reste de la page Config vit dans
+// GameUserSettings.ini (mots de passe compris : ShooterGame.log écrit la
+// ligne de commande en entier).
+export interface ArkLaunchConfig {
+  map: string;
+  port: number;
+  queryPort: number;
+  rconPort: number;
+  maxPlayers: number;
+  battlEye: boolean;
+  customArgs: string;
+}
+
+// Vue fusionnée de la page Config : clés de GameUserSettings.ini (chaînes
+// brutes) + champs de ArkLaunchConfig.
+export type ArkSettings = Record<string, string | number | boolean>;
 
 // --- Enshrouded ---
 // Toute la config vit dans enshrouded_server.json (à côté de l'exe) : la

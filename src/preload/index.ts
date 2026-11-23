@@ -427,6 +427,12 @@ const api = {
     write: (settings: Record<string, unknown>) =>
       ipcRenderer.invoke("dragonwildsconfig:write", settings),
   },
+  // GameUserSettings.ini (clés gérées) fusionné avec la ligne de commande
+  arkconfig: {
+    read: () => ipcRenderer.invoke("arkconfig:read"),
+    write: (settings: Record<string, unknown>) =>
+      ipcRenderer.invoke("arkconfig:write", settings),
+  },
   // Enshrouded (serveur actif) — arguments de Nexum et groupes d'utilisateurs
   enshrouded: {
     getConfig: () => ipcRenderer.invoke("enshrouded:getConfig"),

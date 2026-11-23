@@ -29,6 +29,7 @@ Seules les actions possibles selon le statut sont affichées :
 | Palworld               | API REST : annonce, sauvegarde, arrêt                                                                               |
 | Valheim                | CTRL+Pause : le jeu sauvegarde le monde avant de se fermer                                                          |
 | Enshrouded             | CTRL+Pause : le jeu sauvegarde le monde avant de se fermer                                                          |
+| ARK: Survival Ascended | RCON : annonce, sauvegarde, `DoExit` (le jeu sauvegarde à nouveau le monde avant de se fermer)                      |
 | Astroneer              | Arrêt immédiat par `taskkill`                                                                                       |
 | RuneScape: Dragonwilds | Arrêt immédiat par `taskkill` : le jeu n'a pas d'arrêt propre sous Windows, mais il sauvegarde toutes les 5 minutes |
 
@@ -97,7 +98,7 @@ En bas du panel des joueurs :
 
 > Le User ID est visible dans les logs ou via la liste des bans Palworld (`Pal/Saved/SaveGames/{GUID}/banlist.txt`).
 
-Valheim affiche à la place un compteur de joueurs, voir [Suivi des joueurs Valheim](valheim-players.fr.md). Astroneer, Dragonwilds et Enshrouded n'ont pas de liste de joueurs dans Nexum.
+Valheim affiche à la place un compteur de joueurs, voir [Suivi des joueurs Valheim](valheim-players.fr.md). ARK: Survival Ascended a la page Joueurs quand RCON est activé. Astroneer, Dragonwilds et Enshrouded n'ont pas de liste de joueurs dans Nexum.
 
 ## Limitations (Palworld)
 

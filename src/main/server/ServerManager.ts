@@ -1,7 +1,10 @@
 import { spawn, ChildProcess, exec } from "child_process";
 import { join } from "path";
 import { existsSync } from "fs";
-import { PalworldApiClient } from "../games/palworld/PalworldApiClient";
+import {
+  createGracefulShutdown,
+  type GracefulShutdown,
+} from "./shutdownClient";
 import { sendConsoleSignal, type ConsoleSignal } from "./windowsCtrlC";
 import { LogFileTailer } from "../logs/LogFileTailer";
 import {
@@ -21,6 +24,8 @@ export interface StopConfig {
   adminPassword?: string;
   shutdownWaittime?: number;
   shutdownMessage?: string;
+  /** RCON du jeu (ARK : DoExit sauvegarde puis quitte), toujours en local. */
+  rcon?: { port: number; password: string };
   /**
    * Pas d'API REST pour ce jeu, mais un arrêt propre reste possible via un
    * signal de console émulé (CTRL+Pause pour Valheim et Enshrouded) plutôt
@@ -46,10 +51,18 @@ function pidExists(pid: number): boolean {
   }
 }
 
-// Masque la valeur qui suit -password avant d'afficher les args dans les
-// logs (utile pour diagnostiquer ce qui est réellement envoyé au process).
+// Options `?` d'ARK qui portent un mot de passe (arguments perso).
+const PASSWORD_OPTION = /([?](?:ServerPassword|ServerAdminPassword)=)[^?]*/gi;
+
+// Masque la valeur qui suit -password, et les mots de passe passés en
+// options `?` (ARK), avant d'afficher les args dans les logs (utile pour
+// diagnostiquer ce qui est réellement envoyé au process).
 function redactArgs(args: string[]): string[] {
-  return args.map((arg, i) => (args[i - 1] === "-password" ? "[hidden]" : arg));
+  return args.map((arg, index) =>
+    args[index - 1] === "-password"
+      ? "[hidden]"
+      : arg.replace(PASSWORD_OPTION, "$1[hidden]"),
+  );
 }
 
 export class ServerManager {
@@ -59,6 +72,10 @@ export class ServerManager {
   private status: ServerStatus = "stopped";
   private onLog: (line: string) => void = () => {};
   private tailer: LogFileTailer | null = null;
+  // Fin anticipée de l'attente d'une annonce d'arrêt (voir hurryStop) ;
+  // `hurried` couvre un appel arrivé avant le début de l'attente.
+  private skipShutdownWait: (() => void) | null = null;
+  private hurried = false;
 
   /**
    * `sessionLog` : fichier de log persistant, un par session (démarrage →
@@ -315,11 +332,20 @@ export class ServerManager {
     }
   }
 
+  /**
+   * Annonce, sauvegarde, puis demande d'arrêt. Quand le jeu ne sait pas
+   * différer son arrêt (ARK), le délai annoncé est attendu ici : l'attente
+   * s'arrête dès la fin du processus (rien à arrêter ensuite) ou sur
+   * `hurryStop()` (on quitte Nexum).
+   */
   private async stopViaApi(
-    client: PalworldApiClient,
+    graceful: GracefulShutdown,
     waittime: number,
     message: string,
+    waitForExit: (timeoutMs: number) => Promise<void>,
+    processGone: () => boolean,
   ): Promise<boolean> {
+    const { client } = graceful;
     try {
       if (message) {
         await client.announce(message);
@@ -328,17 +354,35 @@ export class ServerManager {
       this.onLog(managerLine(lt().saving));
       await client.save();
       this.onLog(managerLine(lt().saved));
-      await client.shutdown(waittime, "");
-      this.onLog(managerLine(lt().shutdownSent(waittime)));
+      if (graceful.nexumWaitLine && waittime > 0 && !this.hurried) {
+        this.onLog(managerLine(graceful.nexumWaitLine(waittime)));
+        await Promise.race([
+          waitForExit(waittime * 1000),
+          new Promise<void>((resolve) => (this.skipShutdownWait = resolve)),
+        ]);
+        this.skipShutdownWait = null;
+        if (processGone()) return true;
+      }
+      await client.shutdown(graceful.nexumWaitLine ? 0 : waittime);
+      this.onLog(managerLine(graceful.sentLine(waittime)));
       return true;
     } catch (err) {
       this.onLog(
         managerLine(
-          lt().apiUnavailable(appErrorLogText((err as Error).message)),
+          graceful.unavailableLine(appErrorLogText((err as Error).message)),
         ),
       );
       return false;
     }
+  }
+
+  /**
+   * Abrège un arrêt en cours : le délai d'annonce attendu par Nexum (ARK)
+   * est sauté, l'arrêt est demandé tout de suite. Sans effet sinon.
+   */
+  hurryStop(): void {
+    this.hurried = true;
+    this.skipShutdownWait?.();
   }
 
   private forceKill(pid: number): void {
@@ -393,6 +437,7 @@ export class ServerManager {
     }
 
     this.status = "stopping";
+    this.hurried = false;
     const adopted = !this.process && this.adoptedPid !== null;
     // Processus lancé par nous : sa fin est connue de façon fiable (événement
     // `close` / exitCode). Ne JAMAIS repasser par la liste des processus dans
@@ -443,22 +488,37 @@ export class ServerManager {
         : { success: false, error: appError("SERVER_STOP_TIMEOUT") };
     };
 
-    if (cfg?.restApiEnabled && cfg.restApiPort && cfg.adminPassword) {
-      const client = new PalworldApiClient(cfg.restApiPort, cfg.adminPassword);
-      const waittime = cfg.shutdownWaittime ?? 0;
-      const message = cfg.shutdownMessage ?? "";
-      const apiOk = await this.stopViaApi(client, waittime, message);
+    // Processus déjà terminé : jamais de taskkill sur son PID, que Windows
+    // a pu réattribuer (l'attente d'une annonce ARK dure plusieurs minutes).
+    const processGone = () => (child ? childExited() : !pidExists(pid));
 
-      if (apiOk && waittime > 0) {
-        this.onLog(managerLine(lt().waitingGraceful(waittime)));
-        await waitForExit((waittime + 10) * 1000);
+    const graceful = createGracefulShutdown(cfg);
+    if (graceful) {
+      const waittime = cfg?.shutdownWaittime ?? 0;
+      const message = cfg?.shutdownMessage ?? "";
+      const apiOk = await this.stopViaApi(
+        graceful,
+        waittime,
+        message,
+        waitForExit,
+        processGone,
+      );
+      const exitTimeout = graceful.exitTimeoutSeconds(waittime);
+
+      if (apiOk && exitTimeout > 0) {
+        if (!processGone()) {
+          this.onLog(managerLine(lt().waitingGraceful(exitTimeout)));
+          await waitForExit(exitTimeout * 1000);
+        }
         return finalize();
       }
 
       if (!apiOk) {
-        this.onLog(managerLine(lt().forceKill));
-        this.forceKill(pid);
-        await waitForExit(6000);
+        if (!processGone()) {
+          this.onLog(managerLine(lt().forceKill));
+          this.forceKill(pid);
+          await waitForExit(6000);
+        }
         return finalize();
       }
     }

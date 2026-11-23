@@ -7,7 +7,7 @@
 
 🇬🇧 [English](README.md) | 🇫🇷 Français
 
-Application Windows gratuite et open source pour héberger des serveurs dédiés **Valheim**, **Palworld**, **Astroneer**, **RuneScape: Dragonwilds** et **Enshrouded** sans ligne de commande, avec **gestion intégrée des mods Valheim** (Thunderstore + Hexium).
+Application Windows gratuite et open source pour héberger des serveurs dédiés **Valheim**, **Palworld**, **Astroneer**, **RuneScape: Dragonwilds**, **Enshrouded** et **ARK: Survival Ascended** sans ligne de commande, avec **gestion intégrée des mods Valheim** (Thunderstore + Hexium).
 
 ![Plateforme](https://img.shields.io/badge/platform-Windows-blue)
 ![Licence](https://img.shields.io/badge/license-GPL--3.0-blue)
@@ -19,9 +19,9 @@ Application Windows gratuite et open source pour héberger des serveurs dédiés
 
 ## Fonctionnalités
 
-- **Plusieurs serveurs, plusieurs jeux** : Palworld, Valheim, Astroneer, RuneScape: Dragonwilds et Enshrouded depuis une seule app, sans ligne de commande, avec détection des conflits de ports avant le démarrage
+- **Plusieurs serveurs, plusieurs jeux** : Palworld, Valheim, Astroneer, RuneScape: Dragonwilds, Enshrouded et ARK: Survival Ascended depuis une seule app, sans ligne de commande, avec détection des conflits de ports avant le démarrage
 - **Installation automatique** de SteamCMD et du serveur, ou **import d'un serveur déjà installé** (jeu et mondes détectés automatiquement)
-- **Démarrage / arrêt / redémarrage** avec arrêt propre (API REST Palworld, CTRL+Pause Valheim et Enshrouded) pour ne pas corrompre les sauvegardes, et relance automatique après un plantage
+- **Démarrage / arrêt / redémarrage** avec arrêt propre (API REST Palworld, RCON ARK, CTRL+Pause Valheim et Enshrouded) pour ne pas corrompre les sauvegardes, et relance automatique après un plantage
 - **Surveillance en temps réel** : CPU, RAM, uptime, joueurs en ligne, console du serveur
 - **Éditeur de configuration** visuel pour chaque jeu (presets de difficulté Palworld, modificateurs de monde Valheim)
 - **Mods Valheim** : parcourir, installer et mettre à jour depuis **Thunderstore et Hexium**, dépendances automatiques, import de profils r2modman/Gale, éditeur de configs BepInEx, mods dépréciés signalés
@@ -92,6 +92,7 @@ Voir [docs/installation.fr.md](docs/installation.fr.md) pour le guide complet.
 - [Mods Valheim](docs/valheim-mods.fr.md)
 - [RuneScape: Dragonwilds](docs/dragonwilds.fr.md)
 - [Enshrouded](docs/enshrouded.fr.md)
+- [ARK: Survival Ascended](docs/ark.fr.md)
 - [Changer de PC](docs/moving.fr.md)
 - [Politique de signature et confidentialité](docs/code-signing.fr.md)
 - [Architecture technique](CLAUDE.md)

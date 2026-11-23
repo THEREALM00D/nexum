@@ -15,6 +15,10 @@ import {
   storedValheimConfig,
   withValheimDefaults,
 } from "./valheimDefaults";
+import {
+  DEFAULT_ARK_CONFIG,
+  sanitizeArkLaunch,
+} from "../games/ark/launchConfig";
 
 const DEFAULT_LAUNCH_ARGS: LaunchArgsConfig = {
   publicLobby: false,
@@ -71,6 +75,7 @@ export const DEFAULT_SERVER_CONFIG: ServerConfig = {
   astroneerConfig: DEFAULT_ASTRONEER_CONFIG,
   dragonwildsConfig: DEFAULT_DRAGONWILDS_CONFIG,
   enshroudedConfig: DEFAULT_ENSHROUDED_CONFIG,
+  arkConfig: DEFAULT_ARK_CONFIG,
   backup: DEFAULT_BACKUP,
   restart: DEFAULT_RESTART,
 };
@@ -101,6 +106,7 @@ export class ServerConfigStore {
         ...DEFAULT_ENSHROUDED_CONFIG,
         ...existing.enshroudedConfig,
       },
+      arkConfig: sanitizeArkLaunch(existing.arkConfig),
       backup: { ...DEFAULT_BACKUP, ...existing.backup },
       restart: withRestartDefaults(existing.restart),
     };
@@ -123,6 +129,7 @@ export class ServerConfigStore {
         ...current.enshroudedConfig,
         ...patch.enshroudedConfig,
       },
+      arkConfig: { ...current.arkConfig, ...patch.arkConfig },
       backup: { ...current.backup, ...patch.backup },
       restart: { ...current.restart, ...patch.restart },
     };
@@ -182,6 +189,7 @@ export class ServerConfigStore {
       astroneerConfig: DEFAULT_ASTRONEER_CONFIG,
       dragonwildsConfig: DEFAULT_DRAGONWILDS_CONFIG,
       enshroudedConfig: DEFAULT_ENSHROUDED_CONFIG,
+      arkConfig: DEFAULT_ARK_CONFIG,
       backup: {
         backupDir: preservedBackupDir,
         backupKeep: this.store.get("backupKeep", 10),

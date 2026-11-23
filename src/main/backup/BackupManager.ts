@@ -76,6 +76,8 @@ export class BackupManager {
     backupDir: string,
     sourcePath?: string,
     beforeUpdate = false,
+    /** Fichiers du dossier à garder (nom relatif), tout par défaut. */
+    keep?: (entryName: string) => boolean,
   ): Promise<BackupEntry> {
     // archiver est en ESM pur depuis la v8 (plus de build CommonJS) — notre
     // process main est en CJS, donc un `require()`/import statique planterait
@@ -179,7 +181,11 @@ export class BackupManager {
       output.on("error", fail);
       archive.on("error", fail);
       archive.pipe(output);
-      archive.directory(sourceDir, false);
+      archive.directory(
+        sourceDir,
+        false,
+        keep ? (entry) => (keep(entry.name) ? entry : false) : undefined,
+      );
       archive.finalize();
     });
   }

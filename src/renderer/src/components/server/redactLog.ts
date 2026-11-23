@@ -25,6 +25,12 @@ const DRAGONWILDS_SECRETS: RegExp[] = [
   /(\["(?:JoinCode|PasswordHash)"\] written with key\[\w+\] value\[)([^\]]+)/g,
 ];
 
+// ARK recopie sa ligne de commande dans son log (`Commandline: …`) : un mot
+// de passe passé en option `?` (arguments perso) y serait en clair.
+const ARK_SECRETS: RegExp[] = [
+  /(\?(?:ServerPassword|ServerAdminPassword)=)([^?\s]+)/gi,
+];
+
 // Enshrouded écrit le SteamID de son serveur (`Server SteamId: 9029…`, pas
 // au format des SteamID64 de joueurs) à chaque démarrage.
 const SERVER_STEAM_ID = /(Server SteamId: )(\d+)/g;
@@ -52,7 +58,7 @@ export function redactLog(text: string): string {
     .replace(SERVER_STEAM_ID, "$1[SteamID]")
     .replace(JOIN_CODE, "$1[hidden]")
     .replace(HEX_ID, "[ID]");
-  return DRAGONWILDS_SECRETS.reduce(
+  return [...DRAGONWILDS_SECRETS, ...ARK_SECRETS].reduce(
     (out, re) => out.replace(re, "$1[hidden]"),
     masked,
   );

@@ -27,7 +27,7 @@ When a `[Manager]` line reports an error, the message ends with its code in brac
 
 ## Hidden technical lines
 
-Some games write many lines that are only useful to their developers. For **Enshrouded**, Nexum hides them on screen (thread list, processor details, startup logo, "Session" block repeated every 30 seconds, statistics written at shutdown), and the usual Steam messages of a dedicated server written to the error output are no longer tagged `[ERR]`. The session file and the export (**Copy**, **Save as .txt**) always contain everything.
+Some games write many lines that are only useful to their developers. For **Enshrouded**, Nexum hides them on screen (thread list, processor details, startup logo, "Session" block repeated every 30 seconds, statistics written at shutdown), and the usual Steam messages of a dedicated server written to the error output are no longer tagged `[ERR]`. For **ARK: Survival Ascended**, the debug lines of the game's analytics module are hidden the same way. The session file and the export (**Copy**, **Save as .txt**) always contain everything.
 
 ## Known limitations
 

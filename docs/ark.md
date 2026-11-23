@@ -1,0 +1,76 @@
+# ARK: Survival Ascended
+
+🇬🇧 English | 🇫🇷 [Français](ark.fr.md)
+
+Nexum runs the official **ARK: Survival Ascended Dedicated Server** (free, Steam app 2430930). This page covers what is specific to ARK; the other pages ([installation](installation.md), [network](network.md), [backups](backups.md)…) apply as usual.
+
+## Install
+
+Use the setup wizard (or **Servers → Add server**) and pick **ARK: Survival Ascended**:
+
+- **Install a new server**: Nexum downloads the server with SteamCMD (about 13 GB).
+- **I already have a server**: choose the folder that contains `ShooterGame` (Nexum looks for `ShooterGame\Binaries\Win64\ArkAscendedServer.exe`).
+
+Requirements: 64-bit Windows and a powerful PC. The server uses about **10 GB of RAM** on its own once started, with no player connected; keep **20 GB** of free disk space.
+
+After **Start**, the server takes one to two minutes to be ready: wait for the line `Server has completed startup and is now advertising for join` on the **Logs** page.
+
+## Configuration
+
+The **Configuration** page mixes two places:
+
+| Section                   | What it contains                                                    | Where it goes             |
+| ------------------------- | ------------------------------------------------------------------- | ------------------------- |
+| Server                    | Session name, map, max players, PvE mode                            | INI file and command line |
+| Access and administration | Server password, admin password, RCON                               | `GameUserSettings.ini`    |
+| Network                   | Game port (UDP 7777), query port (UDP 27015), RCON port (TCP 27020) | Command line              |
+| Advanced                  | BattlEye, extra launch arguments                                    | Command line              |
+
+`GameUserSettings.ini` is in `ShooterGame\Saved\Config\WindowsServer`. The session name, passwords, PvE mode and RCON are written there; the map, max players, ports and BattlEye go on the command line. Max players only works on the command line: the server ignores and overwrites the value in the INI file.
+
+**Maps**: The Island, The Center, Scorched Earth, Aberration, Extinction, Ragnarok, Valguero, Lost Colony and Astraeos. Each map has its own world: switching maps doesn't delete the previous one. Some maps are paid: players need to own them.
+
+**Stop the server before changing the configuration**: the server rewrites `GameUserSettings.ini` when it stops, with the values it read at startup. Nexum locks the **Save** button while the server is running. Before every save, the previous file is kept as `GameUserSettings.ini.backup`. The other settings of the INI file (and `Game.ini`) are left untouched: edit them by hand while the server is stopped.
+
+**Never put a password in the extra arguments**: the server copies its whole command line into its log.
+
+## RCON
+
+RCON is the server's remote admin console. Nexum needs it to:
+
+- stop the server cleanly: the world is saved before the server quits;
+- save the world right before a [backup](backups.md) of a running server;
+- warn players in game before a [scheduled restart](scheduling.md);
+- list connected players on the **Players** page.
+
+Nexum turns RCON on by itself for a new server, and creates an admin password if there is none (you can see and change it in **Configuration**). If you turn RCON off, Nexum respects it, but stopping the server then loses up to 15 minutes of progress (the game saves every 15 minutes).
+
+The RCON port is never opened in the firewall: Nexum only connects to it from this PC.
+
+## Joining the server
+
+The **Join the server** card on the Dashboard shows everything to give to your friends:
+
+- **Name to search for in game**: the session name, in the list of unofficial servers.
+- **Same network**: `IP:7777`.
+- **From the Internet**: forward **UDP 7777** (the game port) on your router to this PC, and apply the firewall rule on the **Network** page.
+
+## Second server on the same PC
+
+Use another game port **and** another query port (for example 7787 and 27016), plus another RCON port. Nexum refuses to start a server whose ports are already used by another running server (any game) and tells you which one.
+
+## Stopping and saves
+
+Stopping goes through RCON: Nexum asks the server to save, then sends `DoExit`; the server saves the world again and quits within about 20 seconds. Without RCON, the server can't be stopped cleanly (it ignores CTRL+Break, tested): Nexum stops it directly.
+
+The world is in `ShooterGame\Saved\SavedArks\<map>` (for example `TheIsland_WP\TheIsland_WP.ark`). The game also keeps there up to 4 full copies of the world (`.arkrbf` files) and an anti-corruption copy (`.bak`). Nexum's [backups](backups.md) leave these copies out: a backup only contains the world itself, about 6 times smaller.
+
+Good to know: a server started by Nexum stops when Nexum quits. Nexum asks first and stops it cleanly (see [Quitting Nexum with servers online](installation.md#quitting-nexum-with-servers-online)).
+
+## Logs
+
+Nexum follows the game's own log (`ShooterGame\Saved\Logs\ShooterGame.log`): the server writes nothing useful to its console. The debug lines of the game's analytics module are hidden on screen, and the usual Steam messages of a dedicated server are not shown as errors. The session file and the export (**Copy**, **Save**) contain everything. When you copy or save a log for a bug report, public IPs, player IDs and passwords found in the command line are hidden.
+
+## Players
+
+With RCON on, the **Players** page lists who is connected and keeps the history (first and last connection, play time), like for Palworld, and the Dashboard shows the number of connected players. With RCON off, the Dashboard and the **Scheduling** page warn you and offer to turn it on (server stopped).

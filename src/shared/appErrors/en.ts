@@ -26,6 +26,15 @@ export const APP_ERRORS_EN: Record<AppErrorCode, string> = {
   PAL_API_TIMEOUT: "The Palworld REST API did not answer within 8 seconds.",
   PAL_API_UNREACHABLE:
     "Can't reach the Palworld REST API. Check that the server is running and the API port matches the configuration.",
+  RCON_AUTH_FAILED:
+    "RCON rejected the admin password. Check ServerAdminPassword on the Configuration page.",
+  RCON_TIMEOUT: "RCON did not answer within 8 seconds.",
+  RCON_UNREACHABLE:
+    "Can't reach RCON on port {{port}}. Check that the server has finished starting and that RCON is enabled on the Configuration page.",
+  ARK_MAP_INVALID: "Unknown map: {{map}}",
+  ARK_MAX_PLAYERS_INVALID: "Invalid player count (1 to {{max}}).",
+  ARK_PORTS_SAME:
+    "The game port and the query port must be different (both are UDP).",
   NETWORK_ERROR:
     "Can't reach {{host}} ({{detail}}). Check your Internet connection.",
   HTTP_ERROR: "{{host}} answered with an error (HTTP {{status}}).",

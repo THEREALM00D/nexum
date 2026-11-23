@@ -4,7 +4,7 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { useTranslation } from "react-i18next";
 import { useServer } from "../../context/ServerContext";
 import ServerHeader from "./ServerHeader";
-import ServerStats from "./ServerStats";
+import ServerStats, { type PlayersStat } from "./ServerStats";
 import SystemStrip from "./SystemStrip";
 import JoinAndLatestLogs from "./JoinAndLatestLogs";
 
@@ -14,16 +14,20 @@ interface Props {
   infoKey: string;
   /** Avertissement propre au jeu, affiché sous l'en-tête (ex : réglage manquant). */
   warning?: ReactNode;
+  /** Nombre de joueurs, pour un jeu qui le donne (ARK par RCON). */
+  players?: PlayersStat;
 }
 
 /**
- * Dashboard des jeux sans API d'administration (Astroneer, Dragonwilds,
- * Enshrouded) : en-tête, statistiques, carte « Rejoindre », infos du jeu.
+ * Dashboard simple (Astroneer, Dragonwilds, Enshrouded, ARK) : en-tête,
+ * statistiques, carte « Rejoindre », infos du jeu. Les jeux avec un panneau
+ * d'administration propre (Palworld, Valheim) ont leur Dashboard.
  */
 export default function SimpleDashboard({
   noServerPathKey,
   infoKey,
   warning,
+  players,
 }: Props) {
   const { t } = useTranslation();
   const { state } = useServer();
@@ -34,7 +38,7 @@ export default function SimpleDashboard({
 
       {warning}
 
-      <ServerStats stats={state.stats} />
+      <ServerStats stats={state.stats} players={players} />
 
       <SystemStrip stats={state.stats} />
 

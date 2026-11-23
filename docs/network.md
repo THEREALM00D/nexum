@@ -73,6 +73,16 @@ A single UDP rule, with the port in its name so that several Enshrouded servers 
 
 The port comes from **Configuration → Network**. After changing it, remove the old rule (Windows Firewall) and apply the new one. Forward this port on your router for players outside your network. More in [Enshrouded](enshrouded.md).
 
+### ARK: Survival Ascended
+
+A single UDP rule for the game port, with the port in its name so that several ARK servers on the same PC each have their own:
+
+| Rule                         | Port (default) | Protocol | Use                |
+| ---------------------------- | -------------- | -------- | ------------------ |
+| **ARK Server - Game (7777)** | 7777           | UDP      | Player connections |
+
+The query port (UDP 27015) and the RCON port (TCP 27020) are not opened: players don't use them, and Nexum connects to RCON from this PC. Forward only the game port on your router. More in [ARK: Survival Ascended](ark.md).
+
 ## Available actions
 
 ### Toggle an individual rule

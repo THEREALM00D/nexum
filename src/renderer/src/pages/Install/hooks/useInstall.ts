@@ -27,6 +27,7 @@ export const DEFAULT_INSTALL_PATHS: Record<GameType, string> = {
   astroneer: "C:\\AstroneerServer",
   dragonwilds: "C:\\DragonwildsServer",
   enshrouded: "C:\\EnshroudedServer",
+  ark: "C:\\ArkServer",
 };
 
 export function useInstall() {

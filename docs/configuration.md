@@ -8,6 +8,7 @@ Each game has its own **Configuration** page. This page covers **Palworld**: a g
 - **Astroneer**: the `Engine.ini` and `AstroServerSettings.ini` files. Change them only while the server is stopped: Astroneer doesn't keep changes made while it is running
 - **RuneScape: Dragonwilds**: see [its page](dragonwilds.md)
 - **Enshrouded**: see [its page](enshrouded.md)
+- **ARK: Survival Ascended**: see [its page](ark.md)
 
 ## Source file
 
