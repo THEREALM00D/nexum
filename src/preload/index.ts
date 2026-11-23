@@ -442,6 +442,8 @@ const api = {
       ipcRenderer.invoke("ark:mods:set", serverId, mods),
     takeFromArgs: (serverId: string) =>
       ipcRenderer.invoke("ark:mods:takeFromArgs", serverId),
+    search: (params: unknown) => ipcRenderer.invoke("ark:mods:search", params),
+    categories: () => ipcRenderer.invoke("ark:mods:categories"),
   },
   // Enshrouded (serveur actif) — arguments de Nexum et groupes d'utilisateurs
   enshrouded: {

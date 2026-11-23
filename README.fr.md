@@ -25,7 +25,7 @@ Application Windows gratuite et open source pour héberger des serveurs dédiés
 - **Surveillance en temps réel** : CPU, RAM, uptime, joueurs en ligne, console du serveur
 - **Éditeur de configuration** visuel pour chaque jeu (presets de difficulté Palworld, modificateurs de monde Valheim)
 - **Mods Valheim** : parcourir, installer et mettre à jour depuis **Thunderstore et Hexium**, dépendances automatiques, import de profils r2modman/Gale, éditeur de configs BepInEx, mods dépréciés signalés
-- **Mods ARK: Survival Ascended** : liste des mods CurseForge par ID de projet, ordre de chargement, activation ; le serveur les télécharge et les met à jour lui-même, cartes moddées prises en charge
+- **Mods ARK: Survival Ascended** : recherche CurseForge dans l'app ou ajout par ID de projet, ordre de chargement, activation ; le serveur les télécharge et les met à jour lui-même, cartes moddées prises en charge
 - **Suivi des joueurs** : historique, temps de jeu, sessions (Palworld natif, Valheim via Odin-Eye) ; kick / ban / unban sur Palworld
 - **Firewall Windows** : règles créées automatiquement + règles personnalisées
 - **Sauvegardes** automatiques planifiées avec rotation

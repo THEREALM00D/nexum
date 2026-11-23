@@ -40,6 +40,7 @@ The **Configuration** page mixes two places:
 
 The **Mods** page manages the server's [CurseForge](https://www.curseforge.com/ark-survival-ascended) mods:
 
+- **Browse CurseForge** tab: search mods by name, sort them (popularity, recently updated, downloads, name), filter by category (Maps, Creatures, Structures…) and click **Add**. Mods marked **Cosmetic** are for players only: they don't install on a server and prevent it from starting (tested), so they can't be added. Mods marked **PC only** aren't cross-platform: a server is cross-platform by default and doesn't start with them (tested); they only work with `-ServerPlatform=PC` in the extra launch arguments (Configuration page), and console players then can't join.
 - **Add** a mod with its **Project ID**: the number shown on the mod's CurseForge page, under _About Project_ (the page address doesn't contain it).
 - The **order** of the list is the load order (arrows). A **disabled** mod stays in the list but isn't loaded.
 - Nexum only writes the list on the command line (`-mods=`): **the server downloads the mods and updates them itself at every start**, in a few seconds for small mods. Changes made while the server runs apply at the next start.

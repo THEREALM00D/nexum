@@ -11,17 +11,31 @@ interface Props {
   info: ArkModInfo | null;
   /** Mod désactivé : ligne estompée. */
   dimmed?: boolean;
+  /** Remplace la ligne de détails (Parcourir : auteur, téléchargements…). */
+  details?: string[];
+  /** Puces après le nom (Parcourir : cosmétique, PC seulement). */
+  chips?: ReactNode;
+  /** Résumé du mod, sous les détails (Parcourir). */
+  showSummary?: boolean;
   actions: ReactNode;
 }
 
 const LOGO_SIZE = 40;
 
-// Une ligne de mod : logo, nom, auteurs, fichier téléchargé par le serveur.
-// Sert aussi aux skeletons (données factices).
-export default function ArkModRow({ id, info, dimmed, actions }: Props) {
+// Une ligne de mod : logo, nom, auteurs, fichier téléchargé par le serveur
+// (Liste) ou détails de la recherche (Parcourir). Sert aussi aux skeletons.
+export default function ArkModRow({
+  id,
+  info,
+  dimmed,
+  details,
+  chips,
+  showSummary,
+  actions,
+}: Props) {
   const { t, i18n } = useTranslation();
   const name = info?.name || t("arkMods.list.unknownName", { id });
-  const details = [
+  const listDetails = [
     info?.authors.length
       ? t("arkMods.list.by", { authors: info.authors.join(", ") })
       : null,
@@ -83,6 +97,7 @@ export default function ArkModRow({ id, info, dimmed, actions }: Props) {
           <Typography variant="body2" sx={{ fontWeight: 500 }} noWrap>
             {name}
           </Typography>
+          {chips}
           {info?.premium && (
             <Chip
               label={t("arkMods.list.premium")}
@@ -97,8 +112,17 @@ export default function ArkModRow({ id, info, dimmed, actions }: Props) {
           sx={{ color: "text.secondary", display: "block" }}
           noWrap
         >
-          {details.join(" — ")}
+          {(details ?? listDetails).join(" — ")}
         </Typography>
+        {showSummary && info?.summary && (
+          <Typography
+            variant="caption"
+            sx={{ color: "text.secondary", display: "block" }}
+            noWrap
+          >
+            {info.summary}
+          </Typography>
+        )}
       </Box>
       <Stack direction="row" sx={{ alignItems: "center", gap: 0.5 }}>
         {actions}

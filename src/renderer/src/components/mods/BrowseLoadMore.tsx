@@ -10,7 +10,9 @@ interface Props {
   onLoadMore: () => void;
 }
 
-// Sous la liste de Parcourir : compteur et bouton « Charger plus ».
+// Sous la liste de Parcourir (mods Valheim et ARK) : compteur et bouton
+// « Charger plus ». Textes : components/mods/__i18n__ (clé modBrowse),
+// importés par les manifests des jeux.
 export default function BrowseLoadMore({
   shown,
   total,
@@ -22,7 +24,7 @@ export default function BrowseLoadMore({
   if (total === 0) {
     return isSearch ? (
       <Typography variant="body2" sx={{ color: "text.secondary", py: 2 }}>
-        {t("valheimMods.browse.noResults")}
+        {t("modBrowse.noResults")}
       </Typography>
     ) : null;
   }
@@ -32,11 +34,11 @@ export default function BrowseLoadMore({
 
   const counter =
     isSearch && !hasMore
-      ? t("valheimMods.browse.resultCount", {
+      ? t("modBrowse.resultCount", {
           count: total,
           formatted: formatCount(total),
         })
-      : t("valheimMods.browse.shownOfTotal", {
+      : t("modBrowse.shownOfTotal", {
           shown: formatCount(shown),
           total: formatCount(total),
         });
@@ -68,7 +70,7 @@ export default function BrowseLoadMore({
             ) : undefined
           }
         >
-          {t("valheimMods.browse.loadMore")}
+          {t("modBrowse.loadMore")}
         </Button>
       )}
     </Stack>
