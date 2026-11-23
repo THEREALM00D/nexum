@@ -4,12 +4,14 @@ import type {
   ArkMod,
   ArkModInfo,
   ArkModsState,
+  ArkModSearchParams,
 } from "../../../../shared/types";
 import { appError } from "../../../utils/appError";
 import { isModId, sanitizeArkMods } from "../launchConfig";
 import { splitArgsMods } from "../mods/argsMods";
 import { readModLibrary } from "../mods/modLibrary";
 import { curseforgeAvailable, fetchArkMods } from "../mods/curseforgeApi";
+import { fetchArkCategories, searchArkMods } from "../mods/curseforgeSearch";
 
 type Result = { success: boolean; error?: string };
 
@@ -99,6 +101,13 @@ export function registerArkModsHandlers(ctx: IpcContext): void {
       return { success: true };
     },
   );
+
+  // Onglet Parcourir : ne dépend d'aucun serveur. Erreurs codées (réseau,
+  // HTTP, pas de clé) renvoyées telles quelles au renderer.
+  ipcMain.handle("ark:mods:search", (_, params: ArkModSearchParams) =>
+    searchArkMods(params),
+  );
+  ipcMain.handle("ark:mods:categories", () => fetchArkCategories());
 
   // Déplace les -mods= des arguments perso à la fin de la liste.
   ipcMain.handle("ark:mods:takeFromArgs", (_, serverId: string): Result => {

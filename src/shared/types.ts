@@ -357,6 +357,8 @@ export type AppErrorCode =
   | "ARK_MOD_ID_INVALID"
   | "ARK_MOD_NOT_FOUND"
   | "ARK_MOD_DUPLICATE"
+  | "CURSEFORGE_UNAVAILABLE"
+  | "CURSEFORGE_FORBIDDEN"
   // Réseau / téléchargements (registres de mods, SteamCMD, IP publique)
   | "NETWORK_ERROR"
   | "HTTP_ERROR"
@@ -492,13 +494,46 @@ export interface ArkModEntry extends ArkMod {
   info: ArkModInfo | null;
 }
 
+export type ArkModSort = "popular" | "updated" | "downloads" | "name";
+
+export interface ArkModSearchParams {
+  query: string;
+  sort: ArkModSort;
+  /** Catégorie CurseForge, null = toutes. */
+  categoryId: number | null;
+  /** Nombre de résultats déjà affichés (« Charger plus »). */
+  index: number;
+}
+
+export interface ArkModSearchResult extends ArkModInfo {
+  downloadCount: number;
+  /** Dernière mise à jour du mod (ISO), null si inconnue. */
+  updatedAt: string | null;
+  /** « Custom Cosmetics » : ne s'installe pas sur un serveur. */
+  cosmetic: boolean;
+  /** Pas cross-plateforme : refusé par un serveur ouvert aux consoles. */
+  pcOnly: boolean;
+}
+
+export interface ArkModSearchPage {
+  mods: ArkModSearchResult[];
+  /** Plafonné à 10 000 (limite de l'API). */
+  total: number;
+}
+
+export interface ArkModCategory {
+  id: number;
+  /** Nom anglais de l'API (repli si la catégorie n'a pas de traduction). */
+  name: string;
+}
+
 export interface ArkModsState {
   mods: ArkModEntry[];
   /** Téléchargés par le serveur (library.json) mais absents de la liste. */
   downloadedNotListed: ArkModInfo[];
   /** ID encore écrits dans les arguments perso (-mods=…). */
   argsMods: number[];
-  /** Build avec clé CurseForge : un ID ajouté est vérifié. */
+  /** Build avec clé CurseForge : un ID ajouté est vérifié, Parcourir existe. */
   lookupAvailable: boolean;
 }
 

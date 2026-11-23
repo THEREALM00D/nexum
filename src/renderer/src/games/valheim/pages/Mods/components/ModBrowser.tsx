@@ -10,7 +10,7 @@ import { REGISTRY_LABEL } from "../utils/modPageUrl";
 import ScrollPanel from "../../../../../components/common/ScrollPanel";
 import BrowseModCard, { PLACEHOLDER_MOD } from "./BrowseModCard";
 import BrowseHeader from "./BrowseHeader";
-import BrowseLoadMore from "./BrowseLoadMore";
+import BrowseLoadMore from "../../../../../components/mods/BrowseLoadMore";
 import ModVersionsDialog from "./ModVersionsDialog";
 import { skeletonRows } from "../../../../../components/common/LoadingSkeleton";
 import { browseModKey, type useModBrowser } from "../hooks/useModBrowser";

@@ -43,6 +43,10 @@ export const APP_ERRORS_FR: Record<AppErrorCode, string> = {
   ARK_MOD_NOT_FOUND:
     "Aucun mod ARK: Survival Ascended avec l'ID {{id}} sur CurseForge.",
   ARK_MOD_DUPLICATE: "Le mod {{id}} est déjà dans la liste.",
+  CURSEFORGE_FORBIDDEN:
+    "CurseForge refuse la clé de cette version de Nexum pour la recherche de mods.",
+  CURSEFORGE_UNAVAILABLE:
+    "Cette version de Nexum n'a pas de clé CurseForge : la recherche de mods n'est pas disponible.",
   ARK_PORTS_SAME:
     "Le port de jeu et le port de requête doivent être différents (tous deux en UDP).",
   NETWORK_ERROR:

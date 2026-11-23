@@ -29,6 +29,9 @@ import type {
   ArkSettings,
   ArkMod,
   ArkModsState,
+  ArkModSearchParams,
+  ArkModSearchPage,
+  ArkModCategory,
   ValheimMod,
   ValheimModConfigFile,
   InstallBatch,
@@ -438,6 +441,8 @@ interface API {
     takeFromArgs: (
       serverId: string,
     ) => Promise<{ success: boolean; error?: string }>;
+    search: (params: ArkModSearchParams) => Promise<ArkModSearchPage>;
+    categories: () => Promise<ArkModCategory[]>;
   };
   /** Changer de PC. Les exports renvoient le chemin écrit, null si annulé. */
   transfer: {

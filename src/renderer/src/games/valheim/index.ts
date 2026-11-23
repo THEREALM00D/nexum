@@ -23,6 +23,8 @@ import modsFr from "./pages/Mods/__i18n__/fr";
 import modsEn from "./pages/Mods/__i18n__/en";
 import playersFr from "../../components/players/__i18n__/fr";
 import playersEn from "../../components/players/__i18n__/en";
+import modBrowseFr from "../../components/mods/__i18n__/fr";
+import modBrowseEn from "../../components/mods/__i18n__/en";
 
 export const valheimPlugin: GamePlugin = {
   id: "valheim",
@@ -56,6 +58,7 @@ export const valheimPlugin: GamePlugin = {
       ...backupFr,
       ...scheduleFr,
       ...modsFr,
+      ...modBrowseFr,
       ...playersFr,
     },
     en: {
@@ -66,6 +69,7 @@ export const valheimPlugin: GamePlugin = {
       ...backupEn,
       ...scheduleEn,
       ...modsEn,
+      ...modBrowseEn,
       ...playersEn,
     },
   },

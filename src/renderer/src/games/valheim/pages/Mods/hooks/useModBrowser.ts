@@ -1,14 +1,24 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { useCallback, useEffect } from "react";
 import type {
   ModBrowsePage,
   ModRegistry,
   ThunderstoreModInfo,
 } from "@shared/types";
-import { useNotification } from "../../../../../context/NotificationContext";
-import { errorMessage } from "../../../../../utils/appErrorMessage";
+import { usePagedBrowser } from "../../../../../components/mods/usePagedBrowser";
 
 export type BrowseTab = "trending" | "latest" | "updated";
+
+interface BrowseParams {
+  registry: ModRegistry;
+  tab: BrowseTab;
+  query: string;
+}
+
+const INITIAL_PARAMS: BrowseParams = {
+  registry: "thunderstore",
+  tab: "trending",
+  query: "",
+};
 
 // Identifiant unique d'un mod sur un registre (`full_name`). Pas `mod_id` :
 // c'est un hash 32 bits, des collisions sont possibles sur toute la liste.
@@ -17,9 +27,7 @@ export const browseModKey = (mod: ThunderstoreModInfo) =>
 
 // Une page d'un onglet ou de la recherche (le main pagine sa liste en cache).
 function fetchPage(
-  registry: ModRegistry,
-  tab: BrowseTab,
-  query: string,
+  { registry, tab, query }: BrowseParams,
   offset: number,
 ): Promise<ModBrowsePage> {
   const mods = window.api.valheim.mods;
@@ -29,126 +37,53 @@ function fetchPage(
   return mods.getLatestUpdated(registry, offset);
 }
 
-// Onglet Parcourir : registre, onglet, recherche et pages chargées.
+// Onglet Parcourir : registre, onglet, recherche et pages chargées
+// (mécanique commune : components/mods/usePagedBrowser).
 export function useModBrowser() {
-  const { t } = useTranslation();
-  const { notify } = useNotification();
-  const [tab, setTab] = useState<BrowseTab>("trending");
-  const [registry, setRegistry] = useState<ModRegistry>("thunderstore");
-  const [query, setQuery] = useState("");
-  const [mods, setMods] = useState<ThunderstoreModInfo[]>([]);
-  const [total, setTotal] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [error, setError] = useState(false);
-  // Change à chaque nouvelle liste (pas à « Charger plus ») : la liste
-  // revient en haut seulement dans ce cas.
-  const [listKey, setListKey] = useState(0);
-  // Numéro de la liste affichée : une réponse arrivée après un changement
-  // d'onglet, de registre ou de recherche est ignorée.
-  const requestRef = useRef(0);
-
-  const load = useCallback(
-    async (
-      nextRegistry: ModRegistry,
-      nextTab: BrowseTab,
-      nextQuery: string,
-    ) => {
-      const requestId = ++requestRef.current;
-      setLoading(true);
-      setLoadingMore(false);
-      setError(false);
-      try {
-        const page = await fetchPage(nextRegistry, nextTab, nextQuery, 0);
-        if (requestId !== requestRef.current) return;
-        setMods(page.mods);
-        setTotal(page.total);
-      } catch {
-        if (requestId !== requestRef.current) return;
-        setError(true);
-        setMods([]);
-        setTotal(0);
-      } finally {
-        if (requestId === requestRef.current) {
-          setLoading(false);
-          setListKey((key) => key + 1);
-        }
-      }
-    },
-    [],
-  );
+  const browser = usePagedBrowser({
+    initialParams: INITIAL_PARAMS,
+    fetchPage,
+    keyOf: browseModKey,
+  });
+  const { params, load, error } = browser;
 
   useEffect(() => {
-    load("thunderstore", "trending", "");
+    void load(INITIAL_PARAMS);
   }, [load]);
 
-  const loadMore = useCallback(async () => {
-    if (loading || loadingMore) return;
-    const requestId = requestRef.current;
-    setLoadingMore(true);
-    try {
-      const page = await fetchPage(registry, tab, query, mods.length);
-      if (requestId !== requestRef.current) return;
-      // La liste en cache peut s'être rechargée entre deux pages et décalée :
-      // pas de doublon.
-      setMods((current) => {
-        const shownKeys = new Set(current.map(browseModKey));
-        return [
-          ...current,
-          ...page.mods.filter((mod) => !shownKeys.has(browseModKey(mod))),
-        ];
-      });
-      setTotal(page.total);
-    } catch (loadError) {
-      if (requestId === requestRef.current) {
-        notify(errorMessage(t, loadError), "error");
-      }
-    } finally {
-      if (requestId === requestRef.current) setLoadingMore(false);
-    }
-  }, [loading, loadingMore, registry, tab, query, mods.length, notify, t]);
-
   const handleTabChange = useCallback(
-    (nextTab: BrowseTab) => {
-      setTab(nextTab);
-      setQuery("");
-      load(registry, nextTab, "");
-    },
-    [load, registry],
+    (tab: BrowseTab) => void load({ ...params, tab, query: "" }),
+    [load, params],
   );
 
   // La recherche en cours est gardée : elle est relancée sur l'autre registre.
   const handleRegistryChange = useCallback(
-    (nextRegistry: ModRegistry) => {
-      setRegistry(nextRegistry);
-      load(nextRegistry, tab, query);
-    },
-    [load, tab, query],
+    (registry: ModRegistry) => void load({ ...params, registry }),
+    [load, params],
   );
 
   const handleSearch = useCallback(
     (searchText: string) => {
-      const trimmed = searchText.trim();
+      const query = searchText.trim();
       // Même recherche (Échap dans un champ vide, Entrée répété) : garder les
       // pages chargées. Après un échec, la soumettre à nouveau réessaie.
-      if (trimmed === query && !error) return;
-      setQuery(trimmed);
-      load(registry, tab, trimmed);
+      if (query === params.query && !error) return;
+      void load({ ...params, query });
     },
-    [load, registry, tab, query, error],
+    [load, params, error],
   );
 
   return {
-    tab,
-    registry,
-    query,
-    mods,
-    total,
-    loading,
-    loadingMore,
-    error,
-    listKey,
-    loadMore,
+    tab: params.tab,
+    registry: params.registry,
+    query: params.query,
+    mods: browser.mods,
+    total: browser.total,
+    loading: browser.loading,
+    loadingMore: browser.loadingMore,
+    error: error !== null,
+    listKey: browser.listKey,
+    loadMore: browser.loadMore,
     handleTabChange,
     handleRegistryChange,
     handleSearch,
