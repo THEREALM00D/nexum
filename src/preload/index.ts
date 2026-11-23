@@ -433,6 +433,16 @@ const api = {
     write: (settings: Record<string, unknown>) =>
       ipcRenderer.invoke("arkconfig:write", settings),
   },
+  // Mods CurseForge d'un serveur ARK (serverId explicite)
+  arkMods: {
+    get: (serverId: string) => ipcRenderer.invoke("ark:mods:get", serverId),
+    add: (serverId: string, id: number) =>
+      ipcRenderer.invoke("ark:mods:add", serverId, id),
+    set: (serverId: string, mods: unknown[]) =>
+      ipcRenderer.invoke("ark:mods:set", serverId, mods),
+    takeFromArgs: (serverId: string) =>
+      ipcRenderer.invoke("ark:mods:takeFromArgs", serverId),
+  },
   // Enshrouded (serveur actif) — arguments de Nexum et groupes d'utilisateurs
   enshrouded: {
     getConfig: () => ipcRenderer.invoke("enshrouded:getConfig"),

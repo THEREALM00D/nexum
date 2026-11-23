@@ -43,7 +43,8 @@ The ZIP contains:
 - the server's Nexum settings;
 - its world (the game's save folder). For Valheim, only the server's world: not the other worlds of the same folder, nor Valheim's automatic backups;
 - the game's config files: `PalWorldSettings.ini` and `GameUserSettings.ini` (Palworld, the latter tells the server which world to load), `AstroServerSettings.ini` and `Engine.ini` (Astroneer), `DedicatedServer.ini` (RuneScape: Dragonwilds), `enshrouded_server.json` (Enshrouded), `GameUserSettings.ini` and `Game.ini` (ARK: Survival Ascended), the admin / banned / permitted lists and the mod settings (`BepInEx/config`) for Valheim;
-- for Valheim, the list of mods installed from Thunderstore or Hexium (manually installed mods are left out).
+- for Valheim, the list of mods installed from Thunderstore or Hexium (manually installed mods are left out);
+- for ARK: Survival Ascended, the list of CurseForge mods (it's part of the server's Nexum settings): the server downloads the mods again at its first start on the new PC.
 
 ### Import
 

@@ -31,8 +31,14 @@ export const APP_ERRORS_EN: Record<AppErrorCode, string> = {
   RCON_TIMEOUT: "RCON did not answer within 8 seconds.",
   RCON_UNREACHABLE:
     "Can't reach RCON on port {{port}}. Check that the server has finished starting and that RCON is enabled on the Configuration page.",
-  ARK_MAP_INVALID: "Unknown map: {{map}}",
+  ARK_MAP_INVALID:
+    "Invalid map name: {{map}}. Letters, digits and “_” only, for example Svartalfheim_WP.",
   ARK_MAX_PLAYERS_INVALID: "Invalid player count (1 to {{max}}).",
+  ARK_MOD_ID_INVALID:
+    "Invalid mod ID: {{id}}. It's the “Project ID” number shown on the mod's CurseForge page.",
+  ARK_MOD_NOT_FOUND:
+    "No ARK: Survival Ascended mod with ID {{id}} on CurseForge.",
+  ARK_MOD_DUPLICATE: "Mod {{id}} is already in the list.",
   ARK_PORTS_SAME:
     "The game port and the query port must be different (both are UDP).",
   NETWORK_ERROR:

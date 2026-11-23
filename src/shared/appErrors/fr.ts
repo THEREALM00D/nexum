@@ -35,8 +35,14 @@ export const APP_ERRORS_FR: Record<AppErrorCode, string> = {
   RCON_TIMEOUT: "RCON n'a pas répondu en 8 secondes.",
   RCON_UNREACHABLE:
     "Impossible de joindre RCON sur le port {{port}}. Vérifiez que le serveur a fini de démarrer et que RCON est activé dans la page Configuration.",
-  ARK_MAP_INVALID: "Carte inconnue : {{map}}",
+  ARK_MAP_INVALID:
+    "Nom de carte invalide : {{map}}. Lettres, chiffres et « _ » seulement, par exemple Svartalfheim_WP.",
   ARK_MAX_PLAYERS_INVALID: "Nombre de joueurs invalide (1 à {{max}}).",
+  ARK_MOD_ID_INVALID:
+    "ID de mod invalide : {{id}}. C'est le nombre « Project ID » affiché sur la page du mod sur CurseForge.",
+  ARK_MOD_NOT_FOUND:
+    "Aucun mod ARK: Survival Ascended avec l'ID {{id}} sur CurseForge.",
+  ARK_MOD_DUPLICATE: "Le mod {{id}} est déjà dans la liste.",
   ARK_PORTS_SAME:
     "Le port de jeu et le port de requête doivent être différents (tous deux en UDP).",
   NETWORK_ERROR:

@@ -28,11 +28,27 @@ La page **Configuration** regroupe deux endroits :
 
 `GameUserSettings.ini` se trouve dans `ShooterGame\Saved\Config\WindowsServer`. Le nom de session, les mots de passe, le mode PvE et RCON y sont écrits ; la carte, les joueurs max, les ports et BattlEye passent par la ligne de commande. Les joueurs max ne fonctionnent que sur la ligne de commande : le serveur ignore et réécrit la valeur du fichier INI.
 
-**Cartes** : The Island, The Center, Scorched Earth, Aberration, Extinction, Ragnarok, Valguero, Lost Colony et Astraeos. Chaque carte a son propre monde : changer de carte ne supprime pas le précédent. Certaines cartes sont payantes : les joueurs doivent les posséder.
+**Cartes** : The Island, The Center, Scorched Earth, Aberration, Extinction, Ragnarok, Valguero, Lost Colony, Astraeos et Genesis: Part 1. Chaque carte a son propre monde : changer de carte ne supprime pas le précédent. Certaines cartes sont payantes : les joueurs doivent les posséder.
+
+**Carte moddée** (par exemple Svartalfheim) : tapez son nom exact dans le champ **Carte** (`Svartalfheim_WP` ; la description CurseForge de la carte le donne en général) et ajoutez le mod de la carte dans la page [**Mods**](#mods). Lettres, chiffres et `_` seulement.
 
 **Arrêtez le serveur avant de changer la configuration** : le serveur réécrit `GameUserSettings.ini` quand il s'arrête, avec les valeurs lues au démarrage. Nexum bloque le bouton **Sauvegarder** tant que le serveur tourne. Avant chaque enregistrement, le fichier précédent est gardé en `GameUserSettings.ini.backup`. Les autres réglages du fichier INI (et `Game.ini`) ne sont pas touchés : modifiez-les à la main, serveur arrêté.
 
 **Ne mettez jamais de mot de passe dans les arguments supplémentaires** : le serveur recopie toute sa ligne de commande dans son journal.
+
+## Mods
+
+La page **Mods** gère les mods [CurseForge](https://www.curseforge.com/ark-survival-ascended) du serveur :
+
+- **Ajoutez** un mod avec son **Project ID** : le nombre affiché sur la page CurseForge du mod, dans _About Project_ (l'adresse de la page ne le contient pas).
+- L'**ordre** de la liste est l'ordre de chargement (flèches). Un mod **désactivé** reste dans la liste mais n'est pas chargé.
+- Nexum écrit seulement la liste sur la ligne de commande (`-mods=`) : **le serveur télécharge les mods et les met à jour lui-même à chaque démarrage**, en quelques secondes pour de petits mods. Une modification faite serveur lancé s'applique au prochain démarrage.
+- Les joueurs n'installent rien : le jeu télécharge les mods du serveur quand ils le rejoignent.
+- Une fois un mod téléchargé par le serveur, la page affiche son nom, son logo, son auteur et le fichier installé. Avant, Nexum demande son nom et son logo à CurseForge, et vérifie qu'un ID ajouté existe.
+
+⚠️ Un ID de mod inconnu **empêche le serveur de démarrer** (`Mods not installed` dans les logs). Retirer un mod retire aussi du monde ce qu'il ajoutait (créatures, structures, objets) : faites d'abord une [sauvegarde](backups.fr.md).
+
+Le serveur garde les fichiers d'un mod retiré de la liste : il apparaît dans **Téléchargés par le serveur, pas dans la liste**, d'où vous pouvez le rajouter. C'est aussi là qu'apparaissent les mods d'un serveur existant après son premier démarrage dans Nexum. Des mods déjà écrits dans les arguments de lancement supplémentaires (`-mods=…`) sont signalés, avec un bouton pour les déplacer dans la liste.
 
 ## RCON
 

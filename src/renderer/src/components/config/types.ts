@@ -9,6 +9,8 @@ export interface FieldDef {
   key: string;
   type: "text" | "number" | "boolean" | "select";
   options?: SelectOption[];
+  /** select : accepte aussi une valeur tapée, hors de la liste (carte moddée d'ARK). */
+  allowCustom?: boolean;
   /** Champ sans lequel le serveur ne démarre pas : astérisque + erreur si vide. */
   required?: boolean;
   /** Bornes d'un champ nombre (flèches du champ, pas de blocage de la saisie). */

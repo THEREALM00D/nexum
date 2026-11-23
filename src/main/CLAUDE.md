@@ -32,4 +32,4 @@ L'app s'appelait ServerForge jusqu'à la 0.2.0 ; plusieurs traces sont gardées 
 ## Fenêtre et CSP (`index.ts`)
 
 - Taille de départ bornée à la zone utile (`screen.getPrimaryDisplay().workAreaSize`) : 800 px de haut dépassaient sous la barre des tâches d'un 1366×768. `backgroundColor` = Ink (le main ne peut pas importer le thème du renderer).
-- CSP appliquée **uniquement en build packagé** (invisible en `yarn dev`) : `img-src` des CDN des registres de mods, `font-src 'self'`. Tester une modif de CSP sur un build (skill `/test-app`).
+- CSP appliquée **uniquement en build packagé** (invisible en `yarn dev`) : `img-src` des CDN des registres de mods (Thunderstore, Hexium, `*.forgecdn.net` pour les logos des mods ARK), `font-src 'self'`. Tester une modif de CSP sur un build (skill `/test-app`).

@@ -25,6 +25,7 @@ Free, open-source Windows app to run **Valheim**, **Palworld**, **Astroneer**, *
 - **Real-time monitoring**: CPU, RAM, uptime, online players, server console
 - **Visual configuration editor** for each game (Palworld difficulty presets, Valheim world modifiers)
 - **Valheim mods**: browse, install and update from **Thunderstore and Hexium**, automatic dependencies, r2modman/Gale profile import, BepInEx config editor, deprecated mods flagged
+- **ARK: Survival Ascended mods**: CurseForge mod list by project ID, load order, enable/disable; the server downloads and updates them itself, modded maps supported
 - **Player tracking**: history, playtime, sessions (native on Palworld, Valheim via Odin-Eye); kick / ban / unban on Palworld
 - **Windows firewall**: rules created automatically + custom rules
 - **Scheduled automatic backups** with rotation

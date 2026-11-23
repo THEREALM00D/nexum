@@ -20,7 +20,18 @@ export function registerArkHandlers(ctx: IpcContext): void {
   // Vue fusionnée pour la page Config partagée (ConfigPage) : clés de
   // GameUserSettings.ini + ligne de commande de Nexum.
   ipcMain.handle("arkconfig:read", (): ArkSettings => {
-    const launch = ctx.getArkConfig();
+    // Les mods ont leur page : hors de la vue de la page Config.
+    const { map, port, queryPort, rconPort, maxPlayers, battlEye, customArgs } =
+      ctx.getArkConfig();
+    const launch = {
+      map,
+      port,
+      queryPort,
+      rconPort,
+      maxPlayers,
+      battlEye,
+      customArgs,
+    };
     const ini = readGameUserSettings(ctx.getActiveServerPath());
     return {
       ...launch,
@@ -45,7 +56,8 @@ export function registerArkHandlers(ctx: IpcContext): void {
     if (status !== "stopped" && status !== "crashed") {
       return { success: false, error: appError("CONFIG_LOCKED") };
     }
-    const launch: ArkLaunchConfig = {
+    // Sans les mods (page Mods) : la mise à jour fusionne, la liste reste.
+    const launch: Omit<ArkLaunchConfig, "mods"> = {
       map: String(settings.map ?? "").trim(),
       port: Number(settings.port),
       queryPort: Number(settings.queryPort),

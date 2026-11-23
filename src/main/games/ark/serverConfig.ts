@@ -3,6 +3,7 @@ import type { ArkLaunchConfig } from "../../../shared/types";
 import type { StopConfig } from "../../server/ServerManager";
 import type { GamePort } from "../ports";
 import { readRconSettings } from "./gameUserSettingsIni";
+import { splitArgsMods } from "./mods/argsMods";
 
 export const arkServerConfig = {
   // Lancé directement, sans lanceur (vérifié). Chemin relatif au dossier
@@ -51,8 +52,16 @@ export const arkServerConfig = {
       `-WinLiveMaxPlayers=${launchConfig.maxPlayers}`,
     ];
     if (!launchConfig.battlEye) args.push("-NoBattlEye");
-    const custom = launchConfig.customArgs.trim();
-    if (custom) args.push(...custom.split(/\s+/));
+    // Un seul -mods= : ceux de la liste (activés, dans l'ordre), puis ceux
+    // encore écrits dans les arguments perso (la page Mods propose de les
+    // déplacer dans la liste).
+    const custom = splitArgsMods(launchConfig.customArgs);
+    const modIds = launchConfig.mods
+      .filter((mod) => mod.enabled)
+      .map((mod) => mod.id);
+    for (const id of custom.ids) if (!modIds.includes(id)) modIds.push(id);
+    if (modIds.length > 0) args.push(`-mods=${modIds.join(",")}`);
+    args.push(...custom.rest);
     return args;
   },
 

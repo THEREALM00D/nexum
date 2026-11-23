@@ -20,6 +20,7 @@ export default {
       Valguero_WP: "Valguero",
       LostColony_WP: "Lost Colony",
       Astraeos_WP: "Astraeos",
+      Genesis_WP: "Genesis: Part 1",
     },
     fields: {
       SessionName: {
@@ -30,7 +31,7 @@ export default {
       map: {
         label: "Map",
         description:
-          "One world per map (SavedArks/<map> folder). Switching maps doesn't delete the old world. Some maps are paid: players must own them.",
+          "One world per map (SavedArks/<map> folder). Switching maps doesn't delete the old world. Some maps are paid: players must own them. Modded map: type its exact name (for example Svartalfheim_WP) and add its mod on the Mods page.",
       },
       maxPlayers: {
         label: "Max players",

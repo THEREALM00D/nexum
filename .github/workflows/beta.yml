@@ -107,10 +107,14 @@ jobs:
           gh release create "$TAG" --draft --prerelease --target "$GITHUB_SHA" \
             --title "Nexum $TAG (beta)" --notes-file beta-notes.md
 
+      # CURSEFORGE_API_KEY : fiches des mods ARK (electron.vite.config.ts).
+      # Secret absent (fork) : l'app est construite sans, la page Mods ARK
+      # se contente de ce que le serveur a téléchargé.
       - name: Build & upload to draft release
         run: yarn build --publish always
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
 
       - name: Add SHA256 to release notes
         shell: bash

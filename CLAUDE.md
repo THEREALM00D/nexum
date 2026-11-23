@@ -115,7 +115,7 @@ Pages partagées par tous les jeux : `components/server/Logs`, `components/backu
 
 ## Réseau et confidentialité
 
-La déclaration de confidentialité (`docs/code-signing.md` + `.fr.md`) liste **chaque** connexion réseau de l'app : GitHub (mises à jour), Steam via SteamCMD (installation, vérification de version au démarrage), Thunderstore / Hexium (page Mods, vérification des mods au démarrage, partage de modpack), `api.ipify.org` (IP publique, au clic seulement). **Tout nouvel appel réseau doit y être ajouté**, dans la même PR. Les appels faits par la CI (Discord, VirusTotal) n'en font pas partie, ni un lien ouvert dans le navigateur avec `shell.openExternal` (bouton « Aide et Discord » de la Sidebar, `components/Sidebar/DiscordButton.tsx`).
+La déclaration de confidentialité (`docs/code-signing.md` + `.fr.md`) liste **chaque** connexion réseau de l'app : GitHub (mises à jour), Steam via SteamCMD (installation, vérification de version au démarrage), Thunderstore / Hexium (page Mods, vérification des mods au démarrage, partage de modpack), CurseForge (page Mods d'ARK : fiches des mods par ID, logos), `api.ipify.org` (IP publique, au clic seulement). **Tout nouvel appel réseau doit y être ajouté**, dans la même PR. Les appels faits par la CI (Discord, VirusTotal) n'en font pas partie, ni un lien ouvert dans le navigateur avec `shell.openExternal` (bouton « Aide et Discord » de la Sidebar, `components/Sidebar/DiscordButton.tsx`).
 
 ## Écrire dans les CLAUDE.md
 

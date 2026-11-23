@@ -354,6 +354,9 @@ export type AppErrorCode =
   | "ARK_MAP_INVALID"
   | "ARK_PORTS_SAME"
   | "ARK_MAX_PLAYERS_INVALID"
+  | "ARK_MOD_ID_INVALID"
+  | "ARK_MOD_NOT_FOUND"
+  | "ARK_MOD_DUPLICATE"
   // Réseau / téléchargements (registres de mods, SteamCMD, IP publique)
   | "NETWORK_ERROR"
   | "HTTP_ERROR"
@@ -453,11 +456,51 @@ export interface ArkLaunchConfig {
   maxPlayers: number;
   battlEye: boolean;
   customArgs: string;
+  /** Mods CurseForge, dans l'ordre de chargement (-mods=). */
+  mods: ArkMod[];
 }
 
 // Vue fusionnée de la page Config : clés de GameUserSettings.ini (chaînes
-// brutes) + champs de ArkLaunchConfig.
+// brutes) + champs de ArkLaunchConfig (sans les mods, page Mods).
 export type ArkSettings = Record<string, string | number | boolean>;
+
+/** Mod de la liste : ID de projet CurseForge. Désactivé = absent de -mods=. */
+export interface ArkMod {
+  id: number;
+  enabled: boolean;
+}
+
+/**
+ * Ce que Nexum sait d'un mod : library.json du serveur (mod déjà téléchargé)
+ * ou API CurseForge (mod pas encore téléchargé, build avec clé).
+ */
+export interface ArkModInfo {
+  id: number;
+  name: string;
+  summary: string;
+  logoUrl: string | null;
+  authors: string[];
+  websiteUrl: string | null;
+  premium: boolean;
+  /** Fichier téléchargé par le serveur (library.json seulement). */
+  installedFile: string | null;
+  /** Date de publication de ce fichier (ISO). */
+  installedFileDate: string | null;
+}
+
+export interface ArkModEntry extends ArkMod {
+  info: ArkModInfo | null;
+}
+
+export interface ArkModsState {
+  mods: ArkModEntry[];
+  /** Téléchargés par le serveur (library.json) mais absents de la liste. */
+  downloadedNotListed: ArkModInfo[];
+  /** ID encore écrits dans les arguments perso (-mods=…). */
+  argsMods: number[];
+  /** Build avec clé CurseForge : un ID ajouté est vérifié. */
+  lookupAvailable: boolean;
+}
 
 // --- Enshrouded ---
 // Toute la config vit dans enshrouded_server.json (à côté de l'exe) : la

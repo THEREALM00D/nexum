@@ -9,7 +9,8 @@ import type {
   ModBrowsePage,
 } from "../../../shared/types";
 import { compareVersions } from "./versionCompare";
-import { REGISTRIES, REGISTRY_API_BASE, USER_AGENT } from "./registries";
+import { REGISTRIES, REGISTRY_API_BASE } from "./registries";
+import { USER_AGENT } from "../../utils/userAgent";
 import { mapLimit } from "../../utils/mapLimit";
 // Importer les types générés depuis le spec OpenAPI Thunderstore
 // Régénérer avec : yarn generate:thunderstore
