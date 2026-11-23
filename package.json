@@ -35,13 +35,13 @@
     "electron-store": "^12.0.0",
     "electron-updater": "^6.8.11",
     "extract-zip": "^2.0.1",
-    "i18next": "^27.1.1",
-    "i18next-browser-languagedetector": "^8.3.0",
+    "i18next": "^27.2.2",
+    "i18next-browser-languagedetector": "^8.3.1",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "react-i18next": "^17.1.13",
-    "react-virtuoso": "4.18.22",
-    "systeminformation": "^5.33.20"
+    "react-virtuoso": "4.18.23",
+    "systeminformation": "^5.33.23"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^2.0.0",
@@ -53,7 +53,7 @@
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^5.2.0",
     "cross-env": "^10.1.0",
-    "electron": "45.3.1",
+    "electron": "45.4.1",
     "electron-builder": "^26.18.0",
     "electron-vite": "^5.0.0",
     "eslint": "^8.57.0",

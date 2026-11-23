@@ -227,15 +227,10 @@
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.29.10.tgz#fe9920782f7ee34029165ac6f272984917a1641b"
   integrity sha512-NpugTzbKgGrNe45Ui32cN8vCFFMxVtP/9rtfwv0nP5FRDAjvYBxJcLVpYA9mr1jxP6cnIT7x9LUzuDTbWYYNRA==
 
-"@babel/runtime@^7.29.7 || ^8.0.0":
+"@babel/runtime@^7.29.7 || ^8.0.0", "@babel/runtime@^7.29.7 || ^8.0.5":
   version "8.1.2"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-8.1.2.tgz#bd9ea684a4b44d520b50ceb2d5f9180b6b282978"
   integrity sha512-Ay6HdEKZJAeGs6KKJ/ezCK5ssjFmkvUiR0TEGv/B1abyjLWrQ2RU+M507Ppk0NikhvVFhlEFC1/rHfCiYqSUcw==
-
-"@babel/runtime@^7.29.7 || ^8.0.5":
-  version "8.0.7"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-8.0.7.tgz#4f4d0371d27c93c269b57dba49b8427027ddd25e"
-  integrity sha512-k0hagDDq/6w4v+0Sp4wFvIz/yswH5O7Va6aRTnD7N62Tnborp4X+YB+H3XUcWVSR4aE47WPEXiIIZchBs0GmYg==
 
 "@babel/template@^7.28.6":
   version "7.28.6"
@@ -2486,10 +2481,10 @@ electron-vite@^5.0.0:
     magic-string "^0.30.19"
     picocolors "^1.1.1"
 
-electron@45.3.1:
-  version "45.3.1"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-45.3.1.tgz#1221eae6eea0b06487f56a668e52f6f6def2e0bd"
-  integrity sha512-1oYau2B4RXF27Df2fzvrFDJoy8AOSVlgS6gklo6wkLZ/QWJemJCJHkY4+uuacvSFUtR8IimiLukLNFoYP0fmjA==
+electron@45.4.1:
+  version "45.4.1"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-45.4.1.tgz#88f4dd2a9856cccb344e2100da1f92a308fee2a0"
+  integrity sha512-DjsJ/eQhovkjf1vYFFyh5GB8NMx+L5bdYaonvGOlWselg3DQ0fwIF0N/+2hrPsoS4whmmNswh21ym/8dgt1y5Q==
   dependencies:
     "@electron-internal/extract-zip" "^1.0.1"
     "@electron/get" "^5.0.0"
@@ -3237,17 +3232,17 @@ https-proxy-agent@7.0.6, https-proxy-agent@^7.0.0:
     agent-base "^7.1.2"
     debug "4"
 
-i18next-browser-languagedetector@^8.3.0:
-  version "8.3.0"
-  resolved "https://registry.yarnpkg.com/i18next-browser-languagedetector/-/i18next-browser-languagedetector-8.3.0.tgz#92bdc1003e4cbec36c3205eccd47edce39f896d7"
-  integrity sha512-t7FtF+VyQ+XSy+GI1O9TXWsMzP4U2u0m27yxJcCbG4LaAbTQa3CXFXgG3LvRivS+ZoYah8yPv5NhMl+Wg6I8Fg==
+i18next-browser-languagedetector@^8.3.1:
+  version "8.3.1"
+  resolved "https://registry.yarnpkg.com/i18next-browser-languagedetector/-/i18next-browser-languagedetector-8.3.1.tgz#5197f2df07fdd48c128a0517707cf81ac3ed0f3a"
+  integrity sha512-W7dfKWlmaxuy5zsKsu8vKm7SQ0R6T1Tw7XRMKCh3bt98q9m5Q73GKF1PiqtvcwzC+AZvfUCugbfcIYQkDfHeAg==
   dependencies:
     "@babel/runtime" "^7.29.2"
 
-i18next@^27.1.1:
-  version "27.1.1"
-  resolved "https://registry.yarnpkg.com/i18next/-/i18next-27.1.1.tgz#3137a7a6d82914e370ccab7e926958d20faa5d32"
-  integrity sha512-Qq3aJizS3RXQ30crhx9BKQLrHoa6GKpgrOJjVZ9vgj3EBxAddrmVfDNUrAMxSUimw5Jc+ld4SSZUAzf1q4nGyQ==
+i18next@^27.2.2:
+  version "27.2.2"
+  resolved "https://registry.yarnpkg.com/i18next/-/i18next-27.2.2.tgz#2e22344c7a2c895a299b1f56065b159001f99f10"
+  integrity sha512-1/AJgz/bpE/YL6tqekQlZAzDhkmrUBbgU8+Xon/Lwv6c5WdYuyFZ9mb86OVfR2C2XujUDT7Rz23Ydaq4l981lA==
 
 ieee754@^1.2.1:
   version "1.2.1"
@@ -4155,10 +4150,10 @@ react-transition-group@^4.4.5:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
-react-virtuoso@4.18.22:
-  version "4.18.22"
-  resolved "https://registry.yarnpkg.com/react-virtuoso/-/react-virtuoso-4.18.22.tgz#d016885dbae4646c0feaa59638f6dc734acbd4be"
-  integrity sha512-0Jga1NmJsAwhxZlEyE6xN1HtEHePgsWbuzYcJokanaIDVTbc59ocm3MocQ6yJIYTJICaWqYY3+Z4FQ3mnGuD+w==
+react-virtuoso@4.18.23:
+  version "4.18.23"
+  resolved "https://registry.yarnpkg.com/react-virtuoso/-/react-virtuoso-4.18.23.tgz#06ce594005f04fa2d786e210560a2850b1374e6f"
+  integrity sha512-J/FpyeLUbU6uEXiMsTKjlJaSMqpjxPCanjSYRxFKobLhP73Wo4gloFldDD7osmFUEv2VMF8Ki/YScofwa3ymyw==
 
 react@^19.3.1:
   version "19.3.1"
@@ -4633,10 +4628,10 @@ synckit@^0.11.12:
   dependencies:
     "@pkgr/core" "^0.2.9"
 
-systeminformation@^5.33.20:
-  version "5.33.20"
-  resolved "https://registry.yarnpkg.com/systeminformation/-/systeminformation-5.33.20.tgz#e9368e3eccf4f8040004905954e956ae38e1f911"
-  integrity sha512-8Cd5qcDjE8bHums5QhSbXo69qDC5sqKY9H6dZXq+nHIoN9cq9cjJrpasHRWq2vTp19acpgc7VlJP6gRoKvV+dA==
+systeminformation@^5.33.23:
+  version "5.33.23"
+  resolved "https://registry.yarnpkg.com/systeminformation/-/systeminformation-5.33.23.tgz#380ac88050d9ea23ea04d29d4d7ec651bcee9466"
+  integrity sha512-OBOvemo4WHf8bGMszwszn3JcFxkIMZt7adjhdgJh3eePo37EIBZovZbhJDQ2zfVYPEtXScHDJXGik8eYd3WMNw==
 
 tagged-tag@^1.0.0:
   version "1.0.0"
