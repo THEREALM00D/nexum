@@ -1,6 +1,7 @@
 import type { ModpackShare, ValheimMod } from "../../../shared/types";
 import { ModRegistryClient } from "./ModRegistryClient";
-import { REGISTRY_API_BASE, USER_AGENT } from "./registries";
+import { REGISTRY_API_BASE } from "./registries";
+import { USER_AGENT } from "../../utils/userAgent";
 import { AppError } from "../../utils/appError";
 
 const BEPINEX_PACK = "denikson-BepInExPack_Valheim";

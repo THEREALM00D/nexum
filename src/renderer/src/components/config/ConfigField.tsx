@@ -7,12 +7,11 @@ import {
   Stack,
   Switch,
   TextField,
-  Tooltip,
-  Typography,
 } from "@mui/material";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { useTranslation } from "react-i18next";
 import type { FieldDef } from "./types";
+import ConfigFieldLabel from "./ConfigFieldLabel";
+import ConfigComboField from "./ConfigComboField";
 
 interface Props {
   field: FieldDef;
@@ -22,35 +21,6 @@ interface Props {
   i18nPrefix: string;
 }
 
-function FieldLabel({
-  label,
-  description,
-  minWidth,
-}: {
-  label: string;
-  description?: string;
-  minWidth?: number;
-}) {
-  return (
-    <Stack
-      direction="row"
-      sx={{ alignItems: "center", gap: 0.5, minWidth }}
-      component="span"
-    >
-      <Typography variant="body2" component="span">
-        {label}
-      </Typography>
-      {description && (
-        <Tooltip title={description} arrow placement="top">
-          <InfoOutlinedIcon
-            sx={{ fontSize: 16, color: "text.secondary", cursor: "help" }}
-          />
-        </Tooltip>
-      )}
-    </Stack>
-  );
-}
-
 export default function ConfigField({
   field,
   value,
@@ -58,7 +28,7 @@ export default function ConfigField({
   i18nPrefix,
 }: Props) {
   const { t } = useTranslation();
-  const { key, type, options, required, min, max, step } = field;
+  const { key, type, options, required, min, max, step, allowCustom } = field;
   const baseLabel = t(`${i18nPrefix}.${key}.label`, { defaultValue: key });
   const label = required ? `${baseLabel} *` : baseLabel;
   const missing = !!required && String(value ?? "").trim() === "";
@@ -76,7 +46,7 @@ export default function ConfigField({
             onChange={(e) => onChange(e.target.checked)}
           />
         }
-        label={<FieldLabel label={label} description={description} />}
+        label={<ConfigFieldLabel label={label} description={description} />}
         sx={{
           justifyContent: "space-between",
           ml: 0,
@@ -86,10 +56,28 @@ export default function ConfigField({
     );
   }
 
+  if (type === "select" && allowCustom) {
+    return (
+      <ConfigComboField
+        label={label}
+        description={description}
+        options={options ?? []}
+        value={String(value ?? "")}
+        error={missing}
+        helperText={missing ? t("configPage.required") : undefined}
+        onChange={onChange}
+      />
+    );
+  }
+
   if (type === "select") {
     return (
       <Stack direction="row" sx={{ alignItems: "center", gap: 2 }}>
-        <FieldLabel label={label} description={description} minWidth={200} />
+        <ConfigFieldLabel
+          label={label}
+          description={description}
+          minWidth={200}
+        />
         <FormControl size="small" sx={{ flex: 1 }}>
           <InputLabel>{label}</InputLabel>
           <Select
@@ -110,7 +98,11 @@ export default function ConfigField({
 
   return (
     <Stack direction="row" sx={{ alignItems: "center", gap: 2 }}>
-      <FieldLabel label={label} description={description} minWidth={200} />
+      <ConfigFieldLabel
+        label={label}
+        description={description}
+        minWidth={200}
+      />
       <TextField
         size="small"
         type={type === "number" ? "number" : "text"}

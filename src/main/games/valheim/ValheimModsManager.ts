@@ -23,7 +23,8 @@ import type {
 } from "../../../shared/types";
 import { ModRegistryClient } from "./ModRegistryClient";
 import { extractModArchive } from "./extractModArchive";
-import { REGISTRIES, REGISTRY_API_BASE, USER_AGENT } from "./registries";
+import { REGISTRIES, REGISTRY_API_BASE } from "./registries";
+import { USER_AGENT } from "../../utils/userAgent";
 import { backupBeforeWrite } from "../../utils/ini";
 import { AppError, networkError } from "../../utils/appError";
 

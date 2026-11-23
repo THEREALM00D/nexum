@@ -26,3 +26,8 @@ export function formatSize(bytes: number): string {
 export function formatDate(ts: number, locale: string): string {
   return new Date(ts).toLocaleString(locale === "fr" ? "fr-FR" : "en-US");
 }
+
+/** Date seule, sans l'heure (date de publication d'un fichier…). */
+export function formatDay(ts: number, locale: string): string {
+  return new Date(ts).toLocaleDateString(locale === "fr" ? "fr-FR" : "en-US");
+}

@@ -27,6 +27,8 @@ import type {
   EnshroudedSettings,
   EnshroudedUserGroup,
   ArkSettings,
+  ArkMod,
+  ArkModsState,
   ValheimMod,
   ValheimModConfigFile,
   InstallBatch,
@@ -421,6 +423,20 @@ interface API {
     read: () => Promise<ArkSettings>;
     write: (
       settings: ArkSettings,
+    ) => Promise<{ success: boolean; error?: string }>;
+  };
+  arkMods: {
+    get: (serverId: string) => Promise<ArkModsState>;
+    add: (
+      serverId: string,
+      id: number,
+    ) => Promise<{ success: boolean; error?: string }>;
+    set: (
+      serverId: string,
+      mods: ArkMod[],
+    ) => Promise<{ success: boolean; error?: string }>;
+    takeFromArgs: (
+      serverId: string,
     ) => Promise<{ success: boolean; error?: string }>;
   };
   /** Changer de PC. Les exports renvoient le chemin écrit, null si annulé. */

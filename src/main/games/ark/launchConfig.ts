@@ -1,4 +1,4 @@
-import type { ArkLaunchConfig } from "../../../shared/types";
+import type { ArkLaunchConfig, ArkMod } from "../../../shared/types";
 import { appError } from "../../utils/appError";
 
 // Nom d'une carte sur la ligne de commande (« TheIsland_WP ») : lettres,
@@ -19,7 +19,26 @@ export const DEFAULT_ARK_CONFIG: ArkLaunchConfig = {
   maxPlayers: 70,
   battlEye: true,
   customArgs: "",
+  mods: [],
 };
+
+// ID de projet CurseForge : entier positif (int32 côté API).
+export const isModId = (value: unknown): value is number =>
+  Number.isInteger(value) && Number(value) >= 1 && Number(value) <= 2147483647;
+
+/** Mods valides seulement, sans doublon, dans l'ordre. */
+export function sanitizeArkMods(stored: unknown): ArkMod[] {
+  if (!Array.isArray(stored)) return [];
+  const seen = new Set<number>();
+  const mods: ArkMod[] = [];
+  for (const entry of stored) {
+    const id = (entry as Partial<ArkMod> | null)?.id;
+    if (!isModId(id) || seen.has(id)) continue;
+    seen.add(id);
+    mods.push({ id, enabled: (entry as ArkMod).enabled !== false });
+  }
+  return mods;
+}
 
 const isPort = (value: unknown): value is number =>
   Number.isInteger(value) && Number(value) >= 1 && Number(value) <= 65535;
@@ -31,7 +50,9 @@ const isMapName = (value: unknown): value is string =>
   typeof value === "string" && ARK_MAP_NAME.test(value);
 
 /** Erreur codée pour la page Config, null si la config est valide. */
-export function validateArkLaunch(launch: ArkLaunchConfig): string | null {
+export function validateArkLaunch(
+  launch: Omit<ArkLaunchConfig, "mods">,
+): string | null {
   if (!isMapName(launch.map)) {
     return appError("ARK_MAP_INVALID", { map: String(launch.map) });
   }
@@ -76,5 +97,6 @@ export function sanitizeArkLaunch(
     ),
     battlEye: merged.battlEye !== false,
     customArgs: typeof merged.customArgs === "string" ? merged.customArgs : "",
+    mods: sanitizeArkMods(merged.mods),
   };
 }

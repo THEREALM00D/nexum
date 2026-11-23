@@ -20,6 +20,7 @@ export default {
       Valguero_WP: "Valguero",
       LostColony_WP: "Lost Colony",
       Astraeos_WP: "Astraeos",
+      Genesis_WP: "Genesis: Part 1",
     },
     fields: {
       SessionName: {
@@ -30,7 +31,7 @@ export default {
       map: {
         label: "Carte",
         description:
-          "Un monde par carte (dossier SavedArks/<carte>). Changer de carte ne supprime pas l'ancien monde. Certaines cartes sont payantes : les joueurs doivent les posséder.",
+          "Un monde par carte (dossier SavedArks/<carte>). Changer de carte ne supprime pas l'ancien monde. Certaines cartes sont payantes : les joueurs doivent les posséder. Carte moddée : tapez son nom exact (par exemple Svartalfheim_WP) et ajoutez son mod dans la page Mods.",
       },
       maxPlayers: {
         label: "Joueurs max",

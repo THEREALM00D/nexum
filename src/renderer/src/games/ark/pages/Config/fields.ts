@@ -2,6 +2,7 @@ import type { FieldGroup } from "../../../../components/config/types";
 
 // Cartes présentes dans les fichiers du serveur (index des .pak, build
 // 26749470). Les valeurs restent les noms bruts de la ligne de commande.
+// Une carte moddée se tape (allowCustom) ; ARK_MAP_NAME la valide côté main.
 const MAPS = [
   "TheIsland_WP",
   "TheCenter_WP",
@@ -12,6 +13,7 @@ const MAPS = [
   "Valguero_WP",
   "LostColony_WP",
   "Astraeos_WP",
+  "Genesis_WP",
 ];
 
 export const FIELD_GROUPS: FieldGroup[] = [
@@ -22,6 +24,7 @@ export const FIELD_GROUPS: FieldGroup[] = [
       {
         key: "map",
         type: "select",
+        allowCustom: true,
         options: MAPS.map((map) => ({
           value: map,
           labelKey: `arkConfig.maps.${map}`,

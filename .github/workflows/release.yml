@@ -55,10 +55,14 @@ jobs:
       # Le push déclencheur est sur main (pas sur un tag) : sans
       # `--publish always`, electron-builder ne publierait pas. Il réutilise
       # la release draft créée par release-please (même tag v<version>).
+      # CURSEFORGE_API_KEY : fiches des mods ARK (electron.vite.config.ts).
+      # Secret absent (fork) : l'app est construite sans, la page Mods ARK
+      # se contente de ce que le serveur a téléchargé.
       - name: Build & upload to draft release
         run: yarn build --publish always
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
 
       # Confiance : l'exe n'est pas signé, on publie son empreinte et un scan
       # VirusTotal pour que l'utilisateur puisse vérifier son téléchargement.
