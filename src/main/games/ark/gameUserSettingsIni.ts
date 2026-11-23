@@ -1,12 +1,5 @@
 import { join } from "path";
-import { backupBeforeWrite } from "../../utils/ini";
-import {
-  patchIniSection,
-  readIniSection,
-  readIniText,
-  writeIniText,
-  type IniFormat,
-} from "../../utils/iniText";
+import { readArkIni, writeArkIni } from "./config/arkIniFile";
 
 export const GAME_USER_SETTINGS_REL_PATH = join(
   "ShooterGame",
@@ -58,24 +51,22 @@ const DEFAULTS: Record<GameUserSettingsKey, string> = {
   SessionName: "",
 };
 
-// Même en-tête et mêmes fins de ligne (CRLF) que le fichier du serveur.
-const NEW_FILE = ";METADATA=(Diff=true, UseCommands=true)\n";
-const NEW_FORMAT: IniFormat = { encoding: "utf8", eol: "\r\n" };
-
 const gameUserSettingsPath = (serverPath: string) =>
   join(serverPath, GAME_USER_SETTINGS_REL_PATH);
 
-/** Valeurs brutes (chaînes) des clés gérées de GameUserSettings.ini. */
+/**
+ * Valeurs brutes (chaînes) des clés gérées de GameUserSettings.ini, sans
+ * tenir compte de la casse (`serverPVE=True` est lu comme ServerPVE).
+ */
 export function readGameUserSettings(
   serverPath: string,
 ): Record<GameUserSettingsKey, string> {
-  const file = readIniText(gameUserSettingsPath(serverPath));
+  const { doc } = readArkIni(gameUserSettingsPath(serverPath));
   const values = { ...DEFAULTS };
-  if (!file) return values;
   for (const [section, keys] of Object.entries(SECTION_KEYS)) {
-    const sectionValues = readIniSection(file.text, section);
     for (const key of keys) {
-      if (sectionValues[key] !== undefined) values[key] = sectionValues[key];
+      const value = doc.get(section, key);
+      if (value !== undefined) values[key] = value;
     }
   }
   return values;
@@ -91,22 +82,15 @@ export function writeGameUserSettings(
   pairs: Partial<Record<GameUserSettingsKey, string>>,
 ): void {
   const path = gameUserSettingsPath(serverPath);
-  backupBeforeWrite(path);
-  const file = readIniText(path);
-  let text = file?.text ?? NEW_FILE;
+  const file = readArkIni(path);
   for (const [section, keys] of Object.entries(SECTION_KEYS)) {
-    const sectionPairs: Record<string, string> = {};
     for (const key of keys as readonly GameUserSettingsKey[]) {
       const value = pairs[key];
-      if (value !== undefined) {
-        sectionPairs[key] = value.replace(/[\r\n]/g, "").trim();
-      }
-    }
-    if (Object.keys(sectionPairs).length > 0) {
-      text = patchIniSection(text, section, sectionPairs);
+      // Casse du fichier gardée, doublons de casse fusionnés (iniDocument).
+      if (value !== undefined) file.doc.set(section, key, value);
     }
   }
-  writeIniText(path, text, file ?? NEW_FORMAT);
+  writeArkIni(path, file);
 }
 
 export interface RconSettings {
