@@ -27,6 +27,15 @@ export function parseListPlayers(response: string): ArkPlayer[] {
   return players;
 }
 
+/** Une ligne, accents retirés (« redémarrer » → « redemarrer »), ASCII seul. */
+function toChatText(message: string): string {
+  return message
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[\r\n]+/g, " ")
+    .replace(/[^\x20-\x7e]/g, "");
+}
+
 /**
  * Commandes RCON d'un serveur ARK, toujours sur 127.0.0.1. Une connexion par
  * appel : le serveur ne répond qu'à une commande à la fois et le suivi des
@@ -45,8 +54,13 @@ export class ArkRconClient {
     return response ?? "";
   }
 
+  /**
+   * ⚠️ `Broadcast` ne s'affiche pas en jeu (vérifié) : `ServerChat` écrit
+   * dans le chat. Les accents arrivent en « � » (UTF-8 comme Latin-1,
+   * vérifié) : le message est envoyé sans accents.
+   */
   async announce(message: string): Promise<void> {
-    await this.run(`Broadcast ${message.replace(/[\r\n]+/g, " ")}`);
+    await this.run(`ServerChat ${toChatText(message)}`);
   }
 
   /** Synchrone : la réponse « World Saved » arrive une fois le monde écrit. */
