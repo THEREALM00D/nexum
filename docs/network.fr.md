@@ -73,6 +73,16 @@ Une seule règle UDP, avec le port dans son nom pour que plusieurs serveurs Ensh
 
 Le port vient de **Configuration → Réseau**. Après un changement de port, supprimez l'ancienne règle (Pare-feu Windows) et appliquez la nouvelle. Redirigez ce port sur votre box pour les joueurs hors de votre réseau. Plus de détails dans [Enshrouded](enshrouded.fr.md).
 
+### ARK: Survival Ascended
+
+Une seule règle UDP pour le port de jeu, avec le port dans son nom pour que plusieurs serveurs ARK sur le même PC aient chacun la leur :
+
+| Règle                        | Port (défaut) | Protocole | Usage                  |
+| ---------------------------- | ------------- | --------- | ---------------------- |
+| **ARK Server - Game (7777)** | 7777          | UDP       | Connexions des joueurs |
+
+Le port de requête (UDP 27015) et le port RCON (TCP 27020) ne sont pas ouverts : les joueurs ne s'en servent pas, et Nexum se connecte à RCON depuis ce PC. Redirigez seulement le port de jeu sur votre box. Plus de détails dans [ARK: Survival Ascended](ark.fr.md).
+
 ## Actions disponibles
 
 ### Activer/désactiver une règle individuelle

@@ -29,6 +29,7 @@ import type {
   AstroneerLaunchConfig,
   DragonwildsLaunchConfig,
   EnshroudedLaunchConfig,
+  ArkLaunchConfig,
 } from "../../shared/types";
 import type { AppStore, IpcContext } from "./context";
 import { registerMiscHandlers } from "./handlers/misc";
@@ -50,6 +51,9 @@ import { registerAstroneerHandlers } from "../games/astroneer/handlers/config";
 import { registerDragonwildsHandlers } from "../games/dragonwilds/handlers/config";
 import { registerDragonwildsWorldHandlers } from "../games/dragonwilds/handlers/worlds";
 import { registerEnshroudedHandlers } from "../games/enshrouded/handlers/config";
+import { registerArkHandlers } from "../games/ark/handlers/config";
+import { ArkRconClient } from "../games/ark/ArkRconClient";
+import { readRconSettings } from "../games/ark/gameUserSettingsIni";
 import { getGameStopConfig } from "../games/registry";
 import { autoStartServers } from "../server/startServer";
 import { registerCrashRestart } from "../server/crashRestart";
@@ -154,6 +158,16 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
       enshroudedConfig: patch as EnshroudedLaunchConfig,
     });
 
+  const getArkConfig = (id?: string) =>
+    serverConfigs.get(resolveServerId(id)).arkConfig;
+  const updateArkConfig = (
+    id: string | undefined,
+    patch: Partial<ArkLaunchConfig>,
+  ) =>
+    serverConfigs.update(resolveServerId(id), {
+      arkConfig: patch as ArkLaunchConfig,
+    });
+
   const getModsDataDir = (id?: string): string => {
     const serverId = resolveServerId(id);
     return join(app.getPath("userData"), "servers", serverId);
@@ -213,7 +227,12 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
       ? servers.list().find((s) => s.id === serverId)
       : servers.getActive();
     const gameType = server?.gameType ?? "palworld";
-    return getGameStopConfig(gameType, getServerPath(serverId), configParser);
+    return getGameStopConfig(
+      gameType,
+      getServerPath(serverId),
+      configParser,
+      getServerConfig(server?.id),
+    );
   };
 
   // Sauvegarde automatique de chaque serveur lancé, à son intervalle (voir
@@ -258,14 +277,15 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
   );
 
   // Tracker d'historique : démarre par serveur quand son API de suivi joueurs
-  // est dispo (REST Palworld ou plugin Odin-Eye pour Valheim ; pas de source
-  // pour Astroneer), s'arrête sinon. Chaque serveur est suivi indépendamment
+  // est dispo (REST Palworld, plugin Odin-Eye pour Valheim, RCON pour ARK ;
+  // pas de source pour les autres), s'arrête sinon. Chaque serveur est suivi indépendamment
   // (via son propre manager/path) pour ne pas mélanger les données quand
   // plusieurs serveurs tournent en parallèle — pointer sur "le serveur actif"
   // ferait dériver le tracker d'un serveur vers l'API d'un autre dès qu'on
   // change l'actif.
   const getApiClientForServer =
-    (serverId: string) => (): PalworldApiClient | OdinEyeApiClient | null => {
+    (serverId: string) =>
+    (): PalworldApiClient | OdinEyeApiClient | ArkRconClient | null => {
       const mgr = serverManagers
         .entries()
         .find((e) => e.serverId === serverId)?.manager;
@@ -277,9 +297,17 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
         const url = serverConfigs.get(serverId).valheimConfig.odinEyeUrl;
         return url ? new OdinEyeApiClient(url) : null;
       }
+      const serverPath = getServerPath(serverId);
+      if (gameType === "ark") {
+        // ListPlayers en RCON, seulement si RCON est activé dans l'INI.
+        if (!serverPath) return null;
+        const { rconPort } = serverConfigs.get(serverId).arkConfig;
+        const rcon = readRconSettings(serverPath, rconPort);
+        if (!rcon.enabled) return null;
+        return new ArkRconClient(rcon.port, rcon.password);
+      }
       if (gameType !== "palworld") return null;
 
-      const serverPath = getServerPath(serverId);
       if (!serverPath) return null;
       try {
         const cfg = configParser.read(serverPath);
@@ -371,6 +399,8 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
     updateDragonwildsConfig,
     getEnshroudedConfig,
     updateEnshroudedConfig,
+    getArkConfig,
+    updateArkConfig,
     getModsDataDir,
   };
 
@@ -399,5 +429,6 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
   registerDragonwildsHandlers(ctx);
   registerDragonwildsWorldHandlers(ctx);
   registerEnshroudedHandlers(ctx);
+  registerArkHandlers(ctx);
   return ctx;
 }

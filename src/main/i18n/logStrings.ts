@@ -36,7 +36,11 @@ const FR = {
   saving: "Sauvegarde en cours...",
   saved: "Sauvegarde terminée.",
   shutdownSent: (s: number) => `Arrêt demandé à l'API (attente ${s} s).`,
+  rconExitIn: (seconds: number) => `Arrêt par RCON dans ${seconds} s...`,
+  rconExitSent:
+    "Arrêt demandé par RCON (DoExit) : le serveur sauvegarde le monde puis quitte.",
   apiUnavailable: (err: string) => `API indisponible : ${err}`,
+  rconUnavailable: (error: string) => `RCON indisponible : ${error}`,
   notResponding: "Le processus ne répond pas, arrêt forcé via taskkill...",
   waitingGraceful: (s: number) => `Attente de l'arrêt propre (${s} s)...`,
   forceKill: "Arrêt forcé via taskkill...",
@@ -101,6 +105,8 @@ const FR = {
     `Échec de la sauvegarde automatique : ${err}`,
   backupRestApiHint:
     "Activez l'API REST (page Config) pour que Nexum fasse sauvegarder le serveur juste avant.",
+  backupRconHint:
+    "Activez RCON (page Config) pour que Nexum fasse sauvegarder le serveur juste avant.",
 
   // Redémarrage planifié
   // Annonce envoyée aux joueurs (pas une ligne de log) quand le message du
@@ -170,7 +176,11 @@ const EN: typeof FR = {
   saving: "Saving...",
   saved: "Save complete.",
   shutdownSent: (s) => `Shutdown requested through the API (waiting ${s} s).`,
+  rconExitIn: (seconds) => `Stopping through RCON in ${seconds} s...`,
+  rconExitSent:
+    "Shutdown requested through RCON (DoExit): the server saves the world, then quits.",
   apiUnavailable: (err) => `API unavailable: ${err}`,
+  rconUnavailable: (error) => `RCON unavailable: ${error}`,
   notResponding:
     "The process isn't responding, forcing it to stop (taskkill)...",
   waitingGraceful: (s) => `Waiting for a clean shutdown (${s} s)...`,
@@ -228,6 +238,8 @@ const EN: typeof FR = {
   autoBackupFailed: (err) => `Automatic backup failed: ${err}`,
   backupRestApiHint:
     "Enable the REST API (Config page) so Nexum makes the server save right before.",
+  backupRconHint:
+    "Enable RCON (Config page) so Nexum makes the server save right before.",
 
   restartAnnounceDefault: "The server will restart in {minutes} minutes",
   valheimDefaultServerName: "Valheim Server - hosted by Nexum",

@@ -17,6 +17,8 @@ export const STEAM_APP_IDS: Record<GameType, string> = {
   dragonwilds: "4019830",
   // « Enshrouded Dedicated Server » (1203620 = le client).
   enshrouded: "2278520",
+  // « ARK: Survival Ascended Dedicated Server » (2399830 = le client).
+  ark: "2430930",
 };
 
 /**

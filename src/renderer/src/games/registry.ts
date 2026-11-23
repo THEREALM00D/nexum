@@ -4,6 +4,7 @@ import { valheimPlugin } from "./valheim";
 import { astroneerPlugin } from "./astroneer";
 import { dragonwildsPlugin } from "./dragonwilds";
 import { enshroudedPlugin } from "./enshrouded";
+import { arkPlugin } from "./ark";
 
 export const GAMES = [
   palworldPlugin,
@@ -11,6 +12,7 @@ export const GAMES = [
   astroneerPlugin,
   dragonwildsPlugin,
   enshroudedPlugin,
+  arkPlugin,
 ];
 
 // Utilisé comme repli quand aucun serveur actif n'est sélectionné — le shell

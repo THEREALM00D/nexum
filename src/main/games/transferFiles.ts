@@ -7,6 +7,11 @@ import {
 } from "./astroneer/AstroConfigParser";
 import { INI_REL_PATH as DW_INI } from "./dragonwilds/dedicatedServerIni";
 import { SERVER_JSON } from "./enshrouded/serverJson";
+import {
+  GAME_INI_REL_PATH,
+  GAME_USER_SETTINGS_REL_PATH,
+} from "./ark/gameUserSettingsIni";
+import { arkServerConfig } from "./ark/serverConfig";
 import { valheimServerConfig } from "./valheim/serverConfig";
 import { ValheimModsManager } from "./valheim/ValheimModsManager";
 import {
@@ -100,6 +105,17 @@ const GAME_TRANSFERS: Record<GameType, GameTransfer> = {
     configFiles: (serverPath) => [
       file(SERVER_JSON, join(serverPath, SERVER_JSON)),
     ],
+  },
+  ark: {
+    configFiles: (serverPath) => [
+      file(
+        "GameUserSettings.ini",
+        join(serverPath, GAME_USER_SETTINGS_REL_PATH),
+      ),
+      file("Game.ini", join(serverPath, GAME_INI_REL_PATH)),
+    ],
+    // La carte choisie seulement, sans les copies de retour arrière du jeu.
+    worldFilter: () => arkServerConfig.keepWorldFile,
   },
 };
 

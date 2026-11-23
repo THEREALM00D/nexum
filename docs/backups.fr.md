@@ -29,6 +29,8 @@ Ce dossier contient :
 
 **Enshrouded** : Nexum zippe le dossier des sauvegardes du serveur (`savegame` par défaut, ou le dossier choisi dans **Configuration → Avancé**) : le monde `world0.ksd` et les copies que le jeu garde dans `savegame/backup`. Voir [Enshrouded](enshrouded.fr.md).
 
+**ARK: Survival Ascended** : Nexum zippe le dossier du monde de la carte choisie (`ShooterGame\Saved\SavedArks\<carte>`), sans les copies complètes que le jeu garde à côté (fichiers `.arkrbf` et `.bak`, environ 6 fois la taille du monde). Avec RCON activé, Nexum demande au serveur de sauvegarder (`SaveWorld`) juste avant de zipper un serveur lancé. Voir [ARK: Survival Ascended](ark.fr.md).
+
 ## Configuration
 
 ### Dossier de sauvegarde
@@ -78,6 +80,7 @@ Une sauvegarde faite serveur lancé (sauvegarde automatique, bouton **Créer une
    | Astroneer              | `AutoSaveGameInterval` (900 s par défaut, **Configuration**) |
    | RuneScape: Dragonwilds | Toutes les 5 min                                             |
    | Enshrouded             | Environ toutes les 5 min, et à l'arrêt                       |
+   | ARK (sans RCON)        | `AutoSavePeriodMinutes` (15 min par défaut)                  |
 
 3. Nexum attend que le jeu ait fini d'écrire ses fichiers de sauvegarde (aucun fichier modifié depuis 5 s, 30 s au plus) avant de zipper : un fichier n'est jamais pris à moitié écrit. Si le jeu écrit de nouveau pendant la création du ZIP, le ZIP est refait une fois.
 

@@ -8,6 +8,7 @@ Chaque jeu a sa propre page **Configuration**. Cette page concerne **Palworld** 
 - **Astroneer** : les fichiers `Engine.ini` et `AstroServerSettings.ini`. Modifiez-les uniquement serveur arrêté : Astroneer ne conserve pas les changements faits pendant qu'il tourne
 - **RuneScape: Dragonwilds** : voir [sa page](dragonwilds.fr.md)
 - **Enshrouded** : voir [sa page](enshrouded.fr.md)
+- **ARK: Survival Ascended** : voir [sa page](ark.fr.md)
 
 ## Fichier source
 

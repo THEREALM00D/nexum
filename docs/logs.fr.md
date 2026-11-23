@@ -27,7 +27,7 @@ Quand une ligne `[Manager]` signale une erreur, le message se termine par son co
 
 ## Lignes techniques masquées
 
-Certains jeux écrivent beaucoup de lignes qui ne servent qu'à leurs développeurs. Pour **Enshrouded**, Nexum les masque à l'écran (liste des threads, description du processeur, logo du démarrage, bloc « Session » répété toutes les 30 secondes, statistiques écrites à l'arrêt), et les messages Steam habituels d'un serveur dédié écrits sur la sortie d'erreur ne sont plus marqués `[ERR]`. Le fichier de la session et l'export (**Copier**, **Enregistrer en .txt**) contiennent toujours tout.
+Certains jeux écrivent beaucoup de lignes qui ne servent qu'à leurs développeurs. Pour **Enshrouded**, Nexum les masque à l'écran (liste des threads, description du processeur, logo du démarrage, bloc « Session » répété toutes les 30 secondes, statistiques écrites à l'arrêt), et les messages Steam habituels d'un serveur dédié écrits sur la sortie d'erreur ne sont plus marqués `[ERR]`. Pour **ARK: Survival Ascended**, les lignes de débogage du module de statistiques du jeu sont masquées de la même façon. Le fichier de la session et l'export (**Copier**, **Enregistrer en .txt**) contiennent toujours tout.
 
 ## Limitations à connaître
 

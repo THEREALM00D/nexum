@@ -84,6 +84,8 @@ If the API is disabled, Nexum shows a warning with an **Enable** button that upd
 
 **Enshrouded** has no API either, so players can't be warned in game, but it shuts down cleanly: Nexum sends it CTRL+Break, the server saves the world, then restarts.
 
+**ARK: Survival Ascended** uses RCON: Nexum sends the announcement in game, saves the world, waits for the warning delay, then stops the server with `DoExit` (the world is saved again) and restarts it. Without RCON, the restart stops it immediately, with no warning or save (the game saves every 15 minutes by default); the **Scheduling** page offers to turn RCON on.
+
 ## Use cases
 
 ### Nightly restart (recommended)

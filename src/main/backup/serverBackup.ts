@@ -1,7 +1,7 @@
 import { existsSync } from "fs";
 import type { IpcContext } from "../ipc/context";
 import type { BackupEntry, Server } from "../../shared/types";
-import { getGameSavePath } from "../games/registry";
+import { getGameBackupFilter, getGameSavePath } from "../games/registry";
 import { getGameSaveRequest } from "../games/saveRequests";
 import { hasExpectedExe } from "../servers/detectGameType";
 import { AppError, appErrorLogText } from "../utils/appError";
@@ -43,6 +43,7 @@ async function backupRunningServer(
     server.gameType,
     server.path,
     ctx.configParser,
+    ctx.getServerConfig(server.id),
   );
   let requestedAt: number | undefined;
   if ("run" in request) {
@@ -82,11 +83,12 @@ async function backupRunningServer(
     if (changed) notes.push(managerLine(lt().backupChangedDuringZip));
     if (requestedAt === undefined && wait.newest !== null) {
       notes.push(managerLine(lt().backupFromAutosave(saveTime(wait.newest))));
-      if (
-        "unavailable" in request &&
-        request.unavailable === "restApiDisabled"
-      ) {
-        notes.push(managerLine(lt().backupRestApiHint));
+      if ("unavailable" in request) {
+        if (request.unavailable === "restApiDisabled") {
+          notes.push(managerLine(lt().backupRestApiHint));
+        } else if (request.unavailable === "rconDisabled") {
+          notes.push(managerLine(lt().backupRconHint));
+        }
       }
     }
     return { entry, notes };
@@ -112,7 +114,10 @@ export async function backupServer(
   const savePath = getGameSavePath(server.gameType, serverPath, cfg);
   const mgr = ctx.serverManagers.getOrCreate(serverId);
   const write = log ?? ((line: string) => mgr.log(line));
-  const zip = () => ctx.backup.create(serverPath, dir, savePath, beforeUpdate);
+  // ARK : sans ses propres copies de retour arrière (dossier ~6× plus gros).
+  const keep = getGameBackupFilter(server.gameType);
+  const zip = () =>
+    ctx.backup.create(serverPath, dir, savePath, beforeUpdate, keep);
 
   const { entry, notes } =
     mgr.getStatus() === "running" && existsSync(savePath)

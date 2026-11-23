@@ -22,7 +22,7 @@ Le fichier contient :
 - les réglages de l'app : langue, zone de notification, versions bêta, lancement au démarrage de Windows ;
 - vos règles de pare-feu perso (page Réseau).
 
-Les réglages enregistrés dans les fichiers du jeu (`PalWorldSettings.ini`, fichiers INI d'Astroneer, `DedicatedServer.ini`, `enshrouded_server.json`) sont dans le dossier du serveur : ils suivent si vous copiez ce dossier, ou avec l'export d'un serveur.
+Les réglages enregistrés dans les fichiers du jeu (`PalWorldSettings.ini`, fichiers INI d'Astroneer, `DedicatedServer.ini`, `enshrouded_server.json`, `GameUserSettings.ini` d'ARK) sont dans le dossier du serveur : ils suivent si vous copiez ce dossier, ou avec l'export d'un serveur.
 
 ### Import
 
@@ -42,7 +42,7 @@ Le ZIP contient :
 
 - les réglages Nexum du serveur ;
 - son monde (dossier de sauvegarde du jeu). Pour Valheim, seulement le monde du serveur : ni les autres mondes du même dossier, ni les sauvegardes automatiques de Valheim ;
-- les fichiers de config du jeu : `PalWorldSettings.ini` et `GameUserSettings.ini` (Palworld, ce dernier dit au serveur quel monde charger), `AstroServerSettings.ini` et `Engine.ini` (Astroneer), `DedicatedServer.ini` (RuneScape: Dragonwilds), `enshrouded_server.json` (Enshrouded), les listes d'admins / bannis / autorisés et les réglages des mods (`BepInEx/config`) pour Valheim ;
+- les fichiers de config du jeu : `PalWorldSettings.ini` et `GameUserSettings.ini` (Palworld, ce dernier dit au serveur quel monde charger), `AstroServerSettings.ini` et `Engine.ini` (Astroneer), `DedicatedServer.ini` (RuneScape: Dragonwilds), `enshrouded_server.json` (Enshrouded), `GameUserSettings.ini` et `Game.ini` (ARK: Survival Ascended), les listes d'admins / bannis / autorisés et les réglages des mods (`BepInEx/config`) pour Valheim ;
 - pour Valheim, la liste des mods installés depuis Thunderstore ou Hexium (les mods installés à la main n'y sont pas).
 
 ### Import
@@ -61,4 +61,4 @@ Ordre conseillé sur le nouveau PC : importer le serveur, installer le jeu depui
 
 Par défaut, les mots de passe enregistrés par Nexum (mot de passe du serveur Valheim, mot de passe admin Dragonwilds) ne sont **pas** exportés : ressaisissez-les dans la page Configuration du serveur après l'import. Cochez **Inclure les mots de passe** pour les exporter : le fichier les contient alors en clair, ne le partagez pas et supprimez-le après l'import.
 
-Les fichiers de config du jeu d'un export de serveur sont copiés tels quels, avec les mots de passe qu'ils contiennent (mot de passe admin Palworld, mots de passe des groupes Enshrouded…).
+Les fichiers de config du jeu d'un export de serveur sont copiés tels quels, avec les mots de passe qu'ils contiennent (mot de passe admin Palworld, mots de passe des groupes Enshrouded, mots de passe du serveur et admin d'ARK…).

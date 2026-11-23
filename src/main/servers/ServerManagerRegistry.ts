@@ -17,6 +17,8 @@ export const PROCESS_NAME_PREFIXES: Record<GameType, string> = {
   dragonwilds: "rsdragonwildsserver",
   // Le client s'appelle enshrouded.exe.
   enshrouded: "enshrouded_server",
+  // ArkAscendedServer.exe ; le client s'appelle ArkAscended.exe.
+  ark: "arkascendedserver",
 };
 
 /**

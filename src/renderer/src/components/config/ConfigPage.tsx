@@ -40,8 +40,9 @@ interface ConfigPageProps {
     setFieldValue: (key: string, value: string | number | boolean) => void,
   ) => void;
   /**
-   * Jeux qui réécrivent leur .ini pendant qu'ils tournent (Astroneer,
-   * Dragonwilds) : une modification faite serveur lancé serait perdue.
+   * Jeux qui réécrivent leur .ini pendant qu'ils tournent ou à l'arrêt
+   * (Astroneer, Dragonwilds, ARK) : une modification faite serveur lancé
+   * serait perdue.
    * Enregistrement bloqué tant que le serveur n'est pas arrêté, puis
    * relecture du fichier à l'arrêt (le serveur a pu le modifier).
    */
@@ -52,7 +53,7 @@ interface ConfigPageProps {
 
 /**
  * Page de config .ini data-driven (groupes de champs, recherche,
- * expand/collapse) — partagée entre Palworld, Astroneer et Dragonwilds, qui
+ * expand/collapse) — partagée entre Palworld, Astroneer, Dragonwilds et ARK, qui
  * ne diffèrent que par le service de lecture/écriture, les clés i18n et
  * quelques options (preset Palworld, verrou serveur lancé).
  */

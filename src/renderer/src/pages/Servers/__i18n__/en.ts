@@ -35,6 +35,7 @@ export default {
       astroneer: "Astroneer",
       dragonwilds: "RuneScape: Dragonwilds",
       enshrouded: "Enshrouded",
+      ark: "ARK: Survival Ascended",
     },
     actions: {
       activate: "Activate",

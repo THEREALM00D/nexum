@@ -15,6 +15,10 @@ import type { StopConfig } from "../server/ServerManager";
 import type { GamePort } from "./ports";
 import type { LogNoiseRules } from "../logs/logNoise";
 import { ENSHROUDED_LOG_NOISE } from "./enshrouded/logNoise";
+import { arkServerConfig } from "./ark/serverConfig";
+import { prepareArkStart } from "./ark/startChecks";
+import { readGameUserSettings } from "./ark/gameUserSettingsIni";
+import { ARK_LOG_NOISE } from "./ark/logNoise";
 
 // Chaque traitement par jeu est un Record<GameType, …> : ajouter un jeu à
 // `GameType` fait échouer le typecheck tant qu'il manque une entrée (avant,
@@ -25,6 +29,7 @@ const GAME_SERVER_CONFIGS = {
   astroneer: astroneerServerConfig,
   dragonwilds: dragonwildsServerConfig,
   enshrouded: enshroudedServerConfig,
+  ark: arkServerConfig,
 } satisfies Record<GameType, { exeName: string }>;
 
 /** Jeux supportés, dans l'ordre de détection d'un dossier existant. */
@@ -53,6 +58,7 @@ const ARGS: Record<GameType, (cfg: ServerConfig) => string[]> = {
   dragonwilds: (cfg) =>
     dragonwildsServerConfig.buildArgs(cfg.dragonwildsConfig),
   enshrouded: (cfg) => enshroudedServerConfig.buildArgs(cfg.enshroudedConfig),
+  ark: (serverConfig) => arkServerConfig.buildArgs(serverConfig.arkConfig),
 };
 
 export function buildGameArgs(gameType: GameType, cfg: ServerConfig): string[] {
@@ -63,6 +69,7 @@ export function buildGameArgs(gameType: GameType, cfg: ServerConfig): string[] {
 // stdout quand celui-ci est incomplet (Dragonwilds).
 const LOG_FILES: Partial<Record<GameType, (serverPath: string) => string>> = {
   dragonwilds: (p) => dragonwildsServerConfig.getLogFilePath(p),
+  ark: (serverPath) => arkServerConfig.getLogFilePath(serverPath),
 };
 
 export function getGameLogFile(
@@ -75,6 +82,7 @@ export function getGameLogFile(
 // Lignes techniques masquées à l'écran (fichier de session et export bruts).
 const LOG_NOISE: Partial<Record<GameType, LogNoiseRules>> = {
   enshrouded: ENSHROUDED_LOG_NOISE,
+  ark: ARK_LOG_NOISE,
 };
 
 export function getGameLogNoise(gameType: GameType): LogNoiseRules | undefined {
@@ -99,6 +107,7 @@ const PREPARE: Partial<
 > = {
   dragonwilds: (p, cfg) => prepareDragonwildsStart(p, cfg.dragonwildsConfig),
   enshrouded: (p) => prepareEnshroudedStart(p),
+  ark: (serverPath) => prepareArkStart(serverPath),
 };
 
 /**
@@ -131,6 +140,8 @@ const SAVE_PATHS: Record<
   astroneer: (p) => astroneerServerConfig.getSavePath(p),
   dragonwilds: (p) => dragonwildsServerConfig.getSavePath(p),
   enshrouded: (p) => enshroudedServerConfig.getSavePath(p),
+  ark: (serverPath, serverConfig) =>
+    arkServerConfig.getSavePath(serverPath, serverConfig.arkConfig),
 };
 
 /** Dossier de sauvegarde source pour le backup. */
@@ -144,21 +155,28 @@ export function getGameSavePath(
 
 const STOP_CONFIGS: Record<
   GameType,
-  (serverPath: string, palParser: PalConfigParser) => StopConfig
+  (
+    serverPath: string,
+    palParser: PalConfigParser,
+    serverConfig: ServerConfig,
+  ) => StopConfig
 > = {
   palworld: (p, parser) => palworldServerConfig.getStopConfig(p, parser),
   valheim: () => valheimServerConfig.getStopConfig(),
   astroneer: () => astroneerServerConfig.getStopConfig(),
   dragonwilds: () => dragonwildsServerConfig.getStopConfig(),
   enshrouded: () => enshroudedServerConfig.getStopConfig(),
+  ark: (serverPath, _palParser, serverConfig) =>
+    arkServerConfig.getStopConfig(serverPath, serverConfig.arkConfig),
 };
 
 export function getGameStopConfig(
   gameType: GameType,
   serverPath: string,
   configParser: PalConfigParser,
+  serverConfig: ServerConfig,
 ): StopConfig {
-  return STOP_CONFIGS[gameType](serverPath, configParser);
+  return STOP_CONFIGS[gameType](serverPath, configParser, serverConfig);
 }
 
 const PORTS: Record<
@@ -175,6 +193,8 @@ const PORTS: Record<
   dragonwilds: (_, cfg) =>
     dragonwildsServerConfig.getPorts(cfg.dragonwildsConfig),
   enshrouded: (p) => enshroudedServerConfig.getPorts(p),
+  ark: (_serverPath, serverConfig) =>
+    arkServerConfig.getPorts(serverConfig.arkConfig),
 };
 
 /** Ports ouverts par un serveur (conflits de ports, carte « Rejoindre »). */
@@ -200,7 +220,21 @@ const SEARCH_NAMES: Partial<Record<GameType, (serverPath: string) => string>> =
         return "";
       }
     },
+    ark: (serverPath) => readGameUserSettings(serverPath).SessionName,
   };
+
+// Fichiers du dossier des mondes à mettre dans une sauvegarde (défaut : tous).
+const BACKUP_FILTERS: Partial<
+  Record<GameType, (entryName: string) => boolean>
+> = {
+  ark: arkServerConfig.keepWorldFile,
+};
+
+export function getGameBackupFilter(
+  gameType: GameType,
+): ((entryName: string) => boolean) | undefined {
+  return BACKUP_FILTERS[gameType];
+}
 
 export function getGameSearchName(
   gameType: GameType,

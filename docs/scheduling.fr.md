@@ -84,6 +84,8 @@ Si l'API est désactivée, Nexum affiche un avertissement avec un bouton **Activ
 
 **Enshrouded** n'a pas d'API non plus, donc pas d'avertissement en jeu, mais il s'arrête proprement : Nexum lui envoie CTRL+Pause, le serveur sauvegarde le monde puis redémarre.
 
+**ARK: Survival Ascended** passe par RCON : Nexum envoie l'annonce en jeu, sauvegarde le monde, attend le délai d'avertissement, puis arrête le serveur avec `DoExit` (le monde est sauvegardé à nouveau) et le relance. Sans RCON, le redémarrage l'arrête immédiatement, sans avertissement ni sauvegarde (le jeu sauvegarde toutes les 15 minutes par défaut) ; la page **Planification** propose d'activer RCON.
+
 ## Cas d'usage
 
 ### Redémarrage de nuit (recommandé)
