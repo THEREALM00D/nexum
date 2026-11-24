@@ -60,16 +60,25 @@ export function manifestDenied(steamcmdDir: string, offset: number): boolean {
   }
 }
 
-/** Met de côté le manifeste du dossier du serveur. Faux s'il n'y en a pas. */
+/**
+ * Met de côté le manifeste du dossier du serveur. Faux s'il n'y en a pas ou
+ * s'il est verrouillé (antivirus, lecture seule) : jamais d'exception, sinon
+ * un redémarrage planifié ne relançait pas le serveur.
+ */
 export function setManifestAside(installPath: string, appId: string): boolean {
   const manifest = ownManifest(installPath, appId);
-  if (!existsSync(manifest)) return false;
-  renameSync(manifest, manifest + ASIDE_SUFFIX);
-  return true;
+  try {
+    if (!existsSync(manifest)) return false;
+    renameSync(manifest, manifest + ASIDE_SUFFIX);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 /**
- * Après le 2e essai : l'ancien manifeste est supprimé dès que SteamCMD en a
+ * Après le 2e essai, et avant chaque installation (2e essai interrompu par
+ * la fermeture de l'app) : l'ancien manifeste est supprimé dès que SteamCMD en a
  * écrit un nouveau (même sur un échec, sinon le prochain essai buterait sur
  * le même refus), remis en place sinon (la vérification de version le lit).
  */

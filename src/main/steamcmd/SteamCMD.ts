@@ -13,7 +13,7 @@ import {
   setManifestAside,
   settleAsideManifest,
 } from "./deniedManifest";
-import { runAppUpdate, type AppUpdateResult } from "./appUpdate";
+import { runAppUpdate } from "./appUpdate";
 
 /** AppId Steam du serveur dédié de chaque jeu (téléchargeable en anonyme). */
 export const STEAM_APP_IDS: Record<GameType, string> = {
@@ -115,7 +115,7 @@ export class SteamCMD {
   private async runInstall(
     appId: string,
     installPath: string,
-    onProgress: (msg: string) => void,
+    onProgress: (line: string) => void,
   ): Promise<{ success: boolean; error?: string }> {
     if (!this.isInstalled()) {
       const result = await this.install(onProgress);
@@ -123,42 +123,36 @@ export class SteamCMD {
     }
 
     mkdirSync(installPath, { recursive: true });
+    // 2e essai interrompu la dernière fois (app fermée) : manifeste remis.
+    settleAsideManifest(installPath, appId);
     onProgress(lt().installingApp(appId, installPath));
 
-    const logOffset = contentLogSize(this.steamcmdDir);
-    const first = await this.appUpdate(appId, installPath, onProgress);
+    const update = { exe: this.exe, steamcmdDir: this.steamcmdDir, appId };
+    const firstOffset = contentLogSize(this.steamcmdDir);
+    const first = await runAppUpdate(update, installPath, onProgress);
     // Ancien build installé par un autre outil (voir deniedManifest.ts). Une
     // install de la bibliothèque Steam garde son manifeste au client Steam.
     if (
       first.success ||
       isSteamLibraryInstall(installPath) ||
-      !manifestDenied(this.steamcmdDir, logOffset) ||
+      !manifestDenied(this.steamcmdDir, firstOffset) ||
       !setManifestAside(installPath, appId)
     ) {
       return first;
     }
     onProgress(lt().manifestDeniedRetry);
-    const retry = await this.appUpdate(appId, installPath, onProgress);
+    const retryOffset = contentLogSize(this.steamcmdDir);
+    const retry = await runAppUpdate(update, installPath, onProgress);
     settleAsideManifest(installPath, appId);
-    if (retry.success) return retry;
+    // Autre cause (disque plein, réseau) : l'erreur habituelle, pas le
+    // conseil de réinstaller.
+    if (retry.success || !manifestDenied(this.steamcmdDir, retryOffset)) {
+      return retry;
+    }
     return {
       success: false,
       error: appError("STEAMCMD_OLD_BUILD_DENIED", { code: retry.code }),
     };
-  }
-
-  private appUpdate(
-    appId: string,
-    installPath: string,
-    onProgress: (msg: string) => void,
-  ): Promise<AppUpdateResult> {
-    return runAppUpdate(
-      this.exe,
-      this.steamcmdDir,
-      appId,
-      installPath,
-      onProgress,
-    );
   }
 
   private getInstalledBuildId(
