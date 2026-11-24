@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import ConfigPage from "../../../../components/config/ConfigPage";
 import { arkConfigService } from "../../services/configService";
 import { FIELD_GROUPS } from "./fields";
-import { ARK_CONFIG_TABS, useConfigSaved } from "./ConfigTabs";
+import { useConfigSaved } from "./ConfigTabs";
 
 export const PAGE_WIDTH = 960;
 
@@ -14,14 +14,16 @@ export const configFolder = (serverPath: string) =>
   `${serverPath}/ShooterGame/Saved/Config/WindowsServer`;
 
 /**
- * Onglet Général : page partagée ConfigPage. En `memo` (prop stable) : un
- * changement d'onglet ne la re-rend pas.
+ * Onglet Général : page partagée ConfigPage, sans son en-tête (`embedded` :
+ * en-tête et onglets sont ceux de la page Config). En `memo` (prop stable) :
+ * un changement d'onglet ne la re-rend pas.
  */
 function GeneralTab({ onOpenImport }: { onOpenImport: () => void }) {
   const { t } = useTranslation();
   const { revision, saved } = useConfigSaved();
   return (
     <ConfigPage
+      embedded
       reloadKey={revision}
       onSaved={saved}
       titleKey="arkConfig.title"
@@ -33,8 +35,6 @@ function GeneralTab({ onOpenImport }: { onOpenImport: () => void }) {
       writeConfig={arkConfigService.writeConfig}
       // Le serveur réécrit GameUserSettings.ini à l'arrêt (vérifié).
       lockWhileRunning
-      tabs={ARK_CONFIG_TABS}
-      width={PAGE_WIDTH}
       notice={
         <Stack spacing={1.5} sx={{ alignItems: "flex-start" }}>
           <Alert

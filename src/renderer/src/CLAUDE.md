@@ -54,6 +54,7 @@ Jamais de texte « Chargement... » ni de valeurs par défaut affichées avant l
 ## Mise en page (écrans de portable)
 
 - Contenu centré et borné à `CONTENT_MAX_WIDTH` (1280 px, wrapper d'`App.tsx`), sauf `FULL_WIDTH_PAGES` (Logs). Pages à formulaire → `components/common/FormPage` (720 px par défaut, prop `width` ; `fill` : toute la hauteur, pour une liste qui défile seule), jamais un `Stack` avec `maxWidth` collé à gauche.
+- `<main>` en `scrollbarGutter: stable` : sinon le contenu centré se décalait de quelques px quand la barre de défilement apparaissait (page ou onglet plus haut que la fenêtre).
 - **Marge basse** : pas de padding bas sur `<main>`, mais un `::after` de 24 px (16 en compact) en fin de racine de page. ⚠️ Ne pas le remplacer par `minHeight: min-content` (les `ScrollPanel` s'étirent sur toute leur longueur).
 - `COMPACT_MEDIA` (≤ 820 px de haut ou ≤ 1100 px de large) réduit la marge (24 → 16 px). `NARROW_WINDOW_QUERY` replie la Sidebar (`components/Sidebar/useSidebarCollapsed.ts` ; seul un choix fait fenêtre large est mémorisé, `localStorage` `sidebar.collapsed`). Dans la Sidebar, seule la liste des pages du jeu défile.
 - Pas de rangée flex sans `flexWrap` (barres d'outils, `ServerControls`, `JoinServerCard`, panneaux du Dashboard Palworld en `flex: "1 1 360px"`) (`Stack` + `useFlexGap`, sinon `spacing` décale la 2e ligne). Pas de hauteur fixe en px pour une zone qui défile (`clamp(220px, 40vh, 400px)`). Tableaux dans un `TableContainer`, colonne de chemin tronquée + `Tooltip`. Bloc d'info long et répétitif → masquable et mémorisé.

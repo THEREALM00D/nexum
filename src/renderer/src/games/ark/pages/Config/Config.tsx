@@ -10,9 +10,8 @@ import RawFilesTab from "./raw/RawFilesTab";
 import LaunchImportDialog from "../../components/launchImport/LaunchImportDialog";
 import GeneralTab, { PAGE_WIDTH, configFolder } from "./GeneralTab";
 import {
-  ARK_CONFIG_TABS,
+  ArkConfigTabs,
   ConfigSavedContext,
-  ConfigTabContext,
   type ConfigTab,
 } from "./ConfigTabs";
 
@@ -44,7 +43,6 @@ export default function ArkConfig() {
       current.has(next) ? current : new Set([...current, next]),
     );
   }, []);
-  const tabState = useMemo(() => ({ tab, select }), [tab, select]);
   const [savedRevision, setSavedRevision] = useState(0);
   const saved = useCallback(
     () => setSavedRevision((current) => current + 1),
@@ -62,60 +60,53 @@ export default function ArkConfig() {
   // Une seule racine, colonne flex de hauteur contrainte : la marge basse
   // de la page (::after d'App.tsx) se place après son dernier enfant.
   return (
-    <ConfigTabContext.Provider value={tabState}>
-      <ConfigSavedContext.Provider value={savedState}>
-        <Box
-          key={revision}
-          sx={{ height: "100%", display: "flex", flexDirection: "column" }}
-        >
-          <LaunchImportDialog
-            open={importOpen}
-            onClose={() => setImportOpen(false)}
-            onApplied={() => setRevision((current) => current + 1)}
-          />
-          <Box sx={shown("general")}>
-            <GeneralTab onOpenImport={openImport} />
-          </Box>
-          <Box
-            sx={
-              tab === "general"
-                ? hidden
-                : { flex: fill ? "1 1 0" : "0 0 auto", minHeight: 0 }
-            }
-          >
-            <FormPage width={PAGE_WIDTH} fill={fill}>
-              <PageHeader
-                title={t("arkConfig.title")}
-                subtitle={t("arkConfig.subtitle")}
-                onOpenFolder={() =>
-                  window.api.shell.openPath(configFolder(state.serverPath))
-                }
-                folderTooltip={t("config.openFolder")}
-              />
-              {ARK_CONFIG_TABS}
-              {mounted("settings") && (
-                <Box
-                  sx={
-                    fill ? { flex: 1, minHeight: 0, display: "flex" } : hidden
-                  }
-                >
-                  <SettingsTab />
-                </Box>
-              )}
-              {mounted("lists") && (
-                <Box sx={shown("lists")}>
-                  <ListsTab />
-                </Box>
-              )}
-              {mounted("raw") && (
-                <Box sx={shown("raw")}>
-                  <RawFilesTab />
-                </Box>
-              )}
-            </FormPage>
-          </Box>
+    <ConfigSavedContext.Provider value={savedState}>
+      <Box
+        key={revision}
+        sx={{ height: "100%", display: "flex", flexDirection: "column" }}
+      >
+        <LaunchImportDialog
+          open={importOpen}
+          onClose={() => setImportOpen(false)}
+          onApplied={() => setRevision((current) => current + 1)}
+        />
+        {/* En-tête et onglets rendus une seule fois : une 2e barre,
+              masquée, se mesurait à 0 px et s'affichait d'abord avec ses
+              flèches de défilement, soulignement reparti de zéro. */}
+        <Box sx={{ flex: fill ? "1 1 0" : "0 0 auto", minHeight: 0 }}>
+          <FormPage width={PAGE_WIDTH} fill={fill}>
+            <PageHeader
+              title={t("arkConfig.title")}
+              subtitle={t("arkConfig.subtitle")}
+              onOpenFolder={() =>
+                window.api.shell.openPath(configFolder(state.serverPath))
+              }
+              folderTooltip={t("config.openFolder")}
+            />
+            <ArkConfigTabs tab={tab} onSelect={select} />
+            <Box sx={shown("general")}>
+              <GeneralTab onOpenImport={openImport} />
+            </Box>
+            {mounted("settings") && (
+              <Box
+                sx={fill ? { flex: 1, minHeight: 0, display: "flex" } : hidden}
+              >
+                <SettingsTab />
+              </Box>
+            )}
+            {mounted("lists") && (
+              <Box sx={shown("lists")}>
+                <ListsTab />
+              </Box>
+            )}
+            {mounted("raw") && (
+              <Box sx={shown("raw")}>
+                <RawFilesTab />
+              </Box>
+            )}
+          </FormPage>
         </Box>
-      </ConfigSavedContext.Provider>
-    </ConfigTabContext.Provider>
+      </Box>
+    </ConfigSavedContext.Provider>
   );
 }
