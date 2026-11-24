@@ -8,6 +8,7 @@ Vous hébergez déjà un serveur ARK: Survival Ascended avec un autre outil ou u
 
 - **Arrêtez le serveur dans l'ancien outil** et coupez son redémarrage automatique : deux programmes ne doivent pas lancer le même serveur.
 - Gardez l'ancien outil installé jusqu'à ce que le serveur tourne bien dans Nexum.
+- La première mise à jour depuis Nexum peut être plus longue si l'ancien outil a laissé une ancienne version du jeu : voir [Mise à jour du serveur](installation.fr.md#mise-à-jour-du-serveur).
 
 ## Ajouter le serveur
 

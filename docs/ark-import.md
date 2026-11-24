@@ -8,6 +8,7 @@ You already host an ARK: Survival Ascended server with another tool or a `.bat` 
 
 - **Stop the server in the old tool** and turn off its automatic restart: two programs must not start the same server.
 - Keep the old tool installed until the server runs fine in Nexum.
+- The first update from Nexum can take longer, if the old tool left an old version of the game: see [Updating the server](installation.md#updating-the-server).
 
 ## Add the server
 

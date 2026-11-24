@@ -63,6 +63,8 @@ export const APP_ERRORS_FR: Record<AppErrorCode, string> = {
   PUBLIC_IP_FAILED: "Impossible d'obtenir votre IP publique ({{detail}}).",
   STEAMCMD_FAILED:
     "Échec de SteamCMD (code {{code}}). Le journal d'installation ci-dessus indique pourquoi.",
+  STEAMCMD_OLD_BUILD_DENIED:
+    "SteamCMD n'a pas pu mettre à jour cette ancienne installation (code {{code}}). Installez le serveur dans un dossier vide, puis recopiez-y vos sauvegardes et votre configuration.",
   STEAMCMD_EXTRACT_FAILED: "Impossible d'extraire SteamCMD (code {{code}}).",
   FILE_NOT_FOUND: "Fichier introuvable : {{path}}",
   INVALID_FILE_NAME: "Nom de fichier invalide.",

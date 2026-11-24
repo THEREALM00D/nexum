@@ -148,6 +148,8 @@ const FR = {
   installingApp: (appId: string | number, path: string) =>
     `Installation de l'application ${appId} dans : ${path}`,
   serverInstalled: "Serveur installé / mis à jour.",
+  manifestDeniedRetry:
+    "Steam refuse la liste des fichiers de la version installée (installée par un autre outil ?). Nouvel essai en vérifiant les fichiers déjà présents : cette fois, c'est plus long.",
 };
 
 const EN: typeof FR = {
@@ -270,6 +272,8 @@ const EN: typeof FR = {
   steamCmdInstalled: "SteamCMD installed successfully.",
   installingApp: (appId, path) => `Installing app ${appId} to: ${path}`,
   serverInstalled: "Server installed/updated successfully!",
+  manifestDeniedRetry:
+    "Steam refuses the file list of the installed version (installed by another tool?). Trying again by checking the files already there: this takes longer.",
 };
 
 /** Textes dans la langue courante de l'interface. */
