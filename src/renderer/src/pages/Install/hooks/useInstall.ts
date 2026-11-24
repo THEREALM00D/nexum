@@ -62,8 +62,10 @@ export function useInstall() {
   }, []);
 
   useEffect(() => {
-    const unsub = steamService.onProgress((msg) => setLogs((p) => [...p, msg]));
-    return unsub;
+    const unsubscribe = steamService.onProgress((line) =>
+      setLogs((previous) => [...previous, line]),
+    );
+    return unsubscribe;
   }, []);
 
   const updateLaunchArgs = async (patch: Partial<LaunchArgsConfig>) => {
@@ -72,8 +74,8 @@ export function useInstall() {
     try {
       await window.api.server.setLaunchArgs(next);
       notify(t("install.launchArgs.saved"), "info");
-    } catch (e) {
-      notify(errorMessage(t, e), "error");
+    } catch (error) {
+      notify(errorMessage(t, error), "error");
     }
   };
 
@@ -136,8 +138,8 @@ export function useInstall() {
     try {
       const result = await steamService.checkForUpdate();
       setUpdateStatus({ checked: true, ...result });
-    } catch (e) {
-      notify(errorMessage(t, e), "error");
+    } catch (error) {
+      notify(errorMessage(t, error), "error");
     } finally {
       setCheckingUpdate(false);
     }
