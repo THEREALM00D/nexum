@@ -108,8 +108,14 @@ export function readArkSettings(
   };
 }
 
-/** Réglage d'un changement : du catalogue, ou « autre » d'une section connue. */
-function resolveSetting(id: string): ArkSettingDef {
+/**
+ * Réglage d'un changement : du catalogue, ou « autre » d'une section connue.
+ * ⚠️ Un « autre » ne peut pas être une clé connue (réglage du catalogue sous
+ * une autre casse, onglet Général, liste) : écrite en texte libre, elle
+ * échapperait à sa validation ou effacerait une liste.
+ */
+function resolveSetting(id: unknown): ArkSettingDef {
+  if (typeof id !== "string") throw new AppError("ARK_SETTING_UNKNOWN");
   const known = ARK_SETTINGS_BY_ID.get(id);
   if (known) return known;
   const [kind, ...rest] = id.split(":");
@@ -118,7 +124,8 @@ function resolveSetting(id: string): ArkSettingDef {
   const isOther =
     (kind === "gus" || kind === "game") &&
     section === UNKNOWN_SECTIONS[kind] &&
-    KEY_NAME.test(key);
+    KEY_NAME.test(key) &&
+    !KNOWN_KEYS[kind].has(key.toLowerCase());
   if (!isOther) throw new AppError("ARK_SETTING_UNKNOWN", { key: id });
   return {
     key,
@@ -141,8 +148,15 @@ export function writeArkSettings(
   changes: ArkSettingChange[],
   launchOptions: Record<string, string>,
 ): Record<string, string> {
+  if (!Array.isArray(changes)) throw new AppError("ARK_SETTING_UNKNOWN");
   const prepared = changes.map((change) => {
-    const setting = resolveSetting(change.id);
+    const setting = resolveSetting(change?.id);
+    if (change.value !== null && typeof change.value !== "string") {
+      throw new AppError("ARK_SETTING_INVALID", {
+        key: setting.key,
+        value: String(change.value),
+      });
+    }
     const value =
       change.value === null
         ? null

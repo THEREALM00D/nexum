@@ -1,142 +1,79 @@
 import type {
-  ArkNpcReplacement,
   ArkSpawnContainer,
   ArkSpawnLists,
-  ArkSpawnMode,
-  ArkSpawnWeight,
 } from "../../../../../shared/types";
 import type { IniDocument } from "../iniDocument";
-import {
-  formatUeValue,
-  ueField,
-  ueFieldText,
-  ueList,
-  ueStruct,
-  ueText,
-  type UeValue,
-} from "../ueStruct";
+import { formatUeValue, ueStruct, ueText } from "../ueStruct";
 import {
   boolText,
-  isClassName,
+  classText,
   numberText,
-  readEntries,
-  ueBool,
+  quotedText,
+  withExtra,
   writeEntries,
 } from "./listEntries";
+import {
+  CONTAINER_KEYS,
+  REPLACEMENT_KEY,
+  WEIGHT_KEY,
+  containerKeys,
+} from "./spawnsRead";
 
-const CONTAINER_KEYS: Record<ArkSpawnMode, string> = {
-  add: "ConfigAddNPCSpawnEntriesContainer",
-  subtract: "ConfigSubtractNPCSpawnEntriesContainer",
-  override: "ConfigOverrideNPCSpawnEntriesContainer",
-};
-const WEIGHT_KEY = "DinoSpawnWeightMultipliers";
-const REPLACEMENT_KEY = "NPCReplacements";
-const textOf = (value: UeValue) =>
-  !Array.isArray(value) && value.kind === "scalar" ? value.text : "";
+// Écriture des listes de spawn : champs édités reconstruits, champs inconnus
+// rattachés tels quels (`extra`).
 
-function parseContainer(
-  mode: ArkSpawnMode,
-  value: UeValue,
-): ArkSpawnContainer | null {
-  const container = ueFieldText(value, "NPCSpawnEntriesContainerClassString");
-  if (!container) return null;
-  return {
-    mode,
-    container,
-    entries: ueList(ueField(value, "NPCSpawnEntries")).map((entry) => ({
-      name: ueFieldText(entry, "AnEntryName") ?? "",
-      weight: ueFieldText(entry, "EntryWeight") ?? "",
-      creatures: ueList(ueField(entry, "NPCsToSpawnStrings")).map(textOf),
-    })),
-    limits: ueList(ueField(value, "NPCSpawnLimits")).map((limit) => ({
-      creature: ueFieldText(limit, "NPCClassString") ?? "",
-      maxPercentage:
-        ueFieldText(limit, "MaxPercentageOfDesiredNumToAllow") ?? "",
-    })),
-  };
-}
-
-function parseWeight(value: UeValue): ArkSpawnWeight | null {
-  const tag = ueFieldText(value, "DinoNameTag");
-  if (!tag) return null;
-  return {
-    tag,
-    weight: ueFieldText(value, "SpawnWeightMultiplier") ?? "",
-    overrideLimit: ueBool(ueFieldText(value, "OverrideSpawnLimitPercentage")),
-    limit: ueFieldText(value, "SpawnLimitPercentage") ?? "",
-  };
-}
-
-function parseReplacement(value: UeValue): ArkNpcReplacement | null {
-  const from = ueFieldText(value, "FromClassName");
-  const to = ueFieldText(value, "ToClassName");
-  return from && to ? { from, to } : null;
-}
-
-export function readSpawns(doc: IniDocument) {
-  const unreadable: string[] = [];
-  const containers: ArkSpawnContainer[] = [];
-  for (const [mode, key] of Object.entries(CONTAINER_KEYS) as [
-    ArkSpawnMode,
-    string,
-  ][]) {
-    const parsed = readEntries(doc, key, (value) =>
-      parseContainer(mode, value),
-    );
-    containers.push(...parsed.items);
-    unreadable.push(...parsed.unreadable);
-  }
-  const weights = readEntries(doc, WEIGHT_KEY, parseWeight);
-  const replacements = readEntries(doc, REPLACEMENT_KEY, parseReplacement);
-  unreadable.push(...weights.unreadable, ...replacements.unreadable);
-  const spawns: ArkSpawnLists = {
-    containers,
-    weights: weights.items,
-    replacements: replacements.items,
-  };
-  return { spawns, unreadable };
-}
-
-const classText = (value: string) => ueText(value.trim(), true);
+const quoted = (value: string) => ueText(value, true);
 const optional = (text: string | undefined) =>
   text === undefined ? undefined : ueText(text);
 
 function formatContainer(container: ArkSpawnContainer): string | null {
-  if (!isClassName(container.container)) return null;
+  const key = CONTAINER_KEYS[container.mode];
+  const className = classText(key, container.container);
+  if (className === undefined) return null;
   const subtract = container.mode === "subtract";
-  const entries = container.entries.map((entry) =>
-    ueStruct([
-      [
-        "AnEntryName",
-        subtract || !entry.name ? undefined : ueText(entry.name, true),
-      ],
-      [
-        "EntryWeight",
-        subtract ? undefined : optional(numberText(entry.weight)),
-      ],
-      [
-        "NPCsToSpawnStrings",
-        entry.creatures.filter(isClassName).map(classText),
-      ],
-    ]),
-  );
-  const limits = container.limits
-    .filter((limit) => isClassName(limit.creature))
-    .map((limit) =>
+  const spawnEntries = (container.entries ?? []).map((entry) => {
+    const name = quotedText(entry.name);
+    const creatures = (entry.creatures ?? []).flatMap((creature) => {
+      const text = classText(key, creature);
+      return text === undefined ? [] : [quoted(text)];
+    });
+    return withExtra(
       ueStruct([
-        ["NPCClassString", classText(limit.creature)],
+        ["AnEntryName", subtract || !name ? undefined : quoted(name)],
         [
-          "MaxPercentageOfDesiredNumToAllow",
-          subtract ? undefined : optional(numberText(limit.maxPercentage)),
+          "EntryWeight",
+          subtract ? undefined : optional(numberText(key, entry.weight)),
         ],
+        ["NPCsToSpawnStrings", creatures],
       ]),
+      entry.extra,
     );
+  });
+  const limits = (container.limits ?? []).flatMap((limit) => {
+    const creature = classText(key, limit.creature);
+    if (creature === undefined) return [];
+    const max = subtract
+      ? undefined
+      : optional(numberText(key, limit.maxPercentage));
+    return [
+      withExtra(
+        ueStruct([
+          ["NPCClassString", quoted(creature)],
+          ["MaxPercentageOfDesiredNumToAllow", max],
+        ]),
+        limit.extra,
+      ),
+    ];
+  });
   return formatUeValue(
-    ueStruct([
-      ["NPCSpawnEntriesContainerClassString", classText(container.container)],
-      ["NPCSpawnEntries", entries],
-      ["NPCSpawnLimits", limits.length > 0 ? limits : undefined],
-    ]),
+    withExtra(
+      ueStruct([
+        ["NPCSpawnEntriesContainerClassString", quoted(className)],
+        ["NPCSpawnEntries", spawnEntries],
+        ["NPCSpawnLimits", limits.length > 0 ? limits : undefined],
+      ]),
+      container.extra,
+    ),
   );
 }
 
@@ -145,45 +82,55 @@ export function writeSpawns(
   spawns: ArkSpawnLists,
   unreadable: string[],
 ): void {
-  for (const [mode, key] of Object.entries(CONTAINER_KEYS) as [
-    ArkSpawnMode,
-    string,
-  ][]) {
-    const values = spawns.containers
+  for (const [mode, key] of containerKeys()) {
+    const values = (spawns.containers ?? [])
       .filter((container) => container.mode === mode)
       .flatMap((container) => formatContainer(container) ?? []);
     writeEntries(doc, key, values, unreadable);
   }
-  const weights = spawns.weights.flatMap((weight) => {
-    if (!isClassName(weight.tag)) return [];
+  const weights = (spawns.weights ?? []).flatMap((weight) => {
+    const tag = classText(WEIGHT_KEY, weight.tag);
+    if (tag === undefined) return [];
+    const overrideLimit =
+      weight.overrideLimit === null
+        ? undefined
+        : ueText(boolText(weight.overrideLimit));
     return [
       formatUeValue(
-        ueStruct([
-          ["DinoNameTag", ueText(weight.tag.trim())],
-          ["SpawnWeightMultiplier", optional(numberText(weight.weight))],
-          [
-            "OverrideSpawnLimitPercentage",
-            weight.overrideLimit === null
-              ? undefined
-              : ueText(boolText(weight.overrideLimit)),
-          ],
-          ["SpawnLimitPercentage", optional(numberText(weight.limit))],
-        ]),
+        withExtra(
+          ueStruct([
+            ["DinoNameTag", ueText(tag)],
+            [
+              "SpawnWeightMultiplier",
+              optional(numberText(WEIGHT_KEY, weight.weight)),
+            ],
+            ["OverrideSpawnLimitPercentage", overrideLimit],
+            [
+              "SpawnLimitPercentage",
+              optional(numberText(WEIGHT_KEY, weight.limit)),
+            ],
+          ]),
+          weight.extra,
+        ),
       ),
     ];
   });
   writeEntries(doc, WEIGHT_KEY, weights, unreadable);
-  const replacements = spawns.replacements.flatMap((replacement) =>
-    isClassName(replacement.from) && isClassName(replacement.to)
-      ? [
-          formatUeValue(
-            ueStruct([
-              ["FromClassName", classText(replacement.from)],
-              ["ToClassName", classText(replacement.to)],
-            ]),
-          ),
-        ]
-      : [],
-  );
+  const replacements = (spawns.replacements ?? []).flatMap((replacement) => {
+    const from = classText(REPLACEMENT_KEY, replacement.from);
+    const to = classText(REPLACEMENT_KEY, replacement.to);
+    if (from === undefined || to === undefined) return [];
+    return [
+      formatUeValue(
+        withExtra(
+          ueStruct([
+            ["FromClassName", quoted(from)],
+            ["ToClassName", quoted(to)],
+          ]),
+          replacement.extra,
+        ),
+      ),
+    ];
+  });
   writeEntries(doc, REPLACEMENT_KEY, replacements, unreadable);
 }

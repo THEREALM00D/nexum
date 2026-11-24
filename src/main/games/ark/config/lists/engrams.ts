@@ -14,10 +14,12 @@ import {
 } from "../ueStruct";
 import {
   boolText,
-  isClassName,
+  classText,
+  extraFields,
   numberText,
   readEntries,
   ueBool,
+  withExtra,
   writeEntries,
 } from "./listEntries";
 
@@ -28,6 +30,14 @@ const AUTO_UNLOCK_KEY = "EngramEntryAutoUnlocks";
 const LEVEL_POINTS_KEY = "OverridePlayerLevelEngramPoints";
 const ONLY_SPECIFIED_KEY = "bOnlyAllowSpecifiedEngrams";
 
+const OVERRIDE_FIELDS = [
+  "EngramClassName",
+  "EngramHidden",
+  "EngramPointsCost",
+  "EngramLevelRequirement",
+  "RemoveEngramPreReq",
+];
+
 function parseOverride(value: UeValue): ArkEngramOverride | null {
   const engramClass = ueFieldText(value, "EngramClassName");
   if (!engramClass) return null;
@@ -37,13 +47,19 @@ function parseOverride(value: UeValue): ArkEngramOverride | null {
     pointsCost: ueFieldText(value, "EngramPointsCost") ?? "",
     levelRequirement: ueFieldText(value, "EngramLevelRequirement") ?? "",
     removePrereq: ueBool(ueFieldText(value, "RemoveEngramPreReq")),
+    extra: extraFields(value, OVERRIDE_FIELDS),
   };
 }
 
 function parseAutoUnlock(value: UeValue): ArkEngramAutoUnlock | null {
   const engramClass = ueFieldText(value, "EngramClassName");
   const level = ueFieldText(value, "LevelToAutoUnlock");
-  return engramClass && level !== undefined ? { engramClass, level } : null;
+  if (!engramClass || level === undefined) return null;
+  return {
+    engramClass,
+    level,
+    extra: extraFields(value, ["EngramClassName", "LevelToAutoUnlock"]),
+  };
 }
 
 export function readEngrams(doc: IniDocument) {
@@ -69,55 +85,78 @@ const optional = (text: string | undefined) =>
 const optionalBool = (value: boolean | null) =>
   value === null ? undefined : ueText(boolText(value));
 
+/**
+ * Points d'engramme, un par niveau dans l'ordre. Lignes vides en fin de
+ * liste ignorées ; une ligne vide au milieu vaut 0 (sinon les niveaux
+ * suivants seraient décalés).
+ */
+function levelPointLines(levelPoints: string[]): string[] {
+  const lines = [...(levelPoints ?? [])];
+  while (lines.length > 0 && lines[lines.length - 1].trim() === "") lines.pop();
+  return lines.map(
+    (points) =>
+      `${LEVEL_POINTS_KEY}=${numberText(LEVEL_POINTS_KEY, points) ?? "0"}`,
+  );
+}
+
 export function writeEngrams(
   doc: IniDocument,
   engrams: ArkEngramLists,
   unreadable: string[],
 ): void {
-  const overrides = engrams.overrides.flatMap((entry) => {
-    if (!isClassName(entry.engramClass)) return [];
+  const overrides = (engrams.overrides ?? []).flatMap((entry) => {
+    const engramClass = classText(OVERRIDE_KEY, entry.engramClass);
+    if (engramClass === undefined) return [];
     return [
       formatUeValue(
-        ueStruct([
-          ["EngramClassName", ueText(entry.engramClass.trim(), true)],
-          ["EngramHidden", optionalBool(entry.hidden)],
-          ["EngramPointsCost", optional(numberText(entry.pointsCost))],
-          [
-            "EngramLevelRequirement",
-            optional(numberText(entry.levelRequirement)),
-          ],
-          ["RemoveEngramPreReq", optionalBool(entry.removePrereq)],
-        ]),
+        withExtra(
+          ueStruct([
+            ["EngramClassName", ueText(engramClass, true)],
+            ["EngramHidden", optionalBool(entry.hidden)],
+            [
+              "EngramPointsCost",
+              optional(numberText(OVERRIDE_KEY, entry.pointsCost)),
+            ],
+            [
+              "EngramLevelRequirement",
+              optional(numberText(OVERRIDE_KEY, entry.levelRequirement)),
+            ],
+            ["RemoveEngramPreReq", optionalBool(entry.removePrereq)],
+          ]),
+          entry.extra,
+        ),
       ),
     ];
   });
   writeEntries(doc, OVERRIDE_KEY, overrides, unreadable);
 
-  const autoUnlocks = engrams.autoUnlocks.flatMap((entry) => {
-    const level = numberText(entry.level);
-    if (!isClassName(entry.engramClass) || level === undefined) return [];
+  const autoUnlocks = (engrams.autoUnlocks ?? []).flatMap((entry) => {
+    const engramClass = classText(AUTO_UNLOCK_KEY, entry.engramClass);
+    if (engramClass === undefined) return [];
+    const level = numberText(AUTO_UNLOCK_KEY, entry.level) ?? "0";
     return [
       formatUeValue(
-        ueStruct([
-          ["EngramClassName", ueText(entry.engramClass.trim(), true)],
-          ["LevelToAutoUnlock", ueText(level)],
-        ]),
+        withExtra(
+          ueStruct([
+            ["EngramClassName", ueText(engramClass, true)],
+            ["LevelToAutoUnlock", ueText(level)],
+          ]),
+          entry.extra,
+        ),
       ),
     ];
   });
   writeEntries(doc, AUTO_UNLOCK_KEY, autoUnlocks, unreadable);
 
-  // Un point par niveau, dans l'ordre. Lignes vides ignorées ; une valeur
-  // invalide garde sa place (0) pour ne pas décaler les niveaux suivants.
   doc.replaceAll(
     GAME_SECTION,
     LEVEL_POINTS_KEY,
-    engrams.levelPoints
-      .filter((points) => points.trim() !== "")
-      .map((points) => `${LEVEL_POINTS_KEY}=${numberText(points) ?? "0"}`),
+    levelPointLines(engrams.levelPoints),
   );
 
-  if (engrams.onlyAllowSpecified)
+  if (engrams.onlyAllowSpecified) {
     doc.set(GAME_SECTION, ONLY_SPECIFIED_KEY, "True");
-  else doc.remove(GAME_SECTION, ONLY_SPECIFIED_KEY);
+  } else {
+    doc.remove(GAME_SECTION, ONLY_SPECIFIED_KEY);
+  }
 }

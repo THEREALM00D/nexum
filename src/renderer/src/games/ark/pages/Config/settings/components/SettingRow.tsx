@@ -27,6 +27,8 @@ export interface SettingRowProps {
   value: string;
   /** Écrit dans le fichier (ou modifié) : bouton de retour au défaut. */
   overridden: boolean;
+  /** Présent dans le fichier (ou les options de lancement) à la lecture. */
+  written: boolean;
   edited: boolean;
   disabled: boolean;
   onChange: (id: string, value: string | null) => void;
@@ -43,6 +45,13 @@ function SettingRow(props: SettingRowProps) {
     ? t("arkSettingsUi.defaultValue", { value: defaultValue })
     : t("arkSettingsUi.defaultUnknown");
   const reset = t("arkSettingsUi.reset");
+  // Interrupteur remis sur la valeur par défaut d'un réglage non écrit :
+  // null (rien à écrire), pas "False" ajouté au fichier.
+  const switchValue = (checked: boolean): string | null => {
+    if (type === "flag" && !checked) return null;
+    if (!props.written && isTrue(defaultValue) === checked) return null;
+    return checked ? "True" : "False";
+  };
 
   const field = (() => {
     if (type === "bool" || type === "flag") {
@@ -52,12 +61,7 @@ function SettingRow(props: SettingRowProps) {
           size="small"
           checked={checked}
           disabled={disabled}
-          onChange={(event) =>
-            onChange(
-              id,
-              event.target.checked ? "True" : type === "flag" ? null : "False",
-            )
-          }
+          onChange={(event) => onChange(id, switchValue(event.target.checked))}
           slotProps={{ input: { "aria-label": props.label } }}
         />
       );
@@ -70,7 +74,12 @@ function SettingRow(props: SettingRowProps) {
           value={value}
           disabled={disabled}
           onChange={(event) => onChange(id, event.target.value || null)}
-          slotProps={{ select: { displayEmpty: true } }}
+          slotProps={{
+            select: {
+              displayEmpty: true,
+              SelectDisplayProps: { "aria-label": props.label },
+            },
+          }}
           sx={{ flex: 1, minWidth: 160 }}
         >
           <MenuItem value="">
@@ -93,9 +102,12 @@ function SettingRow(props: SettingRowProps) {
         disabled={disabled}
         onChange={(event) => onChange(id, event.target.value)}
         slotProps={{
-          htmlInput: isNumber
-            ? { inputMode: "decimal", min: props.min, max: props.max }
-            : {},
+          htmlInput: {
+            "aria-label": props.label,
+            ...(isNumber
+              ? { inputMode: "decimal", min: props.min, max: props.max }
+              : {}),
+          },
         }}
         sx={{ flex: 1, minWidth: 160 }}
       />

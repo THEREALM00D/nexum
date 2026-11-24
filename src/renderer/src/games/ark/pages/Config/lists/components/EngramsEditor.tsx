@@ -62,6 +62,9 @@ export default function EngramsEditor({ engrams, disabled, onChange }: Props) {
   const { t } = useTranslation();
   const set = (patch: Partial<ArkEngramLists>) =>
     onChange({ ...engrams, ...patch });
+  // Niveaux écrits : comme le main, sans les lignes vides de la fin.
+  const levelCount =
+    engrams.levelPoints.findLastIndex((line) => line.trim() !== "") + 1;
 
   return (
     <Stack spacing={2}>
@@ -104,7 +107,7 @@ export default function EngramsEditor({ engrams, disabled, onChange }: Props) {
       />
       <SectionTitle>{t("arkListsUi.levelPoints")}</SectionTitle>
       <Typography variant="body2" sx={{ color: "text.secondary" }}>
-        {t("arkListsUi.levelPointsHint", { count: engrams.levelPoints.length })}
+        {t("arkListsUi.levelPointsHint", { count: levelCount })}
       </Typography>
       <TextField
         multiline
@@ -114,12 +117,9 @@ export default function EngramsEditor({ engrams, disabled, onChange }: Props) {
         disabled={disabled}
         onChange={(event) =>
           set({
-            levelPoints: event.target.value
-              .split(/\r?\n/)
-              .map((line) => line.trim())
-              .filter(
-                (line, index, lines) => line !== "" || index < lines.length - 1,
-              ),
+            // Lignes gardées telles quelles (Entrée doit créer une ligne
+            // vide) : le main ignore les vides finales et écrit 0 au milieu.
+            levelPoints: event.target.value.split(/\r?\n/),
           })
         }
         slotProps={{ htmlInput: { "aria-label": t("arkListsUi.levelPoints") } }}

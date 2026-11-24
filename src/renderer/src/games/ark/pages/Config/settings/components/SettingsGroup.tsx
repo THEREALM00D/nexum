@@ -72,6 +72,7 @@ export default function SettingsGroup({
                 max={item.def?.max}
                 value={value}
                 overridden={value !== ""}
+                written={settings.isWritten(item.id)}
                 edited={settings.isEdited(item.id)}
                 disabled={disabled}
                 onChange={settings.setValue}

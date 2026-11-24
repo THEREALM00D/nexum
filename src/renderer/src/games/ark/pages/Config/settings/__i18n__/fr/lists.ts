@@ -58,7 +58,9 @@ export default {
     engramUnlockLevel: "Niveau",
     addAutoUnlock: "Ajouter un déblocage",
     levelPoints: "Points d'engramme par niveau",
-    levelPointsHint:
+    levelPointsHint_one:
+      "Un nombre par ligne : niveau 1, puis 2, etc. ({{count}} niveau). Vide : valeurs du jeu.",
+    levelPointsHint_other:
       "Un nombre par ligne : niveau 1, puis 2, etc. ({{count}} niveaux). Vide : valeurs du jeu.",
     spawnContainers: "Zones d'apparition",
     spawnContainersHint:

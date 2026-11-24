@@ -83,12 +83,16 @@ export function useSettingsGroups(unknown: ArkUnknownSetting[]) {
     groups,
     isExpanded: (group: SettingsGroupId) =>
       words.length > 0 || expanded.has(group),
-    toggle: (group: SettingsGroupId) =>
+    // Pendant une recherche, les groupes sont dépliés d'office : un clic
+    // ne doit pas changer en douce l'état retrouvé après la recherche.
+    toggle: (group: SettingsGroupId) => {
+      if (words.length > 0) return;
       setExpanded((current) => {
         const next = new Set(current);
         if (next.has(group)) next.delete(group);
         else next.add(group);
         return next;
-      }),
+      });
+    },
   };
 }

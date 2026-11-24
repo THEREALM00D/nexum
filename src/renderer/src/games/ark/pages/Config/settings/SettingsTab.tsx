@@ -28,7 +28,7 @@ export default function SettingsTab() {
   return (
     <Stack spacing={2}>
       <Alert severity="info">{t("arkSettingsUi.notice")}</Alert>
-      {settings.locked && (
+      {settings.running && (
         <Alert severity="warning">{t("configPage.lockedWhileRunning")}</Alert>
       )}
 

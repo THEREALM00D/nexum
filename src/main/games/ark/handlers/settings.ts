@@ -24,6 +24,9 @@ const RAW_PATHS: Record<RawFile, string> = {
   gus: GAME_USER_SETTINGS_REL_PATH,
   game: GAME_INI_REL_PATH,
 };
+// Object.hasOwn : `file in RAW_PATHS` acceptait `toString` ou `__proto__`.
+const isRawFile = (file: unknown): file is RawFile =>
+  typeof file === "string" && Object.hasOwn(RAW_PATHS, file);
 
 // Onglets Réglages de jeu et Fichiers bruts de la page Config ARK. Toujours
 // un serverId explicite. ⚠️ Le serveur réécrit GameUserSettings.ini ET
@@ -84,7 +87,7 @@ export function registerArkSettingsHandlers(ctx: IpcContext): void {
   ipcMain.handle(
     "ark:rawIni:read",
     (_, serverId: string, file: RawFile): string => {
-      if (!(file in RAW_PATHS)) return "";
+      if (!isRawFile(file)) return "";
       const path = join(ctx.getServerPath(serverId), RAW_PATHS[file]);
       return readIniText(path)?.text ?? "";
     },
@@ -97,17 +100,21 @@ export function registerArkSettingsHandlers(ctx: IpcContext): void {
     (_, serverId: string, file: RawFile, text: string): Result => {
       const locked = lockedError(serverId);
       if (locked) return { success: false, error: locked };
-      if (!(file in RAW_PATHS) || typeof text !== "string") {
+      if (!isRawFile(file) || typeof text !== "string") {
         return {
           success: false,
           error: appError("ARK_SETTING_UNKNOWN", { key: String(file) }),
         };
       }
-      const path = join(ctx.getServerPath(serverId), RAW_PATHS[file]);
-      const current = readIniText(path);
-      backupBeforeWrite(path);
-      writeIniText(path, text, current ?? { encoding: "utf8", eol: "\r\n" });
-      return { success: true };
+      try {
+        const path = join(ctx.getServerPath(serverId), RAW_PATHS[file]);
+        const current = readIniText(path);
+        backupBeforeWrite(path);
+        writeIniText(path, text, current ?? { encoding: "utf8", eol: "\r\n" });
+        return { success: true };
+      } catch (error) {
+        return { success: false, error: String((error as Error).message) };
+      }
     },
   );
 }

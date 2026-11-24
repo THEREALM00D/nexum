@@ -50,10 +50,15 @@ const exePath = join(
 if (existsSync(exePath)) {
   const exe = readFileSync(exePath);
   const ascii = exe.toString("latin1").toLowerCase();
-  const utf16 = exe.toString("utf16le").toLowerCase();
+  // UTF-16 lu aux deux alignements : une chaîne peut commencer sur un octet impair.
+  const utf16 = [exe, exe.subarray(1)].map((bytes) =>
+    bytes.toString("utf16le").toLowerCase(),
+  );
   const missing = [...catalog.values()].filter((key) => {
     const needle = key.toLowerCase();
-    return !ascii.includes(needle) && !utf16.includes(needle);
+    return (
+      !ascii.includes(needle) && !utf16.some((text) => text.includes(needle))
+    );
   });
   console.log(
     `\nAbsentes de l'exe (retirées ou renommées ?) : ${missing.join(", ") || "aucune"}`,
@@ -80,8 +85,14 @@ for (const [file, section] of [
   const path = join(configDir, file);
   if (!existsSync(path)) continue;
   let current = "";
+  // Un INI réenregistré par un éditeur Windows peut être en UTF-16 (BOM FF FE).
+  const bytes = readFileSync(path);
+  const text =
+    bytes[0] === 0xff && bytes[1] === 0xfe
+      ? bytes.subarray(2).toString("utf16le")
+      : bytes.toString("utf8").replace(/^\uFEFF/, "");
   const unknown = new Set();
-  for (const line of readFileSync(path, "utf8").split(/\r?\n/)) {
+  for (const line of text.split(/\r?\n/)) {
     const header = line.match(/^\s*\[([^\]]+)\]\s*$/);
     if (header) {
       current = header[1].trim().toLowerCase();

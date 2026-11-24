@@ -44,7 +44,7 @@ Tous les réglages d'ARK: Survival Ascended (environ 380), rangés par thème : 
 
 - Un réglage laissé **vide** garde la valeur par défaut du jeu et n'est **pas écrit** dans les fichiers. Un point vert signale un réglage écrit ; le bouton ↺ le remet à sa valeur par défaut (la ligne est retirée).
 - Seuls les réglages que vous modifiez sont écrits : le reste des fichiers (clés inconnues, sections des mods) ne bouge pas.
-- Les **options de lancement** (`-ServerPlatform`, `-clusterid`…) sont ajoutées à la ligne de commande. Si la même option est déjà dans les arguments de lancement supplémentaires (onglet Général), c'est celle-ci qui l'emporte.
+- Les **options de lancement** (`-ServerPlatform`, `-clusterid`…) sont ajoutées à la ligne de commande. Si la même option est déjà dans les arguments de lancement supplémentaires (onglet Général), c'est celle-ci qui l'emporte. Leurs valeurs ne peuvent contenir ni espace ni guillemet.
 - **Autres réglages** : réglages trouvés dans les fichiers que Nexum ne connaît pas encore (ajoutés par une mise à jour du jeu ou à la main). Vous pouvez changer leur valeur.
 
 ### Listes
@@ -56,7 +56,7 @@ Les listes de `Game.ini`, enregistrées chacune à part :
 - **Engrammes** : masquer un engramme, changer son coût ou son niveau, retirer son prérequis ; déblocages automatiques ; points d'engramme par niveau ; « seulement les engrammes de la liste ».
 - **Spawns** : ajouter, retirer ou remplacer les créatures d'une zone d'apparition (`DinoSpawnEntriesBeach_C`…), poids d'apparition par créature, remplacer une créature par une autre.
 
-Une entrée que Nexum ne sait pas lire est gardée telle quelle et reste modifiable dans **Fichiers bruts**.
+Enregistrer une liste réécrit ses entrées : les champs que Nexum ne modifie pas (chances d'apparition, couleurs…) sont gardés, seule la présentation peut changer (`true` devient `True`). Une entrée que Nexum ne sait pas lire est gardée telle quelle et reste modifiable dans **Fichiers bruts**.
 
 ### Fichiers bruts
 
@@ -72,7 +72,7 @@ Nexum lit les clés sans tenir compte de la casse, comme le jeu : `serverPVE=Tru
 
 La page **Mods** gère les mods [CurseForge](https://www.curseforge.com/ark-survival-ascended) du serveur :
 
-- Onglet **Parcourir CurseForge** : cherchez des mods par nom, triez-les (popularité, mis à jour récemment, téléchargements, nom), filtrez par catégorie (Cartes, Créatures, Structures…) et cliquez sur **Ajouter**. Les mods marqués **Cosmétique** sont réservés aux joueurs : ils ne s'installent pas sur un serveur et l'empêchent de démarrer (testé), ils ne peuvent donc pas être ajoutés. Les mods marqués **PC seulement** ne sont pas cross-plateforme : un serveur est cross-plateforme par défaut et ne démarre pas avec eux (testé) ; ils ne fonctionnent qu'avec `-ServerPlatform=PC` dans les arguments de lancement supplémentaires (page Configuration), et les joueurs sur console ne peuvent alors plus rejoindre.
+- Onglet **Parcourir CurseForge** : cherchez des mods par nom, triez-les (popularité, mis à jour récemment, téléchargements, nom), filtrez par catégorie (Cartes, Créatures, Structures…) et cliquez sur **Ajouter**. Les mods marqués **Cosmétique** sont réservés aux joueurs : ils ne s'installent pas sur un serveur et l'empêchent de démarrer (testé), ils ne peuvent donc pas être ajoutés. Les mods marqués **PC seulement** ne sont pas cross-plateforme : un serveur est cross-plateforme par défaut et ne démarre pas avec eux (testé) ; ils ne fonctionnent qu'avec **Plateformes acceptées** sur `PC` (page Configuration, onglet **Réglages de jeu**, options de lancement), et les joueurs sur console ne peuvent alors plus rejoindre.
 - **Ajoutez** un mod avec son **Project ID** : le nombre affiché sur la page CurseForge du mod, dans _About Project_ (l'adresse de la page ne le contient pas).
 - L'**ordre** de la liste est l'ordre de chargement (flèches). Un mod **désactivé** reste dans la liste mais n'est pas chargé.
 - Nexum écrit seulement la liste sur la ligne de commande (`-mods=`) : **le serveur télécharge les mods et les met à jour lui-même à chaque démarrage**, en quelques secondes pour de petits mods. Une modification faite serveur lancé s'applique au prochain démarrage.

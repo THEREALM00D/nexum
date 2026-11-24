@@ -19,9 +19,7 @@ export default {
     defaultValue: "Default: {{value}}",
     defaultUnknown: "Game default",
     defaultOption: "Default ({{value}})",
-    modified: "Modified",
     reset: "Back to the default value",
-    remove: "Remove from the file",
     save: "Save",
     saveCount: "Save ({{count}})",
     saved: "Settings saved",
@@ -31,7 +29,6 @@ export default {
     sources: {
       gus: "GameUserSettings.ini",
       game: "Game.ini",
-      cli: "Command line",
     },
     otherHint:
       "Settings found in the files but unknown to Nexum (added by a game update or by hand). They are kept as they are.",

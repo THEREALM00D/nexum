@@ -499,6 +499,8 @@ export type ArkPerLevelStats = Record<ArkStatsTable, string[]>;
 
 /** ConfigOverrideItemMaxQuantity. */
 export interface ArkStackSize {
+  /** Champs que Nexum n'édite pas, réécrits tels quels (structure UE). */
+  extra?: string;
   itemClass: string;
   quantity: string;
   ignoreMultiplier: boolean;
@@ -506,6 +508,8 @@ export interface ArkStackSize {
 
 /** OverrideNamedEngramEntries ; "" ou null = champ absent (le jeu garde le sien). */
 export interface ArkEngramOverride {
+  /** Champs que Nexum n'édite pas, réécrits tels quels (structure UE). */
+  extra?: string;
   engramClass: string;
   hidden: boolean | null;
   pointsCost: string;
@@ -514,6 +518,8 @@ export interface ArkEngramOverride {
 }
 
 export interface ArkEngramAutoUnlock {
+  /** Champs que Nexum n'édite pas, réécrits tels quels (structure UE). */
+  extra?: string;
   engramClass: string;
   level: string;
 }
@@ -529,6 +535,8 @@ export interface ArkEngramLists {
 export type ArkSpawnMode = "add" | "subtract" | "override";
 
 export interface ArkSpawnEntry {
+  /** Champs que Nexum n'édite pas, réécrits tels quels (structure UE). */
+  extra?: string;
   name: string;
   weight: string;
   /** Classes de créatures (NPCsToSpawnStrings). */
@@ -536,12 +544,16 @@ export interface ArkSpawnEntry {
 }
 
 export interface ArkSpawnLimit {
+  /** Champs que Nexum n'édite pas, réécrits tels quels (structure UE). */
+  extra?: string;
   creature: string;
   maxPercentage: string;
 }
 
 /** ConfigAdd/Subtract/OverrideNPCSpawnEntriesContainer. */
 export interface ArkSpawnContainer {
+  /** Champs que Nexum n'édite pas, réécrits tels quels (structure UE). */
+  extra?: string;
   mode: ArkSpawnMode;
   container: string;
   entries: ArkSpawnEntry[];
@@ -550,6 +562,8 @@ export interface ArkSpawnContainer {
 
 /** DinoSpawnWeightMultipliers ; "" ou null = champ absent. */
 export interface ArkSpawnWeight {
+  /** Champs que Nexum n'édite pas, réécrits tels quels (structure UE). */
+  extra?: string;
   tag: string;
   weight: string;
   overrideLimit: boolean | null;
@@ -558,6 +572,8 @@ export interface ArkSpawnWeight {
 
 /** NPCReplacements. */
 export interface ArkNpcReplacement {
+  /** Champs que Nexum n'édite pas, réécrits tels quels (structure UE). */
+  extra?: string;
   from: string;
   to: string;
 }

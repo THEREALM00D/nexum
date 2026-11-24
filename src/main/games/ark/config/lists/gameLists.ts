@@ -10,7 +10,8 @@ import type {
 import { GAME_INI_REL_PATH } from "../../gameUserSettingsIni";
 import { readArkIni, writeArkIni } from "../arkIniFile";
 import { readEngrams, writeEngrams } from "./engrams";
-import { readSpawns, writeSpawns } from "./spawns";
+import { writeSpawns } from "./spawns";
+import { readSpawns } from "./spawnsRead";
 import {
   readStackSizes,
   readStats,

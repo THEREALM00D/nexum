@@ -31,15 +31,17 @@ export function normalizeSettingValue(
     }
     case "int":
     case "float": {
-      const number = Number(value);
+      // Virgule décimale acceptée (saisie en français), écrite avec un point.
+      const decimal = value.replace(",", ".");
+      const number = Number(decimal);
       const isValid =
-        value !== "" &&
+        decimal !== "" &&
         Number.isFinite(number) &&
         (setting.type === "float" || Number.isInteger(number)) &&
         (setting.min === undefined || number >= setting.min) &&
         (setting.max === undefined || number <= setting.max);
       if (!isValid) throw invalid(setting.key, value);
-      return value;
+      return decimal;
     }
     case "enum":
       if (!setting.options?.includes(value)) throw invalid(setting.key, value);

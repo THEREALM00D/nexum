@@ -19,9 +19,7 @@ export default {
     defaultValue: "Défaut : {{value}}",
     defaultUnknown: "Défaut du jeu",
     defaultOption: "Par défaut ({{value}})",
-    modified: "Modifié",
     reset: "Revenir à la valeur par défaut",
-    remove: "Retirer du fichier",
     save: "Enregistrer",
     saveCount: "Enregistrer ({{count}})",
     saved: "Réglages enregistrés",
@@ -31,7 +29,6 @@ export default {
     sources: {
       gus: "GameUserSettings.ini",
       game: "Game.ini",
-      cli: "Ligne de commande",
     },
     otherHint:
       "Réglages présents dans les fichiers mais inconnus de Nexum (ajoutés par une mise à jour du jeu ou à la main). Ils sont gardés tels quels.",

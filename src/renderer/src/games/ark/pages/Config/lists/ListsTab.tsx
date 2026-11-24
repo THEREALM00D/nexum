@@ -47,7 +47,7 @@ export default function ListsTab() {
   return (
     <Stack spacing={2}>
       <Alert severity="info">{t("arkListsUi.notice")}</Alert>
-      {lists.locked && (
+      {lists.running && (
         <Alert severity="warning">{t("configPage.lockedWhileRunning")}</Alert>
       )}
       {lists.unreadable.length > 0 && (

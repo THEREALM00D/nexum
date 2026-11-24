@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Alert,
   Button,
@@ -40,7 +40,7 @@ export default function RawFilesTab() {
     () => window.api.arkSettings.readRaw(serverId, file),
     [serverId, file],
   );
-  const load = useConfigLoad(
+  const { loading, failed, locked, markDirty, markClean } = useConfigLoad(
     read,
     (content) => {
       setText(content);
@@ -49,12 +49,23 @@ export default function RawFilesTab() {
     true,
   );
 
+  const dirty = text !== savedText;
+  useEffect(() => {
+    if (dirty) markDirty();
+    else markClean();
+  }, [dirty, markDirty, markClean]);
+
+  // Lu avant de changer de fichier : en cas d'échec, l'éditeur garde le
+  // fichier affiché (sinon le texte de l'un s'enregistrait dans l'autre).
   const changeFile = async (next: RawFile) => {
-    setFile(next);
-    const content = await window.api.arkSettings.readRaw(serverId, next);
-    setText(content);
-    setSavedText(content);
-    load.markClean();
+    try {
+      const content = await window.api.arkSettings.readRaw(serverId, next);
+      setFile(next);
+      setText(content);
+      setSavedText(content);
+    } catch (error) {
+      notify(errorMessage(t, error), "error");
+    }
   };
 
   const save = async () => {
@@ -70,7 +81,6 @@ export default function RawFilesTab() {
         return;
       }
       setSavedText(text);
-      load.markClean();
       notify(t("arkRawUi.saved"), "success");
     } catch (error) {
       notify(errorMessage(t, error), "error");
@@ -79,12 +89,13 @@ export default function RawFilesTab() {
     }
   };
 
-  const dirty = text !== savedText;
+  // Lecture échouée : un enregistrement viderait le fichier.
+  const readOnly = locked || failed;
 
   return (
     <Stack spacing={2}>
       <Alert severity="info">{t("arkRawUi.notice")}</Alert>
-      {load.locked && (
+      {locked && (
         <Alert severity="warning">{t("configPage.lockedWhileRunning")}</Alert>
       )}
       <Stack
@@ -114,24 +125,21 @@ export default function RawFilesTab() {
           <Button
             variant="contained"
             startIcon={<SaveIcon />}
-            disabled={!dirty || saving || load.locked}
+            disabled={!dirty || saving || readOnly}
             onClick={() => void save()}
           >
             {t("arkSettingsUi.save")}
           </Button>
         </Stack>
       </Stack>
-      <LoadingSkeleton loading={load.loading} fullWidth>
+      <LoadingSkeleton loading={loading} fullWidth>
         <TextField
           multiline
           minRows={18}
           maxRows={40}
           value={text}
-          disabled={load.locked}
-          onChange={(event) => {
-            load.markDirty();
-            setText(event.target.value);
-          }}
+          disabled={readOnly}
+          onChange={(event) => setText(event.target.value)}
           placeholder={t("arkRawUi.empty")}
           slotProps={{
             htmlInput: {

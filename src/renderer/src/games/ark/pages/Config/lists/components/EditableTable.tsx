@@ -104,7 +104,7 @@ export default function EditableTable<Row extends object>({
     }
     const text =
       column.type === "list"
-        ? ((value as string[]) ?? []).join(", ")
+        ? ((value as string[]) ?? []).join(",")
         : String(value ?? "");
     return (
       <TextField
@@ -117,7 +117,9 @@ export default function EditableTable<Row extends object>({
             index,
             column.field,
             column.type === "list"
-              ? event.target.value.split(",").map((part) => part.trim())
+              ? // Sans trim ni espace ajouté : la saisie (espace, virgule
+                // finale) reste telle quelle ; le main ignore les vides.
+                event.target.value.split(",")
               : event.target.value,
           )
         }
