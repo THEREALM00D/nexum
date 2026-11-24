@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.25.1](https://github.com/THEREALM00D/nexum/compare/v0.25.0...v0.25.1) (2026-11-24)
+
+
+### Bug Fixes
+
+* show the SteamCMD error on the Install page ([#280](https://github.com/THEREALM00D/nexum/issues/280)) ([a5051ed](https://github.com/THEREALM00D/nexum/commit/a5051ed20e4c8bc848544dc505e73a646a31c7c5))
+* update servers installed on an old build by another tool ([#281](https://github.com/THEREALM00D/nexum/issues/281)) ([4ace0c3](https://github.com/THEREALM00D/nexum/commit/4ace0c370466fd7574cfdbc355338fa2c522be2b))
+
 ## [0.25.0](https://github.com/THEREALM00D/nexum/compare/v0.24.0...v0.25.0) (2026-11-24)
 
 
