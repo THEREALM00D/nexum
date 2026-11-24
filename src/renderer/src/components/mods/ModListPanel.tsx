@@ -20,8 +20,9 @@ interface Props {
   emptyText: string;
   /** Mods présents mais aucun ne correspond à la recherche. */
   noMatchText?: string;
-  /** Texte sous la liste. */
-  footer?: ReactNode;
+  /** Bloc après les lignes, dans la même zone qui défile (ARK : mods
+   * téléchargés hors liste). */
+  after?: ReactNode;
   /** Retour en haut de la liste quand cette valeur change (tri). */
   resetKey?: unknown;
   /** Lignes déjà filtrées. */
@@ -42,7 +43,7 @@ export default function ModListPanel({
   skeletonRow,
   emptyText,
   noMatchText,
-  footer,
+  after,
   resetKey,
   children,
 }: Props) {
@@ -87,14 +88,7 @@ export default function ModListPanel({
       <Stack divider={<Divider />}>
         {loading ? skeletonRows(skeletonRow, 4) : children}
       </Stack>
-      {footer && (
-        <Typography
-          variant="caption"
-          sx={{ color: "text.secondary", display: "block", mt: 2 }}
-        >
-          {footer}
-        </Typography>
-      )}
+      {!loading && after}
     </ScrollPanel>
   );
 }

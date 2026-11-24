@@ -8,7 +8,7 @@ Règles générales et architecture : `CLAUDE.md` racine. Ce fichier = conventio
 - ⚠️ Pas de `TextField type="time"` / `"date"` : leur popup est dessinée par Chromium (blanche et bleue) et ignore le thème. Prendre `@mui/x-date-pickers` avec `AdapterDateFns` (exemple : `components/schedule/ScheduleTimePicker.tsx`, `LocalizationProvider` local avec la locale date-fns et `localeText` FR/EN).
 - **Jamais d'import depuis `src/main/`** : passer par `window.api` (IPC), types dans `@shared/types`.
 - **Pages = affichage, composants et hooks = logique.** Fichiers < 200 lignes : au-delà, extraire hooks / components / data.
-- Composants partagés entre jeux : `components/common/`, `server/`, `config/`, `backup/`, `schedule/`, `firewall/`, `players/`, `mods/` (pages Mods de Valheim et ARK : ligne `ModRow`, liste `ModListPanel` avec recherche `matchesModSearch` et compteur ; onglet Parcourir : `usePagedBrowser`, `BrowseSearchField`, `BrowseLoadMore`, textes `modBrowse` importés par les manifests). **Ne jamais importer depuis `games/<autre-jeu>/`** : extraire le composant dans `components/`.
+- Composants partagés entre jeux : `components/common/`, `server/`, `config/`, `backup/`, `schedule/`, `firewall/`, `players/`, `mods/` (pages Mods de Valheim et ARK : ligne `ModRow`, liste `ModListPanel` avec recherche `matchesModSearch` et compteur, onglet `ModCountTab` ; onglet Parcourir : `usePagedBrowser`, `BrowseSearchField`, `BrowseLoadMore`, textes `modBrowse` importés par les manifests). **Ne jamais importer depuis `games/<autre-jeu>/`** : extraire le composant dans `components/`.
 - `App.tsx`, `Sidebar`, `i18n/index.ts` ne contiennent aucun nom de jeu : ils lisent `GAMES` (`games/registry.ts`).
 
 ## Thème (`theme.ts`)

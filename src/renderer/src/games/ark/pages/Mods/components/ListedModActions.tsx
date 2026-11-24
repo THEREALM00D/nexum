@@ -87,6 +87,7 @@ export default function ListedModActions({
           <IconButton
             size="small"
             aria-label={remove}
+            color="error"
             disabled={disabled}
             onClick={onRemove}
           >

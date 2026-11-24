@@ -24,6 +24,8 @@ export default {
       countFiltered: "{{shown}} sur {{total}}",
       noMatch: "Aucun mod ne correspond à la recherche.",
       hint: "Les mods se chargent dans l'ordre de la liste. Les joueurs les téléchargent en rejoignant le serveur. Retirer un mod retire aussi du monde ce qu'il ajoutait (créatures, structures, objets).",
+      hintShow: "Rappel : ordre de chargement et retrait d'un mod",
+      hintHide: "Masquer le rappel",
       unknownName: "Mod {{id}}",
       id: "ID {{id}}",
       by: "par {{authors}}",

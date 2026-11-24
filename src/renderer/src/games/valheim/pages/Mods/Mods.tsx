@@ -1,6 +1,5 @@
 import { useState } from "react";
 import {
-  Badge,
   Box,
   Button,
   CircularProgress,
@@ -32,6 +31,7 @@ import PendingModsBanner from "./components/PendingModsBanner";
 import { usePendingMods } from "./hooks/usePendingMods";
 import { useModBrowser } from "./hooks/useModBrowser";
 import ClientModsHint from "./components/ClientModsHint";
+import ModCountTab from "../../../../components/mods/ModCountTab";
 import ModInstallProgress from "./components/ModInstallProgress";
 import { useModInstallProgress } from "./hooks/useModInstallProgress";
 import ShareModpackButton from "./components/ShareModpackButton";
@@ -238,15 +238,10 @@ export default function ValheimMods() {
           <Tab
             value="installed"
             label={
-              <Badge
-                badgeContent={installedMods.length}
-                color="primary"
-                max={99}
-              >
-                <Box sx={{ pr: installedMods.length > 0 ? 1.5 : 0 }}>
-                  {t("valheimMods.tabs.installed")}
-                </Box>
-              </Badge>
+              <ModCountTab
+                label={t("valheimMods.tabs.installed")}
+                count={installedMods.length}
+              />
             }
           />
           <Tab value="browse" label={t("valheimMods.tabs.browse")} />

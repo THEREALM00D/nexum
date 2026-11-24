@@ -27,8 +27,9 @@ interface Props {
 }
 
 // Onglet Liste : ajout par ID, liste ordonnée du serveur (liste commune
-// aux pages Mods, components/mods/ModListPanel), mods téléchargés hors
-// liste. Fragment : les blocs prennent l'espacement de la page.
+// aux pages Mods, components/mods/ModListPanel) puis, dans la même zone
+// qui défile, les mods téléchargés hors liste. Fragment : les blocs
+// prennent l'espacement de la page.
 export default function ModListTab({ mods }: Props) {
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
@@ -36,16 +37,19 @@ export default function ModListTab({ mods }: Props) {
   const query = search.trim();
   // L'ordre de chargement reste celui de la liste complète : monter ou
   // descendre pendant une recherche agit sur la vraie position.
+  const matches = (id: number, info: ArkModInfo | null | undefined) =>
+    !query ||
+    matchesModSearch(
+      [info?.name ?? "", ...(info?.authors ?? []), `${id}`],
+      query,
+    );
   const visible = list
     .map((mod, index) => ({ mod, index }))
-    .filter(
-      ({ mod }) =>
-        !query ||
-        matchesModSearch(
-          [mod.info?.name ?? "", ...(mod.info?.authors ?? []), `${mod.id}`],
-          query,
-        ),
-    );
+    .filter(({ mod }) => matches(mod.id, mod.info));
+  // Même recherche pour les mods téléchargés hors liste (section du bas).
+  const downloaded = (mods.data?.downloadedNotListed ?? []).filter((info) =>
+    matches(info.id, info),
+  );
 
   return (
     <>
@@ -73,7 +77,13 @@ export default function ModListTab({ mods }: Props) {
         }
         emptyText={t("arkMods.list.empty")}
         noMatchText={t("arkMods.list.noMatch")}
-        footer={t("arkMods.list.hint")}
+        after={
+          <DownloadedModsList
+            mods={downloaded}
+            disabled={mods.busy}
+            onAdd={(id) => void mods.add(id)}
+          />
+        }
       >
         {visible.map(({ mod, index }) => (
           <ArkModRow
@@ -96,12 +106,6 @@ export default function ModListTab({ mods }: Props) {
           />
         ))}
       </ModListPanel>
-
-      <DownloadedModsList
-        mods={mods.data?.downloadedNotListed ?? []}
-        disabled={mods.busy}
-        onAdd={(id) => void mods.add(id)}
-      />
     </>
   );
 }

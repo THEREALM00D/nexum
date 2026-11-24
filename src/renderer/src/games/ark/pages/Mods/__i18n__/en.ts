@@ -24,6 +24,8 @@ export default {
       countFiltered: "{{shown}} of {{total}}",
       noMatch: "No mod matches the search.",
       hint: "Mods load in the order of the list. Players download them when they join the server. Removing a mod also removes what it added to the world (creatures, structures, items).",
+      hintShow: "Reminder: load order and removing a mod",
+      hintHide: "Hide reminder",
       unknownName: "Mod {{id}}",
       id: "ID {{id}}",
       by: "by {{authors}}",

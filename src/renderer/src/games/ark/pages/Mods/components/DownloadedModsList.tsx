@@ -1,4 +1,4 @@
-import { Button, Divider, Paper, Stack, Typography } from "@mui/material";
+import { Box, Button, Divider, Stack, Typography } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useTranslation } from "react-i18next";
 import type { ArkModInfo } from "@shared/types";
@@ -13,13 +13,14 @@ interface Props {
 
 // Mods que le serveur a téléchargés mais qui ne sont pas dans la liste :
 // retirés de la liste (le serveur garde leurs fichiers) ou installés avant
-// Nexum (dossier existant).
+// Nexum (dossier existant). Section en bas de la liste (même zone qui
+// défile), pas une 2e carte : la liste remplit la page comme sur Valheim.
 export default function DownloadedModsList({ mods, disabled, onAdd }: Props) {
   const { t } = useTranslation();
   if (mods.length === 0) return null;
 
   return (
-    <Paper sx={{ p: 2 }}>
+    <Box sx={{ mt: 3 }}>
       <SectionTitle>{t("arkMods.downloaded.title")}</SectionTitle>
       <Typography variant="body2" sx={{ color: "text.secondary", mb: 1 }}>
         {t("arkMods.downloaded.hint")}
@@ -43,6 +44,6 @@ export default function DownloadedModsList({ mods, disabled, onAdd }: Props) {
           />
         ))}
       </Stack>
-    </Paper>
+    </Box>
   );
 }

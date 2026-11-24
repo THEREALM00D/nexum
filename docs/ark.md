@@ -83,7 +83,7 @@ The **Mods** page manages the server's [CurseForge](https://www.curseforge.com/a
 
 ⚠️ An unknown mod ID **prevents the server from starting** (`Mods not installed` in the logs). Removing a mod also removes what it added to the world (creatures, structures, items): make a [backup](backups.md) first.
 
-The server keeps the files of a mod removed from the list: it's listed under **Downloaded by the server, not in the list**, where you can add it back. This is also where the mods of an existing server show up after its first start in Nexum. Mods already written in the extra launch arguments (`-mods=…`) are flagged with a button to move them to the list.
+The server keeps the files of a mod removed from the list: it's listed under **Downloaded by the server, not in the list**, at the bottom of the list, where you can add it back. This is also where the mods of an existing server show up after its first start in Nexum. Mods already written in the extra launch arguments (`-mods=…`) are flagged with a button to move them to the list.
 
 ## RCON
 

@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Stack, Tab, Tabs } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import PageHeader from "../../../../components/common/PageHeader";
-import LoadingSkeleton from "../../../../components/common/LoadingSkeleton";
+import DismissibleHint from "../../../../components/common/DismissibleHint";
+import ModCountTab from "../../../../components/mods/ModCountTab";
 import { useServer } from "../../../../context/ServerContext";
 import { useArkMods } from "./hooks/useArkMods";
 import { useArkModBrowser } from "./hooks/useArkModBrowser";
@@ -36,6 +37,13 @@ export default function ArkMods() {
     <Stack spacing={3} sx={{ height: "100%" }}>
       <PageHeader title={t("arkMods.title")} subtitle={t("arkMods.subtitle")} />
 
+      <DismissibleHint
+        storageKey="arkMods.hintHidden"
+        text={t("arkMods.list.hint")}
+        showLabel={t("arkMods.list.hintShow")}
+        hideLabel={t("arkMods.list.hintHide")}
+      />
+
       <ModsNotices
         running={running}
         argsMods={mods.data?.argsMods ?? []}
@@ -49,17 +57,15 @@ export default function ArkMods() {
           onChange={(_, value) => setTab(value as ModsTab)}
           textColor="primary"
           indicatorColor="primary"
-          sx={{ minHeight: 40, mt: 1 }}
+          sx={{ borderBottom: 1, borderColor: "divider" }}
         >
           <Tab
             value="list"
             label={
-              <Stack direction="row" sx={{ alignItems: "center", gap: 0.75 }}>
-                {t("arkMods.tabs.list")}
-                <LoadingSkeleton loading={mods.loading}>
-                  <span>({mods.data?.mods.length ?? 0})</span>
-                </LoadingSkeleton>
-              </Stack>
+              <ModCountTab
+                label={t("arkMods.tabs.list")}
+                count={mods.data?.mods.length ?? 0}
+              />
             }
           />
           <Tab value="browse" label={t("arkMods.tabs.browse")} />

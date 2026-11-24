@@ -83,7 +83,7 @@ La page **Mods** gère les mods [CurseForge](https://www.curseforge.com/ark-surv
 
 ⚠️ Un ID de mod inconnu **empêche le serveur de démarrer** (`Mods not installed` dans les logs). Retirer un mod retire aussi du monde ce qu'il ajoutait (créatures, structures, objets) : faites d'abord une [sauvegarde](backups.fr.md).
 
-Le serveur garde les fichiers d'un mod retiré de la liste : il apparaît dans **Téléchargés par le serveur, pas dans la liste**, d'où vous pouvez le rajouter. C'est aussi là qu'apparaissent les mods d'un serveur existant après son premier démarrage dans Nexum. Des mods déjà écrits dans les arguments de lancement supplémentaires (`-mods=…`) sont signalés, avec un bouton pour les déplacer dans la liste.
+Le serveur garde les fichiers d'un mod retiré de la liste : il apparaît dans **Téléchargés par le serveur, pas dans la liste**, en bas de la liste, d'où vous pouvez le rajouter. C'est aussi là qu'apparaissent les mods d'un serveur existant après son premier démarrage dans Nexum. Des mods déjà écrits dans les arguments de lancement supplémentaires (`-mods=…`) sont signalés, avec un bouton pour les déplacer dans la liste.
 
 ## RCON
 
