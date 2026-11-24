@@ -7,6 +7,13 @@ import https from "https";
 import type { GameType, UpdateCheckResult } from "../../shared/types";
 import { AppError, appError, networkError } from "../utils/appError";
 import { lt } from "../i18n/logStrings";
+import {
+  contentLogSize,
+  manifestDenied,
+  setManifestAside,
+  settleAsideManifest,
+} from "./deniedManifest";
+import { runAppUpdate } from "./appUpdate";
 
 /** AppId Steam du serveur dédié de chaque jeu (téléchargeable en anonyme). */
 export const STEAM_APP_IDS: Record<GameType, string> = {
@@ -108,7 +115,7 @@ export class SteamCMD {
   private async runInstall(
     appId: string,
     installPath: string,
-    onProgress: (msg: string) => void,
+    onProgress: (line: string) => void,
   ): Promise<{ success: boolean; error?: string }> {
     if (!this.isInstalled()) {
       const result = await this.install(onProgress);
@@ -116,51 +123,36 @@ export class SteamCMD {
     }
 
     mkdirSync(installPath, { recursive: true });
+    // 2e essai interrompu la dernière fois (app fermée) : manifeste remis.
+    settleAsideManifest(installPath, appId);
     onProgress(lt().installingApp(appId, installPath));
 
-    return new Promise((resolve) => {
-      const args = [
-        "+force_install_dir",
-        installPath,
-        "+login",
-        "anonymous",
-        "+app_update",
-        appId,
-        "validate",
-        "+quit",
-      ];
-
-      const proc = spawn(this.exe, args, { cwd: this.steamcmdDir });
-
-      proc.stdout?.on("data", (data: Buffer) => {
-        const lines = data.toString().split("\n").filter(Boolean);
-        lines.forEach((line) => onProgress(line.trim()));
-      });
-
-      proc.stderr?.on("data", (data: Buffer) => {
-        const lines = data.toString().split("\n").filter(Boolean);
-        lines.forEach((line) => onProgress(`[ERR] ${line.trim()}`));
-      });
-
-      proc.on("close", (code) => {
-        if (code === 0) {
-          onProgress(lt().serverInstalled);
-          resolve({ success: true });
-        } else {
-          resolve({
-            success: false,
-            error: appError("STEAMCMD_FAILED", { code: String(code) }),
-          });
-        }
-      });
-
-      proc.on("error", (err) =>
-        resolve({
-          success: false,
-          error: appError("STEAMCMD_FAILED", { code: err.message }),
-        }),
-      );
-    });
+    const update = { exe: this.exe, steamcmdDir: this.steamcmdDir, appId };
+    const firstOffset = contentLogSize(this.steamcmdDir);
+    const first = await runAppUpdate(update, installPath, onProgress);
+    // Ancien build installé par un autre outil (voir deniedManifest.ts). Une
+    // install de la bibliothèque Steam garde son manifeste au client Steam.
+    if (
+      first.success ||
+      isSteamLibraryInstall(installPath) ||
+      !manifestDenied(this.steamcmdDir, firstOffset) ||
+      !setManifestAside(installPath, appId)
+    ) {
+      return first;
+    }
+    onProgress(lt().manifestDeniedRetry);
+    const retryOffset = contentLogSize(this.steamcmdDir);
+    const retry = await runAppUpdate(update, installPath, onProgress);
+    settleAsideManifest(installPath, appId);
+    // Autre cause (disque plein, réseau) : l'erreur habituelle, pas le
+    // conseil de réinstaller.
+    if (retry.success || !manifestDenied(this.steamcmdDir, retryOffset)) {
+      return retry;
+    }
+    return {
+      success: false,
+      error: appError("STEAMCMD_OLD_BUILD_DENIED", { code: retry.code }),
+    };
   }
 
   private getInstalledBuildId(
