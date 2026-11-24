@@ -5,7 +5,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TextField,
+  OutlinedInput,
   Typography,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
@@ -73,7 +73,9 @@ export default function StatsEditor({ stats, disabled, onChange }: Props) {
                 </TableCell>
                 {TABLES.map((table) => (
                   <TableCell key={table}>
-                    <TextField
+                    {/* OutlinedInput plutôt que TextField (sans label ni
+                        FormControl) : 60 champs, 4 fois moins de nœuds. */}
+                    <OutlinedInput
                       size="small"
                       value={stats[table]?.[stat] ?? ""}
                       placeholder={defaultOf(table, stat)}
@@ -81,11 +83,9 @@ export default function StatsEditor({ stats, disabled, onChange }: Props) {
                       onChange={(event) =>
                         update(table, stat, event.target.value)
                       }
-                      slotProps={{
-                        htmlInput: {
-                          inputMode: "decimal",
-                          "aria-label": `${t(`arkListsUi.stats.${stat}`)} — ${t(`arkListsUi.statsTables.${table}`)}`,
-                        },
+                      inputProps={{
+                        inputMode: "decimal",
+                        "aria-label": `${t(`arkListsUi.stats.${stat}`)} — ${t(`arkListsUi.statsTables.${table}`)}`,
                       }}
                       sx={{ minWidth: 80 }}
                     />

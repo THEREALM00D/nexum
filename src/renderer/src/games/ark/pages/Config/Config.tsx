@@ -1,125 +1,107 @@
-import { useState } from "react";
-import { Alert, Box, Button, Stack, Tab, Tabs } from "@mui/material";
-import InputIcon from "@mui/icons-material/Input";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { useCallback, useMemo, useState } from "react";
+import { Box } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import ConfigPage from "../../../../components/config/ConfigPage";
 import FormPage from "../../../../components/common/FormPage";
 import PageHeader from "../../../../components/common/PageHeader";
 import { useServer } from "../../../../context/ServerContext";
-import { arkConfigService } from "../../services/configService";
-import { FIELD_GROUPS } from "./fields";
 import SettingsTab from "./settings/SettingsTab";
 import ListsTab from "./lists/ListsTab";
 import RawFilesTab from "./raw/RawFilesTab";
 import LaunchImportDialog from "../../components/launchImport/LaunchImportDialog";
+import GeneralTab, { PAGE_WIDTH, configFolder } from "./GeneralTab";
+import {
+  ARK_CONFIG_TABS,
+  ConfigTabContext,
+  type ConfigTab,
+} from "./ConfigTabs";
 
-type ConfigTab = "general" | "settings" | "lists" | "raw";
-const TABS: ConfigTab[] = ["general", "settings", "lists", "raw"];
-// Plus large que les autres pages Config : tableaux de l'onglet Listes.
-const PAGE_WIDTH = 960;
-
-const configFolder = (serverPath: string) =>
-  `${serverPath}/ShooterGame/Saved/Config/WindowsServer`;
+const hidden = { display: "none" };
 
 /**
  * Configuration ARK : Général (page partagée ConfigPage), Réglages de jeu
  * (catalogue complet), Listes (Game.ini) et Fichiers bruts. Le serveur
  * réécrit ses deux fichiers à l'arrêt : tout est bloqué tant qu'il tourne.
- * Les onglets restent montés (masqués) : une saisie non enregistrée survit
- * au changement d'onglet.
+ * Un onglet est monté à sa 1re visite puis gardé (masqué) : une saisie non
+ * enregistrée survit au changement d'onglet, sans monter les quatre à
+ * l'ouverture. Réglages de jeu occupe toute la hauteur : sa liste défile
+ * seule.
  */
 export default function ArkConfig() {
   const { t } = useTranslation();
   const { state } = useServer();
   const [tab, setTab] = useState<ConfigTab>("general");
-
-  const tabs = (
-    <Tabs
-      value={tab}
-      onChange={(_, value) => setTab(value as ConfigTab)}
-      variant="scrollable"
-      allowScrollButtonsMobile
-    >
-      {TABS.map((value) => (
-        <Tab key={value} value={value} label={t(`arkConfigTabs.${value}`)} />
-      ))}
-    </Tabs>
+  const [visited, setVisited] = useState<Set<ConfigTab>>(
+    () => new Set(["general"]),
   );
-
   // Ligne de lancement reprise : tous les onglets relisent leurs fichiers.
   const [importOpen, setImportOpen] = useState(false);
   const [revision, setRevision] = useState(0);
 
-  const shown = (value: ConfigTab | "advanced") =>
-    (value === "advanced" ? tab !== "general" : tab === value)
-      ? undefined
-      : { display: "none" };
+  const select = useCallback((next: ConfigTab) => {
+    setTab(next);
+    setVisited((current) =>
+      current.has(next) ? current : new Set([...current, next]),
+    );
+  }, []);
+  const tabState = useMemo(() => ({ tab, select }), [tab, select]);
+  const openImport = useCallback(() => setImportOpen(true), []);
+  const mounted = (value: ConfigTab) => visited.has(value);
+  const shown = (value: ConfigTab) => (tab === value ? undefined : hidden);
+  const fill = tab === "settings";
 
-  // Une seule racine : la marge basse de la page (::after d'App.tsx) se
-  // place après son dernier enfant.
+  // Une seule racine, colonne flex de hauteur contrainte : la marge basse
+  // de la page (::after d'App.tsx) se place après son dernier enfant.
   return (
-    <Box key={revision}>
-      <LaunchImportDialog
-        open={importOpen}
-        onClose={() => setImportOpen(false)}
-        onApplied={() => setRevision((current) => current + 1)}
-      />
-      <Box sx={shown("general")}>
-        <ConfigPage
-          titleKey="arkConfig.title"
-          subtitleKey="arkConfig.subtitle"
-          folderPath={configFolder}
-          fieldGroups={FIELD_GROUPS}
-          i18nFieldsPrefix="arkConfig.fields"
-          readConfig={arkConfigService.readConfig}
-          writeConfig={arkConfigService.writeConfig}
-          // Le serveur réécrit GameUserSettings.ini à l'arrêt (vérifié).
-          lockWhileRunning
-          tabs={tabs}
-          width={PAGE_WIDTH}
-          notice={
-            <Stack spacing={1.5} sx={{ alignItems: "flex-start" }}>
-              <Alert
-                severity="info"
-                icon={<InfoOutlinedIcon fontSize="inherit" />}
-                sx={{ alignSelf: "stretch" }}
-              >
-                {t("arkConfig.notice")}
-              </Alert>
-              <Button
-                variant="outlined"
-                startIcon={<InputIcon />}
-                onClick={() => setImportOpen(true)}
-              >
-                {t("arkLaunchImport.openDialog")}
-              </Button>
-            </Stack>
-          }
+    <ConfigTabContext.Provider value={tabState}>
+      <Box
+        key={revision}
+        sx={{ height: "100%", display: "flex", flexDirection: "column" }}
+      >
+        <LaunchImportDialog
+          open={importOpen}
+          onClose={() => setImportOpen(false)}
+          onApplied={() => setRevision((current) => current + 1)}
         />
+        <Box sx={shown("general")}>
+          <GeneralTab onOpenImport={openImport} />
+        </Box>
+        <Box
+          sx={
+            tab === "general"
+              ? hidden
+              : { flex: fill ? "1 1 0" : "0 0 auto", minHeight: 0 }
+          }
+        >
+          <FormPage width={PAGE_WIDTH} fill={fill}>
+            <PageHeader
+              title={t("arkConfig.title")}
+              subtitle={t("arkConfig.subtitle")}
+              onOpenFolder={() =>
+                window.api.shell.openPath(configFolder(state.serverPath))
+              }
+              folderTooltip={t("config.openFolder")}
+            />
+            {ARK_CONFIG_TABS}
+            {mounted("settings") && (
+              <Box
+                sx={fill ? { flex: 1, minHeight: 0, display: "flex" } : hidden}
+              >
+                <SettingsTab />
+              </Box>
+            )}
+            {mounted("lists") && (
+              <Box sx={shown("lists")}>
+                <ListsTab />
+              </Box>
+            )}
+            {mounted("raw") && (
+              <Box sx={shown("raw")}>
+                <RawFilesTab />
+              </Box>
+            )}
+          </FormPage>
+        </Box>
       </Box>
-      <Box sx={shown("advanced")}>
-        <FormPage width={PAGE_WIDTH}>
-          <PageHeader
-            title={t("arkConfig.title")}
-            subtitle={t("arkConfig.subtitle")}
-            onOpenFolder={() =>
-              window.api.shell.openPath(configFolder(state.serverPath))
-            }
-            folderTooltip={t("config.openFolder")}
-          />
-          {tabs}
-          <Box sx={shown("settings")}>
-            <SettingsTab />
-          </Box>
-          <Box sx={shown("lists")}>
-            <ListsTab />
-          </Box>
-          <Box sx={shown("raw")}>
-            <RawFilesTab />
-          </Box>
-        </FormPage>
-      </Box>
-    </Box>
+    </ConfigTabContext.Provider>
   );
 }

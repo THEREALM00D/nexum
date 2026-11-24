@@ -18,6 +18,11 @@ export default {
     },
     list: {
       empty: "Aucun mod. Ajoutez un mod avec son ID.",
+      search: "Rechercher (nom, auteur ou ID)",
+      count_one: "{{count}} mod",
+      count_other: "{{count}} mods",
+      countFiltered: "{{shown}} sur {{total}}",
+      noMatch: "Aucun mod ne correspond à la recherche.",
       hint: "Les mods se chargent dans l'ordre de la liste. Les joueurs les téléchargent en rejoignant le serveur. Retirer un mod retire aussi du monde ce qu'il ajoutait (créatures, structures, objets).",
       unknownName: "Mod {{id}}",
       id: "ID {{id}}",

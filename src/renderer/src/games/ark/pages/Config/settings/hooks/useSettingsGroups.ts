@@ -1,4 +1,4 @@
-import { useDeferredValue, useMemo, useState } from "react";
+import { useCallback, useDeferredValue, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { ArkUnknownSetting } from "@shared/types";
 import {
@@ -74,37 +74,34 @@ export function useSettingsGroups(unknown: ArkUnknownSetting[]) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [unknown, t, i18n.language]);
 
-  const words = normalize(deferredSearch).length
-    ? deferredSearch.toLowerCase().split(/\s+/).filter(Boolean).map(normalize)
-    : [];
-  // Sections de mods après les thèmes du jeu, dans l'ordre des fichiers.
-  const modGroups = [...items.keys()].filter((group) =>
-    group.startsWith("mod:"),
-  );
-  const groups = [...ARK_SETTING_GROUPS, "other" as const, ...modGroups]
-    .map((group) => ({
-      group,
-      items: (items.get(group) ?? []).filter((item) => {
-        if (words.length === 0) return true;
-        const haystack = normalize(
-          `${item.label} ${item.description} ${item.key}`,
-        );
-        return words.every((word) => haystack.includes(word));
-      }),
-    }))
-    .filter((entry) => entry.items.length > 0);
+  const groups = useMemo(() => {
+    const words = normalize(deferredSearch).length
+      ? deferredSearch.toLowerCase().split(/\s+/).filter(Boolean).map(normalize)
+      : [];
+    // Sections de mods après les thèmes du jeu, dans l'ordre des fichiers.
+    const modGroups = [...items.keys()].filter((group) =>
+      group.startsWith("mod:"),
+    );
+    return [...ARK_SETTING_GROUPS, "other" as const, ...modGroups]
+      .map((group) => ({
+        group,
+        items: (items.get(group) ?? []).filter((item) => {
+          if (words.length === 0) return true;
+          const haystack = normalize(
+            `${item.label} ${item.description} ${item.key}`,
+          );
+          return words.every((word) => haystack.includes(word));
+        }),
+      }))
+      .filter((entry) => entry.items.length > 0);
+  }, [items, deferredSearch]);
+  const searching = normalize(deferredSearch).length > 0;
 
-  return {
-    search,
-    setSearch,
-    searching: words.length > 0,
-    groups,
-    isExpanded: (group: SettingsGroupId) =>
-      words.length > 0 || expanded.has(group),
-    // Pendant une recherche, les groupes sont dépliés d'office : un clic
-    // ne doit pas changer en douce l'état retrouvé après la recherche.
-    toggle: (group: SettingsGroupId) => {
-      if (words.length > 0) return;
+  // Stable (en-têtes en memo) ; pendant une recherche, les groupes sont
+  // dépliés d'office : un clic ne change pas en douce l'état retrouvé après.
+  const toggle = useCallback(
+    (group: SettingsGroupId) => {
+      if (searching) return;
       setExpanded((current) => {
         const next = new Set(current);
         if (next.has(group)) next.delete(group);
@@ -112,5 +109,15 @@ export function useSettingsGroups(unknown: ArkUnknownSetting[]) {
         return next;
       });
     },
+    [searching],
+  );
+
+  return {
+    search,
+    setSearch,
+    searching,
+    groups,
+    isExpanded: (group: SettingsGroupId) => searching || expanded.has(group),
+    toggle,
   };
 }

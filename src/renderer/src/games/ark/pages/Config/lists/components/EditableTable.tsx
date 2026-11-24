@@ -1,4 +1,5 @@
 import {
+  OutlinedInput,
   Button,
   IconButton,
   MenuItem,
@@ -106,8 +107,9 @@ export default function EditableTable<Row extends object>({
       column.type === "list"
         ? ((value as string[]) ?? []).join(",")
         : String(value ?? "");
+    // Champ simple (sans label ni FormControl) : un tableau en compte beaucoup.
     return (
-      <TextField
+      <OutlinedInput
         size="small"
         value={text}
         placeholder={column.placeholder}
@@ -123,11 +125,9 @@ export default function EditableTable<Row extends object>({
               : event.target.value,
           )
         }
-        slotProps={{
-          htmlInput: {
-            "aria-label": label,
-            inputMode: column.type === "number" ? "decimal" : undefined,
-          },
+        inputProps={{
+          "aria-label": label,
+          inputMode: column.type === "number" ? "decimal" : undefined,
         }}
         sx={{ minWidth: column.minWidth ?? 100, width: "100%" }}
       />

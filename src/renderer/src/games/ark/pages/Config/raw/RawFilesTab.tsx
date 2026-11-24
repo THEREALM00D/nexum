@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, memo } from "react";
 import {
   Alert,
   Button,
@@ -26,7 +26,7 @@ type RawFile = "gus" | "game";
  * tout ce que les autres onglets ne couvrent pas (listes rares, sections de
  * mods). Copie `.backup` à chaque enregistrement (main).
  */
-export default function RawFilesTab() {
+function RawFilesTab() {
   const { t } = useTranslation();
   const { notify } = useNotification();
   const { state } = useServer();
@@ -154,3 +154,6 @@ export default function RawFilesTab() {
     </Stack>
   );
 }
+
+// Sans props : en memo, un changement d'onglet de la page ne le re-rend pas.
+export default memo(RawFilesTab);

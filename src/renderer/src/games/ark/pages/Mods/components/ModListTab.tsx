@@ -1,8 +1,8 @@
-import { Divider, Stack, Typography } from "@mui/material";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { ArkModInfo } from "@shared/types";
-import ScrollPanel from "../../../../../components/common/ScrollPanel";
-import { skeletonRows } from "../../../../../components/common/LoadingSkeleton";
+import ModListPanel from "../../../../../components/mods/ModListPanel";
+import { matchesModSearch } from "../../../../../components/mods/modSearch";
 import type { useArkMods } from "../hooks/useArkMods";
 import AddModField from "./AddModField";
 import ArkModRow from "./ArkModRow";
@@ -26,11 +26,26 @@ interface Props {
   mods: ReturnType<typeof useArkMods>;
 }
 
-// Onglet Liste : ajout par ID, liste ordonnée du serveur, mods téléchargés
-// hors liste. Fragment : les blocs prennent l'espacement de la page.
+// Onglet Liste : ajout par ID, liste ordonnée du serveur (liste commune
+// aux pages Mods, components/mods/ModListPanel), mods téléchargés hors
+// liste. Fragment : les blocs prennent l'espacement de la page.
 export default function ModListTab({ mods }: Props) {
   const { t } = useTranslation();
+  const [search, setSearch] = useState("");
   const list = mods.data?.mods ?? [];
+  const query = search.trim();
+  // L'ordre de chargement reste celui de la liste complète : monter ou
+  // descendre pendant une recherche agit sur la vraie position.
+  const visible = list
+    .map((mod, index) => ({ mod, index }))
+    .filter(
+      ({ mod }) =>
+        !query ||
+        matchesModSearch(
+          [mod.info?.name ?? "", ...(mod.info?.authors ?? []), `${mod.id}`],
+          query,
+        ),
+    );
 
   return (
     <>
@@ -40,50 +55,47 @@ export default function ModListTab({ mods }: Props) {
         onAdd={mods.add}
       />
 
-      <ScrollPanel minHeight={200}>
-        <Stack divider={<Divider />}>
-          {mods.loading
-            ? skeletonRows(
-                <ArkModRow
-                  id={PLACEHOLDER.id}
-                  info={PLACEHOLDER}
-                  actions={null}
-                />,
-                3,
-              )
-            : list.map((mod, index) => (
-                <ArkModRow
-                  key={mod.id}
-                  id={mod.id}
-                  info={mod.info}
-                  dimmed={!mod.enabled}
-                  actions={
-                    <ListedModActions
-                      enabled={mod.enabled}
-                      websiteUrl={mod.info?.websiteUrl ?? null}
-                      isFirst={index === 0}
-                      isLast={index === list.length - 1}
-                      disabled={mods.busy}
-                      onToggle={(enabled) => void mods.toggle(mod.id, enabled)}
-                      onMove={(offset) => mods.move(mod.id, offset)}
-                      onRemove={() => void mods.remove(mod.id)}
-                    />
-                  }
-                />
-              ))}
-        </Stack>
-        {!mods.loading && list.length === 0 && (
-          <Typography variant="body2" sx={{ color: "text.secondary", py: 2 }}>
-            {t("arkMods.list.empty")}
-          </Typography>
-        )}
-        <Typography
-          variant="caption"
-          sx={{ color: "text.secondary", display: "block", mt: 2 }}
-        >
-          {t("arkMods.list.hint")}
-        </Typography>
-      </ScrollPanel>
+      <ModListPanel
+        search={search}
+        onSearch={setSearch}
+        searchPlaceholder={t("arkMods.list.search")}
+        count={
+          query
+            ? t("arkMods.list.countFiltered", {
+                shown: visible.length,
+                total: list.length,
+              })
+            : t("arkMods.list.count", { count: list.length })
+        }
+        loading={mods.loading}
+        skeletonRow={
+          <ArkModRow id={PLACEHOLDER.id} info={PLACEHOLDER} actions={null} />
+        }
+        emptyText={t("arkMods.list.empty")}
+        noMatchText={t("arkMods.list.noMatch")}
+        footer={t("arkMods.list.hint")}
+      >
+        {visible.map(({ mod, index }) => (
+          <ArkModRow
+            key={mod.id}
+            id={mod.id}
+            info={mod.info}
+            dimmed={!mod.enabled}
+            actions={
+              <ListedModActions
+                enabled={mod.enabled}
+                websiteUrl={mod.info?.websiteUrl ?? null}
+                isFirst={index === 0}
+                isLast={index === list.length - 1}
+                disabled={mods.busy}
+                onToggle={(enabled) => void mods.toggle(mod.id, enabled)}
+                onMove={(offset) => mods.move(mod.id, offset)}
+                onRemove={() => void mods.remove(mod.id)}
+              />
+            }
+          />
+        ))}
+      </ModListPanel>
 
       <DownloadedModsList
         mods={mods.data?.downloadedNotListed ?? []}

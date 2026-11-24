@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import {
   Alert,
   Button,
@@ -37,7 +37,7 @@ const STACK_COLUMNS: TableColumn<ArkStackSize>[] = [
  * Onglet Listes : listes de Game.ini éditées en tableaux, chacune
  * enregistrée à part. Les autres listes restent dans l'éditeur brut.
  */
-export default function ListsTab() {
+function ListsTab() {
   const { t } = useTranslation();
   const lists = useGameLists();
   const [list, setList] = useState<ArkListName>("stats");
@@ -130,3 +130,6 @@ export default function ListsTab() {
     </Stack>
   );
 }
+
+// Sans props : en memo, un changement d'onglet de la page ne le re-rend pas.
+export default memo(ListsTab);
