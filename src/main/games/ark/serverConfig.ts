@@ -4,6 +4,7 @@ import type { StopConfig } from "../../server/ServerManager";
 import type { GamePort } from "../ports";
 import { readRconSettings } from "./gameUserSettingsIni";
 import { splitArgsMods } from "./mods/argsMods";
+import { launchOptionArgs } from "./config/launchOptions";
 
 export const arkServerConfig = {
   // Lancé directement, sans lanceur (vérifié). Chemin relatif au dossier
@@ -40,12 +41,18 @@ export const arkServerConfig = {
   // passe restent dans GameUserSettings.ini. -WinLiveMaxPlayers est le seul
   // réglage des joueurs max pris en compte (?MaxPlayers et l'INI non).
   buildArgs(launchConfig: ArkLaunchConfig): string[] {
+    const custom = splitArgsMods(launchConfig.customArgs);
+    const launchOptions = launchOptionArgs(
+      launchConfig.launchOptions,
+      custom.rest,
+    );
     const options = [
       launchConfig.map,
       "listen",
       `Port=${launchConfig.port}`,
       `QueryPort=${launchConfig.queryPort}`,
       `RCONPort=${launchConfig.rconPort}`,
+      ...launchOptions.queryOptions,
     ];
     const args = [
       options.join("?"),
@@ -55,13 +62,13 @@ export const arkServerConfig = {
     // Un seul -mods= : ceux de la liste (activés, dans l'ordre), puis ceux
     // encore écrits dans les arguments perso (la page Mods propose de les
     // déplacer dans la liste).
-    const custom = splitArgsMods(launchConfig.customArgs);
     const modIds = launchConfig.mods
       .filter((mod) => mod.enabled)
       .map((mod) => mod.id);
     for (const id of custom.ids) if (!modIds.includes(id)) modIds.push(id);
     if (modIds.length > 0) args.push(`-mods=${modIds.join(",")}`);
-    args.push(...custom.rest);
+    // Options de l'onglet Réglages de jeu, puis les arguments perso.
+    args.push(...launchOptions.dashArgs, ...custom.rest);
     return args;
   },
 

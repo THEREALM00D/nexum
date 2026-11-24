@@ -1,0 +1,56 @@
+export default {
+  arkConfigTabs: {
+    general: "General",
+    settings: "Game settings",
+    lists: "Lists",
+    raw: "Raw files",
+  },
+  arkRawUi: {
+    notice:
+      "The file as it is, for what the other tabs don't cover (other lists, mod sections). The previous file is kept as .backup on every save.",
+    saved: "File saved",
+    empty: "Empty file: the server creates it at its first start.",
+  },
+  arkSettingsUi: {
+    notice:
+      "A setting left empty keeps the game's default value and isn't written to the files. Changes apply at the server's next start.",
+    search: "Search a setting (name, description or key)…",
+    noResults: 'No setting matches "{{query}}".',
+    defaultValue: "Default: {{value}}",
+    defaultUnknown: "Game default",
+    defaultOption: "Default ({{value}})",
+    modified: "Modified",
+    reset: "Back to the default value",
+    remove: "Remove from the file",
+    save: "Save",
+    saveCount: "Save ({{count}})",
+    saved: "Settings saved",
+    discard: "Discard changes",
+    count: "{{count}} setting",
+    count_other: "{{count}} settings",
+    sources: {
+      gus: "GameUserSettings.ini",
+      game: "Game.ini",
+      cli: "Command line",
+    },
+    otherHint:
+      "Settings found in the files but unknown to Nexum (added by a game update or by hand). They are kept as they are.",
+    groups: {
+      rates: "Rates and difficulty",
+      players: "Players",
+      creatures: "Creatures",
+      breeding: "Breeding",
+      structures: "Structures",
+      rules: "PvP and PvE",
+      tribes: "Tribes and alliances",
+      world: "World, day and night",
+      crafting: "Crafting and engrams",
+      transfers: "Transfers (cluster)",
+      features: "Cryopods, bunkers and outposts",
+      admin: "Administration",
+      interface: "Interface and chat",
+      launch: "Launch options",
+      other: "Other settings",
+    },
+  },
+};

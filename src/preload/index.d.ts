@@ -29,6 +29,10 @@ import type {
   ArkSettings,
   ArkMod,
   ArkModsState,
+  ArkSettingsState,
+  ArkSettingChange,
+  ArkGameLists,
+  ArkListName,
   ArkModSearchParams,
   ArkModSearchPage,
   ArkModCategory,
@@ -426,6 +430,25 @@ interface API {
     read: () => Promise<ArkSettings>;
     write: (
       settings: ArkSettings,
+    ) => Promise<{ success: boolean; error?: string }>;
+  };
+  arkSettings: {
+    read: (serverId: string) => Promise<ArkSettingsState>;
+    write: (
+      serverId: string,
+      changes: ArkSettingChange[],
+    ) => Promise<{ success: boolean; error?: string }>;
+    readLists: (serverId: string) => Promise<ArkGameLists>;
+    writeList: (
+      serverId: string,
+      list: ArkListName,
+      data: unknown,
+    ) => Promise<{ success: boolean; error?: string }>;
+    readRaw: (serverId: string, file: "gus" | "game") => Promise<string>;
+    writeRaw: (
+      serverId: string,
+      file: "gus" | "game",
+      text: string,
     ) => Promise<{ success: boolean; error?: string }>;
   };
   arkMods: {

@@ -17,7 +17,11 @@ After **Start**, the server takes one to two minutes to be ready: wait for the l
 
 ## Configuration
 
-The **Configuration** page mixes two places:
+The **Configuration** page has four tabs: **General**, **Game settings**, **Lists** and **Raw files**.
+
+### General
+
+The essential settings, from two places:
 
 | Section                   | What it contains                                                    | Where it goes             |
 | ------------------------- | ------------------------------------------------------------------- | ------------------------- |
@@ -32,9 +36,37 @@ The **Configuration** page mixes two places:
 
 **Modded map** (for example Svartalfheim): type its exact name in the **Map** field (`Svartalfheim_WP`; the map's CurseForge description usually gives it) and add the map's mod on the [**Mods**](#mods) page. Letters, digits and `_` only.
 
-**Stop the server before changing the configuration**: the server rewrites `GameUserSettings.ini` when it stops, with the values it read at startup. Nexum locks the **Save** button while the server is running. Before every save, the previous file is kept as `GameUserSettings.ini.backup`. The other settings of the INI file (and `Game.ini`) are left untouched: edit them by hand while the server is stopped.
-
 **Never put a password in the extra arguments**: the server copies its whole command line into its log.
+
+### Game settings
+
+All the ARK: Survival Ascended settings (about 380), grouped by theme: rates and difficulty, players, creatures, breeding, structures, PvP and PvE, tribes, world and day/night, crafting, transfers, cryopods and bunkers, administration, interface, and launch options. Search by name, description or key; hover the ⓘ icon for the description and the game's default value.
+
+- A setting left **empty** keeps the game's default value and is **not written** to the files. A green dot marks a written setting; the ↺ button puts it back to the default (the line is removed).
+- Only the settings you change are written: the rest of the files (unknown keys, mod sections) stays as it is.
+- **Launch options** (`-ServerPlatform`, `-clusterid`…) are added to the command line. If the same option is already in the extra launch arguments (General tab), that one wins.
+- **Other settings**: settings found in the files that Nexum doesn't know yet (added by a game update or by hand). You can change their value.
+
+### Lists
+
+The lists of `Game.ini`, each saved on its own:
+
+- **Stats per level**: the multiplier of each stat point, for players, wild creatures and tamed creatures. Don't use 0 (the game replaces it with 1): 0.01 almost turns the gain off.
+- **Stack sizes**: stack size per item class (`PrimalItemResource_Stone_C`…), with or without the global multiplier.
+- **Engrams**: hide an engram, change its cost or level, remove its prerequisite; automatic unlocks; engram points per level; "only engrams in the list".
+- **Spawns**: add, remove or replace the creatures of a spawn area (`DinoSpawnEntriesBeach_C`…), spawn weight per creature, replace one creature with another.
+
+An entry Nexum can't read is kept as it is and stays editable in **Raw files**.
+
+### Raw files
+
+`GameUserSettings.ini` or `Game.ini` as they are, for everything the other tabs don't cover (other `Game.ini` lists, mod sections).
+
+### Before saving
+
+**Stop the server before changing the configuration**: the server rewrites `GameUserSettings.ini` and `Game.ini` when it stops, with the values it read at startup (tested). Nexum locks every tab while the server is running, and changes apply at the next start. Before every save, the previous file is kept as `.backup` (`GameUserSettings.ini.backup`, `Game.ini.backup`).
+
+Nexum reads keys without case sensitivity, like the game: `serverPVE=True` written by hand is the same setting as `ServerPVE`.
 
 ## Mods
 

@@ -17,7 +17,11 @@ Après **Démarrer**, le serveur met une à deux minutes à être prêt : attend
 
 ## Configuration
 
-La page **Configuration** regroupe deux endroits :
+La page **Configuration** a quatre onglets : **Général**, **Réglages de jeu**, **Listes** et **Fichiers bruts**.
+
+### Général
+
+Les réglages essentiels, venant de deux endroits :
 
 | Section                 | Contenu                                                                    | Où c'est écrit                   |
 | ----------------------- | -------------------------------------------------------------------------- | -------------------------------- |
@@ -32,9 +36,37 @@ La page **Configuration** regroupe deux endroits :
 
 **Carte moddée** (par exemple Svartalfheim) : tapez son nom exact dans le champ **Carte** (`Svartalfheim_WP` ; la description CurseForge de la carte le donne en général) et ajoutez le mod de la carte dans la page [**Mods**](#mods). Lettres, chiffres et `_` seulement.
 
-**Arrêtez le serveur avant de changer la configuration** : le serveur réécrit `GameUserSettings.ini` quand il s'arrête, avec les valeurs lues au démarrage. Nexum bloque le bouton **Sauvegarder** tant que le serveur tourne. Avant chaque enregistrement, le fichier précédent est gardé en `GameUserSettings.ini.backup`. Les autres réglages du fichier INI (et `Game.ini`) ne sont pas touchés : modifiez-les à la main, serveur arrêté.
-
 **Ne mettez jamais de mot de passe dans les arguments supplémentaires** : le serveur recopie toute sa ligne de commande dans son journal.
+
+### Réglages de jeu
+
+Tous les réglages d'ARK: Survival Ascended (environ 380), rangés par thème : taux et difficulté, joueurs, créatures, élevage, structures, PvP et PvE, tribus, monde et jour/nuit, fabrication, transferts, cryopods et bunkers, administration, interface, et options de lancement. Recherche par nom, description ou clé ; survolez l'icône ⓘ pour la description et la valeur par défaut du jeu.
+
+- Un réglage laissé **vide** garde la valeur par défaut du jeu et n'est **pas écrit** dans les fichiers. Un point vert signale un réglage écrit ; le bouton ↺ le remet à sa valeur par défaut (la ligne est retirée).
+- Seuls les réglages que vous modifiez sont écrits : le reste des fichiers (clés inconnues, sections des mods) ne bouge pas.
+- Les **options de lancement** (`-ServerPlatform`, `-clusterid`…) sont ajoutées à la ligne de commande. Si la même option est déjà dans les arguments de lancement supplémentaires (onglet Général), c'est celle-ci qui l'emporte.
+- **Autres réglages** : réglages trouvés dans les fichiers que Nexum ne connaît pas encore (ajoutés par une mise à jour du jeu ou à la main). Vous pouvez changer leur valeur.
+
+### Listes
+
+Les listes de `Game.ini`, enregistrées chacune à part :
+
+- **Stats par niveau** : multiplicateur de chaque point de stat, pour les joueurs, les créatures sauvages et apprivoisées. Ne mettez pas 0 (le jeu le remplace par 1) : 0,01 désactive presque le gain.
+- **Tailles de pile** : taille de pile par classe d'objet (`PrimalItemResource_Stone_C`…), avec ou sans le multiplicateur général.
+- **Engrammes** : masquer un engramme, changer son coût ou son niveau, retirer son prérequis ; déblocages automatiques ; points d'engramme par niveau ; « seulement les engrammes de la liste ».
+- **Spawns** : ajouter, retirer ou remplacer les créatures d'une zone d'apparition (`DinoSpawnEntriesBeach_C`…), poids d'apparition par créature, remplacer une créature par une autre.
+
+Une entrée que Nexum ne sait pas lire est gardée telle quelle et reste modifiable dans **Fichiers bruts**.
+
+### Fichiers bruts
+
+`GameUserSettings.ini` ou `Game.ini` tels quels, pour tout ce que les autres onglets ne couvrent pas (autres listes de `Game.ini`, sections des mods).
+
+### Avant d'enregistrer
+
+**Arrêtez le serveur avant de changer la configuration** : le serveur réécrit `GameUserSettings.ini` et `Game.ini` quand il s'arrête, avec les valeurs lues au démarrage (testé). Nexum bloque tous les onglets tant que le serveur tourne, et les changements s'appliquent au prochain démarrage. Avant chaque enregistrement, le fichier précédent est gardé en `.backup` (`GameUserSettings.ini.backup`, `Game.ini.backup`).
+
+Nexum lit les clés sans tenir compte de la casse, comme le jeu : `serverPVE=True` écrit à la main est le même réglage que `ServerPVE`.
 
 ## Mods
 

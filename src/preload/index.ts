@@ -433,6 +433,21 @@ const api = {
     write: (settings: Record<string, unknown>) =>
       ipcRenderer.invoke("arkconfig:write", settings),
   },
+  // Réglages de jeu et fichiers bruts de la page Config ARK (serverId explicite)
+  arkSettings: {
+    read: (serverId: string) =>
+      ipcRenderer.invoke("ark:settings:read", serverId),
+    write: (serverId: string, changes: unknown[]) =>
+      ipcRenderer.invoke("ark:settings:write", serverId, changes),
+    readLists: (serverId: string) =>
+      ipcRenderer.invoke("ark:lists:read", serverId),
+    writeList: (serverId: string, list: string, data: unknown) =>
+      ipcRenderer.invoke("ark:lists:write", serverId, list, data),
+    readRaw: (serverId: string, file: string) =>
+      ipcRenderer.invoke("ark:rawIni:read", serverId, file),
+    writeRaw: (serverId: string, file: string, text: string) =>
+      ipcRenderer.invoke("ark:rawIni:write", serverId, file, text),
+  },
   // Mods CurseForge d'un serveur ARK (serverId explicite)
   arkMods: {
     get: (serverId: string) => ipcRenderer.invoke("ark:mods:get", serverId),

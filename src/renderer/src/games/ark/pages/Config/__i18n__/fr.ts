@@ -1,7 +1,7 @@
 export default {
   arkConfig: {
     title: "Configuration",
-    subtitle: "GameUserSettings.ini + ligne de commande",
+    subtitle: "GameUserSettings.ini, Game.ini et ligne de commande",
     notice:
       "Nom de session, mots de passe, PvE et RCON sont écrits dans GameUserSettings.ini ; carte, joueurs max, ports et BattlEye passent par la ligne de commande. Les autres réglages de l'INI se modifient à la main, serveur arrêté : le serveur réécrit le fichier à l'arrêt.",
     groups: {
