@@ -109,7 +109,7 @@ Renderer → window.api.xxx() → Preload (contextBridge) → ipcMain.handle() �
 
 ### Multi-jeux (GamePlugin)
 
-Chaque jeu = un manifest typé `games/<jeu>/index.ts` (pages, `supportedPages`, i18n, `requirements`) côté renderer + un dossier `src/main/games/<jeu>/` + des entrées dans les `Record<GameType, …>`. `App.tsx`, la Sidebar, `i18n/index.ts`, l'assistant, le dialogue d'ajout de serveur, la page Installation et la détection d'un dossier existant lisent la liste des jeux : **aucun nom de jeu en dur**. Valheim est le modèle (le plus testé). Ajouter un jeu : skill **`/new-game`**.
+Chaque jeu = un manifest typé `games/<jeu>/index.ts` (pages, `supportedPages`, i18n, `requirements`, `existingServer`) côté renderer + un dossier `src/main/games/<jeu>/` + des entrées dans les `Record<GameType, …>`. `App.tsx`, la Sidebar, `i18n/index.ts`, l'assistant, le dialogue d'ajout de serveur, la page Installation et la détection d'un dossier existant lisent la liste des jeux : **aucun nom de jeu en dur**. Valheim est le modèle (le plus testé). Ajouter un jeu : skill **`/new-game`**.
 
 Pages partagées par tous les jeux : `components/server/Logs`, `components/backup/BackupPage`, `components/schedule/RestartSchedulePage`, `components/config/ConfigPage`, `components/players/`, `components/server/JoinServerCard`, `SimpleDashboard`.
 

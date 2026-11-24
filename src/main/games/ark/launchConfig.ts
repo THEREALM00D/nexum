@@ -20,6 +20,7 @@ export const DEFAULT_ARK_CONFIG: ArkLaunchConfig = {
   maxPlayers: 70,
   battlEye: true,
   customArgs: "",
+  saveDirectory: "",
   mods: [],
   launchOptions: {},
 };
@@ -50,6 +51,10 @@ const isPlayerCount = (value: unknown): value is number =>
   Number(value) <= ARK_MAX_PLAYERS;
 const isMapName = (value: unknown): value is string =>
   typeof value === "string" && ARK_MAP_NAME.test(value);
+// Même règle que la carte : finit dans un chemin (« .. » interdit) et dans
+// la chaîne d'options `?`. Vide = SavedArks.
+export const isSaveDirectory = (value: unknown): value is string =>
+  value === "" || isMapName(value);
 
 /** Erreur codée pour la page Config, null si la config est valide. */
 export function validateArkLaunch(
@@ -62,6 +67,11 @@ export function validateArkLaunch(
   if (!ports.every(isPort)) return appError("PORT_INVALID");
   // Jeu et requête sont en UDP ; RCON est en TCP.
   if (launch.port === launch.queryPort) return appError("ARK_PORTS_SAME");
+  if (!isSaveDirectory(launch.saveDirectory)) {
+    return appError("ARK_SAVE_DIR_INVALID", {
+      name: String(launch.saveDirectory),
+    });
+  }
   if (!isPlayerCount(launch.maxPlayers)) {
     return appError("ARK_MAX_PLAYERS_INVALID", { max: ARK_MAX_PLAYERS });
   }
@@ -99,6 +109,11 @@ export function sanitizeArkLaunch(
     ),
     battlEye: merged.battlEye !== false,
     customArgs: typeof merged.customArgs === "string" ? merged.customArgs : "",
+    saveDirectory: pick(
+      isSaveDirectory(merged.saveDirectory),
+      merged.saveDirectory,
+      "",
+    ),
     mods: sanitizeArkMods(merged.mods),
     launchOptions: sanitizeLaunchOptions(merged.launchOptions),
   };

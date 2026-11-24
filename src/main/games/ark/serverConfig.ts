@@ -12,13 +12,14 @@ export const arkServerConfig = {
   exeName: join("ShooterGame", "Binaries", "Win64", "ArkAscendedServer.exe"),
 
   // Un dossier par carte : <Carte>.ark + copies de retour arrière du jeu.
-  // La carte est validée à la lecture de la config (sanitizeArkLaunch).
+  // Avec ?AltSaveDirectoryName=X : Saved/X/<Carte> (vérifié). Carte et
+  // dossier validés à la lecture de la config (sanitizeArkLaunch).
   getSavePath(serverPath: string, launchConfig: ArkLaunchConfig): string {
     return join(
       serverPath,
       "ShooterGame",
       "Saved",
-      "SavedArks",
+      launchConfig.saveDirectory || "SavedArks",
       launchConfig.map,
     );
   },
@@ -52,6 +53,9 @@ export const arkServerConfig = {
       `Port=${launchConfig.port}`,
       `QueryPort=${launchConfig.queryPort}`,
       `RCONPort=${launchConfig.rconPort}`,
+      ...(launchConfig.saveDirectory
+        ? [`AltSaveDirectoryName=${launchConfig.saveDirectory}`]
+        : []),
       ...launchOptions.queryOptions,
     ];
     const args = [

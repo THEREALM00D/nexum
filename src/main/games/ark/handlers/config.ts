@@ -21,8 +21,16 @@ export function registerArkHandlers(ctx: IpcContext): void {
   // GameUserSettings.ini + ligne de commande de Nexum.
   ipcMain.handle("arkconfig:read", (): ArkSettings => {
     // Les mods ont leur page : hors de la vue de la page Config.
-    const { map, port, queryPort, rconPort, maxPlayers, battlEye, customArgs } =
-      ctx.getArkConfig();
+    const {
+      map,
+      port,
+      queryPort,
+      rconPort,
+      maxPlayers,
+      battlEye,
+      customArgs,
+      saveDirectory,
+    } = ctx.getArkConfig();
     const launch = {
       map,
       port,
@@ -31,6 +39,7 @@ export function registerArkHandlers(ctx: IpcContext): void {
       maxPlayers,
       battlEye,
       customArgs,
+      saveDirectory,
     };
     const ini = readGameUserSettings(ctx.getActiveServerPath());
     return {
@@ -66,6 +75,7 @@ export function registerArkHandlers(ctx: IpcContext): void {
       maxPlayers: Number(settings.maxPlayers),
       battlEye: settings.battlEye === true,
       customArgs: String(settings.customArgs ?? ""),
+      saveDirectory: String(settings.saveDirectory ?? "").trim(),
     };
     const invalid = validateArkLaunch(launch);
     if (invalid) return { success: false, error: invalid };

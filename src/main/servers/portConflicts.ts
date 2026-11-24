@@ -33,32 +33,46 @@ export function detectPortConflicts(
   if (!targetPorts) return [];
 
   const statuses = managers.statuses();
+  const running = all.filter((other) => {
+    const status = statuses[other.id];
+    return (
+      other.id !== startingServerId &&
+      (status === "running" || status === "starting")
+    );
+  });
+  return findPortClashes(targetPorts, running, readPorts);
+}
+
+/**
+ * Ports de `targetPorts` déjà pris par un des `others` : même numéro et
+ * même protocole. Aussi utilisé à l'import d'un serveur ARK, contre tous
+ * les serveurs (lancés ou non).
+ */
+export function findPortClashes(
+  targetPorts: GamePort[],
+  others: Server[],
+  readPorts: (server: Server) => GamePort[] | null,
+): PortConflict[] {
   const conflicts: PortConflict[] = [];
-
-  for (const other of all) {
-    if (other.id === startingServerId) continue;
-    const otherStatus = statuses[other.id];
-    if (otherStatus !== "running" && otherStatus !== "starting") continue;
-
+  for (const other of others) {
     const otherPorts = readPorts(other);
     if (!otherPorts) continue;
-
-    for (const tp of targetPorts) {
+    for (const target of targetPorts) {
       const clash = otherPorts.some(
-        (op) => op.port === tp.port && op.protocol === tp.protocol,
+        (port) =>
+          port.port === target.port && port.protocol === target.protocol,
       );
       if (clash) {
         conflicts.push({
           serverId: other.id,
           serverName: other.name,
-          port: tp.port,
-          protocol: tp.protocol,
-          label: tp.label,
+          port: target.port,
+          protocol: target.protocol,
+          label: target.label,
         });
       }
     }
   }
-
   return conflicts;
 }
 

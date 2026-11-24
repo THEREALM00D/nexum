@@ -54,6 +54,7 @@ export const FIELD_GROUPS: FieldGroup[] = [
     labelKey: "arkConfig.groups.advanced",
     fields: [
       { key: "battlEye", type: "boolean" },
+      { key: "saveDirectory", type: "text" },
       { key: "customArgs", type: "text" },
     ],
   },

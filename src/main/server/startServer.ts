@@ -43,7 +43,10 @@ export function logActiveValheimMods(
 }
 
 /** Ports d'un serveur d'après sa config, null si elle est illisible. */
-function readServerPorts(ctx: IpcContext, server: Server): GamePort[] | null {
+export function readServerPorts(
+  ctx: IpcContext,
+  server: Server,
+): GamePort[] | null {
   if (!server.path) return null;
   try {
     return getGamePorts(

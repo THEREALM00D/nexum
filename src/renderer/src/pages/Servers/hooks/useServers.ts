@@ -5,7 +5,7 @@ import { useServer } from "../../../context/ServerContext";
 import { useNotification } from "../../../context/NotificationContext";
 import { serverService } from "../../../services/serverService";
 import type { ServerFormValues } from "../components/ServerDialog";
-import { importValheimWorld } from "../utils/importValheimWorld";
+import { getGamePlugin } from "../../../games/registry";
 import { errorMessage } from "../../../utils/appErrorMessage";
 import { appErrorMessage } from "../../../utils/appErrorMessage";
 
@@ -30,7 +30,11 @@ export function useServers() {
 
   const closeDialog = () => setDialogOpen(false);
 
-  const handleSubmit = async (values: ServerFormValues) => {
+  /** `importState` : état du panneau de reprise d'un dossier existant. */
+  const handleSubmit = async (
+    values: ServerFormValues,
+    importState: unknown = null,
+  ) => {
     try {
       if (editing) {
         await window.api.servers.update(editing.id, values);
@@ -38,13 +42,26 @@ export function useServers() {
       } else {
         const created = await window.api.servers.create(values);
         notify(t("servers.notify.created", { name: created.name }), "success");
-        if (created.gameType === "valheim")
-          await importValheimWorld(created.id);
+        await applyExistingServer(created, importState);
       }
       await refreshServers();
       setDialogOpen(false);
     } catch (e) {
       notify(errorMessage(t, e), "error");
+    }
+  };
+
+  // Serveur déjà créé : une reprise ratée est signalée sans bloquer la
+  // fermeture (un 2e clic créerait un doublon). Elle se refait depuis la
+  // page du jeu.
+  const applyExistingServer = async (created: Server, importState: unknown) => {
+    try {
+      await getGamePlugin(created.gameType)?.existingServer?.apply(
+        created.id,
+        importState,
+      );
+    } catch (error) {
+      notify(errorMessage(t, error), "error");
     }
   };
 

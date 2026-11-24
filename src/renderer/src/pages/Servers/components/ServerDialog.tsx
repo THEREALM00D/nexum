@@ -16,6 +16,7 @@ import { useTranslation } from "react-i18next";
 import type { GameType, Server } from "@shared/types";
 import { useExeDetection } from "../../../hooks/useExeDetection";
 import ExeStatusHint from "./ExeStatusHint";
+import ExistingServerPanel from "./ExistingServerPanel";
 import FolderField from "../../../components/common/FolderField";
 import CheckboxField from "../../../components/common/CheckboxField";
 import ColorPicker from "./ColorPicker";
@@ -35,7 +36,7 @@ interface Props {
   open: boolean;
   initial: Server | null;
   onClose: () => void;
-  onSubmit: (values: ServerFormValues) => Promise<void>;
+  onSubmit: (values: ServerFormValues, importState: unknown) => Promise<void>;
 }
 
 export default function ServerDialog({
@@ -54,6 +55,8 @@ export default function ServerDialog({
     autoRestart: false,
   });
   const [submitting, setSubmitting] = useState(false);
+  const [importState, setImportState] = useState<unknown>(null);
+  const [importPending, setImportPending] = useState(false);
   const exeStatus = useExeDetection(open, values.path, values.gameType);
 
   useEffect(() => {
@@ -81,13 +84,14 @@ export default function ServerDialog({
   const handleSubmit = async () => {
     setSubmitting(true);
     try {
-      await onSubmit(values);
+      await onSubmit(values, initial ? null : importState);
     } finally {
       setSubmitting(false);
     }
   };
 
-  const canSubmit = values.name.trim() && values.path.trim() && !submitting;
+  const canSubmit =
+    values.name.trim() && values.path.trim() && !submitting && !importPending;
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
@@ -136,6 +140,17 @@ export default function ServerDialog({
               ))}
             </Select>
           </FormControl>
+
+          {/* Après le choix du jeu : le résumé de reprise peut être long. */}
+          {!initial && (
+            <ExistingServerPanel
+              gameType={values.gameType}
+              path={values.path}
+              exeStatus={exeStatus}
+              onChange={setImportState}
+              onPendingChange={setImportPending}
+            />
+          )}
 
           <ColorPicker
             name={values.name}

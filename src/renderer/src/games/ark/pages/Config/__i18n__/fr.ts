@@ -31,7 +31,7 @@ export default {
       map: {
         label: "Carte",
         description:
-          "Un monde par carte (dossier SavedArks/<carte>). Changer de carte ne supprime pas l'ancien monde. Certaines cartes sont payantes : les joueurs doivent les posséder. Carte moddée : tapez son nom exact (par exemple Svartalfheim_WP) et ajoutez son mod dans la page Mods.",
+          "Un monde par carte (dossier SavedArks/<carte>, ou celui du champ Dossier du monde). Changer de carte ne supprime pas l'ancien monde. Certaines cartes sont payantes : les joueurs doivent les posséder. Carte moddée : tapez son nom exact (par exemple Svartalfheim_WP) et ajoutez son mod dans la page Mods.",
       },
       maxPlayers: {
         label: "Joueurs max",
@@ -77,6 +77,11 @@ export default {
         label: "BattlEye",
         description:
           "Anti-triche. Désactivé : le serveur est lancé avec -NoBattlEye.",
+      },
+      saveDirectory: {
+        label: "Dossier du monde (AltSaveDirectoryName)",
+        description:
+          "Vide : le monde est dans Saved/SavedArks/<carte>. Sinon dans Saved/<dossier>/<carte>, par exemple pour plusieurs serveurs de la même carte dans un cluster. Changer ce dossier ne déplace pas le monde.",
       },
       customArgs: {
         label: "Arguments supplémentaires",

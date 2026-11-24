@@ -9,7 +9,7 @@ Nexum runs the official **ARK: Survival Ascended Dedicated Server** (free, Steam
 Use the setup wizard (or **Servers → Add server**) and pick **ARK: Survival Ascended**:
 
 - **Install a new server**: Nexum downloads the server with SteamCMD (about 13 GB).
-- **I already have a server**: choose the folder that contains `ShooterGame` (Nexum looks for `ShooterGame\Binaries\Win64\ArkAscendedServer.exe`).
+- **I already have a server**: choose the folder that contains `ShooterGame` (Nexum looks for `ShooterGame\Binaries\Win64\ArkAscendedServer.exe`). Nexum takes over the map, ports, mods and options from the old launch line: see [Moving an existing ARK server to Nexum](ark-import.md).
 
 Requirements: 64-bit Windows and a powerful PC. The server uses about **10 GB of RAM** on its own once started, with no player connected; keep **20 GB** of free disk space.
 
@@ -23,12 +23,12 @@ The **Configuration** page has four tabs: **General**, **Game settings**, **List
 
 The essential settings, from two places:
 
-| Section                   | What it contains                                                    | Where it goes             |
-| ------------------------- | ------------------------------------------------------------------- | ------------------------- |
-| Server                    | Session name, map, max players, PvE mode                            | INI file and command line |
-| Access and administration | Server password, admin password, RCON                               | `GameUserSettings.ini`    |
-| Network                   | Game port (UDP 7777), query port (UDP 27015), RCON port (TCP 27020) | Command line              |
-| Advanced                  | BattlEye, extra launch arguments                                    | Command line              |
+| Section                   | What it contains                                                        | Where it goes             |
+| ------------------------- | ----------------------------------------------------------------------- | ------------------------- |
+| Server                    | Session name, map, max players, PvE mode                                | INI file and command line |
+| Access and administration | Server password, admin password, RCON                                   | `GameUserSettings.ini`    |
+| Network                   | Game port (UDP 7777), query port (UDP 27015), RCON port (TCP 27020)     | Command line              |
+| Advanced                  | BattlEye, world folder (`AltSaveDirectoryName`), extra launch arguments | Command line              |
 
 `GameUserSettings.ini` is in `ShooterGame\Saved\Config\WindowsServer`. The session name, passwords, PvE mode and RCON are written there; the map, max players, ports and BattlEye go on the command line. Max players only works on the command line: the server ignores and overwrites the value in the INI file.
 

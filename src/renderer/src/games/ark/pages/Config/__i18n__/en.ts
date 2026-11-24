@@ -31,7 +31,7 @@ export default {
       map: {
         label: "Map",
         description:
-          "One world per map (SavedArks/<map> folder). Switching maps doesn't delete the old world. Some maps are paid: players must own them. Modded map: type its exact name (for example Svartalfheim_WP) and add its mod on the Mods page.",
+          "One world per map (SavedArks/<map> folder, or the one of the World folder field). Switching maps doesn't delete the old world. Some maps are paid: players must own them. Modded map: type its exact name (for example Svartalfheim_WP) and add its mod on the Mods page.",
       },
       maxPlayers: {
         label: "Max players",
@@ -75,6 +75,11 @@ export default {
       battlEye: {
         label: "BattlEye",
         description: "Anti-cheat. Off: the server starts with -NoBattlEye.",
+      },
+      saveDirectory: {
+        label: "World folder (AltSaveDirectoryName)",
+        description:
+          "Empty: the world is in Saved/SavedArks/<map>. Otherwise in Saved/<folder>/<map>, for example for several servers of the same map in a cluster. Changing this folder doesn't move the world.",
       },
       customArgs: {
         label: "Extra arguments",

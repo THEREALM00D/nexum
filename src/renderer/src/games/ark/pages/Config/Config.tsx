@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Alert, Box, Tab, Tabs } from "@mui/material";
+import { Alert, Box, Button, Stack, Tab, Tabs } from "@mui/material";
+import InputIcon from "@mui/icons-material/Input";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { useTranslation } from "react-i18next";
 import ConfigPage from "../../../../components/config/ConfigPage";
@@ -11,6 +12,7 @@ import { FIELD_GROUPS } from "./fields";
 import SettingsTab from "./settings/SettingsTab";
 import ListsTab from "./lists/ListsTab";
 import RawFilesTab from "./raw/RawFilesTab";
+import LaunchImportDialog from "../../components/launchImport/LaunchImportDialog";
 
 type ConfigTab = "general" | "settings" | "lists" | "raw";
 const TABS: ConfigTab[] = ["general", "settings", "lists", "raw"];
@@ -45,6 +47,10 @@ export default function ArkConfig() {
     </Tabs>
   );
 
+  // Ligne de lancement reprise : tous les onglets relisent leurs fichiers.
+  const [importOpen, setImportOpen] = useState(false);
+  const [revision, setRevision] = useState(0);
+
   const shown = (value: ConfigTab | "advanced") =>
     (value === "advanced" ? tab !== "general" : tab === value)
       ? undefined
@@ -53,7 +59,12 @@ export default function ArkConfig() {
   // Une seule racine : la marge basse de la page (::after d'App.tsx) se
   // place après son dernier enfant.
   return (
-    <Box>
+    <Box key={revision}>
+      <LaunchImportDialog
+        open={importOpen}
+        onClose={() => setImportOpen(false)}
+        onApplied={() => setRevision((current) => current + 1)}
+      />
       <Box sx={shown("general")}>
         <ConfigPage
           titleKey="arkConfig.title"
@@ -68,12 +79,22 @@ export default function ArkConfig() {
           tabs={tabs}
           width={PAGE_WIDTH}
           notice={
-            <Alert
-              severity="info"
-              icon={<InfoOutlinedIcon fontSize="inherit" />}
-            >
-              {t("arkConfig.notice")}
-            </Alert>
+            <Stack spacing={1.5} sx={{ alignItems: "flex-start" }}>
+              <Alert
+                severity="info"
+                icon={<InfoOutlinedIcon fontSize="inherit" />}
+                sx={{ alignSelf: "stretch" }}
+              >
+                {t("arkConfig.notice")}
+              </Alert>
+              <Button
+                variant="outlined"
+                startIcon={<InputIcon />}
+                onClick={() => setImportOpen(true)}
+              >
+                {t("arkLaunchImport.openDialog")}
+              </Button>
+            </Stack>
           }
         />
       </Box>

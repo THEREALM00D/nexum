@@ -94,6 +94,7 @@ See [docs/installation.md](docs/installation.md) for the full guide.
 - [RuneScape: Dragonwilds](docs/dragonwilds.md)
 - [Enshrouded](docs/enshrouded.md)
 - [ARK: Survival Ascended](docs/ark.md)
+- [Moving an existing ARK server to Nexum](docs/ark-import.md)
 - [Moving to another PC](docs/moving.md)
 - [Code signing policy and privacy](docs/code-signing.md)
 - [Technical architecture](CLAUDE.md)

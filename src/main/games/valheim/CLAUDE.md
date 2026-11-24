@@ -13,7 +13,7 @@ Jeu le plus testé : **modèle principal** pour un nouveau jeu. Mods côté UI :
 ## Mondes
 
 - Sauvegardes hors `serverPath` : `%LOCALAPPDATA_LOW%/IronGate/Valheim/worlds_local` ou `savedir` custom.
-- Le nom du monde doit correspondre exactement. `valheim:listExistingWorlds` scanne `worlds_local` (ancien format `<nom>.fwl` à plat **et** dossier `<nom>/`, sans `*_backup*` ni `.old`). Un seul monde à la création d'un serveur → pré-rempli (`importValheimWorld`, `pages/Servers/utils/`) ; sinon `Autocomplete` freeSolo (`useExistingWorlds`).
+- Le nom du monde doit correspondre exactement. `valheim:listExistingWorlds` scanne `worlds_local` (ancien format `<nom>.fwl` à plat **et** dossier `<nom>/`, sans `*_backup*` ni `.old`). Un seul monde à la création d'un serveur → pré-rempli (`importValheimWorld`, `existingServer.apply` du manifest, `src/renderer/src/games/valheim/existingServer/`) ; sinon `Autocomplete` freeSolo (`useExistingWorlds`).
 
 ## Odin-Eye (suivi des joueurs, `OdinEyeApiClient.ts`)
 

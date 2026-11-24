@@ -23,7 +23,7 @@ Ports de chaque jeu via `getGamePorts` (`getPorts()` de chaque `serverConfig.ts`
 
 ## Import d'un serveur déjà installé
 
-Pas de flow dédié : `ServerDialog` accepte un dossier existant. `servers:detectGameType` devine le jeu d'après l'exe à la racine (`detectGameType.ts`, qui lit `exeName` de chaque `serverConfig.ts`), `useExeDetection` + `ExeStatusHint` confirment en direct (`servers:hasExpectedExe`). Palworld/Astroneer/Dragonwilds/Enshrouded : config relue depuis leurs fichiers sous `serverPath`. Valheim : voir `src/main/games/valheim/CLAUDE.md` (nom du monde).
+Pas de flow dédié : `ServerDialog` accepte un dossier existant. `servers:detectGameType` devine le jeu d'après l'exe à la racine (`detectGameType.ts`, qui lit `exeName` de chaque `serverConfig.ts`), `useExeDetection` + `ExeStatusHint` confirment en direct (`servers:hasExpectedExe`). Palworld/Astroneer/Dragonwilds/Enshrouded : config relue depuis leurs fichiers sous `serverPath`. Reprise propre à un jeu : `GamePlugin.existingServer` côté renderer (`Panel` dans l'ajout et l'assistant, `apply` après `servers.create`, voir `src/renderer/src/pages/CLAUDE.md`). Valheim : nom du monde (`src/main/games/valheim/CLAUDE.md`). ARK : ligne de lancement de l'ancien outil (`src/main/games/ark/CLAUDE.md`, « Import d'un serveur existant »).
 
 ## Config persistée (`ServerConfigStore.ts`)
 

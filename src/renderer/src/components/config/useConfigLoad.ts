@@ -4,7 +4,7 @@ import { useServer } from "../../context/ServerContext";
 import { useNotification } from "../../context/NotificationContext";
 import type { ConfigSettings } from "./types";
 
-const isStopped = (status: string) =>
+export const isStopped = (status: string) =>
   status === "stopped" || status === "crashed";
 
 /**

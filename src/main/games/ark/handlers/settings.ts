@@ -8,6 +8,7 @@ import type {
   ArkSettingsState,
 } from "../../../../shared/types";
 import { appError } from "../../../utils/appError";
+import { arkConfigLockedError } from "./configLock";
 import { readIniText, writeIniText } from "../../../utils/iniText";
 import { backupBeforeWrite } from "../../../utils/ini";
 import {
@@ -33,12 +34,7 @@ const isRawFile = (file: unknown): file is RawFile =>
 // Game.ini à l'arrêt avec ce qu'il a lu au démarrage (vérifié) : écriture
 // refusée tant qu'il tourne.
 export function registerArkSettingsHandlers(ctx: IpcContext): void {
-  const lockedError = (serverId: string): string | null => {
-    const status = ctx.serverManagers.getOrCreate(serverId).getStatus();
-    return status === "stopped" || status === "crashed"
-      ? null
-      : appError("CONFIG_LOCKED");
-  };
+  const lockedError = (serverId: string) => arkConfigLockedError(ctx, serverId);
 
   ipcMain.handle("ark:settings:read", (_, serverId: string): ArkSettingsState =>
     readArkSettings(
