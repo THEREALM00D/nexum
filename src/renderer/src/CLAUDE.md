@@ -44,7 +44,7 @@ Jamais de texte « Chargement... » ni de valeurs par défaut affichées avant l
 
 - `<LoadingSkeleton loading>` enveloppe l'élément **final** (rendu mais `visibility: hidden`, le `Skeleton` prend sa taille → aucun décalage). `fullWidth` pour un élément étiré, `sx` pour reporter `width`/`maxWidth` (la prop `width` du Skeleton est inline et écraserait `sx`). `Chip` dans une rangée : `sx={{ display: "flex" }}`. Un enfant qui ne rend rien ne crée pas de bloc vide (`&:empty`).
 - `<SkeletonChildren loading>` : chaque enfant d'une colonne `Stack` (cartes de formulaire).
-- `skeletonRows(<VraieLigne data={PLACEHOLDER} />, n)` : lignes construites avec le **vrai** composant et des données réalistes (d'où les extractions `BackupRow`, `BrowseModCard`, `ModVersionsDialog`, `ConfigFileRow`) (renvoie un tableau : les `divider` d'une `Stack` tombent entre les lignes). `skeletonTableRows(colonnes, n)` pour un tableau.
+- `skeletonRows(<VraieLigne data={PLACEHOLDER} />, n)` : lignes construites avec le **vrai** composant et des données réalistes (d'où les extractions `BackupRow`, `BrowseModRow`, `ModVersionsDialog`, `ConfigFileRow`) (renvoie un tableau : les `divider` d'une `Stack` tombent entre les lignes). `skeletonTableRows(colonnes, n)` pour un tableau.
 - Le hook expose `loading` (vrai au départ, `finally(() => setLoading(false))`, 1er chargement seulement), jamais déduit d'une valeur `null` (qui reste `null` en cas d'erreur).
 - Réserver la place du cas courant pendant une vérification (avertissement « pas admin », « SteamCMD installé »…).
 - Démarrage : `ServerContext.state.loaded` (serveurs, serveur actif **et** statuts lus) ; tant qu'il est faux : `PageSkeleton`, entrées de Sidebar, sélecteur et statut en skeleton.
