@@ -1,5 +1,6 @@
 import type { ArkLaunchConfig, ArkMod } from "../../../shared/types";
 import { appError } from "../../utils/appError";
+import { sanitizeLaunchOptions } from "./config/launchOptions";
 
 // Nom d'une carte sur la ligne de commande (« TheIsland_WP ») : lettres,
 // chiffres et « _ » seulement. Sinon il casserait la chaîne d'options `?`
@@ -20,6 +21,7 @@ export const DEFAULT_ARK_CONFIG: ArkLaunchConfig = {
   battlEye: true,
   customArgs: "",
   mods: [],
+  launchOptions: {},
 };
 
 // ID de projet CurseForge : entier positif (int32 côté API).
@@ -51,7 +53,7 @@ const isMapName = (value: unknown): value is string =>
 
 /** Erreur codée pour la page Config, null si la config est valide. */
 export function validateArkLaunch(
-  launch: Omit<ArkLaunchConfig, "mods">,
+  launch: Omit<ArkLaunchConfig, "mods" | "launchOptions">,
 ): string | null {
   if (!isMapName(launch.map)) {
     return appError("ARK_MAP_INVALID", { map: String(launch.map) });
@@ -98,5 +100,6 @@ export function sanitizeArkLaunch(
     battlEye: merged.battlEye !== false,
     customArgs: typeof merged.customArgs === "string" ? merged.customArgs : "",
     mods: sanitizeArkMods(merged.mods),
+    launchOptions: sanitizeLaunchOptions(merged.launchOptions),
   };
 }

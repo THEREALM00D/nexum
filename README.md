@@ -23,7 +23,7 @@ Free, open-source Windows app to run **Valheim**, **Palworld**, **Astroneer**, *
 - **Automatic install** of SteamCMD and the game server, or **import a server that is already installed** (game and worlds detected automatically)
 - **Start / stop / restart** with clean shutdown (Palworld REST API, ARK RCON, Valheim and Enshrouded CTRL+Break) so saves don't get corrupted, and automatic restart after a crash
 - **Real-time monitoring**: CPU, RAM, uptime, online players, server console
-- **Visual configuration editor** for each game (Palworld difficulty presets, Valheim world modifiers)
+- **Visual configuration editor** for each game (Palworld difficulty presets, Valheim world modifiers, every ARK: Survival Ascended setting and Game.ini lists)
 - **Valheim mods**: browse, install and update from **Thunderstore and Hexium**, automatic dependencies, r2modman/Gale profile import, BepInEx config editor, deprecated mods flagged
 - **ARK: Survival Ascended mods**: search CurseForge from the app or add by project ID, load order, enable/disable; the server downloads and updates them itself, modded maps supported
 - **Player tracking**: history, playtime, sessions (native on Palworld, Valheim via Odin-Eye); kick / ban / unban on Palworld

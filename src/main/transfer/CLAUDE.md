@@ -6,7 +6,7 @@ Doc utilisateur : `docs/moving.md`. IPC `transfer:*` (`ipc/handlers/transfer.ts`
 
 - **Réglages** (`settingsTransfer.ts`) : JSON `format: "nexum-settings"`. **Serveur** (`serverArchive.ts` / `serverArchiveImport.ts`) : ZIP avec `manifest.json` (`format: "nexum-server"`), `world/`, `config/<key>`.
 - `TRANSFER_VERSION` : un fichier plus récent est refusé (`TRANSFER_FILE_TOO_NEW`). Ajouter un champ lisible par une ancienne version ne demande pas de la monter ; changer le sens d'un champ, si.
-- Tout est revalidé à la lecture (`parseServerEntry` : `gameType` ∈ `GAME_TYPES`, config réduite aux clés de `DEFAULT_SERVER_CONFIG` du même type). Les règles de pare-feu passent par `isValidRule` (noms exécutés en admin, voir `src/main/firewall/CLAUDE.md`).
+- Tout est revalidé à la lecture (`parseServerEntry` : `gameType` ∈ `GAME_TYPES`, config réduite aux clés de `DEFAULT_SERVER_CONFIG` du même type). ⚠️ `pickLike` vide un dictionnaire dont le défaut est `{}` (aucune clé à garder) : un tel champ (`arkConfig.launchOptions`) est repris brut et passe par sa propre validation (`sanitizeArkLaunch`), sinon il était perdu à chaque import. Les règles de pare-feu passent par `isValidRule` (noms exécutés en admin, voir `src/main/firewall/CLAUDE.md`).
 - Import = **nouvel id** (`ServerRegistry.create`), jamais d'écrasement. L'import des réglages relit le fichier par son chemin, jamais un contenu venu du renderer.
 - Mots de passe : `stripPasswords` ne vide que ceux que Nexum stocke (`valheimConfig.password`, `dragonwildsConfig.adminPassword`) ; ceux des fichiers du jeu partent tels quels dans un export de serveur (avertissement dans le dialogue).
 

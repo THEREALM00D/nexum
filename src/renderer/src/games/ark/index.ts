@@ -11,6 +11,8 @@ import dashboardFr from "./pages/Dashboard/__i18n__/fr";
 import dashboardEn from "./pages/Dashboard/__i18n__/en";
 import configFr from "./pages/Config/__i18n__/fr";
 import configEn from "./pages/Config/__i18n__/en";
+import settingsFr from "./pages/Config/settings/__i18n__/fr";
+import settingsEn from "./pages/Config/settings/__i18n__/en";
 import networkFr from "./pages/Network/__i18n__/fr";
 import networkEn from "./pages/Network/__i18n__/en";
 import backupFr from "./pages/Backup/__i18n__/fr";
@@ -59,6 +61,7 @@ export const arkPlugin: GamePlugin = {
     fr: {
       ...dashboardFr,
       ...configFr,
+      ...settingsFr,
       ...configPageFr,
       ...logsFr,
       ...playersFr,
@@ -71,6 +74,7 @@ export const arkPlugin: GamePlugin = {
     en: {
       ...dashboardEn,
       ...configEn,
+      ...settingsEn,
       ...configPageEn,
       ...logsEn,
       ...playersEn,

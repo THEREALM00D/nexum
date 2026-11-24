@@ -49,6 +49,10 @@ interface ConfigPageProps {
   lockWhileRunning?: boolean;
   /** Bloc d'information propre au jeu, affiché sous le titre. */
   notice?: ReactNode;
+  /** Onglets du jeu, sous l'en-tête (ARK : Général / Réglages de jeu…). */
+  tabs?: ReactNode;
+  /** Largeur de la page (FormPage, 720 px par défaut). */
+  width?: number;
 }
 
 /**
@@ -68,6 +72,8 @@ export default function ConfigPage({
   onFieldChange,
   lockWhileRunning,
   notice,
+  tabs,
+  width,
 }: ConfigPageProps) {
   const { t } = useTranslation();
   const { state } = useServer();
@@ -123,7 +129,7 @@ export default function ConfigPage({
   }
 
   return (
-    <FormPage>
+    <FormPage width={width}>
       <PageHeader
         title={t(titleKey)}
         subtitle={t(subtitleKey)}
@@ -132,6 +138,8 @@ export default function ConfigPage({
         }
         folderTooltip={t("config.openFolder")}
       />
+
+      {tabs}
 
       {notice}
 

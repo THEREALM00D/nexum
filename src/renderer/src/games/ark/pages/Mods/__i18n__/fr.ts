@@ -63,7 +63,7 @@ export default {
         "Mod cosmétique pour les joueurs : il ne s'installe pas sur un serveur et l'empêcherait de démarrer.",
       pcOnly: "PC seulement",
       pcOnlyHint:
-        "Pas compatible cross-plateforme : le serveur ne démarre pas avec ce mod, sauf avec -ServerPlatform=PC dans les arguments de lancement (les joueurs sur console ne peuvent alors plus le rejoindre).",
+        "Pas compatible cross-plateforme : le serveur ne démarre pas avec ce mod, sauf avec Plateformes acceptées sur PC (Configuration, onglet Réglages de jeu ; les joueurs sur console ne peuvent alors plus le rejoindre).",
       retry: "Réessayer",
     },
     categories: {

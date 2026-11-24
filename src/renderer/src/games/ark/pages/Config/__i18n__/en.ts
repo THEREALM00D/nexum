@@ -1,7 +1,7 @@
 export default {
   arkConfig: {
     title: "Configuration",
-    subtitle: "GameUserSettings.ini + command line",
+    subtitle: "GameUserSettings.ini, Game.ini and command line",
     notice:
       "Session name, passwords, PvE and RCON are written to GameUserSettings.ini; map, max players, ports and BattlEye go on the command line. Other INI settings are edited by hand while the server is stopped: the server rewrites the file when it stops.",
     groups: {

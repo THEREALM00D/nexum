@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useServer } from "../../context/ServerContext";
 import { useNotification } from "../../context/NotificationContext";
@@ -12,7 +12,9 @@ const isStopped = (status: string) =>
  * `lockWhileRunning`, indique si l'édition est bloquée (serveur lancé) et
  * relit le fichier quand le serveur s'arrête — il a pu le réécrire — sauf si
  * l'utilisateur a une saisie en cours (`markDirty`). Aussi utilisé hors de
- * ConfigPage (page Config d'Enshrouded, réglages typés).
+ * ConfigPage (page Config d'Enshrouded, réglages typés). `failed` : la
+ * dernière lecture a échoué (formulaire vide, à ne pas enregistrer).
+ * `markDirty` / `markClean` sont stables (utilisables dans un effet).
  */
 export function useConfigLoad<T = ConfigSettings>(
   readConfig: () => Promise<T>,
@@ -23,6 +25,7 @@ export function useConfigLoad<T = ConfigSettings>(
   const { state } = useServer();
   const { notify } = useNotification();
   const [loading, setLoading] = useState(true);
+  const [failed, setFailed] = useState(false);
   const dirty = useRef(false);
   const previousStatus = useRef(state.status);
 
@@ -31,8 +34,12 @@ export function useConfigLoad<T = ConfigSettings>(
       .then((settings) => {
         apply(settings);
         dirty.current = false;
+        setFailed(false);
       })
-      .catch(() => notify(t("config.loadFailed"), "error"))
+      .catch(() => {
+        setFailed(true);
+        notify(t("config.loadFailed"), "error");
+      })
       .finally(() => setLoading(false));
 
   useEffect(() => {
@@ -53,10 +60,18 @@ export function useConfigLoad<T = ConfigSettings>(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.status]);
 
+  const markDirty = useCallback(() => {
+    dirty.current = true;
+  }, []);
+  const markClean = useCallback(() => {
+    dirty.current = false;
+  }, []);
+
   return {
     loading,
+    failed,
     locked: !!lockWhileRunning && !isStopped(state.status),
-    markDirty: () => (dirty.current = true),
-    markClean: () => (dirty.current = false),
+    markDirty,
+    markClean,
   };
 }

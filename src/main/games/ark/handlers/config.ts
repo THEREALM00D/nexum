@@ -56,8 +56,9 @@ export function registerArkHandlers(ctx: IpcContext): void {
     if (status !== "stopped" && status !== "crashed") {
       return { success: false, error: appError("CONFIG_LOCKED") };
     }
-    // Sans les mods (page Mods) : la mise à jour fusionne, la liste reste.
-    const launch: Omit<ArkLaunchConfig, "mods"> = {
+    // Sans les mods (page Mods) ni les options de lancement (Réglages de jeu) :
+    // la mise à jour fusionne, elles restent.
+    const launch: Omit<ArkLaunchConfig, "mods" | "launchOptions"> = {
       map: String(settings.map ?? "").trim(),
       port: Number(settings.port),
       queryPort: Number(settings.queryPort),

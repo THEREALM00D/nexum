@@ -77,9 +77,18 @@ export function parseServerEntry(raw: unknown): TransferServerEntry {
   } as ServerConfig;
   // La carte ARK finit dans un chemin (dossier du monde) et dans la ligne de
   // commande : valeurs hors format remplacées par celles par défaut.
+  // ⚠️ pickLike vide un dictionnaire dont le défaut est {} (aucune clé à
+  // garder) : les options de lancement brutes passent par leur propre
+  // validation (sanitizeArkLaunch → sanitizeLaunchOptions).
+  const rawArkConfig = isObj(raw.config) ? raw.config.arkConfig : undefined;
   const config: ServerConfig = {
     ...picked,
-    arkConfig: sanitizeArkLaunch(picked.arkConfig),
+    arkConfig: sanitizeArkLaunch({
+      ...picked.arkConfig,
+      launchOptions: isObj(rawArkConfig)
+        ? (rawArkConfig.launchOptions as Record<string, string>)
+        : {},
+    }),
   };
   return {
     server: {

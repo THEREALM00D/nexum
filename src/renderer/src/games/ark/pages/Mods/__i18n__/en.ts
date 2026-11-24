@@ -63,7 +63,7 @@ export default {
         "Cosmetic mod for players: it doesn't install on a server and would prevent it from starting.",
       pcOnly: "PC only",
       pcOnlyHint:
-        "Not cross-platform: the server doesn't start with this mod, unless -ServerPlatform=PC is in the launch arguments (console players then can't join it).",
+        "Not cross-platform: the server doesn't start with this mod, unless Accepted platforms is set to PC (Configuration, Game settings tab; console players then can't join it).",
       retry: "Retry",
     },
     categories: {

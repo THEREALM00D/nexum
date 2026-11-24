@@ -1,0 +1,53 @@
+export default {
+  arkConfigTabs: {
+    general: "Général",
+    settings: "Réglages de jeu",
+    lists: "Listes",
+    raw: "Fichiers bruts",
+  },
+  arkRawUi: {
+    notice:
+      "Le fichier tel quel, pour ce que les autres onglets ne couvrent pas (autres listes, sections des mods). Le fichier précédent est gardé en .backup à chaque enregistrement.",
+    saved: "Fichier enregistré",
+    empty: "Fichier vide : le serveur le crée à son premier démarrage.",
+  },
+  arkSettingsUi: {
+    notice:
+      "Un réglage laissé vide garde la valeur par défaut du jeu et n'est pas écrit dans les fichiers. Les changements s'appliquent au prochain démarrage du serveur.",
+    search: "Rechercher un réglage (nom, description ou clé)…",
+    noResults: "Aucun réglage ne correspond à « {{query}} ».",
+    defaultValue: "Défaut : {{value}}",
+    defaultUnknown: "Défaut du jeu",
+    defaultOption: "Par défaut ({{value}})",
+    reset: "Revenir à la valeur par défaut",
+    save: "Enregistrer",
+    saveCount: "Enregistrer ({{count}})",
+    saved: "Réglages enregistrés",
+    discard: "Annuler les modifications",
+    count: "{{count}} réglage",
+    count_other: "{{count}} réglages",
+    sources: {
+      gus: "GameUserSettings.ini",
+      game: "Game.ini",
+    },
+    otherHint:
+      "Réglages présents dans les fichiers mais inconnus de Nexum (ajoutés par une mise à jour du jeu ou à la main). Ils sont gardés tels quels.",
+    groups: {
+      rates: "Taux et difficulté",
+      players: "Joueurs",
+      creatures: "Créatures",
+      breeding: "Élevage",
+      structures: "Structures",
+      rules: "PvP et PvE",
+      tribes: "Tribus et alliances",
+      world: "Monde, jour et nuit",
+      crafting: "Fabrication et engrammes",
+      transfers: "Transferts (cluster)",
+      features: "Cryopods, bunkers et avant-postes",
+      admin: "Administration",
+      interface: "Interface et chat",
+      launch: "Options de lancement",
+      other: "Autres réglages",
+    },
+  },
+};

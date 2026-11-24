@@ -357,6 +357,8 @@ export type AppErrorCode =
   | "ARK_MOD_ID_INVALID"
   | "ARK_MOD_NOT_FOUND"
   | "ARK_MOD_DUPLICATE"
+  | "ARK_SETTING_INVALID"
+  | "ARK_SETTING_UNKNOWN"
   | "CURSEFORGE_UNAVAILABLE"
   | "CURSEFORGE_FORBIDDEN"
   // Réseau / téléchargements (registres de mods, SteamCMD, IP publique)
@@ -460,11 +462,144 @@ export interface ArkLaunchConfig {
   customArgs: string;
   /** Mods CurseForge, dans l'ordre de chargement (-mods=). */
   mods: ArkMod[];
+  /**
+   * Options de lancement du catalogue (src/shared/arkSettings/cli.ts), par
+   * nom : "True" pour une option sans valeur.
+   */
+  launchOptions: Record<string, string>;
 }
 
 // Vue fusionnée de la page Config : clés de GameUserSettings.ini (chaînes
 // brutes) + champs de ArkLaunchConfig (sans les mods, page Mods).
 export type ArkSettings = Record<string, string | number | boolean>;
+
+/** Réglage présent dans un fichier mais absent du catalogue (« Autres réglages »). */
+export interface ArkUnknownSetting {
+  /** Même forme que arkSettingId : `fichier:section:clé`. */
+  id: string;
+  file: "gus" | "game";
+  key: string;
+  value: string;
+}
+
+/** Onglet « Réglages de jeu » : valeurs écrites, le reste vaut le défaut du jeu. */
+export interface ArkSettingsState {
+  /** Valeur brute par id de réglage du catalogue, seulement s'il est écrit. */
+  values: Record<string, string>;
+  unknown: ArkUnknownSetting[];
+}
+
+// --- Listes de Game.ini (onglet Listes de la page Config ARK) ---
+
+export type ArkStatsTable =
+  "Player" | "DinoWild" | "DinoTamed" | "DinoTamed_Add" | "DinoTamed_Affinity";
+
+/** PerLevelStatsMultiplier_<table>[0..11] ; "" = valeur par défaut du jeu. */
+export type ArkPerLevelStats = Record<ArkStatsTable, string[]>;
+
+/** ConfigOverrideItemMaxQuantity. */
+export interface ArkStackSize {
+  /** Champs que Nexum n'édite pas, réécrits tels quels (structure UE). */
+  extra?: string;
+  itemClass: string;
+  quantity: string;
+  ignoreMultiplier: boolean;
+}
+
+/** OverrideNamedEngramEntries ; "" ou null = champ absent (le jeu garde le sien). */
+export interface ArkEngramOverride {
+  /** Champs que Nexum n'édite pas, réécrits tels quels (structure UE). */
+  extra?: string;
+  engramClass: string;
+  hidden: boolean | null;
+  pointsCost: string;
+  levelRequirement: string;
+  removePrereq: boolean | null;
+}
+
+export interface ArkEngramAutoUnlock {
+  /** Champs que Nexum n'édite pas, réécrits tels quels (structure UE). */
+  extra?: string;
+  engramClass: string;
+  level: string;
+}
+
+export interface ArkEngramLists {
+  overrides: ArkEngramOverride[];
+  autoUnlocks: ArkEngramAutoUnlock[];
+  /** OverridePlayerLevelEngramPoints, un par niveau à partir du niveau 1. */
+  levelPoints: string[];
+  onlyAllowSpecified: boolean;
+}
+
+export type ArkSpawnMode = "add" | "subtract" | "override";
+
+export interface ArkSpawnEntry {
+  /** Champs que Nexum n'édite pas, réécrits tels quels (structure UE). */
+  extra?: string;
+  name: string;
+  weight: string;
+  /** Classes de créatures (NPCsToSpawnStrings). */
+  creatures: string[];
+}
+
+export interface ArkSpawnLimit {
+  /** Champs que Nexum n'édite pas, réécrits tels quels (structure UE). */
+  extra?: string;
+  creature: string;
+  maxPercentage: string;
+}
+
+/** ConfigAdd/Subtract/OverrideNPCSpawnEntriesContainer. */
+export interface ArkSpawnContainer {
+  /** Champs que Nexum n'édite pas, réécrits tels quels (structure UE). */
+  extra?: string;
+  mode: ArkSpawnMode;
+  container: string;
+  entries: ArkSpawnEntry[];
+  limits: ArkSpawnLimit[];
+}
+
+/** DinoSpawnWeightMultipliers ; "" ou null = champ absent. */
+export interface ArkSpawnWeight {
+  /** Champs que Nexum n'édite pas, réécrits tels quels (structure UE). */
+  extra?: string;
+  tag: string;
+  weight: string;
+  overrideLimit: boolean | null;
+  limit: string;
+}
+
+/** NPCReplacements. */
+export interface ArkNpcReplacement {
+  /** Champs que Nexum n'édite pas, réécrits tels quels (structure UE). */
+  extra?: string;
+  from: string;
+  to: string;
+}
+
+export interface ArkSpawnLists {
+  containers: ArkSpawnContainer[];
+  weights: ArkSpawnWeight[];
+  replacements: ArkNpcReplacement[];
+}
+
+export interface ArkGameLists {
+  stats: ArkPerLevelStats;
+  stackSizes: ArkStackSize[];
+  engrams: ArkEngramLists;
+  spawns: ArkSpawnLists;
+  /** Lignes illisibles, gardées telles quelles à l'enregistrement. */
+  unreadable: string[];
+}
+
+export type ArkListName = "stats" | "stackSizes" | "engrams" | "spawns";
+
+/** Modification d'un réglage ; value null = retirer (valeur par défaut du jeu). */
+export interface ArkSettingChange {
+  id: string;
+  value: string | null;
+}
 
 /** Mod de la liste : ID de projet CurseForge. Désactivé = absent de -mods=. */
 export interface ArkMod {
