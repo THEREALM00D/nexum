@@ -77,21 +77,24 @@ export function useInstall() {
     }
   };
 
-  const addLog = (msg: string) => setLogs((p) => [...p, msg]);
+  // Échec renvoyé par le main : dernière ligne du journal + notification.
+  const reportFailure = (error: string | undefined) => {
+    const message = t("common.errorPrefix", {
+      msg: appErrorMessage(t, error),
+    });
+    setLogs((previous) => [...previous, message]);
+    notify(message, "error");
+  };
 
   const handleInstallSteam = async () => {
     setRunning(true);
     setLogs([]);
     try {
-      const res = await steamService.install();
-      setSteamInstalled(res.success);
-      if (!res.success) {
-        const msg = appErrorMessage(t, res.error);
-        addLog(t("install.errorPrefix", { msg }));
-        notify(t("install.errorPrefix", { msg }), "error");
-      }
-    } catch (e) {
-      notify(errorMessage(t, e), "error");
+      const result = await steamService.install();
+      setSteamInstalled(result.success);
+      if (!result.success) reportFailure(result.error);
+    } catch (error) {
+      notify(errorMessage(t, error), "error");
     } finally {
       setRunning(false);
     }
@@ -102,19 +105,13 @@ export function useInstall() {
     setRunning(true);
     setLogs([]);
     try {
-      const res = await steamService.installGame(gameType, installPath);
-      if (res.success) {
+      const result = await steamService.installGame(gameType, installPath);
+      if (result.success) {
         await refreshServers();
         setUpdateStatus(null);
-      } else {
-        const msg = t("install.errorPrefix", {
-          msg: appErrorMessage(t, res.error),
-        });
-        addLog(msg);
-        notify(msg, "error");
-      }
-    } catch (e) {
-      notify(errorMessage(t, e), "error");
+      } else reportFailure(result.error);
+    } catch (error) {
+      notify(errorMessage(t, error), "error");
     } finally {
       setRunning(false);
     }
@@ -124,17 +121,11 @@ export function useInstall() {
     setRunning(true);
     setLogs([]);
     try {
-      const res = await steamService.updateGame();
-      if (res.success) setUpdateStatus(null);
-      else {
-        const msg = t("install.errorPrefix", {
-          msg: appErrorMessage(t, res.error),
-        });
-        addLog(msg);
-        notify(msg, "error");
-      }
-    } catch (e) {
-      notify(errorMessage(t, e), "error");
+      const result = await steamService.updateGame();
+      if (result.success) setUpdateStatus(null);
+      else reportFailure(result.error);
+    } catch (error) {
+      notify(errorMessage(t, error), "error");
     } finally {
       setRunning(false);
     }
