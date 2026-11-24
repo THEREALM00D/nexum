@@ -9,6 +9,8 @@ export default {
     notice:
       "The file as it is, for what the other tabs don't cover (other lists, mod sections). The previous file is kept as .backup on every save.",
     saved: "File saved",
+    changedOnDisk:
+      "The file changed since it was read (saved from another tab): nothing was written. Discard your changes to read it again, then redo them.",
     empty: "Empty file: the server creates it at its first start.",
   },
   arkSettingsUi: {
@@ -30,6 +32,9 @@ export default {
       gus: "GameUserSettings.ini",
       game: "Game.ini",
     },
+    modGroup: "Mod: [{{section}}] ({{file}})",
+    modHint:
+      "Settings written by this mod (or map) in the file, unknown to Nexum: the value is kept as is, without checks. The mod documentation says what each key expects.",
     otherHint:
       "Settings found in the files but unknown to Nexum (added by a game update or by hand). They are kept as they are.",
     groups: {

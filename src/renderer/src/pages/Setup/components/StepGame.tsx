@@ -10,6 +10,7 @@ import type { GameType } from "@shared/types";
 import { GAMES } from "../../../games/registry";
 import { useExeDetection } from "../../../hooks/useExeDetection";
 import ExeStatusHint from "../../Servers/components/ExeStatusHint";
+import ExistingServerPanel from "../../Servers/components/ExistingServerPanel";
 import FolderField from "../../../components/common/FolderField";
 import GameRequirementsHint from "../../../components/common/GameRequirementsHint";
 import { DEFAULT_INSTALL_PATHS } from "../../Install/hooks/useInstall";
@@ -33,9 +34,15 @@ export const initialChoice = (): SetupChoice => ({
 export default function StepGame({
   value,
   onChange,
+  onImportChange,
+  onImportPendingChange,
 }: {
   value: SetupChoice;
   onChange: (v: SetupChoice) => void;
+  /** Setter stable : état du panneau de reprise d'un serveur existant. */
+  onImportChange: (state: unknown) => void;
+  /** Setter stable : lecture du panneau en cours (création bloquée). */
+  onImportPendingChange: (pending: boolean) => void;
 }) {
   const { t } = useTranslation();
   const exeStatus = useExeDetection(
@@ -132,6 +139,15 @@ export default function StepGame({
       />
       {value.mode === "existing" && (
         <ExeStatusHint status={exeStatus} gameType={value.gameType} />
+      )}
+      {value.mode === "existing" && (
+        <ExistingServerPanel
+          gameType={value.gameType}
+          path={value.path}
+          exeStatus={exeStatus}
+          onChange={onImportChange}
+          onPendingChange={onImportPendingChange}
+        />
       )}
       {value.mode === "new" && (
         <GameRequirementsHint gameType={value.gameType} />

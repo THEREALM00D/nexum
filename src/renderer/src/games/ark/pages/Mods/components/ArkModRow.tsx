@@ -1,9 +1,9 @@
 import type { ReactNode } from "react";
-import { Box, Chip, Stack, Typography } from "@mui/material";
-import ExtensionIcon from "@mui/icons-material/Extension";
+import { Chip } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import type { ArkModInfo } from "@shared/types";
 import { formatDay } from "../../../../../utils/format";
+import ModRow from "../../../../../components/mods/ModRow";
 
 interface Props {
   id: number;
@@ -20,10 +20,9 @@ interface Props {
   actions: ReactNode;
 }
 
-const LOGO_SIZE = 40;
-
-// Une ligne de mod : logo, nom, auteurs, fichier téléchargé par le serveur
-// (Liste) ou détails de la recherche (Parcourir). Sert aussi aux skeletons.
+// Une ligne de mod ARK sur la ligne commune (components/mods/ModRow) :
+// auteurs, ID et fichier téléchargé par le serveur (Liste) ou détails de la
+// recherche (Parcourir). Sert aussi aux skeletons.
 export default function ArkModRow({
   id,
   info,
@@ -52,51 +51,14 @@ export default function ArkModRow({
   ].filter(Boolean);
 
   return (
-    <Stack
-      direction="row"
-      useFlexGap
-      sx={{
-        alignItems: "center",
-        gap: 2,
-        py: 1.25,
-        flexWrap: "wrap",
-        opacity: dimmed ? 0.55 : 1,
-      }}
-    >
-      {info?.logoUrl ? (
-        <Box
-          component="img"
-          src={info.logoUrl}
-          alt=""
-          sx={{
-            width: LOGO_SIZE,
-            height: LOGO_SIZE,
-            objectFit: "cover",
-            borderRadius: 1,
-            flexShrink: 0,
-          }}
-        />
-      ) : (
-        <Box
-          sx={{
-            width: LOGO_SIZE,
-            height: LOGO_SIZE,
-            borderRadius: 1,
-            flexShrink: 0,
-            display: "grid",
-            placeItems: "center",
-            bgcolor: "action.hover",
-            color: "text.secondary",
-          }}
-        >
-          <ExtensionIcon fontSize="small" />
-        </Box>
-      )}
-      <Box sx={{ flex: "1 1 240px", minWidth: 0 }}>
-        <Stack direction="row" sx={{ alignItems: "center", gap: 0.75 }}>
-          <Typography variant="body2" sx={{ fontWeight: 500 }} noWrap>
-            {name}
-          </Typography>
+    <ModRow
+      logoUrl={info?.logoUrl}
+      name={name}
+      dimmed={dimmed}
+      details={(details ?? listDetails).join(" — ")}
+      summary={showSummary ? info?.summary : undefined}
+      chips={
+        <>
           {chips}
           {info?.premium && (
             <Chip
@@ -106,27 +68,9 @@ export default function ArkModRow({
               sx={{ typography: "micro", height: 18, px: 0.5 }}
             />
           )}
-        </Stack>
-        <Typography
-          variant="caption"
-          sx={{ color: "text.secondary", display: "block" }}
-          noWrap
-        >
-          {(details ?? listDetails).join(" — ")}
-        </Typography>
-        {showSummary && info?.summary && (
-          <Typography
-            variant="caption"
-            sx={{ color: "text.secondary", display: "block" }}
-            noWrap
-          >
-            {info.summary}
-          </Typography>
-        )}
-      </Box>
-      <Stack direction="row" sx={{ alignItems: "center", gap: 0.5 }}>
-        {actions}
-      </Stack>
-    </Stack>
+        </>
+      }
+      actions={actions}
+    />
   );
 }

@@ -448,6 +448,27 @@ const api = {
     writeRaw: (serverId: string, file: string, text: string) =>
       ipcRenderer.invoke("ark:rawIni:write", serverId, file, text),
   },
+  // Import de la ligne de lancement d'un serveur ARK existant
+  arkLaunchImport: {
+    fromLog: (serverPath: string, serverId: string | null) =>
+      ipcRenderer.invoke("ark:launchImport:fromLog", serverPath, serverId),
+    fromScript: (path: string) =>
+      ipcRenderer.invoke("ark:launchImport:fromScript", path),
+    preview: (serverPath: string, line: string, serverId: string | null) =>
+      ipcRenderer.invoke(
+        "ark:launchImport:preview",
+        serverPath,
+        line,
+        serverId,
+      ),
+    apply: (serverId: string, line: string, saveDirectory: string) =>
+      ipcRenderer.invoke(
+        "ark:launchImport:apply",
+        serverId,
+        line,
+        saveDirectory,
+      ),
+  },
   // Mods CurseForge d'un serveur ARK (serverId explicite)
   arkMods: {
     get: (serverId: string) => ipcRenderer.invoke("ark:mods:get", serverId),

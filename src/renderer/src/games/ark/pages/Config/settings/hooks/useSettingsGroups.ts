@@ -1,14 +1,27 @@
-import { useDeferredValue, useMemo, useState } from "react";
+import { useCallback, useDeferredValue, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { ArkUnknownSetting } from "@shared/types";
 import {
   ARK_SETTINGS,
   ARK_SETTING_GROUPS,
+  GAME_SECTION,
+  GUS_SECTION,
   arkSettingId,
   type ArkSettingDef,
 } from "@shared/arkSettings";
 
-export type SettingsGroupId = (typeof ARK_SETTING_GROUPS)[number] | "other";
+/** Thème du catalogue, « other » (clés inconnues du jeu) ou section de mod. */
+export type SettingsGroupId =
+  (typeof ARK_SETTING_GROUPS)[number] | "other" | `mod:${string}`;
+
+const GAME_SECTIONS = [GUS_SECTION, GAME_SECTION].map((section) =>
+  section.toLowerCase(),
+);
+/** Groupe d'un réglage inconnu : section du jeu, ou un groupe par section de mod. */
+const unknownGroup = (setting: ArkUnknownSetting): SettingsGroupId =>
+  GAME_SECTIONS.includes(setting.section.toLowerCase())
+    ? "other"
+    : `mod:${setting.file}:${setting.section}`;
 
 export interface SettingItem {
   id: string;
@@ -47,12 +60,13 @@ export function useSettingsGroups(unknown: ArkUnknownSetting[]) {
       });
     }
     for (const setting of unknown) {
-      add("other", {
+      add(unknownGroup(setting), {
         id: setting.id,
         def: null,
         key: setting.key,
         label: setting.key,
-        description: t(`arkSettingsUi.sources.${setting.file}`),
+        // Section dans la description : la recherche trouve « Shiny ».
+        description: `${t(`arkSettingsUi.sources.${setting.file}`)} [${setting.section}]`,
       });
     }
     return byGroup;
@@ -60,33 +74,34 @@ export function useSettingsGroups(unknown: ArkUnknownSetting[]) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [unknown, t, i18n.language]);
 
-  const words = normalize(deferredSearch).length
-    ? deferredSearch.toLowerCase().split(/\s+/).filter(Boolean).map(normalize)
-    : [];
-  const groups = [...ARK_SETTING_GROUPS, "other" as const]
-    .map((group) => ({
-      group,
-      items: (items.get(group) ?? []).filter((item) => {
-        if (words.length === 0) return true;
-        const haystack = normalize(
-          `${item.label} ${item.description} ${item.key}`,
-        );
-        return words.every((word) => haystack.includes(word));
-      }),
-    }))
-    .filter((entry) => entry.items.length > 0);
+  const groups = useMemo(() => {
+    const words = normalize(deferredSearch).length
+      ? deferredSearch.toLowerCase().split(/\s+/).filter(Boolean).map(normalize)
+      : [];
+    // Sections de mods après les thèmes du jeu, dans l'ordre des fichiers.
+    const modGroups = [...items.keys()].filter((group) =>
+      group.startsWith("mod:"),
+    );
+    return [...ARK_SETTING_GROUPS, "other" as const, ...modGroups]
+      .map((group) => ({
+        group,
+        items: (items.get(group) ?? []).filter((item) => {
+          if (words.length === 0) return true;
+          const haystack = normalize(
+            `${item.label} ${item.description} ${item.key}`,
+          );
+          return words.every((word) => haystack.includes(word));
+        }),
+      }))
+      .filter((entry) => entry.items.length > 0);
+  }, [items, deferredSearch]);
+  const searching = normalize(deferredSearch).length > 0;
 
-  return {
-    search,
-    setSearch,
-    searching: words.length > 0,
-    groups,
-    isExpanded: (group: SettingsGroupId) =>
-      words.length > 0 || expanded.has(group),
-    // Pendant une recherche, les groupes sont dépliés d'office : un clic
-    // ne doit pas changer en douce l'état retrouvé après la recherche.
-    toggle: (group: SettingsGroupId) => {
-      if (words.length > 0) return;
+  // Stable (en-têtes en memo) ; pendant une recherche, les groupes sont
+  // dépliés d'office : un clic ne change pas en douce l'état retrouvé après.
+  const toggle = useCallback(
+    (group: SettingsGroupId) => {
+      if (searching) return;
       setExpanded((current) => {
         const next = new Set(current);
         if (next.has(group)) next.delete(group);
@@ -94,5 +109,15 @@ export function useSettingsGroups(unknown: ArkUnknownSetting[]) {
         return next;
       });
     },
+    [searching],
+  );
+
+  return {
+    search,
+    setSearch,
+    searching,
+    groups,
+    isExpanded: (group: SettingsGroupId) => searching || expanded.has(group),
+    toggle,
   };
 }

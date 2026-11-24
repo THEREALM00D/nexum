@@ -102,6 +102,10 @@ function AppShell() {
           sx={{
             flex: 1,
             overflow: "auto",
+            // Place de la barre de défilement réservée : sinon le contenu
+            // centré se décalait de quelques px en passant d'une page (ou
+            // d'un onglet) courte à une longue.
+            scrollbarGutter: "stable",
             px: 3,
             pt: 3,
             [COMPACT_MEDIA]: { px: 2, pt: 2 },

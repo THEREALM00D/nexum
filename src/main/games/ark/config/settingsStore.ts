@@ -2,13 +2,10 @@ import { join } from "path";
 import type {
   ArkSettingChange,
   ArkSettingsState,
-  ArkUnknownSetting,
 } from "../../../../shared/types";
 import {
   ARK_SETTINGS,
   ARK_SETTINGS_BY_ID,
-  GAME_SECTION,
-  GUS_SECTION,
   arkSettingId,
   type ArkSettingDef,
 } from "../../../../shared/arkSettings";
@@ -20,67 +17,18 @@ import {
 import { readArkIni, writeArkIni, type ArkIniFile } from "./arkIniFile";
 import { normalizeSettingValue } from "./settingValue";
 import {
-  GENERAL_TAB_KEYS,
-  LIST_EDITOR_KEYS,
-  RAW_ONLY_LIST_KEYS,
-} from "./listKeys";
-
-type IniFileKind = "gus" | "game";
+  otherSettingDef,
+  otherSettings,
+  type IniFileKind,
+} from "./otherSettings";
 
 const FILE_PATHS: Record<IniFileKind, string> = {
   gus: GAME_USER_SETTINGS_REL_PATH,
   game: GAME_INI_REL_PATH,
 };
-const UNKNOWN_SECTIONS: Record<IniFileKind, string> = {
-  gus: GUS_SECTION,
-  game: GAME_SECTION,
-};
-
-const lower = (keys: string[]) => new Set(keys.map((key) => key.toLowerCase()));
-const KNOWN_KEYS: Record<IniFileKind, Set<string>> = {
-  gus: lower([
-    ...ARK_SETTINGS.filter((setting) => setting.file === "gus").map(
-      (setting) => setting.key,
-    ),
-    ...GENERAL_TAB_KEYS,
-  ]),
-  game: lower([
-    ...ARK_SETTINGS.filter((setting) => setting.file === "game").map(
-      (setting) => setting.key,
-    ),
-    ...LIST_EDITOR_KEYS,
-    ...RAW_ONLY_LIST_KEYS,
-  ]),
-};
-const KEY_NAME = /^[A-Za-z_][A-Za-z0-9_]*$/;
 
 const readFile = (serverPath: string, kind: IniFileKind): ArkIniFile =>
   readArkIni(join(serverPath, FILE_PATHS[kind]));
-
-/**
- * Clés simples d'une section que le catalogue ne connaît pas (réglage ajouté
- * par une mise à jour du jeu, ou écrit à la main). Les clés répétées ou
- * indexées sont des listes : éditeur brut seulement.
- */
-function unknownSettings(
-  file: ArkIniFile,
-  kind: IniFileKind,
-): ArkUnknownSetting[] {
-  const section = UNKNOWN_SECTIONS[kind];
-  return file.doc.keys(section).flatMap((key) => {
-    if (!KEY_NAME.test(key) || KNOWN_KEYS[kind].has(key.toLowerCase()))
-      return [];
-    if (file.doc.getAll(section, key).length > 1) return [];
-    return [
-      {
-        id: `${kind}:${section}:${key}`,
-        file: kind,
-        key,
-        value: file.doc.get(section, key) ?? "",
-      },
-    ];
-  });
-}
 
 /** Valeurs écrites des réglages du catalogue, et réglages inconnus des fichiers. */
 export function readArkSettings(
@@ -102,39 +50,18 @@ export function readArkSettings(
   return {
     values,
     unknown: [
-      ...unknownSettings(files.gus, "gus"),
-      ...unknownSettings(files.game, "game"),
+      ...otherSettings(files.gus, "gus"),
+      ...otherSettings(files.game, "game"),
     ],
   };
 }
 
-/**
- * Réglage d'un changement : du catalogue, ou « autre » d'une section connue.
- * ⚠️ Un « autre » ne peut pas être une clé connue (réglage du catalogue sous
- * une autre casse, onglet Général, liste) : écrite en texte libre, elle
- * échapperait à sa validation ou effacerait une liste.
- */
+/** Réglage d'un changement : du catalogue, ou « autre » (otherSettings.ts). */
 function resolveSetting(id: unknown): ArkSettingDef {
   if (typeof id !== "string") throw new AppError("ARK_SETTING_UNKNOWN");
-  const known = ARK_SETTINGS_BY_ID.get(id);
-  if (known) return known;
-  const [kind, ...rest] = id.split(":");
-  const key = rest.pop() ?? "";
-  const section = rest.join(":");
-  const isOther =
-    (kind === "gus" || kind === "game") &&
-    section === UNKNOWN_SECTIONS[kind] &&
-    KEY_NAME.test(key) &&
-    !KNOWN_KEYS[kind].has(key.toLowerCase());
-  if (!isOther) throw new AppError("ARK_SETTING_UNKNOWN", { key: id });
-  return {
-    key,
-    file: kind,
-    section,
-    type: "string",
-    default: "",
-    group: "admin",
-  };
+  const setting = ARK_SETTINGS_BY_ID.get(id) ?? otherSettingDef(id);
+  if (!setting) throw new AppError("ARK_SETTING_UNKNOWN", { key: id });
+  return setting;
 }
 
 /**

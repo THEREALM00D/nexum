@@ -5,7 +5,7 @@ import { useServer } from "../../../context/ServerContext";
 import { useNotification } from "../../../context/NotificationContext";
 import { serverService } from "../../../services/serverService";
 import type { ServerFormValues } from "../components/ServerDialog";
-import { importValheimWorld } from "../utils/importValheimWorld";
+import { applyExistingServer } from "./applyExistingServer";
 import { errorMessage } from "../../../utils/appErrorMessage";
 import { appErrorMessage } from "../../../utils/appErrorMessage";
 
@@ -30,7 +30,11 @@ export function useServers() {
 
   const closeDialog = () => setDialogOpen(false);
 
-  const handleSubmit = async (values: ServerFormValues) => {
+  /** `importState` : état du panneau de reprise d'un dossier existant. */
+  const handleSubmit = async (
+    values: ServerFormValues,
+    importState: unknown = null,
+  ) => {
     try {
       if (editing) {
         await window.api.servers.update(editing.id, values);
@@ -38,8 +42,9 @@ export function useServers() {
       } else {
         const created = await window.api.servers.create(values);
         notify(t("servers.notify.created", { name: created.name }), "success");
-        if (created.gameType === "valheim")
-          await importValheimWorld(created.id);
+        await applyExistingServer(created, importState, (error) =>
+          notify(errorMessage(t, error), "error"),
+        );
       }
       await refreshServers();
       setDialogOpen(false);

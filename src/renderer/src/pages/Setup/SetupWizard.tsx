@@ -13,8 +13,8 @@ import { useTranslation } from "react-i18next";
 import { useServer } from "../../context/ServerContext";
 import { useNotification } from "../../context/NotificationContext";
 import { getGamePlugin } from "../../games/registry";
+import { applyExistingServer } from "../Servers/hooks/applyExistingServer";
 import Install from "../Install/Install";
-import { importValheimWorld } from "../Servers/utils/importValheimWorld";
 import StepGame, {
   initialChoice,
   type SetupChoice,
@@ -38,6 +38,8 @@ export default function SetupWizard({ onFinish }: { onFinish: () => void }) {
   const { state, refreshServers, switchActive } = useServer();
   const [choice, setChoice] = useState<SetupChoice>(initialChoice);
   const [createdId, setCreatedId] = useState<string | null>(null);
+  const [importState, setImportState] = useState<unknown>(null);
+  const [importPending, setImportPending] = useState(false);
   const [busy, setBusy] = useState(false);
   const [index, setIndex] = useState(0);
 
@@ -57,8 +59,10 @@ export default function SetupWizard({ onFinish }: { onFinish: () => void }) {
         path: choice.path,
         gameType: choice.gameType,
       });
-      if (created.gameType === "valheim" && choice.mode === "existing") {
-        await importValheimWorld(created.id);
+      if (choice.mode === "existing") {
+        await applyExistingServer(created, importState, (error) =>
+          notify(errorMessage(t, error), "error"),
+        );
       }
       await refreshServers();
       await switchActive(created.id);
@@ -81,7 +85,14 @@ export default function SetupWizard({ onFinish }: { onFinish: () => void }) {
     // Clé = serveur actif : les pages réutilisées lisent ses données au montage
     const key = state.activeServerId ?? "none";
     if (step === "game")
-      return <StepGame value={choice} onChange={setChoice} />;
+      return (
+        <StepGame
+          value={choice}
+          onChange={setChoice}
+          onImportChange={setImportState}
+          onImportPendingChange={setImportPending}
+        />
+      );
     if (step === "install") return <Install key={key} />;
     if (step === "start") return <StepStart key={key} />;
     const Page = plugin?.pages[step];
@@ -124,7 +135,9 @@ export default function SetupWizard({ onFinish }: { onFinish: () => void }) {
         <Button
           variant="contained"
           onClick={next}
-          disabled={busy || (step === "game" && !choice.path.trim())}
+          disabled={
+            busy || (step === "game" && (!choice.path.trim() || importPending))
+          }
         >
           {index === steps.length - 1
             ? t("setup.finish")

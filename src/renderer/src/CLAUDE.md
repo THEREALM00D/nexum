@@ -8,7 +8,7 @@ Règles générales et architecture : `CLAUDE.md` racine. Ce fichier = conventio
 - ⚠️ Pas de `TextField type="time"` / `"date"` : leur popup est dessinée par Chromium (blanche et bleue) et ignore le thème. Prendre `@mui/x-date-pickers` avec `AdapterDateFns` (exemple : `components/schedule/ScheduleTimePicker.tsx`, `LocalizationProvider` local avec la locale date-fns et `localeText` FR/EN).
 - **Jamais d'import depuis `src/main/`** : passer par `window.api` (IPC), types dans `@shared/types`.
 - **Pages = affichage, composants et hooks = logique.** Fichiers < 200 lignes : au-delà, extraire hooks / components / data.
-- Composants partagés entre jeux : `components/common/`, `server/`, `config/`, `backup/`, `schedule/`, `firewall/`, `players/`, `mods/` (onglet Parcourir de Valheim et ARK : `usePagedBrowser`, `BrowseSearchField`, `BrowseLoadMore`, textes `modBrowse` importés par les manifests). **Ne jamais importer depuis `games/<autre-jeu>/`** : extraire le composant dans `components/`.
+- Composants partagés entre jeux : `components/common/`, `server/`, `config/`, `backup/`, `schedule/`, `firewall/`, `players/`, `mods/` (pages Mods de Valheim et ARK : ligne `ModRow`, liste `ModListPanel` avec recherche `matchesModSearch` et compteur, onglet `ModCountTab` ; onglet Parcourir : `usePagedBrowser`, `BrowseSearchField`, `BrowseLoadMore`, textes `modBrowse` importés par les manifests). **Ne jamais importer depuis `games/<autre-jeu>/`** : extraire le composant dans `components/`.
 - `App.tsx`, `Sidebar`, `i18n/index.ts` ne contiennent aucun nom de jeu : ils lisent `GAMES` (`games/registry.ts`).
 
 ## Thème (`theme.ts`)
@@ -44,7 +44,7 @@ Jamais de texte « Chargement... » ni de valeurs par défaut affichées avant l
 
 - `<LoadingSkeleton loading>` enveloppe l'élément **final** (rendu mais `visibility: hidden`, le `Skeleton` prend sa taille → aucun décalage). `fullWidth` pour un élément étiré, `sx` pour reporter `width`/`maxWidth` (la prop `width` du Skeleton est inline et écraserait `sx`). `Chip` dans une rangée : `sx={{ display: "flex" }}`. Un enfant qui ne rend rien ne crée pas de bloc vide (`&:empty`).
 - `<SkeletonChildren loading>` : chaque enfant d'une colonne `Stack` (cartes de formulaire).
-- `skeletonRows(<VraieLigne data={PLACEHOLDER} />, n)` : lignes construites avec le **vrai** composant et des données réalistes (d'où les extractions `BackupRow`, `BrowseModCard`, `ModVersionsDialog`, `ConfigFileRow`) (renvoie un tableau : les `divider` d'une `Stack` tombent entre les lignes). `skeletonTableRows(colonnes, n)` pour un tableau.
+- `skeletonRows(<VraieLigne data={PLACEHOLDER} />, n)` : lignes construites avec le **vrai** composant et des données réalistes (d'où les extractions `BackupRow`, `BrowseModRow`, `ModVersionsDialog`, `ConfigFileRow`) (renvoie un tableau : les `divider` d'une `Stack` tombent entre les lignes). `skeletonTableRows(colonnes, n)` pour un tableau.
 - Le hook expose `loading` (vrai au départ, `finally(() => setLoading(false))`, 1er chargement seulement), jamais déduit d'une valeur `null` (qui reste `null` en cas d'erreur).
 - Réserver la place du cas courant pendant une vérification (avertissement « pas admin », « SteamCMD installé »…).
 - Démarrage : `ServerContext.state.loaded` (serveurs, serveur actif **et** statuts lus) ; tant qu'il est faux : `PageSkeleton`, entrées de Sidebar, sélecteur et statut en skeleton.
@@ -53,7 +53,8 @@ Jamais de texte « Chargement... » ni de valeurs par défaut affichées avant l
 
 ## Mise en page (écrans de portable)
 
-- Contenu centré et borné à `CONTENT_MAX_WIDTH` (1280 px, wrapper d'`App.tsx`), sauf `FULL_WIDTH_PAGES` (Logs). Pages à formulaire → `components/common/FormPage` (720 px par défaut, prop `width`), jamais un `Stack` avec `maxWidth` collé à gauche.
+- Contenu centré et borné à `CONTENT_MAX_WIDTH` (1280 px, wrapper d'`App.tsx`), sauf `FULL_WIDTH_PAGES` (Logs). Pages à formulaire → `components/common/FormPage` (720 px par défaut, prop `width` ; `fill` : toute la hauteur, pour une liste qui défile seule), jamais un `Stack` avec `maxWidth` collé à gauche.
+- `<main>` en `scrollbarGutter: stable` : sinon le contenu centré se décalait de quelques px quand la barre de défilement apparaissait (page ou onglet plus haut que la fenêtre).
 - **Marge basse** : pas de padding bas sur `<main>`, mais un `::after` de 24 px (16 en compact) en fin de racine de page. ⚠️ Ne pas le remplacer par `minHeight: min-content` (les `ScrollPanel` s'étirent sur toute leur longueur).
 - `COMPACT_MEDIA` (≤ 820 px de haut ou ≤ 1100 px de large) réduit la marge (24 → 16 px). `NARROW_WINDOW_QUERY` replie la Sidebar (`components/Sidebar/useSidebarCollapsed.ts` ; seul un choix fait fenêtre large est mémorisé, `localStorage` `sidebar.collapsed`). Dans la Sidebar, seule la liste des pages du jeu défile.
 - Pas de rangée flex sans `flexWrap` (barres d'outils, `ServerControls`, `JoinServerCard`, panneaux du Dashboard Palworld en `flex: "1 1 360px"`) (`Stack` + `useFlexGap`, sinon `spacing` décale la 2e ligne). Pas de hauteur fixe en px pour une zone qui défile (`clamp(220px, 40vh, 400px)`). Tableaux dans un `TableContainer`, colonne de chemin tronquée + `Tooltip`. Bloc d'info long et répétitif → masquable et mémorisé.

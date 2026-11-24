@@ -13,8 +13,8 @@ import ConfigSearchBar from "./ConfigSearchBar";
 import type { ConfigSettings, FieldGroup } from "./types";
 import { appErrorMessage } from "../../utils/appErrorMessage";
 import LoadingSkeleton from "../common/LoadingSkeleton";
-import FormPage from "../common/FormPage";
 import PageHeader from "../common/PageHeader";
+import PageFrame from "./PageFrame";
 
 const SAVE_FLASH_MS = 2000;
 
@@ -49,10 +49,19 @@ interface ConfigPageProps {
   lockWhileRunning?: boolean;
   /** Bloc d'information propre au jeu, affiché sous le titre. */
   notice?: ReactNode;
-  /** Onglets du jeu, sous l'en-tête (ARK : Général / Réglages de jeu…). */
-  tabs?: ReactNode;
+  /**
+   * Contenu seul, sans `FormPage` ni en-tête : la page du jeu les fournit
+   * avec ses onglets (ARK). Une seule barre d'onglets pour toute la page,
+   * sinon celle d'un onglet masqué se mesurait à 0 px et décalait à
+   * l'affichage.
+   */
+  embedded?: boolean;
   /** Largeur de la page (FormPage, 720 px par défaut). */
   width?: number;
+  /** Relecture du fichier (sans saisie en cours) quand cette valeur change. */
+  reloadKey?: unknown;
+  /** Après un enregistrement réussi (ARK : les autres onglets relisent). */
+  onSaved?: () => void;
 }
 
 /**
@@ -72,8 +81,10 @@ export default function ConfigPage({
   onFieldChange,
   lockWhileRunning,
   notice,
-  tabs,
+  embedded,
   width,
+  reloadKey,
+  onSaved,
 }: ConfigPageProps) {
   const { t } = useTranslation();
   const { state } = useServer();
@@ -89,6 +100,7 @@ export default function ConfigPage({
         const res = await writeConfig(value);
         if (res.success) {
           markClean();
+          onSaved?.();
           setSaved(true);
           setTimeout(() => setSaved(false), SAVE_FLASH_MS);
         } else
@@ -109,6 +121,7 @@ export default function ConfigPage({
         form.setFieldValue(key as never, val as never),
       ),
     lockWhileRunning,
+    reloadKey,
   );
 
   if (!state.serverPath) {
@@ -129,18 +142,20 @@ export default function ConfigPage({
   }
 
   return (
-    <FormPage width={width}>
-      <PageHeader
-        title={t(titleKey)}
-        subtitle={t(subtitleKey)}
-        onOpenFolder={() =>
-          window.api.shell.openPath(folderPath(state.serverPath))
-        }
-        folderTooltip={t("config.openFolder")}
-      />
-
-      {tabs}
-
+    <PageFrame
+      embedded={embedded}
+      width={width}
+      header={
+        <PageHeader
+          title={t(titleKey)}
+          subtitle={t(subtitleKey)}
+          onOpenFolder={() =>
+            window.api.shell.openPath(folderPath(state.serverPath))
+          }
+          folderTooltip={t("config.openFolder")}
+        />
+      }
+    >
       {notice}
 
       {locked && (
@@ -210,6 +225,6 @@ export default function ConfigPage({
           </LoadingSkeleton>
         </Stack>
       </form>
-    </FormPage>
+    </PageFrame>
   );
 }

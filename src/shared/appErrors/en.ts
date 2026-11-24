@@ -33,6 +33,8 @@ export const APP_ERRORS_EN: Record<AppErrorCode, string> = {
     "Can't reach RCON on port {{port}}. Check that the server has finished starting and that RCON is enabled on the Configuration page.",
   ARK_MAP_INVALID:
     "Invalid map name: {{map}}. Letters, digits and “_” only, for example Svartalfheim_WP.",
+  ARK_SAVE_DIR_INVALID:
+    "Invalid world folder: {{name}}. Letters, digits and _ only, or empty for SavedArks.",
   ARK_MAX_PLAYERS_INVALID: "Invalid player count (1 to {{max}}).",
   ARK_MOD_ID_INVALID:
     "Invalid mod ID: {{id}}. It's the “Project ID” number shown on the mod's CurseForge page.",

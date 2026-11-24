@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Stack, Typography } from "@mui/material";
+import { Divider, Stack, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import type {
   ThunderstoreModInfo,
@@ -8,7 +8,7 @@ import type {
 } from "@shared/types";
 import { REGISTRY_LABEL } from "../utils/modPageUrl";
 import ScrollPanel from "../../../../../components/common/ScrollPanel";
-import BrowseModCard, { PLACEHOLDER_MOD } from "./BrowseModCard";
+import BrowseModRow, { PLACEHOLDER_MOD } from "./BrowseModRow";
 import BrowseHeader from "./BrowseHeader";
 import BrowseLoadMore from "../../../../../components/mods/BrowseLoadMore";
 import ModVersionsDialog from "./ModVersionsDialog";
@@ -43,8 +43,9 @@ export default function ModBrowser({ browser, onInstallVersion }: Props) {
   };
 
   return (
+    // Un panneau avec des lignes séparées, comme Installés et le Parcourir
+    // d'ARK (plus une carte par mod).
     <ScrollPanel
-      paper={false}
       minHeight={280}
       // Pas `mods` : « Charger plus » ne doit pas ramener la liste en haut.
       resetKey={browser.listKey}
@@ -60,9 +61,9 @@ export default function ModBrowser({ browser, onInstallVersion }: Props) {
       }
     >
       {loading && (
-        <Stack spacing={1}>
+        <Stack divider={<Divider />}>
           {skeletonRows(
-            <BrowseModCard
+            <BrowseModRow
               mod={PLACEHOLDER_MOD}
               onOpenFiles={() => {}}
               onInstall={() => {}}
@@ -82,9 +83,9 @@ export default function ModBrowser({ browser, onInstallVersion }: Props) {
 
       {!loading && !error && (
         <>
-          <Stack spacing={1}>
+          <Stack divider={<Divider />}>
             {mods.map((mod) => (
-              <BrowseModCard
+              <BrowseModRow
                 key={browseModKey(mod)}
                 mod={mod}
                 onOpenFiles={openFiles}

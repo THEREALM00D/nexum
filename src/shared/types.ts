@@ -353,6 +353,7 @@ export type AppErrorCode =
   | "RCON_UNREACHABLE"
   | "ARK_MAP_INVALID"
   | "ARK_PORTS_SAME"
+  | "ARK_SAVE_DIR_INVALID"
   | "ARK_MAX_PLAYERS_INVALID"
   | "ARK_MOD_ID_INVALID"
   | "ARK_MOD_NOT_FOUND"
@@ -460,6 +461,11 @@ export interface ArkLaunchConfig {
   maxPlayers: number;
   battlEye: boolean;
   customArgs: string;
+  /**
+   * `?AltSaveDirectoryName=` : le monde est dans `Saved/<dossier>/<Carte>`
+   * au lieu de `Saved/SavedArks/<Carte>` ("" = SavedArks, vérifié).
+   */
+  saveDirectory: string;
   /** Mods CurseForge, dans l'ordre de chargement (-mods=). */
   mods: ArkMod[];
   /**
@@ -478,8 +484,76 @@ export interface ArkUnknownSetting {
   /** Même forme que arkSettingId : `fichier:section:clé`. */
   id: string;
   file: "gus" | "game";
+  /** Section du fichier : celle du jeu, ou celle d'un mod (un groupe par section). */
+  section: string;
   key: string;
   value: string;
+}
+
+/** Ligne de lancement trouvée (log du serveur ou fichier .bat / .cmd). */
+export interface ArkLaunchLineSource {
+  line: string;
+  file: string;
+  modifiedAt: number;
+}
+
+/** Ce que l'import d'une ligne de lancement ne reprend pas tel quel. */
+export type ArkImportNoticeCode =
+  | "noMap"
+  | "mapInvalid"
+  | "maxPlayersQuery"
+  | "queryFlag"
+  | "multihome"
+  | "valueWithSpace"
+  | "invalidValue"
+  | "batchVariable"
+  | "portsSame"
+  | "worldNotFound";
+
+export interface ArkImportNotice {
+  code: ArkImportNoticeCode;
+  /** Option concernée, telle qu'écrite sur la ligne. */
+  detail: string;
+}
+
+/** Dossier qui contient déjà le monde de la carte (`<Carte>.ark`). */
+export interface ArkWorldLocation {
+  /** "" = Saved/SavedArks, sinon le dossier d'AltSaveDirectoryName. */
+  saveDirectory: string;
+  modifiedAt: number;
+  profiles: number;
+  tribes: number;
+}
+
+export interface ArkImportPortConflict {
+  serverName: string;
+  port: number;
+  protocol: "UDP" | "TCP";
+  label: string;
+}
+
+/** Réglages des mods gardés en place par l'import (pour le résumé). */
+export interface ArkModSettings {
+  /** Sections des INI écrites par des mods (ou une carte). */
+  iniSections: string[];
+  /** Fichiers de `Saved/SaveGames` (dossier suivi d'un « / »). */
+  files: string[];
+  /** Plugins ServerAPI (AsaApiLoader.exe présent), non chargés par Nexum. */
+  serverApiPlugins: string[];
+}
+
+/** Aperçu de l'import d'une ligne de lancement ARK. */
+export interface ArkLaunchImport {
+  /** Config Nexum obtenue (monde le plus récent présélectionné). */
+  launch: ArkLaunchConfig;
+  /** Clés `?Clé=valeur` écrites dans GameUserSettings.ini (sans les valeurs). */
+  iniKeys: string[];
+  /** `?AltSaveDirectoryName` de la ligne ("" sans). */
+  lineSaveDirectory: string;
+  worlds: ArkWorldLocation[];
+  notices: ArkImportNotice[];
+  conflicts: ArkImportPortConflict[];
+  modSettings: ArkModSettings;
 }
 
 /** Onglet « Réglages de jeu » : valeurs écrites, le reste vaut le défaut du jeu. */

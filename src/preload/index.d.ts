@@ -27,6 +27,8 @@ import type {
   EnshroudedSettings,
   EnshroudedUserGroup,
   ArkSettings,
+  ArkLaunchImport,
+  ArkLaunchLineSource,
   ArkMod,
   ArkModsState,
   ArkSettingsState,
@@ -449,6 +451,23 @@ interface API {
       serverId: string,
       file: "gus" | "game",
       text: string,
+    ) => Promise<{ success: boolean; error?: string }>;
+  };
+  arkLaunchImport: {
+    fromLog: (
+      serverPath: string,
+      serverId: string | null,
+    ) => Promise<ArkLaunchLineSource | null>;
+    fromScript: (path: string) => Promise<ArkLaunchLineSource>;
+    preview: (
+      serverPath: string,
+      line: string,
+      serverId: string | null,
+    ) => Promise<ArkLaunchImport | null>;
+    apply: (
+      serverId: string,
+      line: string,
+      saveDirectory: string,
     ) => Promise<{ success: boolean; error?: string }>;
   };
   arkMods: {

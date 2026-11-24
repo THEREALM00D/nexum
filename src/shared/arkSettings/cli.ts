@@ -2,8 +2,9 @@ import { settingsOf, type ArkSettingDef } from "./types";
 
 // Options de ligne de commande, ajoutées après celles de Nexum
 // (arkConfig.launchOptions). Absentes car gérées ailleurs : carte, ports,
-// -WinLiveMaxPlayers, -NoBattlEye, -mods. Absentes car elles changent des
-// chemins que Nexum suppose : AltSaveDirectoryName, MULTIHOME.
+// -WinLiveMaxPlayers, -NoBattlEye, -mods, AltSaveDirectoryName (onglet
+// Général, arkConfig.saveDirectory). Absente car elle change l'adresse que
+// Nexum suppose : MULTIHOME.
 const SERVER_PLATFORMS = ["ALL", "PC", "PC+XSX", "PC+PS5", "PC+XSX+PS5"];
 const EVENTS = [
   "None",

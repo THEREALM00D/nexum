@@ -29,6 +29,9 @@ import playersFr from "../../components/players/__i18n__/fr";
 import playersEn from "../../components/players/__i18n__/en";
 import modBrowseFr from "../../components/mods/__i18n__/fr";
 import modBrowseEn from "../../components/mods/__i18n__/en";
+import launchImportFr from "./components/launchImport/__i18n__/fr";
+import launchImportEn from "./components/launchImport/__i18n__/en";
+import { arkExistingServer } from "./components/launchImport/existingServer";
 
 // Joueurs : ListPlayers en RCON (src/main/games/ark/ArkRconClient.ts). Mods :
 // liste d'ID CurseForge, téléchargés par le serveur lui-même (page Mods).
@@ -70,6 +73,7 @@ export const arkPlugin: GamePlugin = {
       ...scheduleFr,
       ...modsFr,
       ...modBrowseFr,
+      ...launchImportFr,
     },
     en: {
       ...dashboardEn,
@@ -83,6 +87,9 @@ export const arkPlugin: GamePlugin = {
       ...scheduleEn,
       ...modsEn,
       ...modBrowseEn,
+      ...launchImportEn,
     },
   },
+  // Dossier existant : ligne de lancement de l'ancien outil (carte, mods…).
+  existingServer: arkExistingServer,
 };

@@ -26,6 +26,8 @@ import playersEn from "../../components/players/__i18n__/en";
 import modBrowseFr from "../../components/mods/__i18n__/fr";
 import modBrowseEn from "../../components/mods/__i18n__/en";
 
+import { importValheimWorld } from "./existingServer/importValheimWorld";
+
 export const valheimPlugin: GamePlugin = {
   id: "valheim",
   supportedPages: [
@@ -72,5 +74,9 @@ export const valheimPlugin: GamePlugin = {
       ...modBrowseEn,
       ...playersEn,
     },
+  },
+  // Dossier existant : nom du monde deviné s'il n'y en a qu'un.
+  existingServer: {
+    apply: (serverId) => importValheimWorld(serverId),
   },
 };

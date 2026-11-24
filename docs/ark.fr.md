@@ -9,7 +9,7 @@ Nexum fait tourner le serveur officiel **ARK: Survival Ascended Dedicated Server
 Passez par l'assistant de démarrage (ou **Serveurs → Ajouter un serveur**) et choisissez **ARK: Survival Ascended** :
 
 - **Installer un nouveau serveur** : Nexum télécharge le serveur avec SteamCMD (environ 13 Go).
-- **J'ai déjà un serveur** : choisissez le dossier qui contient `ShooterGame` (Nexum cherche `ShooterGame\Binaries\Win64\ArkAscendedServer.exe`).
+- **J'ai déjà un serveur** : choisissez le dossier qui contient `ShooterGame` (Nexum cherche `ShooterGame\Binaries\Win64\ArkAscendedServer.exe`). Nexum reprend la carte, les ports, les mods et les options de l'ancienne ligne de lancement : voir [Passer un serveur ARK existant à Nexum](ark-import.fr.md).
 
 Configuration requise : Windows 64 bits et un PC puissant. Le serveur prend environ **10 Go de RAM** à lui seul une fois démarré, sans joueur connecté ; prévoyez **20 Go** d'espace disque libre.
 
@@ -23,12 +23,12 @@ La page **Configuration** a quatre onglets : **Général**, **Réglages de jeu**
 
 Les réglages essentiels, venant de deux endroits :
 
-| Section                 | Contenu                                                                    | Où c'est écrit                   |
-| ----------------------- | -------------------------------------------------------------------------- | -------------------------------- |
-| Serveur                 | Nom de session, carte, joueurs max, mode PvE                               | Fichier INI et ligne de commande |
-| Accès et administration | Mot de passe du serveur, mot de passe admin, RCON                          | `GameUserSettings.ini`           |
-| Réseau                  | Port de jeu (UDP 7777), port de requête (UDP 27015), port RCON (TCP 27020) | Ligne de commande                |
-| Avancé                  | BattlEye, arguments de lancement supplémentaires                           | Ligne de commande                |
+| Section                 | Contenu                                                                                     | Où c'est écrit                   |
+| ----------------------- | ------------------------------------------------------------------------------------------- | -------------------------------- |
+| Serveur                 | Nom de session, carte, joueurs max, mode PvE                                                | Fichier INI et ligne de commande |
+| Accès et administration | Mot de passe du serveur, mot de passe admin, RCON                                           | `GameUserSettings.ini`           |
+| Réseau                  | Port de jeu (UDP 7777), port de requête (UDP 27015), port RCON (TCP 27020)                  | Ligne de commande                |
+| Avancé                  | BattlEye, dossier du monde (`AltSaveDirectoryName`), arguments de lancement supplémentaires | Ligne de commande                |
 
 `GameUserSettings.ini` se trouve dans `ShooterGame\Saved\Config\WindowsServer`. Le nom de session, les mots de passe, le mode PvE et RCON y sont écrits ; la carte, les joueurs max, les ports et BattlEye passent par la ligne de commande. Les joueurs max ne fonctionnent que sur la ligne de commande : le serveur ignore et réécrit la valeur du fichier INI.
 
@@ -46,6 +46,7 @@ Tous les réglages d'ARK: Survival Ascended (environ 380), rangés par thème : 
 - Seuls les réglages que vous modifiez sont écrits : le reste des fichiers (clés inconnues, sections des mods) ne bouge pas.
 - Les **options de lancement** (`-ServerPlatform`, `-clusterid`…) sont ajoutées à la ligne de commande. Si la même option est déjà dans les arguments de lancement supplémentaires (onglet Général), c'est celle-ci qui l'emporte. Leurs valeurs ne peuvent contenir ni espace ni guillemet.
 - **Autres réglages** : réglages trouvés dans les fichiers que Nexum ne connaît pas encore (ajoutés par une mise à jour du jeu ou à la main). Vous pouvez changer leur valeur.
+- **Mod : [Section]** : un groupe par section de mod de `GameUserSettings.ini` et `Game.ini` (`[ArkadeEssentials]`, `[Shiny]`…), avec ses réglages un par un. Nexum ne vérifie pas ces valeurs : la documentation du mod dit ce que chaque clé attend. Les listes (clés écrites plusieurs fois) restent dans **Fichiers bruts**.
 
 ### Listes
 
@@ -75,13 +76,14 @@ La page **Mods** gère les mods [CurseForge](https://www.curseforge.com/ark-surv
 - Onglet **Parcourir CurseForge** : cherchez des mods par nom, triez-les (popularité, mis à jour récemment, téléchargements, nom), filtrez par catégorie (Cartes, Créatures, Structures…) et cliquez sur **Ajouter**. Les mods marqués **Cosmétique** sont réservés aux joueurs : ils ne s'installent pas sur un serveur et l'empêchent de démarrer (testé), ils ne peuvent donc pas être ajoutés. Les mods marqués **PC seulement** ne sont pas cross-plateforme : un serveur est cross-plateforme par défaut et ne démarre pas avec eux (testé) ; ils ne fonctionnent qu'avec **Plateformes acceptées** sur `PC` (page Configuration, onglet **Réglages de jeu**, options de lancement), et les joueurs sur console ne peuvent alors plus rejoindre.
 - **Ajoutez** un mod avec son **Project ID** : le nombre affiché sur la page CurseForge du mod, dans _About Project_ (l'adresse de la page ne le contient pas).
 - L'**ordre** de la liste est l'ordre de chargement (flèches). Un mod **désactivé** reste dans la liste mais n'est pas chargé.
+- **Recherchez** dans la liste par nom, auteur ou ID ; le compteur indique combien de mods correspondent. Pendant une recherche, les flèches déplacent toujours le mod dans la liste complète.
 - Nexum écrit seulement la liste sur la ligne de commande (`-mods=`) : **le serveur télécharge les mods et les met à jour lui-même à chaque démarrage**, en quelques secondes pour de petits mods. Une modification faite serveur lancé s'applique au prochain démarrage.
 - Les joueurs n'installent rien : le jeu télécharge les mods du serveur quand ils le rejoignent.
 - Une fois un mod téléchargé par le serveur, la page affiche son nom, son logo, son auteur et le fichier installé. Avant, Nexum demande son nom et son logo à CurseForge, et vérifie qu'un ID ajouté existe.
 
 ⚠️ Un ID de mod inconnu **empêche le serveur de démarrer** (`Mods not installed` dans les logs). Retirer un mod retire aussi du monde ce qu'il ajoutait (créatures, structures, objets) : faites d'abord une [sauvegarde](backups.fr.md).
 
-Le serveur garde les fichiers d'un mod retiré de la liste : il apparaît dans **Téléchargés par le serveur, pas dans la liste**, d'où vous pouvez le rajouter. C'est aussi là qu'apparaissent les mods d'un serveur existant après son premier démarrage dans Nexum. Des mods déjà écrits dans les arguments de lancement supplémentaires (`-mods=…`) sont signalés, avec un bouton pour les déplacer dans la liste.
+Le serveur garde les fichiers d'un mod retiré de la liste : il apparaît dans **Téléchargés par le serveur, pas dans la liste**, en bas de la liste, d'où vous pouvez le rajouter. C'est aussi là qu'apparaissent les mods d'un serveur existant après son premier démarrage dans Nexum. Des mods déjà écrits dans les arguments de lancement supplémentaires (`-mods=…`) sont signalés, avec un bouton pour les déplacer dans la liste.
 
 ## RCON
 
@@ -112,7 +114,7 @@ Utilisez un autre port de jeu **et** un autre port de requête (par exemple 7787
 
 L'arrêt passe par RCON : Nexum demande au serveur de sauvegarder, puis envoie `DoExit` ; le serveur sauvegarde à nouveau le monde et quitte en 20 secondes environ. Sans RCON, le serveur ne peut pas être arrêté proprement (il ignore CTRL+Pause, testé) : Nexum l'arrête directement.
 
-Le monde est dans `ShooterGame\Saved\SavedArks\<carte>` (par exemple `TheIsland_WP\TheIsland_WP.ark`). Le jeu y garde aussi jusqu'à 4 copies complètes du monde (fichiers `.arkrbf`) et une copie anti-corruption (`.bak`). Les [sauvegardes](backups.fr.md) de Nexum laissent ces copies de côté : une sauvegarde ne contient que le monde lui-même, environ 6 fois plus petite.
+Le monde est dans `ShooterGame\Saved\SavedArks\<carte>` (par exemple `TheIsland_WP\TheIsland_WP.ark`), ou dans `ShooterGame\Saved\<dossier du monde>\<carte>` quand le champ **Dossier du monde** (Configuration → Général, Avancé) est rempli. Le jeu y garde aussi jusqu'à 4 copies complètes du monde (fichiers `.arkrbf`) et une copie anti-corruption (`.bak`). Les [sauvegardes](backups.fr.md) de Nexum laissent ces copies de côté : une sauvegarde ne contient que le monde lui-même, environ 6 fois plus petite.
 
 Bon à savoir : un serveur démarré par Nexum s'arrête quand Nexum se ferme. Nexum vous le demande d'abord et l'arrête proprement (voir [Quitter Nexum avec des serveurs en ligne](installation.fr.md#quitter-nexum-avec-des-serveurs-en-ligne)).
 

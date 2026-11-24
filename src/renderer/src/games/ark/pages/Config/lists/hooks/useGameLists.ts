@@ -4,6 +4,7 @@ import type { ArkGameLists, ArkListName } from "@shared/types";
 import { useServer } from "../../../../../../context/ServerContext";
 import { useNotification } from "../../../../../../context/NotificationContext";
 import { useConfigLoad } from "../../../../../../components/config/useConfigLoad";
+import { useConfigSaved } from "../../ConfigTabs";
 import {
   appErrorMessage,
   errorMessage,
@@ -49,6 +50,7 @@ export function useGameLists() {
     () => window.api.arkSettings.readLists(serverId),
     [serverId],
   );
+  const tabs = useConfigSaved();
   const { loading, failed, locked, markDirty, markClean } = useConfigLoad(
     read,
     (lists) => {
@@ -56,6 +58,7 @@ export function useGameLists() {
       setDraft(lists);
     },
     true,
+    tabs.revision,
   );
 
   const isDirty = (name: ArkListName) =>
@@ -91,6 +94,7 @@ export function useGameLists() {
       const fresh = await read();
       setSaved(fresh);
       setDraft((current) => ({ ...current, [name]: fresh[name] }));
+      tabs.saved();
       notify(t("arkListsUi.saved"), "success");
     } catch (error) {
       notify(errorMessage(t, error), "error");

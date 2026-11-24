@@ -4,6 +4,7 @@ import type { ArkSettingsState } from "@shared/types";
 import { useServer } from "../../../../../../context/ServerContext";
 import { useNotification } from "../../../../../../context/NotificationContext";
 import { useConfigLoad } from "../../../../../../components/config/useConfigLoad";
+import { useConfigSaved } from "../../ConfigTabs";
 import {
   appErrorMessage,
   errorMessage,
@@ -30,6 +31,7 @@ export function useArkSettings() {
     () => window.api.arkSettings.read(serverId),
     [serverId],
   );
+  const tabs = useConfigSaved();
   const { loading, failed, locked, markDirty, markClean } = useConfigLoad(
     read,
     (data) => {
@@ -37,6 +39,7 @@ export function useArkSettings() {
       setEdits({});
     },
     true,
+    tabs.revision,
   );
 
   const changeCount = Object.keys(edits).length;
@@ -89,6 +92,7 @@ export function useArkSettings() {
       }
       setSaved(await read());
       setEdits({});
+      tabs.saved();
       notify(t("arkSettingsUi.saved"), "success");
     } catch (error) {
       notify(errorMessage(t, error), "error");

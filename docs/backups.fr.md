@@ -29,7 +29,7 @@ Ce dossier contient :
 
 **Enshrouded** : Nexum zippe le dossier des sauvegardes du serveur (`savegame` par défaut, ou le dossier choisi dans **Configuration → Avancé**) : le monde `world0.ksd` et les copies que le jeu garde dans `savegame/backup`. Voir [Enshrouded](enshrouded.fr.md).
 
-**ARK: Survival Ascended** : Nexum zippe le dossier du monde de la carte choisie (`ShooterGame\Saved\SavedArks\<carte>`), sans les copies complètes que le jeu garde à côté (fichiers `.arkrbf` et `.bak`, environ 6 fois la taille du monde). Avec RCON activé, Nexum demande au serveur de sauvegarder (`SaveWorld`) juste avant de zipper un serveur lancé. Voir [ARK: Survival Ascended](ark.fr.md).
+**ARK: Survival Ascended** : Nexum zippe le dossier du monde de la carte choisie (`ShooterGame\Saved\SavedArks\<carte>`, ou `ShooterGame\Saved\<dossier du monde>\<carte>` quand le champ **Dossier du monde** est rempli), sans les copies complètes que le jeu garde à côté (fichiers `.arkrbf` et `.bak`, environ 6 fois la taille du monde). Avec RCON activé, Nexum demande au serveur de sauvegarder (`SaveWorld`) juste avant de zipper un serveur lancé. Voir [ARK: Survival Ascended](ark.fr.md).
 
 ## Configuration
 
