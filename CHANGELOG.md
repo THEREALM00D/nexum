@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.25.0](https://github.com/THEREALM00D/nexum/compare/v0.24.0...v0.25.0) (2026-11-24)
+
+
+### Features
+
+* add advanced configuration for ARK: Survival Ascended ([#275](https://github.com/THEREALM00D/nexum/issues/275)) ([b439e62](https://github.com/THEREALM00D/nexum/commit/b439e62f7194583d2097a6290b2e8c82f94aaf8d))
+* add ARK: Survival Ascended support ([#267](https://github.com/THEREALM00D/nexum/issues/267)) ([552b7b7](https://github.com/THEREALM00D/nexum/commit/552b7b79f8e22ca52f4e19194178e5731286ab60))
+* import existing ARK: Survival Ascended servers ([#277](https://github.com/THEREALM00D/nexum/issues/277)) ([d64b086](https://github.com/THEREALM00D/nexum/commit/d64b086dac462efafb5f750db0b0daa178fcc1d1))
+* manage ARK: Survival Ascended mods ([#273](https://github.com/THEREALM00D/nexum/issues/273)) ([4784685](https://github.com/THEREALM00D/nexum/commit/47846858ddbeb4899ccc29707fc3512d561eed9b))
+* search CurseForge mods from the ARK Mods page ([#274](https://github.com/THEREALM00D/nexum/issues/274)) ([3913bb9](https://github.com/THEREALM00D/nexum/commit/3913bb927ab5731575bfb5fa4e39f6b0b400a40a))
+
+
+### Bug Fixes
+
+* show ARK restart announcements in the game chat ([#271](https://github.com/THEREALM00D/nexum/issues/271)) ([7f9fd02](https://github.com/THEREALM00D/nexum/commit/7f9fd02269aae555cc1cee02ffac16c2f4ac62ab))
+
 ## [0.24.0](https://github.com/THEREALM00D/nexum/compare/v0.23.0...v0.24.0) (2026-11-22)
 
 
