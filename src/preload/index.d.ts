@@ -454,7 +454,10 @@ interface API {
     ) => Promise<{ success: boolean; error?: string }>;
   };
   arkLaunchImport: {
-    fromLog: (serverPath: string) => Promise<ArkLaunchLineSource | null>;
+    fromLog: (
+      serverPath: string,
+      serverId: string | null,
+    ) => Promise<ArkLaunchLineSource | null>;
     fromScript: (path: string) => Promise<ArkLaunchLineSource>;
     preview: (
       serverPath: string,

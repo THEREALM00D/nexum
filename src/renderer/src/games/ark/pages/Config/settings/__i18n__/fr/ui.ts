@@ -9,6 +9,8 @@ export default {
     notice:
       "Le fichier tel quel, pour ce que les autres onglets ne couvrent pas (autres listes, sections des mods). Le fichier précédent est gardé en .backup à chaque enregistrement.",
     saved: "Fichier enregistré",
+    changedOnDisk:
+      "Le fichier a changé depuis sa lecture (enregistrement d'un autre onglet) : rien n'a été écrit. Annulez vos modifications pour le relire, puis refaites-les.",
     empty: "Fichier vide : le serveur le crée à son premier démarrage.",
   },
   arkSettingsUi: {

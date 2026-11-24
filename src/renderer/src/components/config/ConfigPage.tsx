@@ -53,6 +53,10 @@ interface ConfigPageProps {
   tabs?: ReactNode;
   /** Largeur de la page (FormPage, 720 px par défaut). */
   width?: number;
+  /** Relecture du fichier (sans saisie en cours) quand cette valeur change. */
+  reloadKey?: unknown;
+  /** Après un enregistrement réussi (ARK : les autres onglets relisent). */
+  onSaved?: () => void;
 }
 
 /**
@@ -74,6 +78,8 @@ export default function ConfigPage({
   notice,
   tabs,
   width,
+  reloadKey,
+  onSaved,
 }: ConfigPageProps) {
   const { t } = useTranslation();
   const { state } = useServer();
@@ -89,6 +95,7 @@ export default function ConfigPage({
         const res = await writeConfig(value);
         if (res.success) {
           markClean();
+          onSaved?.();
           setSaved(true);
           setTimeout(() => setSaved(false), SAVE_FLASH_MS);
         } else
@@ -109,6 +116,7 @@ export default function ConfigPage({
         form.setFieldValue(key as never, val as never),
       ),
     lockWhileRunning,
+    reloadKey,
   );
 
   if (!state.serverPath) {

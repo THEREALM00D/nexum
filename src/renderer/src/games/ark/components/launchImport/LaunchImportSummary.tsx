@@ -73,6 +73,9 @@ export default function LaunchImportSummary({
             onChange={(event) => onSaveDirectoryChange(event.target.value)}
             slotProps={{
               select: {
+                // SavedArks a la valeur "" : sans displayEmpty, le champ
+                // restait vide alors que ce monde était choisi.
+                displayEmpty: true,
                 SelectDisplayProps: {
                   "aria-label": t("arkLaunchImport.world"),
                 },
@@ -93,9 +96,14 @@ export default function LaunchImportSummary({
         {preview.lineSaveDirectory &&
           saveDirectory !== preview.lineSaveDirectory && (
             <Typography variant="caption" sx={{ color: "text.secondary" }}>
-              {t("arkLaunchImport.worldHint", {
-                folder: preview.lineSaveDirectory,
-              })}
+              {t(
+                // Présélection du main = le plus récent ; un autre choix
+                // est celui de l'utilisateur.
+                saveDirectory === launch.saveDirectory
+                  ? "arkLaunchImport.worldHint"
+                  : "arkLaunchImport.worldLineHint",
+                { folder: preview.lineSaveDirectory },
+              )}
             </Typography>
           )}
       </Row>
@@ -117,7 +125,7 @@ export default function LaunchImportSummary({
         <Row label={t("arkLaunchImport.cluster")}>
           {t("arkLaunchImport.clusterValue", {
             id: clusterId,
-            dir: launch.launchOptions.ClusterDirOverride ?? "—",
+            folder: launch.launchOptions.ClusterDirOverride ?? "—",
           })}
         </Row>
       )}

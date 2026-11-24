@@ -13,6 +13,7 @@ import { useServer } from "../../../../../context/ServerContext";
 import { useNotification } from "../../../../../context/NotificationContext";
 import { useConfigLoad } from "../../../../../components/config/useConfigLoad";
 import LoadingSkeleton from "../../../../../components/common/LoadingSkeleton";
+import { useConfigSaved } from "../ConfigTabs";
 import {
   appErrorMessage,
   errorMessage,
@@ -40,6 +41,7 @@ function RawFilesTab() {
     () => window.api.arkSettings.readRaw(serverId, file),
     [serverId, file],
   );
+  const tabs = useConfigSaved();
   const { loading, failed, locked, markDirty, markClean } = useConfigLoad(
     read,
     (content) => {
@@ -47,6 +49,7 @@ function RawFilesTab() {
       setSavedText(content);
     },
     true,
+    tabs.revision,
   );
 
   const dirty = text !== savedText;
@@ -71,6 +74,13 @@ function RawFilesTab() {
   const save = async () => {
     setSaving(true);
     try {
+      // Saisie en cours pendant qu'un autre onglet enregistrait : le texte
+      // affiché écraserait ses changements.
+      const current = await window.api.arkSettings.readRaw(serverId, file);
+      if (current !== savedText) {
+        notify(t("arkRawUi.changedOnDisk"), "warning");
+        return;
+      }
       const result = await window.api.arkSettings.writeRaw(
         serverId,
         file,
@@ -81,6 +91,7 @@ function RawFilesTab() {
         return;
       }
       setSavedText(text);
+      tabs.saved();
       notify(t("arkRawUi.saved"), "success");
     } catch (error) {
       notify(errorMessage(t, error), "error");
@@ -118,7 +129,8 @@ function RawFilesTab() {
         </ToggleButtonGroup>
         <Stack direction="row" sx={{ gap: 1, ml: "auto" }}>
           {dirty && (
-            <Button onClick={() => setText(savedText)} disabled={saving}>
+            // Relu sur le disque : un autre onglet a pu l'enregistrer.
+            <Button onClick={() => void changeFile(file)} disabled={saving}>
               {t("arkSettingsUi.discard")}
             </Button>
           )}

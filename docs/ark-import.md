@@ -17,7 +17,7 @@ The files of the folder stay as they are: `GameUserSettings.ini`, `Game.ini`, mo
 
 What only exists on the **launch line** of the old tool (map, ports, mods, options) has to be taken over. Nexum finds it on its own:
 
-- **Server log**: the server writes its whole launch line in `ShooterGame\Saved\Logs\ShooterGame.log` every time it starts. Nexum reads the most recent log that has one. Nothing to do.
+- **Server log**: the server writes its whole launch line in `ShooterGame\Saved\Logs\ShooterGame.log` every time it starts. Nexum reads the most recent log that has one, skipping the lines Nexum itself started the server with. Nothing to do.
 - **Paste**: paste the line yourself (copied from the old tool).
 - **.bat file**: choose the `.bat` or `.cmd` file that starts the server.
 
@@ -39,7 +39,7 @@ The summary shows what Nexum will use:
 
 The RCON port and max players come from `GameUserSettings.ini` when the line doesn't set them.
 
-**World**: Nexum looks for the map's world in `SavedArks` and in every `AltSaveDirectoryName` folder, and picks the most recent one. If several are found, choose one in the summary. A server that used `?AltSaveDirectoryName=` keeps using that folder (**World folder** field on the General tab).
+**World**: Nexum looks for the map's world in `SavedArks` and in every `AltSaveDirectoryName` folder, and picks the most recent one. If several are found, choose one in the summary: the line's `?AltSaveDirectoryName=` doesn't decide, since an old tool may have left it while the world was saved elsewhere. The folder you pick is kept in the **World folder** field of the General tab.
 
 The summary also lists the mod settings kept in place: mod sections of the INI files and the files mods write in `ShooterGame\Saved\SaveGames`. Afterwards, each mod section is a **Mod: [Section]** group in **Configuration → Game settings**, where you can change its settings ([ARK page](ark.md#game-settings)). The `SaveGames` files are written by the mods themselves: they keep working, but Nexum doesn't edit them.
 

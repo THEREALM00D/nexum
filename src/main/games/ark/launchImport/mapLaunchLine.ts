@@ -48,7 +48,11 @@ const SESSION_SECTION = "SessionSettings";
 // le script exécuté. Écrite telle quelle, elle écraserait le vrai réglage.
 const BATCH_VARIABLE = /%(~\w+|[^%\s]*%)/;
 
-const toInt = (value: string | null, min: number, max: number) => {
+export const toInt = (
+  value: string | null | undefined,
+  min: number,
+  max: number,
+) => {
   const number = Number((value ?? "").trim());
   return Number.isInteger(number) && number >= min && number <= max
     ? number
@@ -169,8 +173,10 @@ export function mapLaunchLine(
     }
   }
   for (const token of parsed.other) {
-    if (BATCH_VARIABLE.test(token) || /\s/.test(token))
+    if (BATCH_VARIABLE.test(token))
       notices.push({ code: "batchVariable", detail: token });
+    else if (/\s/.test(token))
+      notices.push({ code: "valueWithSpace", detail: token });
     else customArgs.push(token);
   }
 

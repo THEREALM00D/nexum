@@ -17,7 +17,7 @@ Les fichiers du dossier restent tels quels : `GameUserSettings.ini`, `Game.ini`,
 
 Ce qui n'existe que sur la **ligne de lancement** de l'ancien outil (carte, ports, mods, options) doit être repris. Nexum la trouve tout seul :
 
-- **Log du serveur** : le serveur écrit sa ligne de lancement complète dans `ShooterGame\Saved\Logs\ShooterGame.log` à chaque démarrage. Nexum lit le log le plus récent qui en contient une. Rien à faire.
+- **Log du serveur** : le serveur écrit sa ligne de lancement complète dans `ShooterGame\Saved\Logs\ShooterGame.log` à chaque démarrage. Nexum lit le log le plus récent qui en contient une, en passant les lignes avec lesquelles Nexum lui-même a démarré le serveur. Rien à faire.
 - **Coller** : collez la ligne vous-même (copiée depuis l'ancien outil).
 - **Fichier .bat** : choisissez le fichier `.bat` ou `.cmd` qui lance le serveur.
 
@@ -39,7 +39,7 @@ Le résumé montre ce que Nexum utilisera :
 
 Le port RCON et le nombre de joueurs viennent de `GameUserSettings.ini` quand la ligne ne les donne pas.
 
-**Monde** : Nexum cherche le monde de la carte dans `SavedArks` et dans chaque dossier `AltSaveDirectoryName`, et choisit le plus récent. S'il en trouve plusieurs, choisissez dans le résumé. Un serveur qui utilisait `?AltSaveDirectoryName=` garde ce dossier (champ **Dossier du monde** de l'onglet Général).
+**Monde** : Nexum cherche le monde de la carte dans `SavedArks` et dans chaque dossier `AltSaveDirectoryName`, et choisit le plus récent. S'il en trouve plusieurs, choisissez dans le résumé : le `?AltSaveDirectoryName=` de la ligne ne décide pas, car un ancien outil a pu le laisser alors que le monde était enregistré ailleurs. Le dossier choisi est gardé dans le champ **Dossier du monde** de l'onglet Général.
 
 Le résumé liste aussi les réglages des mods gardés en place : sections des mods dans les INI et fichiers que les mods écrivent dans `ShooterGame\Saved\SaveGames`. Ensuite, chaque section de mod est un groupe **Mod : [Section]** dans **Configuration → Réglages de jeu**, où vous pouvez changer ses réglages ([page ARK](ark.fr.md#réglages-de-jeu)). Les fichiers de `SaveGames` sont écrits par les mods eux-mêmes : ils continuent de fonctionner, mais Nexum ne les modifie pas.
 

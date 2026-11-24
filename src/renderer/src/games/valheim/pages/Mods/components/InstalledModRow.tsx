@@ -114,7 +114,7 @@ export default function InstalledModRow({
             <Switch
               size="small"
               checked={mod.enabled}
-              onChange={(e) => onToggle(mod.modId, e.target.checked)}
+              onChange={(event) => onToggle(mod.modId, event.target.checked)}
             />
           </Tooltip>
           {update && (

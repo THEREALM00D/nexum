@@ -37,5 +37,24 @@ export function ArkConfigTabs() {
   );
 }
 
+interface SavedState {
+  /** Incrémenté à chaque enregistrement d'un onglet. */
+  revision: number;
+  saved: () => void;
+}
+
+/**
+ * Les onglets restent montés : après l'enregistrement de l'un, les autres
+ * relisent leurs fichiers (s'ils n'ont pas de saisie en cours). Sinon
+ * Fichiers bruts réécrivait le texte lu à sa 1re visite et annulait en
+ * silence ce qu'un autre onglet venait d'enregistrer.
+ */
+export const ConfigSavedContext = createContext<SavedState>({
+  revision: 0,
+  saved: () => {},
+});
+
+export const useConfigSaved = () => useContext(ConfigSavedContext);
+
 /** Élément stable : ne change jamais d'identité. */
 export const ARK_CONFIG_TABS = <ArkConfigTabs />;

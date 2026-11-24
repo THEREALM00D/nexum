@@ -43,10 +43,12 @@ function modifiedAt(path: string): number | null {
 
 /**
  * Ligne du log le plus récent qui en contient une, null sinon. Un log
- * illisible (renommé par le serveur pendant la lecture) est sauté.
+ * illisible (renommé par le serveur pendant la lecture) est sauté, comme
+ * une ligne que `skip` écarte.
  */
 export function launchLineFromLogs(
   serverPath: string,
+  skip: (source: ArkLaunchLineSource) => boolean = () => false,
 ): ArkLaunchLineSource | null {
   const logs = join(serverPath, "ShooterGame", "Saved", "Logs");
   if (!existsSync(logs)) return null;
@@ -63,13 +65,13 @@ export function launchLineFromLogs(
   for (const file of files) {
     try {
       const match = readHead(file.path).match(COMMAND_LINE);
-      if (match) {
-        return {
-          line: match[1].trim(),
-          file: file.path,
-          modifiedAt: file.modifiedAt,
-        };
-      }
+      if (!match) continue;
+      const source = {
+        line: match[1].trim(),
+        file: file.path,
+        modifiedAt: file.modifiedAt,
+      };
+      if (!skip(source)) return source;
     } catch {
       // Fichier verrouillé ou disparu : on passe au suivant.
     }
@@ -100,7 +102,8 @@ export function launchLineFromScript(path: unknown): ArkLaunchLineSource {
   }
   let text: string;
   try {
-    text = decodeScript(readFileSync(path)).replace(/^﻿/, "");
+    // Le décodeur UTF-8 retire déjà le BOM.
+    text = decodeScript(readFileSync(path));
   } catch {
     throw new AppError("FILE_NOT_FOUND", { path });
   }

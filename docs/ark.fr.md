@@ -76,6 +76,7 @@ La page **Mods** gère les mods [CurseForge](https://www.curseforge.com/ark-surv
 - Onglet **Parcourir CurseForge** : cherchez des mods par nom, triez-les (popularité, mis à jour récemment, téléchargements, nom), filtrez par catégorie (Cartes, Créatures, Structures…) et cliquez sur **Ajouter**. Les mods marqués **Cosmétique** sont réservés aux joueurs : ils ne s'installent pas sur un serveur et l'empêchent de démarrer (testé), ils ne peuvent donc pas être ajoutés. Les mods marqués **PC seulement** ne sont pas cross-plateforme : un serveur est cross-plateforme par défaut et ne démarre pas avec eux (testé) ; ils ne fonctionnent qu'avec **Plateformes acceptées** sur `PC` (page Configuration, onglet **Réglages de jeu**, options de lancement), et les joueurs sur console ne peuvent alors plus rejoindre.
 - **Ajoutez** un mod avec son **Project ID** : le nombre affiché sur la page CurseForge du mod, dans _About Project_ (l'adresse de la page ne le contient pas).
 - L'**ordre** de la liste est l'ordre de chargement (flèches). Un mod **désactivé** reste dans la liste mais n'est pas chargé.
+- **Recherchez** dans la liste par nom, auteur ou ID ; le compteur indique combien de mods correspondent. Pendant une recherche, les flèches déplacent toujours le mod dans la liste complète.
 - Nexum écrit seulement la liste sur la ligne de commande (`-mods=`) : **le serveur télécharge les mods et les met à jour lui-même à chaque démarrage**, en quelques secondes pour de petits mods. Une modification faite serveur lancé s'applique au prochain démarrage.
 - Les joueurs n'installent rien : le jeu télécharge les mods du serveur quand ils le rejoignent.
 - Une fois un mod téléchargé par le serveur, la page affiche son nom, son logo, son auteur et le fichier installé. Avant, Nexum demande son nom et son logo à CurseForge, et vérifie qu'un ID ajouté existe.
@@ -113,7 +114,7 @@ Utilisez un autre port de jeu **et** un autre port de requête (par exemple 7787
 
 L'arrêt passe par RCON : Nexum demande au serveur de sauvegarder, puis envoie `DoExit` ; le serveur sauvegarde à nouveau le monde et quitte en 20 secondes environ. Sans RCON, le serveur ne peut pas être arrêté proprement (il ignore CTRL+Pause, testé) : Nexum l'arrête directement.
 
-Le monde est dans `ShooterGame\Saved\SavedArks\<carte>` (par exemple `TheIsland_WP\TheIsland_WP.ark`). Le jeu y garde aussi jusqu'à 4 copies complètes du monde (fichiers `.arkrbf`) et une copie anti-corruption (`.bak`). Les [sauvegardes](backups.fr.md) de Nexum laissent ces copies de côté : une sauvegarde ne contient que le monde lui-même, environ 6 fois plus petite.
+Le monde est dans `ShooterGame\Saved\SavedArks\<carte>` (par exemple `TheIsland_WP\TheIsland_WP.ark`), ou dans `ShooterGame\Saved\<dossier du monde>\<carte>` quand le champ **Dossier du monde** (Configuration → Général, Avancé) est rempli. Le jeu y garde aussi jusqu'à 4 copies complètes du monde (fichiers `.arkrbf`) et une copie anti-corruption (`.bak`). Les [sauvegardes](backups.fr.md) de Nexum laissent ces copies de côté : une sauvegarde ne contient que le monde lui-même, environ 6 fois plus petite.
 
 Bon à savoir : un serveur démarré par Nexum s'arrête quand Nexum se ferme. Nexum vous le demande d'abord et l'arrête proprement (voir [Quitter Nexum avec des serveurs en ligne](installation.fr.md#quitter-nexum-avec-des-serveurs-en-ligne)).
 

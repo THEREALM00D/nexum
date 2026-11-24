@@ -54,7 +54,7 @@ export default function InstalledModsList({
   const [sort, setSort] = useState<InstalledSort>(loadInstalledSort);
 
   const updateMap = useMemo(
-    () => new Map(updates.map((u) => [u.installedCode, u])),
+    () => new Map(updates.map((update) => [update.installedCode, update])),
     [updates],
   );
   const deprecatedSet = useMemo(
@@ -70,10 +70,10 @@ export default function InstalledModsList({
         )
       : mods;
     return sortInstalledMods(filtered, sort, {
-      hasUpdate: (m) =>
-        !!m.thunderstoreCode && updateMap.has(m.thunderstoreCode),
-      isDeprecated: (m) =>
-        !!m.thunderstoreCode && deprecatedSet.has(m.thunderstoreCode),
+      hasUpdate: (mod) =>
+        !!mod.thunderstoreCode && updateMap.has(mod.thunderstoreCode),
+      isDeprecated: (mod) =>
+        !!mod.thunderstoreCode && deprecatedSet.has(mod.thunderstoreCode),
     });
   }, [mods, search, sort, updateMap, deprecatedSet]);
 

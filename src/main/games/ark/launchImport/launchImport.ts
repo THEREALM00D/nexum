@@ -7,29 +7,34 @@ import { GUS_SECTION } from "../../../../shared/arkSettings";
 import { AppError } from "../../../utils/appError";
 import { readArkIni, writeArkIni } from "../config/arkIniFile";
 import { GAME_USER_SETTINGS_REL_PATH } from "../gameUserSettingsIni";
-import { isSaveDirectory, validateArkLaunch } from "../launchConfig";
-import { mapLaunchLine, type IniSetting } from "./mapLaunchLine";
+import {
+  ARK_MAX_PLAYERS,
+  isSaveDirectory,
+  validateArkLaunch,
+} from "../launchConfig";
+import { mapLaunchLine, toInt, type IniSetting } from "./mapLaunchLine";
 import { parseLaunchLine } from "./parseLaunchLine";
 import { findWorldLocations } from "./worldLocations";
 import { findModSettings } from "./modSettings";
 
 // MaxPlayers y est réécrit au démarrage avec la valeur effective (vérifié) :
 // bonne valeur de repli quand la ligne n'a pas -WinLiveMaxPlayers.
-const SESSION_SECTION = "/Script/Engine.GameSession";
+const GAME_SESSION_SECTION = "/Script/Engine.GameSession";
 
 const gusPath = (serverPath: string) =>
   join(serverPath, GAME_USER_SETTINGS_REL_PATH);
 
-const toNumber = (value: string | undefined) =>
-  value === undefined || value.trim() === "" ? undefined : Number(value);
-
 function mapLine(serverPath: string, line: string) {
   const { doc } = readArkIni(gusPath(serverPath));
-  const rconPort = toNumber(doc.get(GUS_SECTION, "RCONPort"));
-  const maxPlayers = toNumber(doc.get(SESSION_SECTION, "MaxPlayers"));
+  // Mêmes bornes que la ligne : une valeur hors bornes (MaxPlayers=300)
+  // passait l'aperçu puis faisait échouer l'application.
   return mapLaunchLine(parseLaunchLine(line), {
-    rconPort: Number.isInteger(rconPort) ? rconPort : undefined,
-    maxPlayers: Number.isInteger(maxPlayers) ? maxPlayers : undefined,
+    rconPort: toInt(doc.get(GUS_SECTION, "RCONPort"), 1, 65535),
+    maxPlayers: toInt(
+      doc.get(GAME_SESSION_SECTION, "MaxPlayers"),
+      1,
+      ARK_MAX_PLAYERS,
+    ),
   });
 }
 

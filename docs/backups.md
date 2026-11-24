@@ -29,7 +29,7 @@ This folder contains:
 
 **Enshrouded**: Nexum zips the server's save folder (`savegame` by default, or the folder set in **Configuration → Advanced**): the world `world0.ksd` and the copies the game keeps in `savegame/backup`. See [Enshrouded](enshrouded.md).
 
-**ARK: Survival Ascended**: Nexum zips the world folder of the chosen map (`ShooterGame\Saved\SavedArks\<map>`), without the full copies the game keeps next to it (`.arkrbf` and `.bak` files, about 6 times the size of the world). With RCON on, Nexum asks the server to save (`SaveWorld`) right before zipping a running server. See [ARK: Survival Ascended](ark.md).
+**ARK: Survival Ascended**: Nexum zips the world folder of the chosen map (`ShooterGame\Saved\SavedArks\<map>`, or `ShooterGame\Saved\<world folder>\<map>` when the **World folder** field is set), without the full copies the game keeps next to it (`.arkrbf` and `.bak` files, about 6 times the size of the world). With RCON on, Nexum asks the server to save (`SaveWorld`) right before zipping a running server. See [ARK: Survival Ascended](ark.md).
 
 ## Configuration
 

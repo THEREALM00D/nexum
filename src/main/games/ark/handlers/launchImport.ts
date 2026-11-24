@@ -4,7 +4,9 @@ import type {
   ArkLaunchImport,
   ArkLaunchLineSource,
 } from "../../../../shared/types";
+import { appError } from "../../../utils/appError";
 import { arkConfigLockedError } from "./configLock";
+import { isNexumLaunchLine } from "../launchImport/parseLaunchLine";
 import { readServerPorts } from "../../../server/startServer";
 import { findPortClashes } from "../../../servers/portConflicts";
 import { arkServerConfig } from "../serverConfig";
@@ -25,10 +27,27 @@ const isText = (value: unknown): value is string => typeof value === "string";
 // .bat) : à l'ajout du serveur (dossier seul, le serveur n'existe pas
 // encore) puis appliqué une fois créé, ou depuis l'onglet Général.
 export function registerArkLaunchImportHandlers(ctx: IpcContext): void {
+  // Serveur déjà ajouté (onglet Général) : ses logs écrits depuis son ajout
+  // contiennent souvent la ligne de Nexum, pas celle de l'ancien outil.
   ipcMain.handle(
     "ark:launchImport:fromLog",
-    (_, serverPath: string): ArkLaunchLineSource | null =>
-      isText(serverPath) && serverPath ? launchLineFromLogs(serverPath) : null,
+    (
+      _,
+      serverPath: string,
+      serverId: string | null,
+    ): ArkLaunchLineSource | null => {
+      if (!isText(serverPath) || !serverPath) return null;
+      const server = ctx.servers
+        .list()
+        .find((candidate) => candidate.id === serverId);
+      return launchLineFromLogs(
+        serverPath,
+        (source) =>
+          server !== undefined &&
+          source.modifiedAt >= server.createdAt &&
+          isNexumLaunchLine(source.line),
+      );
+    },
   );
 
   // Fichier choisi par le dialogue modal partagé (dialog:selectFile) ;
@@ -72,12 +91,14 @@ export function registerArkLaunchImportHandlers(ctx: IpcContext): void {
     (_, serverId: string, line: string, saveDirectory: string): Result => {
       const locked = arkConfigLockedError(ctx, serverId);
       if (locked) return { success: false, error: locked };
+      // Serveur inconnu : chemin vide, l'INI serait écrit sous le dossier
+      // courant du processus.
+      const serverPath = isText(serverId) ? ctx.getServerPath(serverId) : "";
+      if (!serverPath) {
+        return { success: false, error: appError("NO_SERVER_PATH") };
+      }
       try {
-        const launch = applyLaunchImport(
-          ctx.getServerPath(serverId),
-          line,
-          saveDirectory,
-        );
+        const launch = applyLaunchImport(serverPath, line, saveDirectory);
         ctx.updateArkConfig(serverId, launch);
         return { success: true };
       } catch (error) {

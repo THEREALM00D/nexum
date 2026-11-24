@@ -25,6 +25,7 @@ export default {
     newWorld: "No world found: new world",
     worldHint:
       "The most recent one is selected. The line sets AltSaveDirectoryName={{folder}}.",
+    worldLineHint: "The line sets AltSaveDirectoryName={{folder}}.",
     ports: "Ports",
     portsValue: "game {{game}}/UDP, query {{query}}/UDP, RCON {{rcon}}/TCP",
     players: "Max players",
@@ -35,7 +36,7 @@ export default {
     modsCount_one: "{{count}} mod",
     modsCount_other: "{{count}} mods",
     cluster: "Cluster",
-    clusterValue: "{{id}}, folder {{dir}}",
+    clusterValue: "{{id}}, folder {{folder}}",
     options: "Launch options",
     iniSettings: "Written to GameUserSettings.ini",
     customArgs: "Extra arguments",

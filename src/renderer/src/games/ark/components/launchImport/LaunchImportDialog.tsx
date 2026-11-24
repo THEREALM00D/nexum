@@ -71,7 +71,13 @@ export default function LaunchImportDialog({
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+    <Dialog
+      open={open}
+      // Échap et clic à côté sans effet pendant l'application (comme Annuler).
+      onClose={applying ? undefined : onClose}
+      maxWidth="md"
+      fullWidth
+    >
       <DialogTitle>{t("arkLaunchImport.openDialog")}</DialogTitle>
       <DialogContent>
         <Stack spacing={2} sx={{ mt: 1 }}>

@@ -15,11 +15,14 @@ export const isStopped = (status: string) =>
  * ConfigPage (page Config d'Enshrouded, réglages typés). `failed` : la
  * dernière lecture a échoué (formulaire vide, à ne pas enregistrer).
  * `markDirty` / `markClean` sont stables (utilisables dans un effet).
+ * `reloadKey` : relecture (sans saisie en cours) quand cette valeur change,
+ * par exemple après l'enregistrement d'un autre onglet du même fichier.
  */
 export function useConfigLoad<T = ConfigSettings>(
   readConfig: () => Promise<T>,
   apply: (settings: T) => void,
   lockWhileRunning?: boolean,
+  reloadKey?: unknown,
 ) {
   const { t } = useTranslation();
   const { state } = useServer();
@@ -59,6 +62,14 @@ export function useConfigLoad<T = ConfigSettings>(
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.status]);
+
+  const previousReloadKey = useRef(reloadKey);
+  useEffect(() => {
+    if (Object.is(previousReloadKey.current, reloadKey)) return;
+    previousReloadKey.current = reloadKey;
+    if (state.serverPath && !dirty.current) load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reloadKey]);
 
   const markDirty = useCallback(() => {
     dirty.current = true;

@@ -37,6 +37,15 @@ export default function ExistingServerPanel({
     onChange(null);
     onPendingChange(detecting);
   }, [shown, detecting, onChange, onPendingChange]);
+  // Démonté pendant la détection (assistant repassé en « Nouveau serveur ») :
+  // sinon la création restait bloquée.
+  useEffect(
+    () => () => {
+      onChange(null);
+      onPendingChange(false);
+    },
+    [onChange, onPendingChange],
+  );
 
   if (!shown) return null;
   return (

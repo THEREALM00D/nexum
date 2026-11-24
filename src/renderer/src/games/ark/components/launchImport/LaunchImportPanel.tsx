@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import {
-  Paper,
+  Box,
   Stack,
   TextField,
   ToggleButton,
@@ -79,7 +79,9 @@ export default function LaunchImportPanel({
         : !launch.found && t("arkLaunchImport.noLog");
 
   return (
-    <Paper variant="outlined" sx={{ p: 2 }}>
+    // Séparé par un trait, pas une carte : il s'affiche déjà dans une carte
+    // (assistant) ou un dialogue.
+    <Box sx={{ borderTop: 1, borderColor: "divider", pt: 2 }}>
       <Stack spacing={1.5}>
         <SectionTitle>{t("arkLaunchImport.title")}</SectionTitle>
         <Typography variant="body2" sx={{ color: "text.secondary" }}>
@@ -90,8 +92,10 @@ export default function LaunchImportPanel({
             exclusive
             size="small"
             value={launch.source}
-            onChange={(_, next) =>
-              next && void launch.changeSource(next as LaunchSource)
+            // Bouton déjà choisi recliqué (next null) : on refait l'action
+            // (autre .bat, retour à la ligne du log après une retouche).
+            onChange={(_, next: LaunchSource | null) =>
+              void launch.changeSource(next ?? launch.source)
             }
             sx={{ flexWrap: "wrap" }}
           >
@@ -132,6 +136,6 @@ export default function LaunchImportPanel({
           </LoadingSkeleton>
         )}
       </Stack>
-    </Paper>
+    </Box>
   );
 }

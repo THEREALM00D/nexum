@@ -450,8 +450,8 @@ const api = {
   },
   // Import de la ligne de lancement d'un serveur ARK existant
   arkLaunchImport: {
-    fromLog: (serverPath: string) =>
-      ipcRenderer.invoke("ark:launchImport:fromLog", serverPath),
+    fromLog: (serverPath: string, serverId: string | null) =>
+      ipcRenderer.invoke("ark:launchImport:fromLog", serverPath, serverId),
     fromScript: (path: string) =>
       ipcRenderer.invoke("ark:launchImport:fromScript", path),
     preview: (serverPath: string, line: string, serverId: string | null) =>

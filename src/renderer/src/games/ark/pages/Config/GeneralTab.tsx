@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import ConfigPage from "../../../../components/config/ConfigPage";
 import { arkConfigService } from "../../services/configService";
 import { FIELD_GROUPS } from "./fields";
-import { ARK_CONFIG_TABS } from "./ConfigTabs";
+import { ARK_CONFIG_TABS, useConfigSaved } from "./ConfigTabs";
 
 export const PAGE_WIDTH = 960;
 
@@ -19,8 +19,11 @@ export const configFolder = (serverPath: string) =>
  */
 function GeneralTab({ onOpenImport }: { onOpenImport: () => void }) {
   const { t } = useTranslation();
+  const { revision, saved } = useConfigSaved();
   return (
     <ConfigPage
+      reloadKey={revision}
+      onSaved={saved}
       titleKey="arkConfig.title"
       subtitleKey="arkConfig.subtitle"
       folderPath={configFolder}

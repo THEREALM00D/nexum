@@ -29,7 +29,12 @@ export interface ParsedLaunchLine {
   other: string[];
 }
 
-const EXE_NAME = /(^|[\\/])ArkAscendedServer(\.exe)?$/i;
+// AsaApiLoader (ServerAPI) se lance avec les mêmes arguments que le serveur.
+const EXE_NAME = /(^|[\\/])(ArkAscendedServer|AsaApiLoader)(\.exe)?$/i;
+// Ligne construite par Nexum (`buildArgs`) : carte, listen et les trois
+// ports dans cet ordre, puis -WinLiveMaxPlayers.
+const NEXUM_URL = /^[^?]+\?listen\?Port=\d+\?QueryPort=\d+\?RCONPort=\d+(\?|$)/;
+const NEXUM_MAX_PLAYERS = /^-WinLiveMaxPlayers=\d+$/;
 
 /**
  * Jetons séparés par des espaces hors guillemets ; un guillemet regroupe
@@ -72,6 +77,12 @@ export function launchesServer(line: string): boolean {
   const tokens = tokenize(line);
   if (!tokens.some((token) => EXE_NAME.test(token.trim()))) return false;
   return ARK_MAP_NAME.test(parseLaunchLine(line).map);
+}
+
+/** Ligne de la forme écrite par Nexum (et non par l'ancien outil). */
+export function isNexumLaunchLine(line: string): boolean {
+  const [url = "", maxPlayers = ""] = serverArgs(tokenize(line));
+  return NEXUM_URL.test(url) && NEXUM_MAX_PLAYERS.test(maxPlayers);
 }
 
 function splitOption(text: string): { key: string; value: string | null } {

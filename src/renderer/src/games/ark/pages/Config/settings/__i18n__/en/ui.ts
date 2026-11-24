@@ -9,6 +9,8 @@ export default {
     notice:
       "The file as it is, for what the other tabs don't cover (other lists, mod sections). The previous file is kept as .backup on every save.",
     saved: "File saved",
+    changedOnDisk:
+      "The file changed since it was read (saved from another tab): nothing was written. Discard your changes to read it again, then redo them.",
     empty: "Empty file: the server creates it at its first start.",
   },
   arkSettingsUi: {

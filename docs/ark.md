@@ -76,6 +76,7 @@ The **Mods** page manages the server's [CurseForge](https://www.curseforge.com/a
 - **Browse CurseForge** tab: search mods by name, sort them (popularity, recently updated, downloads, name), filter by category (Maps, Creatures, Structures…) and click **Add**. Mods marked **Cosmetic** are for players only: they don't install on a server and prevent it from starting (tested), so they can't be added. Mods marked **PC only** aren't cross-platform: a server is cross-platform by default and doesn't start with them (tested); they only work with **Accepted platforms** set to `PC` (Configuration page, **Game settings** tab, launch options), and console players then can't join.
 - **Add** a mod with its **Project ID**: the number shown on the mod's CurseForge page, under _About Project_ (the page address doesn't contain it).
 - The **order** of the list is the load order (arrows). A **disabled** mod stays in the list but isn't loaded.
+- **Search** the list by name, author or ID; the count shows how many mods match. While searching, the arrows still move a mod within the full list.
 - Nexum only writes the list on the command line (`-mods=`): **the server downloads the mods and updates them itself at every start**, in a few seconds for small mods. Changes made while the server runs apply at the next start.
 - Players don't install anything: the game downloads the server's mods when they join.
 - Once the server has downloaded a mod, the page shows its name, logo, author and installed file. Before that, Nexum asks CurseForge for its name and logo, and checks that an added ID exists.
@@ -113,7 +114,7 @@ Use another game port **and** another query port (for example 7787 and 27016), p
 
 Stopping goes through RCON: Nexum asks the server to save, then sends `DoExit`; the server saves the world again and quits within about 20 seconds. Without RCON, the server can't be stopped cleanly (it ignores CTRL+Break, tested): Nexum stops it directly.
 
-The world is in `ShooterGame\Saved\SavedArks\<map>` (for example `TheIsland_WP\TheIsland_WP.ark`). The game also keeps there up to 4 full copies of the world (`.arkrbf` files) and an anti-corruption copy (`.bak`). Nexum's [backups](backups.md) leave these copies out: a backup only contains the world itself, about 6 times smaller.
+The world is in `ShooterGame\Saved\SavedArks\<map>` (for example `TheIsland_WP\TheIsland_WP.ark`), or in `ShooterGame\Saved\<world folder>\<map>` when the **World folder** field (Configuration → General, Advanced) is set. The game also keeps there up to 4 full copies of the world (`.arkrbf` files) and an anti-corruption copy (`.bak`). Nexum's [backups](backups.md) leave these copies out: a backup only contains the world itself, about 6 times smaller.
 
 Good to know: a server started by Nexum stops when Nexum quits. Nexum asks first and stops it cleanly (see [Quitting Nexum with servers online](installation.md#quitting-nexum-with-servers-online)).
 

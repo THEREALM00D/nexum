@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next";
 import { useServer } from "../../context/ServerContext";
 import { useNotification } from "../../context/NotificationContext";
 import { getGamePlugin } from "../../games/registry";
+import { applyExistingServer } from "../Servers/hooks/applyExistingServer";
 import Install from "../Install/Install";
 import StepGame, {
   initialChoice,
@@ -59,15 +60,9 @@ export default function SetupWizard({ onFinish }: { onFinish: () => void }) {
         gameType: choice.gameType,
       });
       if (choice.mode === "existing") {
-        try {
-          await getGamePlugin(created.gameType)?.existingServer?.apply(
-            created.id,
-            importState,
-          );
-        } catch (error) {
-          // Serveur créé : on avance, la reprise se refait depuis sa page.
-          notify(errorMessage(t, error), "error");
-        }
+        await applyExistingServer(created, importState, (error) =>
+          notify(errorMessage(t, error), "error"),
+        );
       }
       await refreshServers();
       await switchActive(created.id);

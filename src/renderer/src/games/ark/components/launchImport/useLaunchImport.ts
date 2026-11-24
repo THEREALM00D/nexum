@@ -51,7 +51,7 @@ export function useLaunchImport(serverPath: string, serverId: string | null) {
   useEffect(() => {
     let cancelled = false;
     window.api.arkLaunchImport
-      .fromLog(serverPath)
+      .fromLog(serverPath, serverId)
       .then((result) => {
         if (cancelled || !result) return;
         setFound(result);
