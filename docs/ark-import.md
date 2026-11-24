@@ -41,7 +41,7 @@ The RCON port and max players come from `GameUserSettings.ini` when the line doe
 
 **World**: Nexum looks for the map's world in `SavedArks` and in every `AltSaveDirectoryName` folder, and picks the most recent one. If several are found, choose one in the summary. A server that used `?AltSaveDirectoryName=` keeps using that folder (**World folder** field on the General tab).
 
-The summary also lists the mod settings kept in place: mod sections of the INI files and the files mods write in `ShooterGame\Saved\SaveGames`.
+The summary also lists the mod settings kept in place: mod sections of the INI files and the files mods write in `ShooterGame\Saved\SaveGames`. Afterwards, each mod section is a **Mod: [Section]** group in **Configuration → Game settings**, where you can change its settings ([ARK page](ark.md#game-settings)). The `SaveGames` files are written by the mods themselves: they keep working, but Nexum doesn't edit them.
 
 ## What Nexum flags
 

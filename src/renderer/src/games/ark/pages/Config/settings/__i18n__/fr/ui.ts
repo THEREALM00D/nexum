@@ -30,6 +30,9 @@ export default {
       gus: "GameUserSettings.ini",
       game: "Game.ini",
     },
+    modGroup: "Mod : [{{section}}] ({{file}})",
+    modHint:
+      "Réglages écrits par ce mod (ou cette carte) dans le fichier, inconnus de Nexum : la valeur est gardée telle quelle, sans vérification. La documentation du mod dit ce que chaque clé attend.",
     otherHint:
       "Réglages présents dans les fichiers mais inconnus de Nexum (ajoutés par une mise à jour du jeu ou à la main). Ils sont gardés tels quels.",
     groups: {

@@ -66,6 +66,18 @@ export class IniDocument {
       .map((position) => this.valueAt(position));
   }
 
+  /** Sections du fichier (casse de la 1re occurrence, sans doublon). */
+  sections(): string[] {
+    const seen = new Map<string, string>();
+    for (const line of this.lines) {
+      const header = line.key === null ? line.text.match(SECTION_RE) : null;
+      if (header && !seen.has(line.section)) {
+        seen.set(line.section, header[1].trim());
+      }
+    }
+    return [...seen.values()];
+  }
+
   /** Clés présentes dans une section (casse du fichier, sans doublon). */
   keys(section: string): string[] {
     const seen = new Map<string, string>();

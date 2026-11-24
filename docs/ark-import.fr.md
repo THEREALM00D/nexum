@@ -41,7 +41,7 @@ Le port RCON et le nombre de joueurs viennent de `GameUserSettings.ini` quand la
 
 **Monde** : Nexum cherche le monde de la carte dans `SavedArks` et dans chaque dossier `AltSaveDirectoryName`, et choisit le plus récent. S'il en trouve plusieurs, choisissez dans le résumé. Un serveur qui utilisait `?AltSaveDirectoryName=` garde ce dossier (champ **Dossier du monde** de l'onglet Général).
 
-Le résumé liste aussi les réglages des mods gardés en place : sections des mods dans les INI et fichiers que les mods écrivent dans `ShooterGame\Saved\SaveGames`.
+Le résumé liste aussi les réglages des mods gardés en place : sections des mods dans les INI et fichiers que les mods écrivent dans `ShooterGame\Saved\SaveGames`. Ensuite, chaque section de mod est un groupe **Mod : [Section]** dans **Configuration → Réglages de jeu**, où vous pouvez changer ses réglages ([page ARK](ark.fr.md#réglages-de-jeu)). Les fichiers de `SaveGames` sont écrits par les mods eux-mêmes : ils continuent de fonctionner, mais Nexum ne les modifie pas.
 
 ## Ce que Nexum signale
 

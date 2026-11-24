@@ -484,6 +484,8 @@ export interface ArkUnknownSetting {
   /** Même forme que arkSettingId : `fichier:section:clé`. */
   id: string;
   file: "gus" | "game";
+  /** Section du fichier : celle du jeu, ou celle d'un mod (un groupe par section). */
+  section: string;
   key: string;
   value: string;
 }

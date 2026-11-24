@@ -30,6 +30,9 @@ export default {
       gus: "GameUserSettings.ini",
       game: "Game.ini",
     },
+    modGroup: "Mod: [{{section}}] ({{file}})",
+    modHint:
+      "Settings written by this mod (or map) in the file, unknown to Nexum: the value is kept as is, without checks. The mod documentation says what each key expects.",
     otherHint:
       "Settings found in the files but unknown to Nexum (added by a game update or by hand). They are kept as they are.",
     groups: {

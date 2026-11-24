@@ -46,6 +46,7 @@ Tous les réglages d'ARK: Survival Ascended (environ 380), rangés par thème : 
 - Seuls les réglages que vous modifiez sont écrits : le reste des fichiers (clés inconnues, sections des mods) ne bouge pas.
 - Les **options de lancement** (`-ServerPlatform`, `-clusterid`…) sont ajoutées à la ligne de commande. Si la même option est déjà dans les arguments de lancement supplémentaires (onglet Général), c'est celle-ci qui l'emporte. Leurs valeurs ne peuvent contenir ni espace ni guillemet.
 - **Autres réglages** : réglages trouvés dans les fichiers que Nexum ne connaît pas encore (ajoutés par une mise à jour du jeu ou à la main). Vous pouvez changer leur valeur.
+- **Mod : [Section]** : un groupe par section de mod de `GameUserSettings.ini` et `Game.ini` (`[ArkadeEssentials]`, `[Shiny]`…), avec ses réglages un par un. Nexum ne vérifie pas ces valeurs : la documentation du mod dit ce que chaque clé attend. Les listes (clés écrites plusieurs fois) restent dans **Fichiers bruts**.
 
 ### Listes
 

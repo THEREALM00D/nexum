@@ -32,6 +32,15 @@ export default function SettingsGroup({
 }: Props) {
   const { t } = useTranslation();
   const disabled = settings.locked || settings.saving;
+  // `mod:<fichier>:<section>` : nom de la section tel qu'écrit, pas traduit.
+  const [, modFile, ...modSection] = group.split(":");
+  const isMod = group.startsWith("mod:");
+  const groupTitle = isMod
+    ? t("arkSettingsUi.modGroup", {
+        section: modSection.join(":"),
+        file: t(`arkSettingsUi.sources.${modFile}`),
+      })
+    : t(`arkSettingsUi.groups.${group}`);
 
   return (
     <Accordion
@@ -42,18 +51,16 @@ export default function SettingsGroup({
     >
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <Stack direction="row" sx={{ alignItems: "baseline", gap: 1 }}>
-          <SectionTitle component="span">
-            {t(`arkSettingsUi.groups.${group}`)}
-          </SectionTitle>
+          <SectionTitle component="span">{groupTitle}</SectionTitle>
           <Typography variant="caption" sx={{ color: "text.secondary" }}>
             {t("arkSettingsUi.count", { count: items.length })}
           </Typography>
         </Stack>
       </AccordionSummary>
       <AccordionDetails>
-        {group === "other" && (
+        {(group === "other" || isMod) && (
           <Typography variant="body2" sx={{ color: "text.secondary", mb: 1 }}>
-            {t("arkSettingsUi.otherHint")}
+            {t(isMod ? "arkSettingsUi.modHint" : "arkSettingsUi.otherHint")}
           </Typography>
         )}
         <Stack divider={<Divider flexItem />}>

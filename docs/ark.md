@@ -46,6 +46,7 @@ All the ARK: Survival Ascended settings (about 380), grouped by theme: rates and
 - Only the settings you change are written: the rest of the files (unknown keys, mod sections) stays as it is.
 - **Launch options** (`-ServerPlatform`, `-clusterid`…) are added to the command line. If the same option is already in the extra launch arguments (General tab), that one wins. Their values can't contain spaces or quotes.
 - **Other settings**: settings found in the files that Nexum doesn't know yet (added by a game update or by hand). You can change their value.
+- **Mod: [Section]**: one group per mod section of `GameUserSettings.ini` and `Game.ini` (`[ArkadeEssentials]`, `[Shiny]`…), with its settings one by one. Nexum doesn't check these values: the mod's documentation says what each key expects. Lists (keys written several times) stay in **Raw files**.
 
 ### Lists
 

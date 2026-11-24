@@ -1,34 +1,15 @@
 import { existsSync, readdirSync } from "fs";
 import { join } from "path";
 import type { ArkModSettings } from "../../../../shared/types";
-import { readIniText } from "../../../utils/iniText";
 import {
   GAME_INI_REL_PATH,
   GAME_USER_SETTINGS_REL_PATH,
 } from "../gameUserSettingsIni";
-import { SECTION_RE } from "../config/iniLine";
-
-// Sections que le jeu écrit lui-même : le reste vient des mods (ou d'une
-// carte : [Ragnarok]). Sans casse, comme le jeu.
-const GAME_SECTIONS = new Set([
-  "serversettings",
-  "sessionsettings",
-  "scalabilitygroups",
-  "messageoftheday",
-  "startup",
-]);
-const isModSection = (section: string) => {
-  const lower = section.trim().toLowerCase();
-  return !lower.startsWith("/script/") && !GAME_SECTIONS.has(lower);
-};
+import { readArkIni } from "../config/arkIniFile";
+import { isModSection } from "../config/modSections";
 
 function modSections(path: string): string[] {
-  const text = readIniText(path)?.text ?? "";
-  const sections = text
-    .split(/\r?\n/)
-    .map((line) => line.match(SECTION_RE)?.[1]?.trim())
-    .filter((section): section is string => !!section && isModSection(section));
-  return [...new Set(sections)];
+  return readArkIni(path).doc.sections().filter(isModSection);
 }
 
 const entriesOf = (folder: string): string[] => {
