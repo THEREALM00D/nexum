@@ -35,39 +35,56 @@ export default function ServerControls({
   const { t, i18n } = useTranslation();
   const running = status === "running";
 
+  // Grille : statut et boutons sur la 1re ligne, durée dessous. En colonne
+  // avec le statut, la durée allongeait la colonne et les boutons se
+  // centraient sur elle, plus bas que le statut.
   return (
     <Box
-      sx={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 2 }}
+      sx={{
+        display: "grid",
+        gridTemplateColumns: "auto auto",
+        alignItems: "center",
+        columnGap: 2,
+        rowGap: 0.25,
+      }}
     >
-      <Box
+      <Chip
+        // Marge ici : Chip ne peut pas poser sa classe d'icône sur StatusDot
+        icon={<StatusDot status={status} size={10} sx={{ ml: 1.25 }} />}
+        label={t(`status.${status}`, { defaultValue: status })}
+        color={STATUS_COLOR[status] ?? "default"}
+        variant="outlined"
         sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "flex-end",
-          gap: 0.25,
+          gridColumn: 1,
+          gridRow: 1,
+          justifySelf: "end",
+          typography: "body2",
+          fontWeight: 600,
         }}
-      >
-        <Chip
-          // Marge ici : Chip ne peut pas poser sa classe d'icône sur StatusDot
-          icon={<StatusDot status={status} size={10} sx={{ ml: 1.25 }} />}
-          label={t(`status.${status}`, { defaultValue: status })}
-          color={STATUS_COLOR[status] ?? "default"}
-          variant="outlined"
-          sx={{ typography: "body2", fontWeight: 600 }}
-        />
-        {running && !!uptime && (
-          <Typography
-            variant="caption"
-            sx={{ color: "text.secondary", pr: 0.5 }}
-          >
-            {t("serverDashboard.since", {
-              duration: formatDuration(uptime, i18n.resolvedLanguage ?? "fr"),
-            })}
-          </Typography>
-        )}
-      </Box>
+      />
+      {running && !!uptime && (
+        <Typography
+          variant="caption"
+          sx={{
+            gridColumn: 1,
+            gridRow: 2,
+            justifySelf: "end",
+            color: "text.secondary",
+            pr: 0.5,
+          }}
+        >
+          {t("serverDashboard.since", {
+            duration: formatDuration(uptime, i18n.resolvedLanguage ?? "fr"),
+          })}
+        </Typography>
+      )}
 
-      <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: "wrap" }}>
+      <Stack
+        direction="row"
+        spacing={1}
+        useFlexGap
+        sx={{ gridColumn: 2, gridRow: 1, flexWrap: "wrap" }}
+      >
         {status === "crashed" && onViewLogs && (
           <Button variant="outlined" color="inherit" onClick={onViewLogs}>
             {t("serverDashboard.viewLogs")}
