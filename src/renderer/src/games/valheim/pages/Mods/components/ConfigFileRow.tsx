@@ -3,7 +3,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import { useTranslation } from "react-i18next";
 import type { ValheimModConfigFile } from "@shared/types";
 import type { CfgEntry } from "../utils/cfgParser";
-import { formatDate, formatSize } from "../../../../../utils/format";
+import { formatDate } from "../../../../../utils/format";
+import { useFormatSize } from "../../../../../hooks/useFormatSize";
 import { FONT_MONO } from "../../../../../theme";
 
 // Paramètres trouvés affichés sous le nom du fichier ; le reste est compté.
@@ -24,6 +25,7 @@ export default function ConfigFileRow({
   onOpen,
 }: Props) {
   const { t } = useTranslation();
+  const formatSize = useFormatSize();
   const hidden = matches.length - MAX_SHOWN_MATCHES;
   return (
     <Box

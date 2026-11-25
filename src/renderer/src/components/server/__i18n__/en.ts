@@ -22,6 +22,7 @@ export default {
     players: "Players online",
     ramServer: "Server RAM",
     ramOf: "of {{total}} GB installed",
+    ramUsedOf: "{{used}} / {{total}} GB",
     onlineFor: "Online for",
     nextRestart: "Next scheduled restart: {{time}}",
     thisPc: "This PC",
@@ -51,7 +52,6 @@ export default {
     session: {
       live: "Current session (live)",
       crashed: "crashed",
-      size: "{{size}} KB",
       openDir: "Open the logs folder",
     },
   },

@@ -16,6 +16,7 @@ import type {
   ThunderstoreModVersion,
 } from "@shared/types";
 import { skeletonRows } from "../../../../../components/common/LoadingSkeleton";
+import { useFormatSize } from "../../../../../hooks/useFormatSize";
 
 // Version d'exemple des lignes en skeleton (jamais affichée)
 const PLACEHOLDER_VERSION: ThunderstoreModVersion = {
@@ -36,6 +37,7 @@ function VersionRow({
   onInstall: () => void;
 }) {
   const { t } = useTranslation();
+  const formatSize = useFormatSize();
   return (
     <Box sx={{ py: 1.5 }}>
       <Stack
@@ -47,9 +49,7 @@ function VersionRow({
             {version.file_name}
           </Typography>
           <Typography variant="caption" sx={{ color: "text.secondary" }}>
-            {t("valheimMods.browse.filesDialog.size", {
-              size: version.size_kb.toLocaleString(),
-            })}
+            {formatSize(version.size_kb * 1024)}
           </Typography>
         </Box>
         <Button

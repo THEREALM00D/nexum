@@ -11,6 +11,7 @@ export default {
     success: "Succès",
     language: "Langue",
     errorPrefix: "Erreur : {{msg}}",
+    units: { b: "o", kb: "Ko", mb: "Mo", gb: "Go" },
     change: "Modifier",
     or: "OU",
     clearSearch: "Effacer la recherche",

@@ -1,7 +1,7 @@
 import { Box, LinearProgress, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import type { SystemStats } from "@shared/types";
-import { formatDuration } from "../../utils/format";
+import { formatDuration, formatNumber } from "../../utils/format";
 import LoadingSkeleton from "../common/LoadingSkeleton";
 import SectionTitle from "../common/SectionTitle";
 
@@ -58,8 +58,9 @@ function Meter({
 /** Le PC qui héberge, au second plan des chiffres du serveur. */
 export default function SystemStrip({ stats }: { stats: SystemStats | null }) {
   const { t, i18n } = useTranslation();
+  const locale = i18n.resolvedLanguage ?? "fr";
   const loading = stats === null;
-  const s = stats ?? PLACEHOLDER;
+  const shown = stats ?? PLACEHOLDER;
 
   return (
     <Box
@@ -77,13 +78,16 @@ export default function SystemStrip({ stats }: { stats: SystemStats | null }) {
     >
       <SectionTitle component="div">{t("serverDashboard.thisPc")}</SectionTitle>
       <LoadingSkeleton loading={loading}>
-        <Meter label={t("serverDashboard.cpu")} value={s.cpu} />
+        <Meter label={t("serverDashboard.cpu")} value={shown.cpu} />
       </LoadingSkeleton>
       <LoadingSkeleton loading={loading}>
         <Meter
           label={t("serverDashboard.ram")}
-          value={s.ram}
-          detail={`${s.ramUsed} / ${s.ramTotal} GB`}
+          value={shown.ram}
+          detail={t("serverDashboard.ramUsedOf", {
+            used: formatNumber(shown.ramUsed, locale, 1),
+            total: formatNumber(shown.ramTotal, locale, 1),
+          })}
         />
       </LoadingSkeleton>
       <LoadingSkeleton loading={loading}>
@@ -92,7 +96,7 @@ export default function SystemStrip({ stats }: { stats: SystemStats | null }) {
             {t("serverDashboard.poweredOnFor")}
           </Typography>
           <Typography variant="code">
-            {formatDuration(s.uptime, i18n.resolvedLanguage ?? "fr")}
+            {formatDuration(shown.uptime, locale)}
           </Typography>
         </Box>
       </LoadingSkeleton>

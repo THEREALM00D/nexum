@@ -22,7 +22,8 @@ export default {
     viewLogs: "Voir les logs",
     players: "Joueurs connectés",
     ramServer: "RAM du serveur",
-    ramOf: "sur {{total}} GB installés",
+    ramOf: "sur {{total}} Go installés",
+    ramUsedOf: "{{used}} / {{total}} Go",
     onlineFor: "En ligne depuis",
     nextRestart: "Prochain redémarrage planifié : {{time}}",
     thisPc: "Ce PC",
@@ -52,7 +53,6 @@ export default {
     session: {
       live: "Session en cours (direct)",
       crashed: "plantée",
-      size: "{{size}} Ko",
       openDir: "Ouvrir le dossier des logs",
     },
   },

@@ -11,7 +11,8 @@ import RestoreIcon from "@mui/icons-material/Restore";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useTranslation } from "react-i18next";
 import type { BackupEntry } from "@shared/types";
-import { formatSize, formatDate } from "../../utils/format";
+import { formatDate } from "../../utils/format";
+import { useFormatSize } from "../../hooks/useFormatSize";
 
 interface Props {
   entry: BackupEntry;
@@ -33,6 +34,7 @@ export default function BackupRow({
 }: Props) {
   const { t, i18n } = useTranslation();
   const locale = i18n.resolvedLanguage ?? "fr";
+  const formatSize = useFormatSize();
 
   return (
     <Box

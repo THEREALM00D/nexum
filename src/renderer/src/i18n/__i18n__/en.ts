@@ -11,6 +11,7 @@ export default {
     success: "Success",
     language: "Language",
     errorPrefix: "Error: {{msg}}",
+    units: { b: "B", kb: "KB", mb: "MB", gb: "GB" },
     change: "Change",
     or: "OR",
     clearSearch: "Clear search",

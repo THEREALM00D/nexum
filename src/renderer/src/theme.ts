@@ -84,6 +84,10 @@ const DISPLAY_TEXT = {
   fontWeight: 700,
 } as const;
 
+// Ombre MUI d'élévation 6 (shadows[6]), illisible avant createTheme
+const NOTIFICATION_SHADOW =
+  "0 3px 5px -1px rgba(0,0,0,0.2), 0 6px 10px 0 rgba(0,0,0,0.14), 0 1px 18px 0 rgba(0,0,0,0.12)";
+
 export const darkTheme = createTheme({
   palette: {
     mode: "dark",
@@ -100,6 +104,10 @@ export const darkTheme = createTheme({
       light: NEXUM.criticalLight,
       contrastText: NEXUM.ink,
     },
+    // Info neutre : chaque teinte est déjà prise (vert / orange / rouge =
+    // statuts, SERVER_COLORS = identité des serveurs). Le bleu de MUI se
+    // lisait comme la couleur d'un serveur. Rendu des Alert : MuiAlert.
+    info: { main: NEXUM.steel, contrastText: NEXUM.ink },
     background: {
       default: NEXUM.ink,
       paper: NEXUM.graphite,
@@ -153,6 +161,27 @@ export const darkTheme = createTheme({
     MuiPaper: {
       styleOverrides: {
         root: { backgroundImage: "none" },
+      },
+    },
+    // MUI dériverait fond et texte de info.light (gris délavé) : une info
+    // est une surface Raised bordée, texte Paper, icône Steel. Même rendu
+    // pour les notifications (variant filled).
+    MuiAlert: {
+      styleOverrides: {
+        root: {
+          variants: (["standard", "filled"] as const).map((variant) => ({
+            props: { severity: "info" as const, variant },
+            style: {
+              backgroundColor: NEXUM.raised,
+              color: NEXUM.paper,
+              border: `1px solid ${NEXUM.line}`,
+              "& .MuiAlert-icon": { color: NEXUM.steel },
+              // Notification : sans couleur pleine ni ombre (Alert en
+              // elevation 0), elle se perdait sur les cartes Graphite.
+              ...(variant === "filled" && { boxShadow: NOTIFICATION_SHADOW }),
+            },
+          })),
+        },
       },
     },
   },
