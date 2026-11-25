@@ -15,12 +15,39 @@ export function formatDuration(seconds: number, locale: string): string {
   return parts.length ? parts.join("") : `${d.seconds ?? 0}s`;
 }
 
-export function formatSize(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  if (bytes < 1024 * 1024 * 1024)
-    return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
-  return `${(bytes / 1024 / 1024 / 1024).toFixed(2)} GB`;
+/** Nombre dans la langue de l'app : « 10,3 » en FR, « 10.3 » en EN. */
+export function formatNumber(
+  value: number,
+  locale: string,
+  fractionDigits: number,
+): string {
+  return new Intl.NumberFormat(locale, {
+    minimumFractionDigits: fractionDigits,
+    maximumFractionDigits: fractionDigits,
+  }).format(value);
+}
+
+/** Unités traduites (`common.units`) : o / Ko / Mo / Go en FR. */
+export interface SizeUnits {
+  b: string;
+  kb: string;
+  mb: string;
+  gb: string;
+}
+
+/** Taille lisible ; dans un composant, passer par `useFormatSize`. */
+export function formatSize(
+  bytes: number,
+  locale: string,
+  units: SizeUnits,
+): string {
+  const kilo = 1024;
+  if (bytes < kilo) return `${formatNumber(bytes, locale, 0)} ${units.b}`;
+  if (bytes < kilo ** 2)
+    return `${formatNumber(bytes / kilo, locale, 1)} ${units.kb}`;
+  if (bytes < kilo ** 3)
+    return `${formatNumber(bytes / kilo ** 2, locale, 1)} ${units.mb}`;
+  return `${formatNumber(bytes / kilo ** 3, locale, 2)} ${units.gb}`;
 }
 
 export function formatDate(ts: number, locale: string): string {

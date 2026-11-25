@@ -100,6 +100,10 @@ export const darkTheme = createTheme({
       light: NEXUM.criticalLight,
       contrastText: NEXUM.ink,
     },
+    // Info neutre : chaque teinte est déjà prise (vert / orange / rouge =
+    // statuts, SERVER_COLORS = identité des serveurs). Le bleu de MUI se
+    // lisait comme la couleur d'un serveur. Rendu des Alert : MuiAlert.
+    info: { main: NEXUM.steel, contrastText: NEXUM.ink },
     background: {
       default: NEXUM.ink,
       paper: NEXUM.graphite,
@@ -153,6 +157,24 @@ export const darkTheme = createTheme({
     MuiPaper: {
       styleOverrides: {
         root: { backgroundImage: "none" },
+      },
+    },
+    // MUI dériverait fond et texte de info.light (gris délavé) : une info
+    // est une surface Raised bordée, texte Paper, icône Steel. Même rendu
+    // pour les notifications (variant filled).
+    MuiAlert: {
+      styleOverrides: {
+        root: {
+          variants: (["standard", "filled"] as const).map((variant) => ({
+            props: { severity: "info" as const, variant },
+            style: {
+              backgroundColor: NEXUM.raised,
+              color: NEXUM.paper,
+              border: `1px solid ${NEXUM.line}`,
+              "& .MuiAlert-icon": { color: NEXUM.steel },
+            },
+          })),
+        },
       },
     },
   },

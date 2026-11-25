@@ -1,7 +1,8 @@
 import { Box, Button, Chip, Stack, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import type { DragonwildsWorld } from "@shared/types";
-import { formatDate, formatSize } from "../../../../../utils/format";
+import { formatDate } from "../../../../../utils/format";
+import { useFormatSize } from "../../../../../hooks/useFormatSize";
 
 /** Une sauvegarde de monde, avec son action (charger ou importer). */
 export default function WorldRow({
@@ -19,6 +20,7 @@ export default function WorldRow({
 }) {
   const { t, i18n } = useTranslation();
   const locale = i18n.resolvedLanguage ?? "fr";
+  const formatSize = useFormatSize();
   return (
     <Stack direction="row" sx={{ alignItems: "center", gap: 1.5, py: 0.5 }}>
       <Box sx={{ flex: 1, minWidth: 0 }}>

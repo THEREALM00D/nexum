@@ -1,7 +1,7 @@
 import { Box, LinearProgress, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import type { SystemStats } from "@shared/types";
-import { formatDuration } from "../../utils/format";
+import { formatDuration, formatNumber } from "../../utils/format";
 import LoadingSkeleton from "../common/LoadingSkeleton";
 import SectionTitle from "../common/SectionTitle";
 
@@ -58,6 +58,7 @@ function Meter({
 /** Le PC qui héberge, au second plan des chiffres du serveur. */
 export default function SystemStrip({ stats }: { stats: SystemStats | null }) {
   const { t, i18n } = useTranslation();
+  const locale = i18n.resolvedLanguage ?? "fr";
   const loading = stats === null;
   const s = stats ?? PLACEHOLDER;
 
@@ -83,7 +84,10 @@ export default function SystemStrip({ stats }: { stats: SystemStats | null }) {
         <Meter
           label={t("serverDashboard.ram")}
           value={s.ram}
-          detail={`${s.ramUsed} / ${s.ramTotal} GB`}
+          detail={t("serverDashboard.ramUsedOf", {
+            used: formatNumber(s.ramUsed, locale, 1),
+            total: formatNumber(s.ramTotal, locale, 1),
+          })}
         />
       </LoadingSkeleton>
       <LoadingSkeleton loading={loading}>
@@ -92,7 +96,7 @@ export default function SystemStrip({ stats }: { stats: SystemStats | null }) {
             {t("serverDashboard.poweredOnFor")}
           </Typography>
           <Typography variant="code">
-            {formatDuration(s.uptime, i18n.resolvedLanguage ?? "fr")}
+            {formatDuration(s.uptime, locale)}
           </Typography>
         </Box>
       </LoadingSkeleton>

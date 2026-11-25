@@ -3,7 +3,7 @@ import { Box, Paper, Tooltip, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import type { SystemStats } from "@shared/types";
 import { useServer } from "../../context/ServerContext";
-import { formatDuration } from "../../utils/format";
+import { formatDuration, formatNumber } from "../../utils/format";
 import LoadingSkeleton from "../common/LoadingSkeleton";
 import SectionTitle from "../common/SectionTitle";
 
@@ -77,6 +77,7 @@ export default function ServerStats({
   players?: PlayersStat;
 }) {
   const { t, i18n } = useTranslation();
+  const locale = i18n.resolvedLanguage ?? "fr";
   const { state } = useServer();
   const { status } = state;
   const online = status === "running";
@@ -116,11 +117,15 @@ export default function ServerStats({
       )}
       <StatCard
         label={t("serverDashboard.ramServer")}
-        value={online && stats ? stats.ramUsedByGame : "—"}
-        unit={online ? "GB" : undefined}
+        value={
+          online && stats ? formatNumber(stats.ramUsedByGame, locale, 1) : "—"
+        }
+        unit={online ? t("common.units.gb") : undefined}
         hint={
           stats
-            ? t("serverDashboard.ramOf", { total: stats.ramTotal })
+            ? t("serverDashboard.ramOf", {
+                total: formatNumber(stats.ramTotal, locale, 1),
+              })
             : undefined
         }
         loading={loading}
@@ -128,9 +133,7 @@ export default function ServerStats({
       <StatCard
         label={t("serverDashboard.onlineFor")}
         value={
-          online && stats
-            ? formatDuration(stats.serverUptime, i18n.resolvedLanguage ?? "fr")
-            : "—"
+          online && stats ? formatDuration(stats.serverUptime, locale) : "—"
         }
         hint={
           online && restartTime

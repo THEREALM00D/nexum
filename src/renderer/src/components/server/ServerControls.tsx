@@ -94,9 +94,13 @@ export default function ServerControls({
           </Button>
         ) : (
           // Démarrage ou arrêt en cours : action possible mais pas à mettre en avant
+          // Serveur lancé : contour rouge, pas de rouge plein. Arrêter est
+          // l'action la plus rare et la plus perturbante ; le plein reste
+          // aux confirmations destructrices.
           <Button
-            variant={running ? "contained" : "outlined"}
+            variant="outlined"
             color={running ? "error" : "inherit"}
+            sx={running ? { color: "error.light" } : undefined}
             startIcon={<StopIcon />}
             disabled={!canStop}
             onClick={onStop}
