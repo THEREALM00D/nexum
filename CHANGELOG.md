@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.26.0](https://github.com/THEREALM00D/nexum/compare/v0.25.1...v0.26.0) (2026-11-25)
+
+
+### Features
+
+* neutral info color, localized sizes and an outlined Stop button ([#298](https://github.com/THEREALM00D/nexum/issues/298)) ([b684ebd](https://github.com/THEREALM00D/nexum/commit/b684ebd97842bd3ea151606b7ac2e87b878054a2))
+
 ## [0.25.1](https://github.com/THEREALM00D/nexum/compare/v0.25.0...v0.25.1) (2026-11-24)
 
 
