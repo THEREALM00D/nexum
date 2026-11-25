@@ -53,7 +53,6 @@ export default {
     session: {
       live: "Session en cours (direct)",
       crashed: "plantée",
-      size: "{{size}} Ko",
       openDir: "Ouvrir le dossier des logs",
     },
   },

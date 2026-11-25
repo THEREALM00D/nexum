@@ -10,6 +10,7 @@ import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import { useTranslation } from "react-i18next";
 import type { LogSession } from "@shared/types";
+import { useFormatSize } from "../../hooks/useFormatSize";
 
 interface Props {
   sessions: LogSession[];
@@ -31,7 +32,8 @@ export default function LogSessionPicker({
   onOpenDir,
 }: Props) {
   const { t, i18n } = useTranslation();
-  const past = sessions.filter((s) => !s.current);
+  const formatSize = useFormatSize();
+  const past = sessions.filter((session) => !session.current);
   const fmt = (ms: number) =>
     new Date(ms).toLocaleString(i18n.language === "fr" ? "fr-FR" : "en-US", {
       dateStyle: "medium",
@@ -50,25 +52,23 @@ export default function LogSessionPicker({
         sx={{ typography: "body2", minWidth: 240 }}
       >
         <MenuItem value={LIVE}>{t("logs.session.live")}</MenuItem>
-        {past.map((s) => (
-          <MenuItem key={s.name} value={s.name}>
+        {past.map((session) => (
+          <MenuItem key={session.name} value={session.name}>
             <Stack direction="row" spacing={0.75} sx={{ alignItems: "center" }}>
-              {s.crashed && (
+              {session.crashed && (
                 <WarningAmberIcon
                   sx={{ fontSize: 16, color: "warning.main" }}
                 />
               )}
-              <span>{fmt(s.startedAt)}</span>
+              <span>{fmt(session.startedAt)}</span>
               <Typography
                 component="span"
                 variant="caption"
                 sx={{ color: "text.secondary" }}
               >
-                {s.crashed
+                {session.crashed
                   ? t("logs.session.crashed")
-                  : t("logs.session.size", {
-                      size: Math.max(1, Math.round(s.sizeBytes / 1024)),
-                    })}
+                  : formatSize(session.sizeBytes)}
               </Typography>
             </Stack>
           </MenuItem>

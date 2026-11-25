@@ -52,7 +52,6 @@ export default {
     session: {
       live: "Current session (live)",
       crashed: "crashed",
-      size: "{{size}} KB",
       openDir: "Open the logs folder",
     },
   },

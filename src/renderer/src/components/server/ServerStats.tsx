@@ -118,7 +118,14 @@ export default function ServerStats({
       <StatCard
         label={t("serverDashboard.ramServer")}
         value={
-          online && stats ? formatNumber(stats.ramUsedByGame, locale, 1) : "—"
+          online && stats
+            ? // 2 décimales sous 1 Go : un serveur qui charge ne lit pas « 0,0 »
+              formatNumber(
+                stats.ramUsedByGame,
+                locale,
+                stats.ramUsedByGame < 1 ? 2 : 1,
+              )
+            : "—"
         }
         unit={online ? t("common.units.gb") : undefined}
         hint={

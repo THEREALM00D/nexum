@@ -15,14 +15,19 @@ export function formatDuration(seconds: number, locale: string): string {
   return parts.length ? parts.join("") : `${d.seconds ?? 0}s`;
 }
 
-/** Nombre dans la langue de l'app : « 10,3 » en FR, « 10.3 » en EN. */
+/**
+ * Nombre dans la langue de l'app : « 10,3 » en FR, « 10.3 » en EN. Autant
+ * de décimales que `fractionDigits`, sauf si `minimumFractionDigits` est
+ * plus petit (« 12 » mais « 4,5 »).
+ */
 export function formatNumber(
   value: number,
   locale: string,
   fractionDigits: number,
+  minimumFractionDigits = fractionDigits,
 ): string {
   return new Intl.NumberFormat(locale, {
-    minimumFractionDigits: fractionDigits,
+    minimumFractionDigits,
     maximumFractionDigits: fractionDigits,
   }).format(value);
 }

@@ -84,6 +84,10 @@ const DISPLAY_TEXT = {
   fontWeight: 700,
 } as const;
 
+// Ombre MUI d'élévation 6 (shadows[6]), illisible avant createTheme
+const NOTIFICATION_SHADOW =
+  "0 3px 5px -1px rgba(0,0,0,0.2), 0 6px 10px 0 rgba(0,0,0,0.14), 0 1px 18px 0 rgba(0,0,0,0.12)";
+
 export const darkTheme = createTheme({
   palette: {
     mode: "dark",
@@ -172,6 +176,9 @@ export const darkTheme = createTheme({
               color: NEXUM.paper,
               border: `1px solid ${NEXUM.line}`,
               "& .MuiAlert-icon": { color: NEXUM.steel },
+              // Notification : sans couleur pleine ni ombre (Alert en
+              // elevation 0), elle se perdait sur les cartes Graphite.
+              ...(variant === "filled" && { boxShadow: NOTIFICATION_SHADOW }),
             },
           })),
         },

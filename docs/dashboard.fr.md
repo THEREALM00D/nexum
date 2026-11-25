@@ -46,7 +46,7 @@ Données en temps réel, rafraîchies toutes les 2 secondes. Le serveur d'abord 
 Un bandeau en dessous indique l'état du PC :
 
 - **CPU** : utilisation du processeur en %
-- **RAM** : utilisation mémoire en % et en GB
+- **RAM** : utilisation mémoire en % et en Go
 - **Allumé depuis** : temps écoulé depuis le démarrage de la machine
 
 Les barres restent neutres, puis passent en orange au-delà de 65 % et en rouge au-delà de 85 %.

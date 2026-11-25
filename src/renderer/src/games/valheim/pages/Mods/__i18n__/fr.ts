@@ -107,7 +107,6 @@ export default {
       filesDialog: {
         title: "Versions de {{name}}",
         close: "Fermer",
-        size: "{{size}} Ko",
         noFiles: "Aucune version disponible",
       },
       endorsements: "{{count}} étoiles",
