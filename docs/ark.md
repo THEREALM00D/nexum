@@ -92,7 +92,8 @@ RCON is the server's remote admin console. Nexum needs it to:
 - stop the server cleanly: the world is saved before the server quits;
 - save the world right before a [backup](backups.md) of a running server;
 - warn players in the game chat before a [scheduled restart](scheduling.md) (the message is sent without accents: the game can't display them);
-- list connected players on the **Players** page.
+- list connected players on the **Players** page;
+- renew wild creatures after each start or every few hours (`DestroyWildDinos`, [Scheduling](scheduling.md#wild-creatures-ark) page).
 
 Nexum turns RCON on by itself for a new server, and creates an admin password if there is none (you can see and change it in **Configuration**). If you turn RCON off, Nexum respects it, but stopping the server then loses up to 15 minutes of progress (the game saves every 15 minutes).
 

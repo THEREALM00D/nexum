@@ -6,6 +6,7 @@ import type {
 import { DEFAULT_SERVER_CONFIG } from "../servers/ServerConfigStore";
 import { GAME_TYPES } from "../games/registry";
 import { sanitizeArkLaunch } from "../games/ark/launchConfig";
+import { withRestartDefaults } from "../servers/restartDefaults";
 import { AppError } from "../utils/appError";
 
 // Version du format des deux fichiers (réglages et serveur). Un fichier d'une
@@ -81,8 +82,13 @@ export function parseServerEntry(raw: unknown): TransferServerEntry {
   // garder) : les options de lancement brutes passent par leur propre
   // validation (sanitizeArkLaunch → sanitizeLaunchOptions).
   const rawArkConfig = isObj(raw.config) ? raw.config.arkConfig : undefined;
+  // ⚠️ pickLike garderait les heures par défaut et jetterait l'ancienne forme
+  // (`time`, `warningMinutes`, jusqu'à la 0.25) : le redémarrage passe par
+  // sa propre migration et validation.
+  const rawRestart = isObj(raw.config) ? raw.config.restart : undefined;
   const config: ServerConfig = {
     ...picked,
+    restart: withRestartDefaults(isObj(rawRestart) ? rawRestart : undefined),
     arkConfig: sanitizeArkLaunch({
       ...picked.arkConfig,
       launchOptions: isObj(rawArkConfig)

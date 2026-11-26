@@ -10,6 +10,7 @@ import type { Server } from "../../shared/types";
 import { ValheimModsManager } from "../games/valheim/ValheimModsManager";
 import { checkModUpdatesOnStart } from "../games/valheim/modUpdateCheck";
 import { checkGameUpdateOnStart } from "./gameUpdateCheck";
+import { runAfterStartTask } from "../games/afterStart";
 import { appError, appErrorLogText } from "../utils/appError";
 import { lt, managerLine } from "../i18n/logStrings";
 import { notifyStartFailed } from "./serverAlerts";
@@ -116,6 +117,7 @@ export async function startServer(
   // ratée ne concerne pas le démarrage.
   if (res.success) {
     checkGameUpdateOnStart(ctx, id).catch(() => {});
+    runAfterStartTask(ctx, id, gameType);
     if (gameType === "valheim") {
       checkModUpdatesOnStart(ctx, id).catch(() => {});
     }
@@ -148,6 +150,7 @@ export async function restartServer(
   if (res.success && gameType === "valheim") {
     logActiveValheimMods(ctx, id, (line) => mgr.log(line));
   }
+  if (res.success) runAfterStartTask(ctx, id, gameType);
   return res;
 }
 

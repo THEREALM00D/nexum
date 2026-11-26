@@ -1,27 +1,18 @@
 import type { IpcContext } from "../ipc/context";
-import type { StopConfig } from "../server/ServerManager";
 import { restartServer, startServer } from "../server/startServer";
 import { isSteamLibraryInstall, STEAM_APP_IDS } from "../steamcmd/SteamCMD";
 import { backupBeforeUpdate } from "../backup/serverBackup";
 import { appErrorLogText } from "../utils/appError";
 import { lt, managerLine } from "../i18n/logStrings";
+import {
+  runCountdown,
+  withRestartLock,
+  type Countdown,
+} from "./restartCountdown";
 
-interface PendingUpdate {
+export interface PendingUpdate {
   installedBuild: string;
   latestBuild: string;
-}
-
-/** Config d'arrêt du serveur, avec l'annonce et le délai du redémarrage planifié. */
-function stopConfigForRestart(ctx: IpcContext, serverId: string): StopConfig {
-  const restart = ctx.getServerConfig(serverId).restart;
-  return {
-    ...ctx.getStopConfig(serverId),
-    shutdownWaittime: restart.warningMinutes * 60,
-    // Message vide : message par défaut dans la langue de Nexum.
-    shutdownMessage: (
-      restart.message.trim() || lt().restartAnnounceDefault
-    ).replace("{minutes}", String(restart.warningMinutes)),
-  };
 }
 
 /**
@@ -29,12 +20,14 @@ function stopConfigForRestart(ctx: IpcContext, serverId: string): StopConfig {
  * (Steam injoignable — jamais lu comme « pas à jour », voir
  * `checkGameUpdateOnStart`) ou serveur que Nexum ne met pas à jour.
  */
-async function findPendingUpdate(
+export async function findPendingUpdate(
   ctx: IpcContext,
   serverId: string,
   log: (line: string) => void,
 ): Promise<PendingUpdate | null> {
-  const server = ctx.servers.list().find((s) => s.id === serverId);
+  const server = ctx.servers
+    .list()
+    .find((candidate) => candidate.id === serverId);
   if (!server?.path) return null;
   if (isSteamLibraryInstall(server.path)) {
     log(managerLine(lt().autoUpdateSkippedSteam));
@@ -60,36 +53,39 @@ async function findPendingUpdate(
 
 /**
  * Sauvegarde puis mise à jour SteamCMD, serveur arrêté. Renvoie le compte
- * rendu à écrire dans la session qui suit : les lignes écrites serveur arrêté
- * n'ont pas de session de log et la vue est vidée au démarrage.
+ * rendu à écrire dans la session qui suit (les lignes écrites serveur arrêté
+ * n'ont pas de session de log et la vue est vidée au démarrage) et si le
+ * jeu a bien été mis à jour.
  */
 async function updateStoppedServer(
   ctx: IpcContext,
   serverId: string,
   update: PendingUpdate,
-): Promise<string[]> {
+): Promise<{ report: string[]; updated: boolean }> {
   const report: string[] = [];
   try {
     await backupBeforeUpdate(ctx, serverId, (line) => report.push(line));
-  } catch (e) {
+  } catch (error) {
     report.push(
       managerLine(
-        lt().updateBackupFailed(appErrorLogText((e as Error).message)),
+        lt().updateBackupFailed(appErrorLogText((error as Error).message)),
       ),
     );
-    return report;
+    return { report, updated: false };
   }
 
-  const server = ctx.servers.list().find((s) => s.id === serverId);
-  if (!server) return report;
+  const server = ctx.servers
+    .list()
+    .find((candidate) => candidate.id === serverId);
+  if (!server) return { report, updated: false };
   // Progression affichée en direct (vidée au démarrage qui suit).
-  const res = await ctx.steamcmd.installGame(
+  const result = await ctx.steamcmd.installGame(
     server.gameType,
     server.path,
-    (msg) => ctx.broadcastLog(serverId, msg),
+    (line) => ctx.broadcastLog(serverId, line),
   );
   report.push(
-    res.success
+    result.success
       ? managerLine(
           lt().updatedByScheduledRestart(
             update.installedBuild,
@@ -97,66 +93,88 @@ async function updateStoppedServer(
           ),
         )
       : managerLine(
-          lt().updateFailed(appErrorLogText(res.error ?? "SteamCMD")),
+          lt().updateFailed(appErrorLogText(result.error ?? "SteamCMD")),
         ),
   );
-  return report;
+  return { report, updated: result.success };
 }
 
+/** Mise à jour tentée par un redémarrage : installée ou non. Null : aucune tentée. */
+export type UpdateOutcome = "updated" | "failed" | null;
+
 /**
- * Redémarrage planifié d'un serveur. Avec l'option « mettre à jour le jeu »
- * et une mise à jour disponible : arrêt (annonce comprise), sauvegarde du
- * monde, mise à jour SteamCMD, puis démarrage — sinon simple redémarrage,
- * par le même chemin que le bouton Redémarrer.
+ * Redémarrage planifié d'un serveur : annonces jusqu'à `stopAt`, puis
+ * arrêt. Avec l'option « mettre à jour le jeu » (ou une mise à jour déjà
+ * trouvée, `update`) : arrêt, sauvegarde du monde, mise à jour SteamCMD,
+ * puis démarrage. Sinon simple redémarrage, par le même chemin que le
+ * bouton Redémarrer. Un seul compte à rebours à la fois par serveur.
  */
 export async function runScheduledRestart(
   ctx: IpcContext,
   serverId: string,
-): Promise<void> {
-  const mgr = ctx.serverManagers.getOrCreate(serverId);
-  if (mgr.getStatus() !== "running") return;
-  // Toujours un vrai callback de log : sans lui, la console restait figée
-  // après un redémarrage planifié.
-  const log = (line: string) => ctx.broadcastLog(serverId, line);
-  const stopConfig = stopConfigForRestart(ctx, serverId);
+  countdown: Countdown,
+  update?: PendingUpdate,
+): Promise<UpdateOutcome> {
+  const manager = ctx.serverManagers.getOrCreate(serverId);
+  if (manager.getStatus() !== "running") return null;
+  let outcome: UpdateOutcome = null;
+  await withRestartLock(serverId, async () => {
+    const pid = manager.getPid();
+    const stopConfig = await runCountdown(ctx, serverId, countdown);
+    if (!stopConfig) return;
+    // Toujours un vrai callback de log : sans lui, la console restait figée
+    // après un redémarrage planifié.
+    const log = (line: string) => ctx.broadcastLog(serverId, line);
+    const pendingUpdate =
+      update ??
+      (ctx.getServerConfig(serverId).restart.updateGame
+        ? await findPendingUpdate(ctx, serverId, (line) => manager.log(line))
+        : null);
+    // Arrêté à la main pendant la vérification (jusqu'à 30 s) : un
+    // redémarrage le relancerait.
+    if (manager.getStatus() !== "running" || manager.getPid() !== pid) return;
+    if (!pendingUpdate) {
+      await restartServer(ctx, serverId, log, stopConfig);
+      return;
+    }
 
-  const update = ctx.getServerConfig(serverId).restart.updateGame
-    ? await findPendingUpdate(ctx, serverId, (line) => mgr.log(line))
-    : null;
-  if (!update) {
-    await restartServer(ctx, serverId, log, stopConfig);
-    return;
-  }
-
-  mgr.log(
-    managerLine(
-      lt().scheduledRestartWithUpdate(
-        update.installedBuild,
-        update.latestBuild,
-      ),
-    ),
-  );
-  const stopped = await mgr.stop(stopConfig);
-  if (!stopped.success) {
-    mgr.log(
+    outcome = "failed";
+    manager.log(
       managerLine(
-        lt().updateCancelledNotStopped(appErrorLogText(stopped.error ?? "")),
+        lt().scheduledRestartWithUpdate(
+          pendingUpdate.installedBuild,
+          pendingUpdate.latestBuild,
+        ),
       ),
     );
-    return;
-  }
-  await new Promise((r) => setTimeout(r, 1500));
+    const stopped = await manager.stop(stopConfig);
+    if (!stopped.success) {
+      manager.log(
+        managerLine(
+          lt().updateCancelledNotStopped(appErrorLogText(stopped.error ?? "")),
+        ),
+      );
+      return;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 1500));
 
-  const report = await updateStoppedServer(ctx, serverId, update);
-  const res = await startServer(ctx, serverId, log);
-  if (res.success) {
-    report.forEach((line) => mgr.log(line));
-  } else {
-    [
-      ...report,
-      managerLine(
-        lt().startFailedAfterUpdate(appErrorLogText(res.error ?? "")),
-      ),
-    ].forEach(log);
-  }
+    const { report, updated } = await updateStoppedServer(
+      ctx,
+      serverId,
+      pendingUpdate,
+    );
+    if (updated) outcome = "updated";
+    const result = await startServer(ctx, serverId, log);
+    if (result.success) {
+      report.forEach((line) => manager.log(line));
+    } else {
+      [
+        ...report,
+        managerLine(
+          lt().startFailedAfterUpdate(appErrorLogText(result.error ?? "")),
+        ),
+      ].forEach(log);
+    }
+  });
+  return outcome;
 }

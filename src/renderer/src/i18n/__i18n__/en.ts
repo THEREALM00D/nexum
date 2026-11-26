@@ -113,12 +113,54 @@ export default {
   },
   schedule: {
     title: "Schedule",
-    subtitle: "Automatic daily server restart",
+    subtitle: "Server restarts, player warnings and updates",
+    sections: {
+      restarts: "Restarts",
+      warnings: "Warn players",
+      updates: "Game updates",
+    },
     enabled: "Enable scheduled restart",
-    time: "Time (24h)",
-    warning: "Warning (minutes before)",
-    warningHelper:
-      "Delay between the announcement and the shutdown (0 = immediate)",
+    mode: {
+      label: "Schedule type",
+      times: "Fixed times",
+      interval: "Every X hours",
+    },
+    times: "Shutdown times (24h)",
+    addTime: "Add a time",
+    newTime: "Time (24h)",
+    add: "Add",
+    remove: "Remove {{value}}",
+    noTimes: "Add at least one time.",
+    alreadyListed: "Already in the list.",
+    days: {
+      label: "Days",
+      none: "Pick at least one day.",
+      mon: "Mon",
+      tue: "Tue",
+      wed: "Wed",
+      thu: "Thu",
+      fri: "Fri",
+      sat: "Sat",
+      sun: "Sun",
+    },
+    intervalHours: "Every (hours)",
+    intervalStart: "Starting at (24h)",
+    next: {
+      label: "Next restart: {{when}}",
+      intervalLabel: "Next restart: {{when}} ({{times}})",
+      none: "No restart planned",
+      today: "today at {{time}}",
+      tomorrow: "tomorrow at {{time}}",
+      other: "{{day}} at {{time}}",
+    },
+    warnings: {
+      label: "Announcements before the stop (minutes)",
+      helper:
+        "One announcement per delay. The world is saved just before the stop.",
+      none: "No announcement: the server stops without warning.",
+      newDelay: "Minutes before the stop",
+      range: "Between 1 and {{max}} minutes.",
+    },
     message: "Announcement message",
     messageHelper:
       "{minutes} will be replaced by the delay. Empty: default message, in Nexum's language.",
@@ -126,6 +168,12 @@ export default {
     updateGame: "Update the game at restart time",
     updateGameHelper:
       "If a server update is available: shutdown, world backup, update with SteamCMD, then start. No effect for a server installed through the Steam library.",
+    checkUpdates: "Check for updates while the server runs",
+    checkUpdatesHelper:
+      "When an update is found: players are warned, then shutdown, backup, update and start, without waiting for the next restart. No effect for a server installed through the Steam library.",
+    checkEvery: "Check every",
+    hours: "{{count}} h",
+    updateWarning: "Warn players (minutes before)",
     save: "Save",
     notify: {
       saved: "Schedule saved",

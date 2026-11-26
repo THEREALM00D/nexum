@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { Box, Paper, Tooltip, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import type { SystemStats } from "@shared/types";
+import type { RestartConfig, SystemStats } from "@shared/types";
 import { useServer } from "../../context/ServerContext";
 import { formatDuration, formatNumber } from "../../utils/format";
 import LoadingSkeleton from "../common/LoadingSkeleton";
 import SectionTitle from "../common/SectionTitle";
+import { formatNextRestart } from "../schedule/nextRestart";
 
 function StatCard({
   label,
@@ -82,13 +83,18 @@ export default function ServerStats({
   const { status } = state;
   const online = status === "running";
   const loading = stats === null;
-  const [restartTime, setRestartTime] = useState<string | null>(null);
+  const [restartConfig, setRestartConfig] = useState<RestartConfig | null>(
+    null,
+  );
+  const nextRestart = restartConfig
+    ? formatNextRestart(restartConfig, t, i18n.resolvedLanguage)
+    : null;
 
   useEffect(() => {
     window.api.schedule
       .getRestart()
-      .then((c) => setRestartTime(c.enabled ? c.time : null))
-      .catch(() => setRestartTime(null));
+      .then(setRestartConfig)
+      .catch(() => setRestartConfig(null));
   }, [status]);
 
   const statusLabel = t(`status.${status}`, { defaultValue: status });
@@ -143,8 +149,8 @@ export default function ServerStats({
           online && stats ? formatDuration(stats.serverUptime, locale) : "—"
         }
         hint={
-          online && restartTime
-            ? t("serverDashboard.nextRestart", { time: restartTime })
+          online && nextRestart
+            ? t("serverDashboard.nextRestart", { time: nextRestart })
             : undefined
         }
         loading={loading}

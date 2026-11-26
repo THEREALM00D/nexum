@@ -124,13 +124,42 @@ export interface BackupConfig {
 }
 
 // --- Scheduler ---
+/** Heures fixes (avec jours de la semaine) ou toutes les X heures. */
+export type RestartMode = "times" | "interval";
+
+/** Renouvellement des créatures sauvages d'ARK (`DestroyWildDinos`, RCON). */
+export interface WildDinosConfig {
+  /** Après chaque démarrage du serveur. */
+  afterStart: boolean;
+  /** Pendant que le serveur tourne, toutes les `everyHours` heures. */
+  repeat: boolean;
+  everyHours: number;
+}
+
 export interface RestartConfig {
+  /** Redémarrage planifié (heures fixes ou intervalle). */
   enabled: boolean;
-  time: string; // "HH:MM" 24h
-  warningMinutes: number;
+  mode: RestartMode;
+  /** Heures d'arrêt `HH:MM` (24 h), triées, mode `times`. */
+  times: string[];
+  /** Jours du mode `times` : 0 = dimanche … 6 = samedi (`Date.getDay`). */
+  weekdays: number[];
+  /** Mode `interval` : un arrêt toutes les `intervalHours` heures depuis `intervalStart`. */
+  intervalHours: number;
+  intervalStart: string;
+  /** Annonces aux joueurs, en minutes avant l'arrêt, de la plus longue à la plus courte. */
+  warnings: number[];
+  /** Vide : message par défaut dans la langue de Nexum au moment de l'envoi. */
   message: string;
   /** Met le jeu à jour (SteamCMD) au moment du redémarrage s'il y a une mise à jour. */
   updateGame: boolean;
+  /** Vérifie les mises à jour pendant que le serveur tourne (indépendant de `enabled`). */
+  checkUpdates: boolean;
+  checkUpdatesHours: number;
+  /** Mise à jour trouvée : délai avant l'arrêt, en minutes. */
+  updateWarningMinutes: number;
+  /** ARK seulement, ignoré par les autres jeux. */
+  wildDinos: WildDinosConfig;
 }
 
 // --- Firewall ---

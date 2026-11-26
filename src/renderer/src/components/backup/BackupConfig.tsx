@@ -1,13 +1,11 @@
 import {
   FormControl,
-  FormControlLabel,
   IconButton,
   InputLabel,
   MenuItem,
   Paper,
   Select,
   Stack,
-  Switch,
   TextField,
   Tooltip,
   Typography,
@@ -18,6 +16,7 @@ import type { BackupConfig } from "@shared/types";
 import FolderField from "../common/FolderField";
 import { SkeletonChildren } from "../common/LoadingSkeleton";
 import SectionTitle from "../common/SectionTitle";
+import SwitchField from "../common/SwitchField";
 
 interface Props {
   config: BackupConfig;
@@ -108,25 +107,13 @@ export default function BackupConfigPanel({
             </Typography>
           </Stack>
 
-          <FormControlLabel
-            control={
-              <Switch
-                checked={config.backupBeforeUpdate}
-                onChange={(e) =>
-                  onConfigChange({ backupBeforeUpdate: e.target.checked })
-                }
-              />
+          <SwitchField
+            checked={config.backupBeforeUpdate}
+            onChange={(backupBeforeUpdate) =>
+              onConfigChange({ backupBeforeUpdate })
             }
-            label={
-              <Stack>
-                <Typography variant="body2">
-                  {t("backup.config.beforeUpdate")}
-                </Typography>
-                <Typography variant="caption" sx={{ color: "text.secondary" }}>
-                  {t("backup.config.beforeUpdateHelper")}
-                </Typography>
-              </Stack>
-            }
+            label={t("backup.config.beforeUpdate")}
+            helper={t("backup.config.beforeUpdateHelper")}
           />
         </SkeletonChildren>
       </Stack>

@@ -23,6 +23,7 @@ import type {
   EnshroudedLaunchConfig,
   ArkLaunchConfig,
 } from "../../shared/types";
+import type { StoredRestartConfig } from "../servers/restartDefaults";
 
 export interface AppStore {
   // Legacy globaux (Phase 1) : utilisés pour la migration vers serversConfig.
@@ -33,7 +34,7 @@ export interface AppStore {
   backupDir?: string;
   backupKeep?: number;
   backupIntervalMinutes?: number;
-  restartSchedule?: RestartConfig;
+  restartSchedule?: StoredRestartConfig;
 
   // Multi-serveur : liste + serveur actif + config par-serveur (Phase 2a)
   servers: Server[];

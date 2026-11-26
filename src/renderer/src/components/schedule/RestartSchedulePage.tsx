@@ -1,20 +1,12 @@
-import {
-  Alert,
-  Box,
-  Button,
-  Divider,
-  FormControlLabel,
-  Paper,
-  Stack,
-  Switch,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Alert, Button } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { useRestartSchedule } from "./useRestartSchedule";
-import ScheduleTimePicker from "./ScheduleTimePicker";
+import { useRestartSchedule, type ScheduleForm } from "./useRestartSchedule";
+import RestartTimesSection from "./RestartTimesSection";
+import WarningsSection from "./WarningsSection";
+import GameUpdatesSection from "./GameUpdatesSection";
+import FormPage from "../common/FormPage";
 import LoadingSkeleton from "../common/LoadingSkeleton";
 import PageHeader from "../common/PageHeader";
 
@@ -23,18 +15,26 @@ interface Props {
   infoKey?: string;
   /** Bloc propre au jeu affiché au-dessus du formulaire (Palworld : API REST). */
   notice?: ReactNode;
+  /** Cartes propres au jeu, enregistrées avec le reste (ARK : créatures sauvages). */
+  extraSections?: (form: ScheduleForm) => ReactNode;
 }
 
 /**
- * Page « Planification » de tous les jeux : seuls le texte d'information et
- * un éventuel bloc propre au jeu changent d'un jeu à l'autre.
+ * Page « Planification » de tous les jeux : seuls le texte d'information,
+ * un éventuel bloc et des cartes propres au jeu changent d'un jeu à l'autre.
  */
-export default function RestartSchedulePage({ infoKey, notice }: Props) {
+export default function RestartSchedulePage({
+  infoKey,
+  notice,
+  extraSections,
+}: Props) {
   const { t } = useTranslation();
-  const { cfg, loading, dirty, update, save } = useRestartSchedule();
+  const { config, loading, dirty, invalid, update, save } =
+    useRestartSchedule();
+  const form: ScheduleForm = { config, update, loading };
 
   return (
-    <Stack spacing={3}>
+    <FormPage>
       <PageHeader
         title={t("schedule.title")}
         subtitle={t("schedule.subtitle")}
@@ -47,100 +47,21 @@ export default function RestartSchedulePage({ infoKey, notice }: Props) {
       )}
       {notice}
 
-      <Paper sx={{ p: 2.5 }}>
-        <LoadingSkeleton loading={loading}>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={cfg.enabled}
-                onChange={(e) => update({ enabled: e.target.checked })}
-              />
-            }
-            label={t("schedule.enabled")}
-          />
-        </LoadingSkeleton>
-        <Divider sx={{ my: 2 }} />
+      <RestartTimesSection {...form} />
+      <WarningsSection {...form} />
+      <GameUpdatesSection {...form} />
+      {extraSections?.(form)}
 
-        <Stack spacing={2}>
-          <LoadingSkeleton loading={loading} fullWidth sx={{ maxWidth: 200 }}>
-            <ScheduleTimePicker
-              label={t("schedule.time")}
-              value={cfg.time}
-              onChange={(time) => update({ time })}
-              disabled={!cfg.enabled}
-            />
-          </LoadingSkeleton>
-          <LoadingSkeleton loading={loading} fullWidth sx={{ maxWidth: 280 }}>
-            <TextField
-              label={t("schedule.warning")}
-              type="number"
-              size="small"
-              value={cfg.warningMinutes}
-              onChange={(e) =>
-                update({
-                  warningMinutes: Math.max(
-                    0,
-                    parseInt(e.target.value, 10) || 0,
-                  ),
-                })
-              }
-              disabled={!cfg.enabled}
-              sx={{ maxWidth: 280 }}
-              slotProps={{ htmlInput: { min: 0 } }}
-              helperText={t("schedule.warningHelper")}
-            />
-          </LoadingSkeleton>
-          <LoadingSkeleton loading={loading} fullWidth>
-            <TextField
-              label={t("schedule.message")}
-              size="small"
-              value={cfg.message}
-              onChange={(e) => update({ message: e.target.value })}
-              disabled={!cfg.enabled}
-              // Vide : le main envoie le message par défaut dans la langue
-              // de Nexum, affiché ici en placeholder.
-              placeholder={t("schedule.messageDefault")}
-              slotProps={{ inputLabel: { shrink: true } }}
-              helperText={t("schedule.messageHelper")}
-              fullWidth
-            />
-          </LoadingSkeleton>
-          <LoadingSkeleton loading={loading}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={cfg.updateGame}
-                  onChange={(e) => update({ updateGame: e.target.checked })}
-                  disabled={!cfg.enabled}
-                />
-              }
-              label={
-                <Stack>
-                  <Typography variant="body2">
-                    {t("schedule.updateGame")}
-                  </Typography>
-                  <Typography
-                    variant="caption"
-                    sx={{ color: "text.secondary" }}
-                  >
-                    {t("schedule.updateGameHelper")}
-                  </Typography>
-                </Stack>
-              }
-            />
-          </LoadingSkeleton>
-        </Stack>
-
-        <Box sx={{ mt: 2, display: "flex", justifyContent: "flex-end" }}>
-          <Button
-            variant="contained"
-            disabled={loading || !dirty}
-            onClick={save}
-          >
-            {t("schedule.save")}
-          </Button>
-        </Box>
-      </Paper>
-    </Stack>
+      <LoadingSkeleton loading={loading} sx={{ alignSelf: "flex-end" }}>
+        <Button
+          variant="contained"
+          disabled={loading || !dirty || invalid}
+          onClick={save}
+          sx={{ alignSelf: "flex-end" }}
+        >
+          {t("schedule.save")}
+        </Button>
+      </LoadingSkeleton>
+    </FormPage>
   );
 }
