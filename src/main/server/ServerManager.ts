@@ -105,11 +105,22 @@ export class ServerManager {
    * au-dessus de l'échec de la relance.
    */
   logStartFailure(line: string, onLog: (line: string) => void): void {
+    this.logOutsideSession([line], onLog);
+  }
+
+  /**
+   * Lignes écrites par Nexum pour un serveur qui peut être arrêté (action
+   * groupée, échec d'un démarrage) : dans la session en cours s'il tourne,
+   * sinon dans une courte session à elles (voir `logStartFailure`).
+   */
+  logOutsideSession(lines: string[], onLog: (line: string) => void): void {
+    if (lines.length === 0) return;
     if (this.status === "running" || this.status === "starting") {
-      this.log(line);
+      lines.forEach((line) => this.log(line));
       return;
     }
-    this.beginSession(onLog, undefined, false)(line);
+    const log = this.beginSession(onLog, undefined, false);
+    lines.forEach(log);
     this.endSession(false);
   }
 

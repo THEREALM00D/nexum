@@ -34,6 +34,11 @@ const STRINGS = {
 Ils s'arrêtent avec Nexum : Nexum va d'abord les arrêter proprement (sauvegarde du monde), puis se fermer. Cela peut prendre jusqu'à une minute.`,
     quitStop: "Arrêter et quitter",
     quitCancel: "Annuler",
+    quitUpdateMessage: (name: string) => `Mise à jour de « ${name} » en cours`,
+    quitUpdateDetail:
+      "Quitter maintenant interromprait SteamCMD : la mise à jour serait à refaire (le monde a été sauvegardé avant). Les serveurs suivants de l'action sur tous les serveurs ne seront pas traités.",
+    quitUpdateWait: "Attendre la fin",
+    quitUpdateAnyway: "Quitter quand même",
     stoppingTitle: "Arrêt des serveurs",
     stoppingBody: "Nexum arrête proprement les serveurs et se fermera ensuite.",
     crashGaveUpTitle: "Relance automatique abandonnée",
@@ -76,6 +81,11 @@ Ils s'arrêtent avec Nexum : Nexum va d'abord les arrêter proprement (sauvegard
 They stop with Nexum: Nexum will first stop them cleanly (the world is saved), then quit. This can take up to a minute.`,
     quitStop: "Stop and quit",
     quitCancel: "Cancel",
+    quitUpdateMessage: (name: string) => `"${name}" is being updated`,
+    quitUpdateDetail:
+      "Quitting now would interrupt SteamCMD: the update would have to be done again (the world was backed up first). The next servers of the action on all servers won't be handled.",
+    quitUpdateWait: "Wait for it",
+    quitUpdateAnyway: "Quit anyway",
     stoppingTitle: "Stopping servers",
     stoppingBody:
       "Nexum is stopping the servers cleanly and will quit afterwards.",

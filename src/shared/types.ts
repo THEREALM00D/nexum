@@ -123,6 +123,67 @@ export interface BackupConfig {
   backupBeforeUpdate: boolean;
 }
 
+// --- Actions groupées (page Serveurs) ---
+export type BulkAction =
+  | "startAll"
+  | "restartRunning"
+  | "stopAll"
+  | "updateStopped"
+  | "stopUpdateRestartAll";
+
+export type BulkStepState =
+  "waiting" | "running" | "done" | "failed" | "skipped";
+
+/** Étape en cours d'un serveur (texte traduit par le renderer). */
+export type BulkPhase =
+  "warning" | "stopping" | "checking" | "updating" | "starting";
+
+/** Issue d'un serveur traité. */
+export type BulkOutcome =
+  | "started"
+  | "stopped"
+  | "restarted"
+  | "updated"
+  | "updatedRestarted"
+  | "upToDate"
+  | "upToDateRestarted"
+  | "steamLibrary"
+  | "noSteamCmd"
+  | "updateUnknown"
+  | "alreadyRunning"
+  | "notRunning"
+  | "busy";
+
+export interface BulkStep {
+  serverId: string;
+  /** Lancé au départ de l'action : décide de ce qui lui est fait. */
+  wasRunning: boolean;
+  state: BulkStepState;
+  phase?: BulkPhase;
+  outcome?: BulkOutcome;
+  /** Erreur codée (`AppError`) d'un échec. */
+  error?: string;
+  /** Avancée de SteamCMD (0-100), absente si inconnue. */
+  percent?: number;
+  /** Build installé par la mise à jour. */
+  build?: string;
+}
+
+export interface BulkRun {
+  action: BulkAction;
+  warnPlayers: boolean;
+  steps: BulkStep[];
+  /** « Arrêter après ce serveur » demandé : les suivants seront `skipped`. */
+  stopAfterCurrent: boolean;
+  finished: boolean;
+}
+
+/** Joueurs connectés d'un serveur lancé ; `count` null sans source de joueurs. */
+export interface OnlinePlayers {
+  serverId: string;
+  count: number | null;
+}
+
 // --- Scheduler ---
 /** Heures fixes (avec jours de la semaine) ou toutes les X heures. */
 export type RestartMode = "times" | "interval";
@@ -365,6 +426,7 @@ export type AppErrorCode =
   | "SERVER_NOT_RUNNING"
   | "SERVER_EXE_NOT_FOUND"
   | "SERVER_STOP_TIMEOUT"
+  | "BULK_ACTION_RUNNING"
   // Sauvegardes
   | "STOP_BEFORE_RESTORE"
   | "BACKUP_SOURCE_NOT_FOUND"

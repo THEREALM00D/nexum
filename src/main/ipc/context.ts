@@ -73,6 +73,8 @@ export interface IpcContext {
   restartScheduler: RestartScheduler;
   playerHistories: PlayerHistoryRegistry;
   broadcastLog: (serverId: string, line: string) => void;
+  /** Joueurs connectés d'un serveur lancé, null s'il n'a pas de source de joueurs. */
+  getOnlinePlayers: (serverId: string) => number | null;
   /** Dossier de sauvegarde d'un serveur (par défaut : serveur actif). */
   getBackupDir: (serverId?: string) => string;
   getRestartConfig: () => RestartConfig;

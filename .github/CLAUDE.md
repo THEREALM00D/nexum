@@ -33,6 +33,10 @@ Actions → **Beta release** → _Run workflow_ sur une branche poussée qui con
 - `npm pkg set version=…` le temps du build (rien n'est commité). Draft `--prerelease` créé avant le build. Sans `publish.channel`, electron-builder génère `latest.yml`, pas `beta.yml` (vérifié en v24 et v26). Notes = branche, SHA, commits depuis la stable + SHA256. Publiée `--prerelease --latest=false`. Pas de VirusTotal ni d'annonce Discord.
 - release-please ne voit pas ces releases (il part du manifest) ; la stable suivante remplace la bêta chez les testeurs. Côté app : `src/main/update/CLAUDE.md`.
 
+### Lot de fonctions sur une branche d'intégration
+
+Plusieurs fonctions qui sortent ensemble en bêta (ex. #292, branche `feat/292-server-management`) : branche créée depuis `main`, chaque sous-issue en PR **vers elle**, bêta lancée dessus, puis une seule PR vers `main`. ⚠️ `Closes #N` ne ferme l'issue qu'à la fusion dans la branche par défaut : la PR finale vers `main` liste toutes les issues du lot. `ci.yml` ne tourne que sur les PR vers `main` : typecheck et lint en local pour les PR du lot. Ne jamais fusionner la branche du lot dans une sous-branche en local puis pousser : GitHub marquerait la PR de la sous-branche « merged » sans relecture.
+
 ## Vérification des téléchargements et signature
 
 - Les exe ne sont **pas signés**. Avant publication, le workflow ajoute aux notes le **SHA256** de chaque `.exe` et, si le secret `VT_API_KEY` existe, les liens **VirusTotal** (`crazy-max/ghaction-virustotal`, `continue-on-error`).

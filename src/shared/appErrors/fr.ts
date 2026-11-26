@@ -11,6 +11,7 @@ export const APP_ERRORS_FR: Record<AppErrorCode, string> = {
   SERVER_NOT_FOUND: "Ce serveur n'existe plus ({{id}}).",
   UNKNOWN_GAME: "Jeu inconnu : {{game}}",
   SERVER_ALREADY_RUNNING: "Le serveur est déjà lancé.",
+  BULK_ACTION_RUNNING: "Une action sur tous les serveurs est déjà en cours.",
   SERVER_NOT_RUNNING: "Le serveur n'est pas lancé.",
   SERVER_EXE_NOT_FOUND:
     "{{exe}} introuvable dans {{path}}. Installez le serveur depuis la page Installation, ou vérifiez le dossier du serveur.",

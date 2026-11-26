@@ -5,6 +5,7 @@ import type { ServerManager } from "./ServerManager";
 import { getLanguage } from "../i18n/language";
 import { lt, managerLine } from "../i18n/logStrings";
 import { trayStrings } from "../tray/trayStrings";
+import { bulkUpdatingServer, cancelBulkRun } from "../servers/bulk/bulkState";
 
 // Au-delà, on quitte quand même : `stop()` a déjà ses propres délais (30 s
 // pour un signal de console, 120 s pour le DoExit d'ARK, puis taskkill), ceci
@@ -59,6 +60,36 @@ async function stopForQuit(ctx: IpcContext, s: OwnedServer): Promise<void> {
 }
 
 /**
+ * Mise à jour SteamCMD lancée par une action sur tous les serveurs : la
+ * fermeture la tuerait. Faux si l'utilisateur choisit d'attendre.
+ */
+async function confirmBulkUpdate(
+  ctx: IpcContext,
+  parent: BrowserWindow | null,
+): Promise<boolean> {
+  const serverId = bulkUpdatingServer();
+  if (!serverId) return true;
+  const s = trayStrings(getLanguage());
+  const name =
+    ctx.servers.list().find((server) => server.id === serverId)?.name ??
+    serverId;
+  const options = {
+    type: "warning" as const,
+    title: s.quitTitle,
+    message: s.quitUpdateMessage(name),
+    detail: s.quitUpdateDetail,
+    buttons: [s.quitUpdateWait, s.quitUpdateAnyway],
+    defaultId: 0,
+    cancelId: 0,
+    noLink: true,
+  };
+  const { response } = parent
+    ? await dialog.showMessageBox(parent, options)
+    : await dialog.showMessageBox(options);
+  return response === 1;
+}
+
+/**
  * Avant de quitter Nexum (menu Quitter, fermeture de la fenêtre sans zone de
  * notification, installation d'une mise à jour) : si des serveurs lancés par
  * Nexum tournent, demande confirmation puis les arrête proprement, tous en
@@ -68,10 +99,18 @@ export async function confirmAndStopServers(
   ctx: IpcContext,
   win: BrowserWindow | null,
 ): Promise<boolean> {
+  // Fenêtre cachée (Quitter depuis l'icône) : boîte indépendante, sinon elle
+  // serait rattachée à une fenêtre invisible.
+  const parent = win && !win.isDestroyed() && win.isVisible() ? win : null;
+  const s = trayStrings(getLanguage());
+  if (!(await confirmBulkUpdate(ctx, parent))) return false;
+  // Action sur tous les serveurs en cours : plus aucun serveur démarré ni
+  // relancé (sinon un serveur relancé pendant l'arrêt mourrait avec Nexum).
+  cancelBulkRun();
+
   const owned = ownedRunningServers(ctx);
   if (owned.length === 0) return true;
 
-  const s = trayStrings(getLanguage());
   const options = {
     type: "warning" as const,
     title: s.quitTitle,
@@ -82,9 +121,6 @@ export async function confirmAndStopServers(
     cancelId: 1,
     noLink: true,
   };
-  // Fenêtre cachée (Quitter depuis l'icône) : boîte indépendante, sinon elle
-  // serait rattachée à une fenêtre invisible.
-  const parent = win && !win.isDestroyed() && win.isVisible() ? win : null;
   const { response } = parent
     ? await dialog.showMessageBox(parent, options)
     : await dialog.showMessageBox(options);

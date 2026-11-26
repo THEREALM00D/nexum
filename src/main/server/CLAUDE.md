@@ -7,6 +7,7 @@ Validations (conflits de ports tous jeux confondus, règles du jeu), `getLaunchS
 - **`LaunchSpec.prepare`** (`PREPARE` dans `src/main/games/registry.ts`) : exécuté par `ServerManager.start` avant **chaque** lancement, relance après plantage comprise ; un message renvoyé refuse le démarrage. Les préparations propres à un jeu vont là, pas dans `startServer`.
 - **Variables d'environnement** : `env` du `serverConfig.ts` du jeu, lues par `getGameEnv()` et conservées pour la relance. Tout démarrage (manuel, redémarrage, planifié) doit passer `getGameEnv(gameType)` (Valheim en a besoin, voir son CLAUDE.md).
 - Écrire dans la session de log depuis l'extérieur : `ServerManager.log()`, **après** `start()` (sinon la nouvelle session l'efface).
+- Mise à jour du jeu d'un serveur donné (pas du serveur actif, contrairement à l'IPC `steamcmd:updateGame`) : `serverUpdate.ts` (`checkServerUpdate`, `updateStoppedServer`), utilisé par le redémarrage planifié et les actions groupées.
 
 ## Démarrage automatique (issue #57)
 

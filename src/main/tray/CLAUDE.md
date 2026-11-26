@@ -13,6 +13,7 @@ Un serveur à processus unique lancé par Nexum meurt avec lui, sans sauvegarde 
 
 - `before-quit` est annulé (`idle → pending → ready`) tant que `confirmAndStopServers` n'a pas répondu.
 - Serveurs **lancés par Nexum** en cours (`ServerManager.ownsProcess()` ; un serveur adopté survit et n'est pas compté) → boîte native `dialog.showMessageBox` (parent = fenêtre seulement si visible) : « Arrêter et quitter » arrête tout en parallèle avec **leur** `getStopConfig` (ligne `[Manager]` `stoppingBeforeQuit` + notification Windows) puis `app.quit()` ; « Annuler » → rien. Un 2e Quitter pendant l'arrêt est ignoré.
+- Action sur tous les serveurs en cours (`src/main/servers/bulk/CLAUDE.md`) : mise à jour SteamCMD en cours → boîte « Attendre la fin / Quitter quand même » avant tout ; puis `cancelBulkRun` (plus aucun démarrage ni relance) avant de compter les serveurs à arrêter.
 - Fermer la fenêtre avec `closeToTray` désactivé passe par `app.quit()` (la boîte doit trouver la fenêtre encore là).
 - `update:install` appelle la garde **avant** `quitAndInstall()`, qui lance l'installeur avant même `before-quit` (l'installeur fait ensuite un `taskkill /T` sur Nexum).
 - ⚠️ Pas de `before-quit` à l'arrêt / la déconnexion de Windows : non couvert.

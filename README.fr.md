@@ -83,6 +83,7 @@ Voir [docs/installation.fr.md](docs/installation.fr.md) pour le guide complet.
 ## Documentation
 
 - [Installation](docs/installation.fr.md)
+- [Serveurs](docs/servers.fr.md)
 - [Dashboard](docs/dashboard.fr.md)
 - [Configuration du serveur](docs/configuration.fr.md)
 - [Réseau et firewall](docs/network.fr.md)

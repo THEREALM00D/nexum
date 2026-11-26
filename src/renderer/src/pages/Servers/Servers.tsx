@@ -12,6 +12,11 @@ import PageHeader from "../../components/common/PageHeader";
 import ExportDialog from "../../components/transfer/ExportDialog";
 import ImportServerDialog from "./components/ImportServerDialog";
 import { useServerTransfer } from "./hooks/useServerTransfer";
+import { useBulkActions } from "./hooks/useBulkActions";
+import BulkActionsMenu from "./components/BulkActionsMenu";
+import BulkConfirmDialog from "./components/BulkConfirmDialog";
+import BulkProgressDialog from "./components/BulkProgressDialog";
+import BulkProgressBanner from "./components/BulkProgressBanner";
 
 export default function Servers({ onOpenSetup }: { onOpenSetup: () => void }) {
   const { t } = useTranslation();
@@ -31,6 +36,7 @@ export default function Servers({ onOpenSetup }: { onOpenSetup: () => void }) {
     handleServerAction,
   } = useServers();
   const transfer = useServerTransfer();
+  const bulk = useBulkActions();
 
   return (
     <Stack spacing={3}>
@@ -69,6 +75,13 @@ export default function Servers({ onOpenSetup }: { onOpenSetup: () => void }) {
             >
               {t("servers.setupWizard")}
             </Button>
+            {state.servers.length > 0 && (
+              <BulkActionsMenu
+                counts={bulk.counts}
+                busy={bulk.busy}
+                onSelect={bulk.request}
+              />
+            )}
             <Button
               variant="contained"
               startIcon={<AddIcon />}
@@ -79,6 +92,17 @@ export default function Servers({ onOpenSetup }: { onOpenSetup: () => void }) {
           </Stack>
         }
       />
+
+      {bulk.run && !bulk.dialogOpen && (
+        // Reste après la fin : le bilan (un échec) ne doit pas passer inaperçu.
+        <BulkProgressBanner
+          run={bulk.run}
+          servers={state.servers}
+          onStopAfterCurrent={bulk.stopAfterCurrent}
+          onShowDetails={bulk.openDialog}
+          onDismiss={bulk.dismiss}
+        />
+      )}
 
       {state.servers.length === 0 ? (
         <ServersEmptyState onOpenSetup={onOpenSetup} onImport={openAdd} />
@@ -122,6 +146,22 @@ export default function Servers({ onOpenSetup }: { onOpenSetup: () => void }) {
         preview={transfer.preview}
         onCancel={transfer.cancelImport}
         onImport={transfer.runImport}
+      />
+
+      <BulkConfirmDialog
+        confirmation={bulk.confirmation}
+        servers={state.servers}
+        counts={bulk.counts}
+        onCancel={bulk.cancelConfirmation}
+        onConfirm={bulk.launch}
+      />
+      <BulkProgressDialog
+        open={bulk.dialogOpen}
+        run={bulk.run}
+        servers={state.servers}
+        onClose={bulk.closeDialog}
+        onStopAfterCurrent={bulk.stopAfterCurrent}
+        onViewLogs={bulk.viewLogs}
       />
 
       <ConfirmDeleteDialog
