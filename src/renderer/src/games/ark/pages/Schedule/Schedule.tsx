@@ -1,10 +1,12 @@
 import RestartSchedulePage from "../../../../components/schedule/RestartSchedulePage";
 import RemoteAdminNotice from "../../../../components/schedule/RemoteAdminNotice";
 import { arkConfigService } from "../../services/configService";
+import WildDinosSection from "./components/WildDinosSection";
 
 /**
  * Planification ARK : la page partagée, plus un avertissement quand RCON est
- * désactivé (sans lui, ni annonce ni sauvegarde avant l'arrêt).
+ * désactivé (sans lui, ni annonce ni sauvegarde avant l'arrêt) et la carte
+ * des créatures sauvages.
  */
 export default function ArkSchedule() {
   return (
@@ -19,6 +21,7 @@ export default function ArkSchedule() {
           lockedHintKey="arkSchedule.stopFirst"
         />
       }
+      extraSections={(form) => <WildDinosSection {...form} />}
     />
   );
 }

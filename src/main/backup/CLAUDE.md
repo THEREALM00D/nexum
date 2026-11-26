@@ -13,7 +13,7 @@
 
 Sans sauvegarde forcée : ligne « contient la dernière sauvegarde écrite par le jeu (HH:mm:ss) » (+ conseil d'activer l'API REST pour Palworld). Serveur arrêté : ZIP immédiat. Palworld 1.0.5 vérifié : `/v1/api/save` est **synchrone** (~70 ms) et crée aussi `backup/world/<date>`.
 
-## Sauvegarde auto (`src/main/scheduler/BackupScheduler`)
+## Sauvegarde auto (`IntervalScheduler`, `src/main/scheduler/startSchedulers.ts`)
 
 Intervalle 0 à 1440 min **par serveur**, active seulement serveur lancé. Tick de 30 s qui relit la config de chaque serveur (rien à réarmer), décompte depuis le 1er tick où le serveur est vu lancé (adoption comprise), remis à zéro à l'arrêt. Sauvegardes dues en **file**, une à la fois (plusieurs ZIP niveau 9 en parallèle feraient ramer les serveurs). Échec → logs du serveur (`autoBackupFailed`). Ne jamais revenir à un minuteur unique sur le serveur actif (les autres serveurs n'avaient jamais de sauvegarde, issue #195).
 

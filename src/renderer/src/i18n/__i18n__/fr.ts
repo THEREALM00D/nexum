@@ -114,11 +114,55 @@ export default {
   },
   schedule: {
     title: "Planification",
-    subtitle: "Redémarrage automatique quotidien du serveur",
+    subtitle:
+      "Redémarrages, avertissements aux joueurs et mises à jour du serveur",
+    sections: {
+      restarts: "Redémarrages",
+      warnings: "Avertir les joueurs",
+      updates: "Mises à jour du jeu",
+    },
     enabled: "Activer le redémarrage planifié",
-    time: "Heure (24h)",
-    warning: "Avertissement (minutes avant)",
-    warningHelper: "Délai entre l'annonce et l'arrêt (0 = immédiat)",
+    mode: {
+      label: "Type de planification",
+      times: "Heures fixes",
+      interval: "Toutes les X heures",
+    },
+    times: "Heures d'arrêt (24h)",
+    addTime: "Ajouter une heure",
+    newTime: "Heure (24h)",
+    add: "Ajouter",
+    remove: "Retirer {{value}}",
+    noTimes: "Ajoutez au moins une heure.",
+    alreadyListed: "Déjà dans la liste.",
+    days: {
+      label: "Jours",
+      none: "Choisissez au moins un jour.",
+      mon: "Lun",
+      tue: "Mar",
+      wed: "Mer",
+      thu: "Jeu",
+      fri: "Ven",
+      sat: "Sam",
+      sun: "Dim",
+    },
+    intervalHours: "Toutes les (heures)",
+    intervalStart: "À partir de (24h)",
+    next: {
+      label: "Prochain redémarrage : {{when}}",
+      intervalLabel: "Prochain redémarrage : {{when}} ({{times}})",
+      none: "Aucun redémarrage prévu",
+      today: "aujourd'hui à {{time}}",
+      tomorrow: "demain à {{time}}",
+      other: "{{day}} à {{time}}",
+    },
+    warnings: {
+      label: "Annonces avant l'arrêt (minutes)",
+      helper:
+        "Une annonce à chaque délai. Le monde est sauvegardé juste avant l'arrêt.",
+      none: "Aucune annonce : le serveur s'arrête sans prévenir.",
+      newDelay: "Minutes avant l'arrêt",
+      range: "Entre 1 et {{max}} minutes.",
+    },
     message: "Message d'annonce",
     messageHelper:
       "{minutes} sera remplacé par le délai. Vide : message par défaut, dans la langue de Nexum.",
@@ -126,6 +170,12 @@ export default {
     updateGame: "Mettre à jour le jeu au moment du redémarrage",
     updateGameHelper:
       "Si une mise à jour du serveur est disponible : arrêt, sauvegarde du monde, mise à jour avec SteamCMD, puis démarrage. Sans effet pour un serveur installé via la bibliothèque Steam.",
+    checkUpdates: "Vérifier les mises à jour pendant que le serveur tourne",
+    checkUpdatesHelper:
+      "Mise à jour trouvée : les joueurs sont prévenus, puis arrêt, sauvegarde, mise à jour et démarrage, sans attendre le prochain redémarrage. Sans effet pour un serveur installé via la bibliothèque Steam.",
+    checkEvery: "Vérifier toutes les",
+    hours: "{{count}} h",
+    updateWarning: "Prévenir (minutes avant)",
     save: "Enregistrer",
     notify: {
       saved: "Planification enregistrée",

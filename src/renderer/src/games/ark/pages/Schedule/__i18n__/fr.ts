@@ -5,5 +5,13 @@ export default {
     enableRcon: "Activer RCON",
     stopFirst: "Arrêtez le serveur pour l'activer.",
     rconEnabled: "RCON activé : il sera pris en compte au prochain démarrage.",
+    wildDinos: {
+      title: "Créatures sauvages",
+      afterStart: "Renouveler les créatures sauvages après chaque démarrage",
+      helper:
+        "Commande RCON DestroyWildDinos : les créatures sauvages disparaissent et réapparaissent selon les réglages actuels (utile après un changement de mods ou de niveaux). Les créatures apprivoisées ne sont pas touchées. Requiert RCON.",
+      repeat: "Et pendant que le serveur tourne, à intervalle régulier",
+      everyHours: "Toutes les (heures)",
+    },
   },
 };

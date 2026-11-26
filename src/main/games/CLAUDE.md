@@ -7,6 +7,7 @@ Ajouter un jeu : skill **`/new-game`** (procédure complète, tester un vrai ser
 - `ports.ts` : `GamePort` (`forward: true` = à rediriger sur la box, affiché dans la carte Rejoindre ; jamais RCON/REST) + `formatPortRange`.
 - `saveRequests.ts` : `SAVE_REQUESTS`, sauvegarde à chaud avant un backup (voir `src/main/backup/CLAUDE.md`).
 - `transferFiles.ts` : `GAME_TRANSFERS`, ce qu'emporte « déplacer un serveur » (fichiers de config du jeu, filtre du monde, mods) ; voir `src/main/transfer/CLAUDE.md`.
+- `afterStart.ts` : `AFTER_START`, tâche après un démarrage réussi (ARK : créatures sauvages, voir `src/main/scheduler/CLAUDE.md`).
 - Autres `Record<GameType, …>` hors de ce dossier : `STEAM_APP_IDS` (`src/main/steamcmd/SteamCMD.ts`, exporté), `PROCESS_NAME_PREFIXES` (`src/main/servers/ServerManagerRegistry.ts`), `DEFAULT_INSTALL_PATHS` (`useInstall.ts`, renderer). `yarn typecheck` les liste tous quand `GameType` change.
 - Installation / mise à jour SteamCMD : un seul IPC pour tous les jeux, `steamcmd:installGame(gameType, path)` / `steamcmd:updateGame()` (serveur actif) → `STEAM_APP_IDS[gameType]`. Renderer : `services/steamService.ts`. Jamais un canal par jeu.
 - Arguments de lancement : chaque jeu a sa config dans `ServerConfig` (`launchArgs` Palworld, `valheimConfig`, `astroneerConfig`, `dragonwildsConfig`, `enshroudedConfig`, `arkConfig`). IPC `server:getLaunchArgs` / `server:setLaunchArgs` ; la section « Arguments de lancement » de la page Installation n'existe que pour Palworld (les autres passent par leur page Config).

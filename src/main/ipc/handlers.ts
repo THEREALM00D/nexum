@@ -12,7 +12,10 @@ import {
   defaultBackupDirForServer,
 } from "../backup/defaultBackupDir";
 import { RestartScheduler } from "../scheduler/RestartScheduler";
-import { BackupScheduler } from "../scheduler/BackupScheduler";
+import {
+  createIntervalSchedulers,
+  startSchedulers,
+} from "../scheduler/startSchedulers";
 import { PalworldApiClient } from "../games/palworld/PalworldApiClient";
 import { OdinEyeApiClient } from "../games/valheim/OdinEyeApiClient";
 import { ServerRegistry } from "../servers/ServerRegistry";
@@ -60,11 +63,8 @@ import { readRconSettings } from "../games/ark/gameUserSettingsIni";
 import { getGameStopConfig } from "../games/registry";
 import { autoStartServers } from "../server/startServer";
 import { registerCrashRestart } from "../server/crashRestart";
-import { runScheduledRestart } from "../scheduler/scheduledRestart";
-import { backupServer } from "../backup/serverBackup";
-import { AppError, appErrorLogText } from "../utils/appError";
+import { AppError } from "../utils/appError";
 import { sendToRenderer } from "./rendererEvents";
-import { lt, managerLine } from "../i18n/logStrings";
 
 export async function registerIpcHandlers(): Promise<IpcContext> {
   // electron-store est en ESM pur depuis la v9 (plus de build CommonJS) —
@@ -196,7 +196,7 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
   const firewall = new FirewallManager();
   const backup = new BackupManager();
   const restartScheduler = new RestartScheduler();
-  const backupScheduler = new BackupScheduler();
+  const intervalSchedulers = createIntervalSchedulers();
   const playerHistories = new PlayerHistoryRegistry(
     app.getPath("userData"),
     servers,
@@ -237,47 +237,6 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
       getServerConfig(server?.id),
     );
   };
-
-  // Sauvegarde automatique de chaque serveur lancé, à son intervalle (voir
-  // BackupScheduler). Avant : un seul minuteur, sur le serveur actif.
-  const isRunning = (id: string) =>
-    serverManagers
-      .entries()
-      .find((e) => e.serverId === id)
-      ?.manager.getStatus() === "running";
-  const getBackupSchedules = () =>
-    servers.list().map((s) => ({
-      serverId: s.id,
-      intervalMinutes: serverConfigs.get(s.id).backup.backupIntervalMinutes,
-      running: isRunning(s.id),
-    }));
-  backupScheduler.start(getBackupSchedules, async (serverId) => {
-    // Arrêté pendant l'attente dans la file : rien à faire.
-    if (!isRunning(serverId)) return;
-    // Un échec était avalé sans trace : il va dans les logs du serveur.
-    try {
-      await backupServer(ctx, serverId);
-    } catch (e) {
-      serverManagers
-        .getOrCreate(serverId)
-        .log(
-          managerLine(
-            lt().autoBackupFailed(appErrorLogText((e as Error).message)),
-          ),
-        );
-    }
-  });
-
-  // Redémarrage quotidien de chaque serveur, à son heure (mise à jour du jeu
-  // comprise si l'option est cochée).
-  const getRestartSchedules = () =>
-    servers.list().map((s) => ({
-      serverId: s.id,
-      config: serverConfigs.get(s.id).restart,
-    }));
-  restartScheduler.start(getRestartSchedules, (serverId) =>
-    runScheduledRestart(ctx, serverId),
-  );
 
   // Tracker d'historique : démarre par serveur quand son API de suivi joueurs
   // est dispo (REST Palworld, plugin Odin-Eye pour Valheim, RCON pour ARK ;
@@ -411,6 +370,7 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
   // pas relancer un serveur déjà en cours (voir server/startServer.ts).
   adoption.then(() => autoStartServers(ctx, broadcastLog)).catch(() => {});
   registerCrashRestart(ctx);
+  startSchedulers(ctx, intervalSchedulers);
 
   registerMiscHandlers(ctx);
   registerLogsHandlers(ctx);

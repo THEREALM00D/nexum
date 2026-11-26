@@ -3,13 +3,14 @@ import type Store from "electron-store";
 import type {
   BackupConfig,
   LaunchArgsConfig,
-  RestartConfig,
   ServerConfig,
   AstroneerLaunchConfig,
   DragonwildsLaunchConfig,
   EnshroudedLaunchConfig,
 } from "../../shared/types";
 import type { AppStore } from "../ipc/context";
+import { DEFAULT_RESTART } from "../../shared/restartSchedule";
+import { withRestartDefaults } from "./restartDefaults";
 import {
   DEFAULT_VALHEIM_CONFIG,
   storedValheimConfig,
@@ -47,27 +48,6 @@ const DEFAULT_BACKUP: BackupConfig = {
   backupIntervalMinutes: 0,
   backupBeforeUpdate: true,
 };
-
-// Message d'annonce vide = message par défaut dans la langue de Nexum au
-// moment de l'envoi (`restartAnnounceDefault`, main/i18n/logStrings.ts).
-const DEFAULT_RESTART: RestartConfig = {
-  enabled: false,
-  time: "04:00",
-  warningMinutes: 5,
-  message: "",
-  updateGame: false,
-};
-
-// Ancien message par défaut, enregistré en français dans la config de chaque
-// serveur jusqu'à la 0.20 : relu comme « message par défaut » (vide).
-const LEGACY_RESTART_MESSAGE =
-  "Le serveur va redémarrer dans {minutes} minutes";
-
-function withRestartDefaults(stored?: Partial<RestartConfig>): RestartConfig {
-  const restart = { ...DEFAULT_RESTART, ...stored };
-  if (restart.message === LEGACY_RESTART_MESSAGE) restart.message = "";
-  return restart;
-}
 
 export const DEFAULT_SERVER_CONFIG: ServerConfig = {
   launchArgs: DEFAULT_LAUNCH_ARGS,
@@ -131,7 +111,7 @@ export class ServerConfigStore {
       },
       arkConfig: { ...current.arkConfig, ...patch.arkConfig },
       backup: { ...current.backup, ...patch.backup },
-      restart: { ...current.restart, ...patch.restart },
+      restart: withRestartDefaults(patch.restart, current.restart),
     };
     const all = this.store.get(
       "serversConfig",
@@ -196,10 +176,7 @@ export class ServerConfigStore {
         backupIntervalMinutes: this.store.get("backupIntervalMinutes", 0),
         backupBeforeUpdate: DEFAULT_BACKUP.backupBeforeUpdate,
       },
-      restart: {
-        ...DEFAULT_RESTART,
-        ...this.store.get("restartSchedule", DEFAULT_RESTART),
-      },
+      restart: withRestartDefaults(this.store.get("restartSchedule")),
     };
     this.store.set("serversConfig", { ...all, [firstServerId]: legacy });
   }

@@ -1,6 +1,6 @@
-export interface BackupSchedule {
+export interface IntervalSchedule {
   serverId: string;
-  /** 0 = sauvegarde automatique désactivée pour ce serveur. */
+  /** 0 = tâche désactivée pour ce serveur. */
   intervalMinutes: number;
   running: boolean;
 }
@@ -8,27 +8,25 @@ export interface BackupSchedule {
 const TICK_MS = 30 * 1000;
 
 /**
- * Sauvegarde automatique de chaque serveur lancé, à son propre intervalle.
- * Avant, un seul minuteur (intervalle du serveur actif) sauvegardait le
- * serveur sélectionné dans l'interface au moment du déclenchement : les
- * autres serveurs lancés n'avaient jamais de sauvegarde automatique.
+ * Tâche répétée pour chaque serveur lancé, à son propre intervalle
+ * (sauvegarde auto, vérification des mises à jour, créatures sauvages d'ARK).
  *
  * L'intervalle compte depuis le démarrage du serveur (1er tick où il est vu
  * lancé, adoption comprise) et repart de zéro à l'arrêt. La config est relue
  * à chaque tick : un changement d'intervalle s'applique sans rien réarmer.
- * Les sauvegardes dues passent l'une après l'autre (ZIP en compression
- * maximale : plusieurs en parallèle feraient ramer les serveurs).
+ * Les tâches dues passent l'une après l'autre (ZIP en compression maximale,
+ * SteamCMD : plusieurs en parallèle feraient ramer les serveurs).
  */
-export class BackupScheduler {
+export class IntervalScheduler {
   private timer: NodeJS.Timeout | null = null;
-  /** Début du décompte (démarrage ou dernière sauvegarde auto) par serveur. */
+  /** Début du décompte (démarrage ou dernière exécution) par serveur. */
   private lastRun = new Map<string, number>();
   private queue: string[] = [];
   private busy = false;
 
   start(
-    getSchedules: () => BackupSchedule[],
-    onBackup: (serverId: string) => Promise<void>,
+    getSchedules: () => IntervalSchedule[],
+    onRun: (serverId: string) => Promise<void>,
   ): void {
     this.stop();
     this.timer = setInterval(() => {
@@ -48,25 +46,29 @@ export class BackupScheduler {
         }
       }
       // Arrêté, supprimé ou désactivé : le décompte repartira de zéro.
-      for (const id of [...this.lastRun.keys()]) {
-        if (!active.has(id)) this.lastRun.delete(id);
+      for (const serverId of [...this.lastRun.keys()]) {
+        if (!active.has(serverId)) this.lastRun.delete(serverId);
       }
-      this.queue = this.queue.filter((id) => active.has(id));
-      void this.drain(onBackup);
+      this.queue = this.queue.filter((serverId) => active.has(serverId));
+      void this.drain(onRun);
     }, TICK_MS);
   }
 
-  /** Lance les sauvegardes en attente, une seule à la fois. */
+  /** Lance les tâches en attente, une seule à la fois. */
   private async drain(
-    onBackup: (serverId: string) => Promise<void>,
+    onRun: (serverId: string) => Promise<void>,
   ): Promise<void> {
     if (this.busy) return;
     this.busy = true;
     try {
-      for (let id = this.queue.shift(); id; id = this.queue.shift()) {
-        // Décompte relancé au départ de la sauvegarde, pas à sa fin.
-        if (this.lastRun.has(id)) this.lastRun.set(id, Date.now());
-        await onBackup(id).catch(() => {});
+      for (
+        let serverId = this.queue.shift();
+        serverId;
+        serverId = this.queue.shift()
+      ) {
+        // Décompte relancé au départ de la tâche, pas à sa fin.
+        if (this.lastRun.has(serverId)) this.lastRun.set(serverId, Date.now());
+        await onRun(serverId).catch(() => {});
       }
     } finally {
       this.busy = false;

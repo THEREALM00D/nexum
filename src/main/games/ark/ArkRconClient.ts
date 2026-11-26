@@ -77,6 +77,14 @@ export class ArkRconClient {
     await this.run("DoExit");
   }
 
+  /**
+   * Supprime les créatures sauvages, qui réapparaissent selon les réglages
+   * actuels (niveaux, mods). Les créatures apprivoisées ne sont pas touchées.
+   */
+  async destroyWildDinos(): Promise<void> {
+    await this.run("DestroyWildDinos");
+  }
+
   async getPlayers(): Promise<{ players: ArkPlayer[] }> {
     return { players: parseListPlayers(await this.run("ListPlayers")) };
   }

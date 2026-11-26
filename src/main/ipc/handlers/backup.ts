@@ -13,7 +13,7 @@ export function registerBackupHandlers(ctx: IpcContext): void {
   });
 
   ipcMain.handle("backup:setConfig", (_, config: BackupConfig) => {
-    // Relu à chaque tick par BackupScheduler : rien à réarmer. getConfig
+    // Relu à chaque tick par le planificateur des sauvegardes : rien à réarmer. getConfig
     // renvoie le dossier effectif : le défaut n'est jamais enregistré.
     const serverId = ctx.getActiveServer()?.id;
     const userDataPath = ctx.app.getPath("userData");

@@ -110,9 +110,35 @@ const FR = {
 
   // Redémarrage planifié
   // Annonce envoyée aux joueurs (pas une ligne de log) quand le message du
-  // redémarrage planifié est vide. Même texte en placeholder côté renderer
-  // (`schedule.messageDefault`).
-  restartAnnounceDefault: "Le serveur va redémarrer dans {minutes} minutes",
+  // redémarrage planifié est vide. Même texte, avec {minutes}, en
+  // placeholder côté renderer (`schedule.messageDefault`).
+  restartAnnounce: (minutes: number) =>
+    minutes === 1
+      ? "Le serveur va redémarrer dans 1 minute"
+      : `Le serveur va redémarrer dans ${minutes} minutes`,
+  // Idem quand une mise à jour du jeu est trouvée pendant que le serveur tourne.
+  updateAnnounce: (minutes: number) =>
+    minutes === 1
+      ? "Mise à jour du jeu : le serveur va redémarrer dans 1 minute"
+      : `Mise à jour du jeu : le serveur va redémarrer dans ${minutes} minutes`,
+  restartCountdownStarted: (time: string) =>
+    `Redémarrage planifié à ${time} : annonces aux joueurs en cours.`,
+  restartCancelled:
+    "Redémarrage planifié annulé : le serveur a été arrêté ou relancé entre-temps, ou la planification a changé.",
+  updateCountdownStarted: (time: string) =>
+    `Mise à jour du jeu : redémarrage à ${time}, annonces aux joueurs en cours.`,
+  updateRestartCancelled:
+    "Redémarrage pour la mise à jour annulé : le serveur a été arrêté ou relancé entre-temps, ou la vérification a été désactivée.",
+  updateRetryPaused: (build: string) =>
+    `La mise à jour vers le build ${build} a échoué : pas de nouvel essai automatique pendant que le serveur tourne (il reprendra pour un build plus récent, au redémarrage planifié si « Mettre à jour le jeu au moment du redémarrage » est coché, ou au prochain lancement de Nexum).`,
+  updateFoundWhileRunning: (from: string, to: string, minutes: number) =>
+    `Mise à jour du jeu disponible (build ${from} → ${to}) : redémarrage dans ${minutes} min.`,
+  wildDinosDone:
+    "Créatures sauvages renouvelées (DestroyWildDinos) : elles réapparaissent selon les réglages actuels.",
+  wildDinosFailed: (reason: string) =>
+    `Renouvellement des créatures sauvages impossible : ${reason}`,
+  wildDinosNoRcon:
+    "Renouvellement des créatures sauvages ignoré : RCON est désactivé.",
   // Nom d'un serveur Valheim tant que l'utilisateur n'en a pas choisi
   // (`ServerConfigStore`), visible dans la liste des serveurs du jeu.
   valheimDefaultServerName: "Serveur Valheim - hébergé par Nexum",
@@ -243,7 +269,30 @@ const EN: typeof FR = {
   backupRconHint:
     "Enable RCON (Config page) so Nexum makes the server save right before.",
 
-  restartAnnounceDefault: "The server will restart in {minutes} minutes",
+  restartAnnounce: (minutes) =>
+    minutes === 1
+      ? "The server will restart in 1 minute"
+      : `The server will restart in ${minutes} minutes`,
+  updateAnnounce: (minutes) =>
+    minutes === 1
+      ? "Game update: the server will restart in 1 minute"
+      : `Game update: the server will restart in ${minutes} minutes`,
+  restartCountdownStarted: (time) =>
+    `Scheduled restart at ${time}: warning players.`,
+  restartCancelled:
+    "Scheduled restart cancelled: the server was stopped or restarted in the meantime, or the schedule changed.",
+  updateCountdownStarted: (time) =>
+    `Game update: restart at ${time}, warning players.`,
+  updateRestartCancelled:
+    "Restart for the update cancelled: the server was stopped or restarted in the meantime, or the check was turned off.",
+  updateRetryPaused: (build) =>
+    `The update to build ${build} failed: no new automatic attempt while the server runs (it resumes for a newer build, at the scheduled restart if "Update the game at restart time" is on, or the next time Nexum starts).`,
+  updateFoundWhileRunning: (from, to, minutes) =>
+    `Game update available (build ${from} → ${to}): restarting in ${minutes} min.`,
+  wildDinosDone:
+    "Wild creatures renewed (DestroyWildDinos): they respawn with the current settings.",
+  wildDinosFailed: (reason) => `Couldn't renew the wild creatures: ${reason}`,
+  wildDinosNoRcon: "Wild creatures not renewed: RCON is disabled.",
   valheimDefaultServerName: "Valheim Server - hosted by Nexum",
   autoUpdateSkippedSteam:
     "Automatic update skipped: the server was installed through the Steam library, Steam updates it.",
