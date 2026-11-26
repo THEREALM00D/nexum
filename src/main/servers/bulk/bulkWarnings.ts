@@ -13,6 +13,8 @@ import { canAnnounce, runCountdown } from "../../scheduler/restartCountdown";
 export async function warnPlayers(
   ctx: IpcContext,
   run: BulkRun,
+  /** Faux après « Arrêter après » : comptes à rebours annulés tout de suite. */
+  stillWanted: () => boolean,
   onChange: () => void,
 ): Promise<Map<string, StopConfig | null>> {
   const configs = new Map<string, StopConfig | null>();
@@ -31,7 +33,7 @@ export async function warnPlayers(
         stopAt: Date.now() + (warnings[0] ?? 0) * 60_000,
         warnings,
         kind: "restart",
-        stillWanted: () => true,
+        stillWanted,
       });
       configs.set(step.serverId, stopConfig);
     }),

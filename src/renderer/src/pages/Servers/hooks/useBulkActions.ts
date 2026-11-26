@@ -78,12 +78,15 @@ export function useBulkActions() {
     return launch(action, false);
   };
 
+  /** Bilan vu : l'action terminée est oubliée (main compris). */
+  const dismiss = () => {
+    window.api.bulk.dismiss().catch(() => {});
+    setRun(null);
+  };
+
   const closeDialog = () => {
     setDialogOpen(false);
-    if (run?.finished) {
-      window.api.bulk.dismiss().catch(() => {});
-      setRun(null);
-    }
+    if (run?.finished) dismiss();
   };
 
   const stopAfterCurrent = () => {
@@ -110,6 +113,7 @@ export function useBulkActions() {
     dialogOpen,
     openDialog: () => setDialogOpen(true),
     closeDialog,
+    dismiss,
     confirmation,
     cancelConfirmation: () => setConfirmation(null),
     request,

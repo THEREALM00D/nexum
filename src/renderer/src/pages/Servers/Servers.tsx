@@ -93,12 +93,14 @@ export default function Servers({ onOpenSetup }: { onOpenSetup: () => void }) {
         }
       />
 
-      {bulk.run && bulk.busy && !bulk.dialogOpen && (
+      {bulk.run && !bulk.dialogOpen && (
+        // Reste après la fin : le bilan (un échec) ne doit pas passer inaperçu.
         <BulkProgressBanner
           run={bulk.run}
           servers={state.servers}
           onStopAfterCurrent={bulk.stopAfterCurrent}
           onShowDetails={bulk.openDialog}
+          onDismiss={bulk.dismiss}
         />
       )}
 
@@ -149,7 +151,7 @@ export default function Servers({ onOpenSetup }: { onOpenSetup: () => void }) {
       <BulkConfirmDialog
         confirmation={bulk.confirmation}
         servers={state.servers}
-        runningCount={bulk.counts.running}
+        counts={bulk.counts}
         onCancel={bulk.cancelConfirmation}
         onConfirm={bulk.launch}
       />

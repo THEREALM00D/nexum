@@ -10,7 +10,10 @@ import type { BulkRun, Server } from "@shared/types";
 import {
   currentStep,
   finishedSteps,
+  serverName,
   useBulkStepText,
+  useBulkSummary,
+  useStopAfterLabel,
 } from "../hooks/useBulkStepText";
 
 interface Props {
@@ -18,23 +21,29 @@ interface Props {
   servers: Server[];
   onStopAfterCurrent: () => void;
   onShowDetails: () => void;
+  /** Action terminée : le bandeau reste jusqu'à ce qu'on le masque. */
+  onDismiss: () => void;
 }
 
-/** Action groupée en cours, fenêtre de progression fermée. */
+/**
+ * Action groupée, fenêtre de progression fermée : son avancée, puis son
+ * bilan une fois terminée (sinon un échec passait inaperçu).
+ */
 export default function BulkProgressBanner({
   run,
   servers,
   onStopAfterCurrent,
   onShowDetails,
+  onDismiss,
 }: Props) {
   const { t } = useTranslation();
   const stepText = useBulkStepText();
+  const summary = useBulkSummary();
+  const stopAfterLabel = useStopAfterLabel();
   const total = run.steps.length;
-  const finished = finishedSteps(run);
-  const current = currentStep(run);
-  const currentName = current
-    ? (servers.find((server) => server.id === current.serverId)?.name ?? "")
-    : "";
+  const current = run.finished ? null : currentStep(run);
+  const stopLabel = stopAfterLabel(run, servers);
+  const failed = run.steps.some((step) => step.state === "failed");
 
   return (
     <Paper
@@ -46,6 +55,7 @@ export default function BulkProgressBanner({
         alignItems: "center",
         gap: 2,
         flexWrap: "wrap",
+        borderColor: failed ? "error.main" : undefined,
       }}
     >
       <Stack spacing={0.75} sx={{ flex: "1 1 280px", minWidth: 0 }}>
@@ -57,31 +67,30 @@ export default function BulkProgressBanner({
             sx={{ color: "text.secondary" }}
           >
             {" · "}
-            {t("servers.bulk.progress.current", {
-              current: Math.min(finished + 1, total),
-              total,
-            })}
-            {current && ` · ${currentName} · ${stepText(current)}`}
+            {summary(run)}
+            {current &&
+              ` · ${serverName(servers, current.serverId)} · ${stepText(current)}`}
           </Typography>
         </Typography>
         <LinearProgress
           variant="determinate"
-          value={total === 0 ? 100 : (finished / total) * 100}
+          color={failed ? "error" : "primary"}
+          value={total === 0 ? 100 : (finishedSteps(run) / total) * 100}
         />
       </Stack>
-      {current && (
+      {stopLabel && (
         <Button onClick={onStopAfterCurrent} disabled={run.stopAfterCurrent}>
-          {t(
-            run.stopAfterCurrent
-              ? "servers.bulk.progress.stopAfterRequested"
-              : "servers.bulk.progress.stopAfter",
-            { name: currentName },
-          )}
+          {stopLabel}
         </Button>
       )}
       <Button variant="outlined" onClick={onShowDetails}>
         {t("servers.bulk.progress.showDetails")}
       </Button>
+      {run.finished && (
+        <Button onClick={onDismiss}>
+          {t("servers.bulk.progress.dismiss")}
+        </Button>
+      )}
     </Paper>
   );
 }

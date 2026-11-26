@@ -24,7 +24,7 @@ Le menu **Tous les serveurs ▾** agit sur tous les serveurs d'un coup. Le nombr
 | **Démarrer tous les serveurs**                | arrêtés (ou plantés) | Les démarre, à 5 secondes d'intervalle                                                                  |
 | **Redémarrer les serveurs en ligne**          | en ligne             | Arrête puis démarre chacun                                                                              |
 | **Arrêter tous les serveurs**                 | en ligne             | Les arrête, en sauvegardant le monde quand le jeu le permet                                             |
-| **Mettre à jour les serveurs arrêtés**        | arrêtés              | Interroge Steam, puis sauvegarde le monde et met à jour avec SteamCMD ; ils restent arrêtés             |
+| **Mettre à jour les serveurs arrêtés**        | arrêtés (ou plantés) | Interroge Steam, puis sauvegarde le monde et met à jour avec SteamCMD ; ils restent arrêtés             |
 | **Arrêter, mettre à jour et redémarrer tout** | en ligne et arrêtés  | Serveurs en ligne : arrêt, mise à jour s'il y en a une, démarrage. Serveurs arrêtés : mise à jour seule |
 
 Les serveurs sont traités **l'un après l'autre**, chacun avec ses propres réglages : la [sauvegarde avant chaque mise à jour](backups.fr.md#sauvegarde-avant-chaque-mise-à-jour) et l'annonce aux joueurs de sa page [Planification](scheduling.fr.md). L'échec d'un serveur n'arrête pas les autres.
@@ -43,8 +43,10 @@ Quand personne n'est connecté, il n'y a ni confirmation ni annonce.
 
 Une fenêtre affiche une ligne par serveur : en attente, en cours (étape en cours, avec le pourcentage de SteamCMD pendant une mise à jour), terminé, ou en échec avec **Voir les logs** (le serveur devient le serveur actif et la page Logs s'ouvre).
 
-- **Fermer** : l'action continue. Une barre au-dessus de la liste en donne l'avancée ; **Voir le détail** rouvre la fenêtre.
-- **Arrêter après _nom_** : le serveur en cours se termine, les suivants sont passés.
+- **Fermer** : l'action continue. Une barre au-dessus de la liste en donne l'avancée, puis le bilan une fois terminée (elle reste jusqu'à **Masquer**, pour qu'un échec ne passe pas inaperçu) ; **Voir le détail** rouvre la fenêtre.
+- **Arrêter après _nom_** : le serveur en cours se termine, les suivants sont passés. Pendant les annonces, le bouton devient **Annuler les annonces et l'action** : les comptes à rebours s'arrêtent aussitôt et aucun serveur n'est arrêté.
 - Le menu **Tous les serveurs** reste grisé jusqu'à la fin de l'action. Un serveur occupé par un redémarrage planifié est passé.
 
-Chaque serveur concerné reçoit une ligne dans ses logs (« Action sur tous les serveurs : … »).
+Les logs de chaque serveur disent quelle action l'a traité (« Action sur tous les serveurs : … »), avec le compte rendu de la mise à jour ou la cause d'un échec, dans une courte session à part quand le serveur reste arrêté.
+
+Quitter Nexum pendant une action : plus aucun serveur n'est démarré ni relancé. Si une mise à jour est en cours, Nexum demande s'il faut l'attendre (quitter interromprait SteamCMD).

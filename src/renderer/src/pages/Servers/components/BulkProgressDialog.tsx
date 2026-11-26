@@ -12,9 +12,11 @@ import { useTranslation } from "react-i18next";
 import type { BulkRun, Server } from "@shared/types";
 import BulkProgressRow from "./BulkProgressRow";
 import {
-  currentStep,
   finishedSteps,
+  serverName,
   useBulkStepText,
+  useBulkSummary,
+  useStopAfterLabel,
 } from "../hooks/useBulkStepText";
 
 interface Props {
@@ -40,26 +42,12 @@ export default function BulkProgressDialog({
 }: Props) {
   const { t } = useTranslation();
   const stepText = useBulkStepText();
+  const summary = useBulkSummary();
+  const stopAfterLabel = useStopAfterLabel();
   if (!run) return null;
 
-  const nameOf = (serverId: string) =>
-    servers.find((server) => server.id === serverId)?.name ?? serverId;
   const total = run.steps.length;
-  const finished = finishedSteps(run);
-  const current = currentStep(run);
-  const failed = run.steps.filter((step) => step.state === "failed").length;
-  const succeeded = run.steps.filter((step) => step.state === "done").length;
-  const summary = run.finished
-    ? [
-        t("servers.bulk.progress.finished", { succeeded, total }),
-        failed > 0 ? t("servers.bulk.progress.failed", { count: failed }) : "",
-      ]
-        .filter(Boolean)
-        .join(" ")
-    : t("servers.bulk.progress.current", {
-        current: Math.min(finished + 1, total),
-        total,
-      });
+  const stopLabel = stopAfterLabel(run, servers);
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
@@ -68,18 +56,18 @@ export default function BulkProgressDialog({
       </DialogTitle>
       <DialogContent>
         <Typography variant="body2" sx={{ color: "text.secondary", mb: 1.5 }}>
-          {summary}
+          {summary(run)}
         </Typography>
         <LinearProgress
           variant="determinate"
-          value={total === 0 ? 100 : (finished / total) * 100}
+          value={total === 0 ? 100 : (finishedSteps(run) / total) * 100}
         />
         <Stack sx={{ mt: 1 }}>
           {run.steps.map((step) => (
             <BulkProgressRow
               key={step.serverId}
               step={step}
-              name={nameOf(step.serverId)}
+              name={serverName(servers, step.serverId)}
               detail={stepText(step)}
               onViewLogs={() => onViewLogs(step.serverId)}
             />
@@ -95,14 +83,9 @@ export default function BulkProgressDialog({
             {t("servers.bulk.progress.closeHint")}
           </Typography>
         )}
-        {!run.finished && current && (
+        {stopLabel && (
           <Button onClick={onStopAfterCurrent} disabled={run.stopAfterCurrent}>
-            {t(
-              run.stopAfterCurrent
-                ? "servers.bulk.progress.stopAfterRequested"
-                : "servers.bulk.progress.stopAfter",
-              { name: nameOf(current.serverId) },
-            )}
+            {stopLabel}
           </Button>
         )}
         <Button variant="contained" onClick={onClose}>

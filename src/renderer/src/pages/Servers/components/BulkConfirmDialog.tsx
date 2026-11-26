@@ -14,12 +14,13 @@ import { useTranslation } from "react-i18next";
 import type { BulkAction, Server } from "@shared/types";
 import CheckboxField from "../../../components/common/CheckboxField";
 import type { BulkConfirmation } from "../hooks/useBulkActions";
+import { serverName } from "../hooks/useBulkStepText";
 
 interface Props {
   confirmation: BulkConfirmation | null;
   servers: Server[];
-  /** Serveurs lancés : nombre affiché si les joueurs n'ont pas pu être lus. */
-  runningCount: number;
+  /** Serveurs arrêtés et lancés (titre ; joueurs illisibles). */
+  counts: { down: number; running: number };
   onCancel: () => void;
   onConfirm: (action: BulkAction, warnPlayers: boolean) => void;
 }
@@ -31,28 +32,39 @@ interface Props {
 export default function BulkConfirmDialog({
   confirmation,
   servers,
-  runningCount,
+  counts,
   onCancel,
   onConfirm,
 }: Props) {
   const { t } = useTranslation();
   const [warnPlayers, setWarnPlayers] = useState(true);
+  // Dernière confirmation affichée : le contenu ne change pas pendant le
+  // fondu de fermeture (confirmation déjà remise à null).
+  const [shown, setShown] = useState<BulkConfirmation | null>(null);
 
   useEffect(() => {
-    if (confirmation) setWarnPlayers(true);
+    if (!confirmation) return;
+    setShown(confirmation);
+    setWarnPlayers(true);
   }, [confirmation]);
 
-  const players = confirmation?.players ?? [];
-  const total = players.reduce((sum, entry) => sum + (entry.count ?? 0), 0);
-  const count = players.length || runningCount;
-  const nameOf = (serverId: string) =>
-    servers.find((server) => server.id === serverId)?.name ?? serverId;
+  const players = shown?.players ?? [];
+  const playerTotal = players.reduce(
+    (sum, entry) => sum + (entry.count ?? 0),
+    0,
+  );
+  const action = shown?.action ?? "stopAll";
+  const stoppedCount = players.length || counts.running;
+  // « Arrêter, mettre à jour et redémarrer tout » vise aussi les arrêtés.
+  const targetCount =
+    action === "stopUpdateRestartAll"
+      ? counts.running + counts.down
+      : stoppedCount;
   const playersText = (playerCount: number | null) => {
     if (playerCount === null) return t("servers.bulk.confirm.unknownPlayers");
     if (playerCount === 0) return t("servers.bulk.confirm.noPlayers");
     return t("servers.bulk.confirm.players", { count: playerCount });
   };
-  const action = confirmation?.action ?? "stopAll";
 
   return (
     <Dialog
@@ -62,13 +74,15 @@ export default function BulkConfirmDialog({
       fullWidth
     >
       <DialogTitle>
-        {t(`servers.bulk.confirm.title.${action}`, { count })}
+        {t(`servers.bulk.confirm.title.${action}`, {
+          count: Math.max(targetCount, stoppedCount),
+        })}
       </DialogTitle>
       <DialogContent>
         <Stack spacing={2}>
-          {total > 0 && (
+          {playerTotal > 0 && (
             <Alert severity="warning">
-              {t("servers.bulk.confirm.playersOnline", { count: total })}
+              {t("servers.bulk.confirm.playersOnline", { count: playerTotal })}
             </Alert>
           )}
           <Stack spacing={0.5}>
@@ -81,7 +95,7 @@ export default function BulkConfirmDialog({
                 sx={{ justifyContent: "space-between", flexWrap: "wrap" }}
               >
                 <Typography variant="body2">
-                  {nameOf(entry.serverId)}
+                  {serverName(servers, entry.serverId)}
                 </Typography>
                 <Typography variant="body2" sx={{ color: "text.secondary" }}>
                   {playersText(entry.count)}
@@ -105,9 +119,7 @@ export default function BulkConfirmDialog({
           startIcon={<StopIcon />}
           onClick={() => onConfirm(action, warnPlayers)}
         >
-          {t(`servers.bulk.confirm.button.${action}`, {
-            count,
-          })}
+          {t(`servers.bulk.confirm.button.${action}`, { count: stoppedCount })}
         </Button>
       </DialogActions>
     </Dialog>

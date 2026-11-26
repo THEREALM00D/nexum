@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useId, useState, type ReactNode } from "react";
 import {
   Button,
   Divider,
@@ -38,6 +38,8 @@ interface Entry {
 export default function BulkActionsMenu({ counts, busy, onSelect }: Props) {
   const { t } = useTranslation();
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
+  const menuId = useId();
+  const captionId = useId();
   const stoppedHint = t("servers.bulk.stopped", { count: counts.down });
   const runningHint = t("servers.bulk.running", { count: counts.running });
 
@@ -79,6 +81,12 @@ export default function BulkActionsMenu({ counts, busy, onSelect }: Props) {
     <MenuItem
       key={action}
       disabled={count === 0}
+      // La légende sous les entrées de mise à jour les décrit (lue avec elles).
+      aria-describedby={
+        action === "updateStopped" || action === "stopUpdateRestartAll"
+          ? captionId
+          : undefined
+      }
       onClick={() => {
         setAnchor(null);
         onSelect(action);
@@ -104,11 +112,13 @@ export default function BulkActionsMenu({ counts, busy, onSelect }: Props) {
         disabled={busy}
         aria-haspopup="menu"
         aria-expanded={anchor !== null}
+        aria-controls={anchor ? menuId : undefined}
         onClick={(event) => setAnchor(event.currentTarget)}
       >
         {t("servers.bulk.button")}
       </Button>
       <Menu
+        id={menuId}
         anchorEl={anchor}
         open={anchor !== null}
         onClose={() => setAnchor(null)}
@@ -118,10 +128,21 @@ export default function BulkActionsMenu({ counts, busy, onSelect }: Props) {
         {entries.map(renderEntry)}
         <Divider />
         {updateEntries.map(renderEntry)}
+        {/* Pas une entrée du menu : `li` de présentation (un `p` n'a pas sa
+            place dans la liste du menu). */}
         <Typography
+          id={captionId}
           variant="caption"
-          component="p"
-          sx={{ color: "text.secondary", px: 2, pl: 7, pb: 0.5, maxWidth: 360 }}
+          component="li"
+          role="presentation"
+          sx={{
+            display: "block",
+            color: "text.secondary",
+            px: 2,
+            pl: 7,
+            pb: 0.5,
+            maxWidth: 360,
+          }}
         >
           {t("servers.bulk.menuCaption")}
         </Typography>

@@ -134,6 +134,8 @@ const FR = {
     `La mise à jour vers le build ${build} a échoué : pas de nouvel essai automatique pendant que le serveur tourne (il reprendra pour un build plus récent, au redémarrage planifié si « Mettre à jour le jeu au moment du redémarrage » est coché, ou au prochain lancement de Nexum).`,
   updateFoundWhileRunning: (from: string, to: string, minutes: number) =>
     `Mise à jour du jeu disponible (build ${from} → ${to}) : redémarrage dans ${minutes} min.`,
+  bulkStepFailed: (reason: string) =>
+    `Échec de l'action sur tous les serveurs : ${reason}`,
   // Action groupée de la page Serveurs, dans la session de chaque serveur visé.
   bulkActionStarted: (action: BulkAction) =>
     `Action sur tous les serveurs : ${
@@ -301,6 +303,7 @@ const EN: typeof FR = {
     `The update to build ${build} failed: no new automatic attempt while the server runs (it resumes for a newer build, at the scheduled restart if "Update the game at restart time" is on, or the next time Nexum starts).`,
   updateFoundWhileRunning: (from, to, minutes) =>
     `Game update available (build ${from} → ${to}): restarting in ${minutes} min.`,
+  bulkStepFailed: (reason) => `Action on all servers failed: ${reason}`,
   bulkActionStarted: (action) =>
     `Action on all servers: ${
       {

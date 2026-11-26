@@ -1,7 +1,7 @@
 import type { IpcContext } from "../ipc/context";
 import { isSteamLibraryInstall, STEAM_APP_IDS } from "../steamcmd/SteamCMD";
 import { backupBeforeUpdate } from "../backup/serverBackup";
-import { appErrorLogText } from "../utils/appError";
+import { appError, appErrorLogText } from "../utils/appError";
 import { lt, managerLine } from "../i18n/logStrings";
 
 // Mise à jour du jeu d'un serveur donné (pas du serveur actif) : redémarrage
@@ -98,7 +98,12 @@ export async function updateStoppedServer(
   const server = ctx.servers
     .list()
     .find((candidate) => candidate.id === serverId);
-  if (!server) return { report, updated: false };
+  if (!server)
+    return {
+      report,
+      updated: false,
+      error: appError("SERVER_NOT_FOUND", { id: serverId }),
+    };
   const result = await ctx.steamcmd.installGame(
     server.gameType,
     server.path,

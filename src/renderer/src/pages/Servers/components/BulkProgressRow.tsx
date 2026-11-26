@@ -10,12 +10,15 @@ import type { BulkStep, BulkStepState } from "@shared/types";
 
 // Couleurs des statuts (`utils/status.ts`) : en cours orange, fait vert,
 // échec rouge, attente et passé neutres.
-const BADGES: Record<BulkStepState, { icon: SvgIconComponent; bg: string }> = {
-  waiting: { icon: MoreHorizIcon, bg: "action.selected" },
-  running: { icon: SyncIcon, bg: "warning.main" },
-  done: { icon: CheckIcon, bg: "success.main" },
-  failed: { icon: CloseIcon, bg: "error.main" },
-  skipped: { icon: SkipNextIcon, bg: "action.selected" },
+const BADGES: Record<
+  BulkStepState,
+  { icon: SvgIconComponent; background: string }
+> = {
+  waiting: { icon: MoreHorizIcon, background: "action.selected" },
+  running: { icon: SyncIcon, background: "warning.main" },
+  done: { icon: CheckIcon, background: "success.main" },
+  failed: { icon: CloseIcon, background: "error.main" },
+  skipped: { icon: SkipNextIcon, background: "action.selected" },
 };
 
 interface Props {
@@ -33,7 +36,7 @@ export default function BulkProgressRow({
   onViewLogs,
 }: Props) {
   const { t } = useTranslation();
-  const { icon: Icon, bg } = BADGES[step.state];
+  const { icon: Icon, background } = BADGES[step.state];
   const neutral = step.state === "waiting" || step.state === "skipped";
   const detailColor =
     step.state === "failed"
@@ -62,7 +65,7 @@ export default function BulkProgressRow({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          bgcolor: bg,
+          bgcolor: background,
           color: neutral ? "text.secondary" : "background.default",
         }}
       >
