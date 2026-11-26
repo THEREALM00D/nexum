@@ -15,6 +15,7 @@ Ce fichier ne contient que ce qui vaut partout. Le détail d'un domaine est dans
 | Main : services, IPC, textes et erreurs (`AppError`), identité, CSP            | `src/main/CLAUDE.md`                                  |
 | Démarrage / arrêt / relance, démarrage auto, vérif. de version, Rejoindre      | `src/main/server/CLAUDE.md`                           |
 | Serveur actif, adoption de processus, conflits de ports, import                | `src/main/servers/CLAUDE.md`                          |
+| Actions sur tous les serveurs (page Serveurs)                                  | `src/main/servers/bulk/CLAUDE.md`                     |
 | Logs (sessions, fichier suivi, lignes masquées, export anonymisé)              | `src/main/logs/CLAUDE.md`                             |
 | Sauvegardes (à chaud, auto, avant mise à jour)                                 | `src/main/backup/CLAUDE.md`                           |
 | Redémarrage planifié                                                           | `src/main/scheduler/CLAUDE.md`                        |

@@ -12,6 +12,8 @@ import type {
   ModInstallProgress,
   ModRegistry,
   RestartConfig,
+  BulkAction,
+  BulkRun,
   SelectFolderOptions,
   ServerArchiveImportChoice,
   SettingsImportChoice,
@@ -237,6 +239,21 @@ const api = {
     getRestart: () => ipcRenderer.invoke("schedule:getRestart"),
     setRestart: (cfg: RestartConfig) =>
       ipcRenderer.invoke("schedule:setRestart", cfg),
+  },
+  // Actions groupées (page Serveurs)
+  bulk: {
+    run: (action: BulkAction, warnPlayers: boolean) =>
+      ipcRenderer.invoke("bulk:run", action, warnPlayers),
+    get: () => ipcRenderer.invoke("bulk:get"),
+    stopAfterCurrent: () => ipcRenderer.invoke("bulk:stopAfterCurrent"),
+    dismiss: () => ipcRenderer.invoke("bulk:dismiss"),
+    onlinePlayers: () => ipcRenderer.invoke("bulk:onlinePlayers"),
+    onChange: (callback: (run: BulkRun) => void) => {
+      const listener = (_event: IpcRendererEvent, run: BulkRun) =>
+        callback(run);
+      ipcRenderer.on("servers:bulk:changed", listener);
+      return () => ipcRenderer.removeListener("servers:bulk:changed", listener);
+    },
   },
   // Shell
   shell: {

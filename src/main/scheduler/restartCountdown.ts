@@ -21,11 +21,25 @@ export interface Countdown {
   stillWanted: () => boolean;
 }
 
-/** Comptes à rebours en cours : un seul par serveur (planifié ou mise à jour). */
+/**
+ * Serveurs occupés : un seul compte à rebours ou une seule action à la fois
+ * par serveur (redémarrage planifié, mise à jour trouvée, action groupée).
+ */
 const pending = new Set<string>();
 
 export function isRestartPending(serverId: string): boolean {
   return pending.has(serverId);
+}
+
+/** Réserve le serveur ; faux s'il est déjà occupé. À libérer par `releaseRestartLock`. */
+export function acquireRestartLock(serverId: string): boolean {
+  if (pending.has(serverId)) return false;
+  pending.add(serverId);
+  return true;
+}
+
+export function releaseRestartLock(serverId: string): void {
+  pending.delete(serverId);
 }
 
 /** Exécute `run` si aucun compte à rebours n'est en cours pour ce serveur. */
@@ -33,13 +47,17 @@ export async function withRestartLock(
   serverId: string,
   run: () => Promise<void>,
 ): Promise<void> {
-  if (pending.has(serverId)) return;
-  pending.add(serverId);
+  if (!acquireRestartLock(serverId)) return;
   try {
     await run();
   } finally {
-    pending.delete(serverId);
+    releaseRestartLock(serverId);
   }
+}
+
+/** Le serveur peut-il prévenir ses joueurs (API REST, RCON) ? */
+export function canAnnounce(ctx: IpcContext, serverId: string): boolean {
+  return createGracefulShutdown(ctx.getStopConfig(serverId)) !== null;
 }
 
 /** Message vide : texte par défaut dans la langue de Nexum au moment de l'envoi. */

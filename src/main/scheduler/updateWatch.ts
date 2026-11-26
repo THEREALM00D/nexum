@@ -1,7 +1,8 @@
 import type { IpcContext } from "../ipc/context";
 import { warningsUpTo } from "../../shared/restartSchedule";
 import { lt, managerLine } from "../i18n/logStrings";
-import { findPendingUpdate, runScheduledRestart } from "./scheduledRestart";
+import { findPendingUpdate } from "../server/serverUpdate";
+import { runScheduledRestart } from "./scheduledRestart";
 import { isRestartPending } from "./restartCountdown";
 
 /**

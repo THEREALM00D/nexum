@@ -83,6 +83,7 @@ See [docs/installation.md](docs/installation.md) for the full guide.
 ## Documentation
 
 - [Installation](docs/installation.md)
+- [Servers](docs/servers.md)
 - [Dashboard](docs/dashboard.md)
 - [Server configuration](docs/configuration.md)
 - [Network & firewall](docs/network.md)

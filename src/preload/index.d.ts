@@ -6,6 +6,9 @@ import type {
   BackupEntry,
   BackupConfig,
   RestartConfig,
+  BulkAction,
+  BulkRun,
+  OnlinePlayers,
   FirewallRuleStatus,
   FirewallNamedRule,
   LaunchAtLoginState,
@@ -244,6 +247,14 @@ interface API {
   schedule: {
     getRestart: () => Promise<RestartConfig>;
     setRestart: (cfg: RestartConfig) => Promise<void>;
+  };
+  bulk: {
+    run: (action: BulkAction, warnPlayers: boolean) => Promise<BulkRun>;
+    get: () => Promise<BulkRun | null>;
+    stopAfterCurrent: () => Promise<void>;
+    dismiss: () => Promise<void>;
+    onlinePlayers: () => Promise<OnlinePlayers[]>;
+    onChange: (callback: (run: BulkRun) => void) => () => void;
   };
   shell: {
     openPath: (path: string) => Promise<void>;

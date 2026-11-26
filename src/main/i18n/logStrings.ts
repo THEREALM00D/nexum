@@ -1,5 +1,6 @@
 import { getLanguage } from "./language";
 import type { ConsoleSignal } from "../server/windowsCtrlC";
+import type { BulkAction } from "../../shared/types";
 
 // Textes écrits par le main dans les logs d'un serveur et dans le journal
 // d'installation, dans la langue de l'interface au moment où la ligne est
@@ -133,6 +134,17 @@ const FR = {
     `La mise à jour vers le build ${build} a échoué : pas de nouvel essai automatique pendant que le serveur tourne (il reprendra pour un build plus récent, au redémarrage planifié si « Mettre à jour le jeu au moment du redémarrage » est coché, ou au prochain lancement de Nexum).`,
   updateFoundWhileRunning: (from: string, to: string, minutes: number) =>
     `Mise à jour du jeu disponible (build ${from} → ${to}) : redémarrage dans ${minutes} min.`,
+  // Action groupée de la page Serveurs, dans la session de chaque serveur visé.
+  bulkActionStarted: (action: BulkAction) =>
+    `Action sur tous les serveurs : ${
+      {
+        startAll: "démarrer tous les serveurs",
+        restartRunning: "redémarrer les serveurs en ligne",
+        stopAll: "arrêter tous les serveurs",
+        updateStopped: "mettre à jour les serveurs arrêtés",
+        stopUpdateRestartAll: "arrêter, mettre à jour et redémarrer tout",
+      }[action]
+    }.`,
   wildDinosDone:
     "Créatures sauvages renouvelées (DestroyWildDinos) : elles réapparaissent selon les réglages actuels.",
   wildDinosFailed: (reason: string) =>
@@ -149,8 +161,8 @@ const FR = {
   gameUpToDateRestart: "Jeu à jour : simple redémarrage.",
   updateBackupFailed: (err: string) =>
     `Le serveur a redémarré sur la version installée, sans mise à jour : ${err}`,
-  updatedByScheduledRestart: (from: string, to: string) =>
-    `Jeu mis à jour par le redémarrage planifié (build ${from} → ${to}).`,
+  gameUpdated: (from: string, to: string) =>
+    `Jeu mis à jour (build ${from} → ${to}).`,
   updateFailed: (err: string) =>
     `Échec de la mise à jour du jeu, le serveur a redémarré sur la version installée : ${err}`,
   scheduledRestartWithUpdate: (from: string, to: string) =>
@@ -289,6 +301,16 @@ const EN: typeof FR = {
     `The update to build ${build} failed: no new automatic attempt while the server runs (it resumes for a newer build, at the scheduled restart if "Update the game at restart time" is on, or the next time Nexum starts).`,
   updateFoundWhileRunning: (from, to, minutes) =>
     `Game update available (build ${from} → ${to}): restarting in ${minutes} min.`,
+  bulkActionStarted: (action) =>
+    `Action on all servers: ${
+      {
+        startAll: "start all servers",
+        restartRunning: "restart running servers",
+        stopAll: "stop all servers",
+        updateStopped: "update stopped servers",
+        stopUpdateRestartAll: "stop, update and restart all",
+      }[action]
+    }.`,
   wildDinosDone:
     "Wild creatures renewed (DestroyWildDinos): they respawn with the current settings.",
   wildDinosFailed: (reason) => `Couldn't renew the wild creatures: ${reason}`,
@@ -301,8 +323,7 @@ const EN: typeof FR = {
   gameUpToDateRestart: "Game up to date: plain restart.",
   updateBackupFailed: (err) =>
     `The server restarted on the installed version, without updating: ${err}`,
-  updatedByScheduledRestart: (from, to) =>
-    `Game updated by the scheduled restart (build ${from} → ${to}).`,
+  gameUpdated: (from, to) => `Game updated (build ${from} → ${to}).`,
   updateFailed: (err) =>
     `Game update failed, the server restarted on the installed version: ${err}`,
   scheduledRestartWithUpdate: (from, to) =>

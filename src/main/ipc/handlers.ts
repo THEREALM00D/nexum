@@ -42,6 +42,7 @@ import { registerServerHandlers } from "./handlers/server";
 import { registerFirewallHandlers } from "./handlers/firewall";
 import { registerBackupHandlers } from "./handlers/backup";
 import { registerScheduleHandlers } from "./handlers/schedule";
+import { registerBulkHandlers } from "./handlers/bulk";
 import { registerServersHandlers } from "./handlers/servers";
 import { registerTransferHandlers } from "./handlers/transfer";
 import { registerAutoUpdater } from "../update/AutoUpdater";
@@ -283,6 +284,16 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
       }
     };
 
+  // Page Serveurs (confirmation d'une action groupée) : liste à jour du
+  // dernier passage du suivi (30 s au plus).
+  const getOnlinePlayers = (serverId: string): number | null => {
+    if (getApiClientForServer(serverId)() === null) return null;
+    return playerHistories
+      .getOrCreate(serverId)
+      .list()
+      .filter((entry) => entry.online).length;
+  };
+
   const trackedServers = new Set<string>();
   setInterval(() => {
     const currentIds = new Set<string>();
@@ -343,6 +354,7 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
     restartScheduler,
     playerHistories,
     broadcastLog,
+    getOnlinePlayers,
     getBackupDir,
     getRestartConfig,
     getStopConfig,
@@ -383,6 +395,7 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
   registerFirewallHandlers(ctx);
   registerBackupHandlers(ctx);
   registerScheduleHandlers(ctx);
+  registerBulkHandlers(ctx);
   registerPlayersHandlers(ctx);
   registerServersHandlers(ctx, servers);
   registerTransferHandlers(ctx);
