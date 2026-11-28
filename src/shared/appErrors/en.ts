@@ -8,6 +8,8 @@ export const APP_ERRORS_EN: Record<AppErrorCode, string> = {
   UNKNOWN_GAME: "Unknown game: {{game}}",
   SERVER_ALREADY_RUNNING: "The server is already running.",
   BULK_ACTION_RUNNING: "An action on all servers is already running.",
+  REMOTE_ADMIN_UNAVAILABLE:
+    "Command unavailable: enable the server's RCON or REST API (Configuration page).",
   SERVER_NOT_RUNNING: "The server is not running.",
   SERVER_EXE_NOT_FOUND:
     "{{exe}} not found in {{path}}. Install the server from the Installation page, or check the server folder.",

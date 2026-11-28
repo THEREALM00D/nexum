@@ -396,6 +396,18 @@ export class ServerManager {
     this.skipShutdownWait?.();
   }
 
+  /**
+   * « Tuer le processus » (Dashboard) : taskkill tout de suite, sans annonce
+   * ni sauvegarde, même pendant un arrêt qui ne répond plus. Passe par
+   * `stop()` sans config d'arrêt : statut `stopping`, donc la fin n'est pas
+   * lue comme un plantage (pas de relance automatique).
+   */
+  async kill(): Promise<{ success: boolean; error?: string }> {
+    this.onLog(managerLine(lt().killRequested));
+    this.hurryStop();
+    return this.stop({});
+  }
+
   private forceKill(pid: number): void {
     if (process.platform === "win32") {
       exec(`taskkill /F /T /PID ${pid}`, (err) => {

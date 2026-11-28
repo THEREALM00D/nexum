@@ -7,6 +7,7 @@ import type {
   BackupConfig,
   RestartConfig,
   BulkAction,
+  AdminCapabilities,
   BulkRun,
   OnlinePlayers,
   FirewallRuleStatus,
@@ -143,6 +144,12 @@ interface API {
     getJoinInfo: (serverId?: string) => Promise<JoinInfo>;
     /** IP publique via ipify — seulement sur action de l'utilisateur. */
     getPublicIp: () => Promise<string>;
+    /** Commandes du menu « ⋯ » du Dashboard disponibles pour ce serveur. */
+    getCapabilities: (serverId: string) => Promise<AdminCapabilities>;
+    saveNow: (serverId: string) => Promise<void>;
+    sendMessage: (serverId: string, message: string) => Promise<void>;
+    /** Arrêt forcé, sans annonce ni sauvegarde (pas compté comme un plantage). */
+    kill: (serverId: string) => Promise<{ success: boolean; error?: string }>;
     getLaunchArgs: (serverId?: string) => Promise<LaunchArgsConfig>;
     setLaunchArgs: (cfg: LaunchArgsConfig, serverId?: string) => Promise<void>;
     onLog: (cb: (event: ServerLogEvent) => void) => () => void;

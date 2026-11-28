@@ -110,6 +110,13 @@ const api = {
     getJoinInfo: (serverId?: string) =>
       ipcRenderer.invoke("server:getJoinInfo", serverId),
     getPublicIp: () => ipcRenderer.invoke("server:getPublicIp"),
+    getCapabilities: (serverId: string) =>
+      ipcRenderer.invoke("server:capabilities", serverId),
+    saveNow: (serverId: string) =>
+      ipcRenderer.invoke("server:saveNow", serverId),
+    sendMessage: (serverId: string, message: string) =>
+      ipcRenderer.invoke("server:sendMessage", serverId, message),
+    kill: (serverId: string) => ipcRenderer.invoke("server:kill", serverId),
     getStatuses: () => ipcRenderer.invoke("server:statuses"),
     getLaunchArgs: (serverId?: string) =>
       ipcRenderer.invoke("server:getLaunchArgs", serverId),

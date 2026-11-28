@@ -1,5 +1,11 @@
 import { ipcMain } from "electron/main";
 import type { IpcContext } from "../context";
+import {
+  getAdminCapabilities,
+  killServer,
+  saveNow,
+  sendMessage,
+} from "../../server/adminActions";
 import type { LaunchArgsConfig, ServerStatus } from "../../../shared/types";
 import { restartServer, startServer } from "../../server/startServer";
 import { getJoinInfo, getPublicIp } from "../../server/joinInfo";
@@ -31,6 +37,20 @@ export function registerServerHandlers(ctx: IpcContext): void {
       event.sender.send("server:log", { serverId: id, line }),
     );
   });
+
+  // Menu « ⋯ » du Dashboard : serverId toujours explicite (serveur affiché).
+  ipcMain.handle("server:capabilities", (_, serverId: string) =>
+    getAdminCapabilities(ctx, serverId),
+  );
+  ipcMain.handle("server:saveNow", (_, serverId: string) =>
+    saveNow(ctx, serverId),
+  );
+  ipcMain.handle("server:sendMessage", (_, serverId: string, message: string) =>
+    sendMessage(ctx, serverId, String(message ?? "")),
+  );
+  ipcMain.handle("server:kill", (_, serverId: string) =>
+    killServer(ctx, serverId),
+  );
 
   // Carte « Rejoindre le serveur » : IP locale + port (sans réseau) ; l'IP
   // publique n'est demandée qu'au clic (service tiers ipify).

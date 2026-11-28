@@ -17,6 +17,38 @@ export default {
       "Démarrez le serveur : les adresses à partager apparaîtront ici.",
     hint: "Pour les amis hors de votre réseau : redirigez le(s) port(s) UDP {{range}} sur votre box vers {{ip}}, et appliquez les règles du pare-feu (page Réseau). La plupart des box ne permettent pas de rejoindre sa propre IP publique depuis chez soi : faites tester un ami.",
   },
+  serverMenu: {
+    more: "Plus d'actions",
+    saveNow: "Sauvegarder le monde maintenant",
+    sendMessage: "Envoyer un message aux joueurs",
+    kill: "Tuer le processus",
+    killHelper: "Sans sauvegarder, si Arrêter ne répond plus",
+    unavailable: {
+      rconDisabled: "Activez RCON (page Configuration)",
+      restApiDisabled: "Activez l'API REST (page Configuration)",
+      noCommand: "Pas de commande pour ce jeu",
+    },
+    messageTitle: "Envoyer un message aux joueurs",
+    messageLabel: "Message",
+    messageHelper: "Affiché dans le chat du jeu.",
+    messageAscii:
+      "Le jeu affiche mal les accents : Nexum les retire à l'envoi.",
+    messagePreview: "Envoyé :",
+    playersOnline_one: "{{count}} joueur connecté.",
+    playersOnline_other: "{{count}} joueurs connectés.",
+    send: "Envoyer",
+    cancel: "Annuler",
+    killTitle: "Tuer « {{name}} » ?",
+    killWarning:
+      "Le serveur s'arrête tout de suite, sans prévenir les joueurs ni sauvegarder. Ce qui s'est passé depuis la dernière sauvegarde du jeu est perdu (jusqu'à 15 min pour ARK). À utiliser seulement si « Arrêter » ne répond plus.",
+    notify: {
+      saved: "Monde de « {{name}} » sauvegardé",
+      saveFailed: "Impossible de sauvegarder le monde",
+      messageSent: "Message envoyé aux joueurs",
+      messageFailed: "Impossible d'envoyer le message",
+      killed: "« {{name}} » a été tué",
+    },
+  },
   serverDashboard: {
     since: "depuis {{duration}}",
     viewLogs: "Voir les logs",

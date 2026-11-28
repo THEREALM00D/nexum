@@ -22,6 +22,8 @@ export interface GracefulShutdown {
    * ligne de log écrite avant l'attente.
    */
   nexumWaitLine?: (waitSeconds: number) => string;
+  /** Le chat du jeu n'affiche pas les accents : le client les retire (ARK). */
+  asciiChat?: boolean;
   /** Ligne de log une fois l'arrêt demandé. */
   sentLine: (waitSeconds: number) => string;
   /** Ligne de log quand l'API / RCON ne répond pas. */
@@ -63,6 +65,7 @@ export function createGracefulShutdown(
     return {
       client: new ArkRconClient(stopConfig.rcon.port, stopConfig.rcon.password),
       nexumWaitLine: (waitSeconds) => lt().rconExitIn(waitSeconds),
+      asciiChat: true,
       sentLine: () => lt().rconExitSent,
       unavailableLine: (error) => lt().rconUnavailable(error),
       exitTimeoutSeconds: () => ARK_EXIT_TIMEOUT_SECONDS,

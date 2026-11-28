@@ -3,6 +3,7 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import StopIcon from "@mui/icons-material/Stop";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import { useTranslation } from "react-i18next";
+import type { ReactNode } from "react";
 import type { ServerStatus } from "@shared/types";
 import { STATUS_COLOR } from "../../utils/status";
 import { formatDuration } from "../../utils/format";
@@ -19,6 +20,8 @@ interface Props {
   uptime?: number;
   /** Bouton « Voir les logs » si le serveur a planté. */
   onViewLogs?: () => void;
+  /** Menu « ⋯ » après les boutons (Dashboard ; pas dans l'assistant). */
+  menu?: ReactNode;
 }
 
 /** Statut du serveur et, à droite, seulement les actions possibles. */
@@ -31,6 +34,7 @@ export default function ServerControls({
   onRestart,
   uptime,
   onViewLogs,
+  menu,
 }: Props) {
   const { t, i18n } = useTranslation();
   const running = status === "running";
@@ -125,6 +129,7 @@ export default function ServerControls({
             {t("dashboard.controls.stop")}
           </Button>
         )}
+        {menu}
       </Stack>
     </Box>
   );
