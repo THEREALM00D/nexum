@@ -56,7 +56,6 @@ export const CLI_SETTINGS: ArkSettingDef[] = settingsOf("cli", "", "launch", [
     "3600",
     { min: 0, cliForm: "dash" },
   ],
-  ["passivemods", "string", "", { cliForm: "dash" }],
   ["TotalConversionMod", "string", "", { cliForm: "dash" }],
   ["servergamelog", "flag", "", { cliForm: "dash" }],
   ["servergamelogincludetribelogs", "flag", "", { cliForm: "dash" }],

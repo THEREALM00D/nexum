@@ -1,6 +1,7 @@
 import type { ArkLaunchConfig, ArkMod } from "../../../shared/types";
 import { appError } from "../../utils/appError";
 import { sanitizeLaunchOptions } from "./config/launchOptions";
+import { parseModIds } from "./mods/argsMods";
 
 // Nom d'une carte sur la ligne de commande (« TheIsland_WP ») : lettres,
 // chiffres et « _ » seulement. Sinon il casserait la chaîne d'options `?`
@@ -29,6 +30,22 @@ export const DEFAULT_ARK_CONFIG: ArkLaunchConfig = {
 export const isModId = (value: unknown): value is number =>
   Number.isInteger(value) && Number(value) >= 1 && Number(value) <= 2147483647;
 
+/**
+ * Ancienne option « Mods passifs » (`launchOptions.passivemods`, texte
+ * d'ID) : ses mods passent dans la liste en passifs, à la fin, et l'option
+ * disparaît (`sanitizeLaunchOptions` ne la connaît plus). Sinon deux
+ * `-passivemods=` partaient sur la ligne.
+ */
+function withPassiveOption(mods: ArkMod[], launchOptions: unknown): ArkMod[] {
+  const raw = (launchOptions as Record<string, unknown> | undefined)
+    ?.passivemods;
+  if (typeof raw !== "string") return mods;
+  const added = parseModIds(raw)
+    .ids.filter((id) => !mods.some((mod) => mod.id === id))
+    .map((id): ArkMod => ({ id, enabled: true, passive: true }));
+  return [...mods, ...added];
+}
+
 /** Mods valides seulement, sans doublon, dans l'ordre. */
 export function sanitizeArkMods(stored: unknown): ArkMod[] {
   if (!Array.isArray(stored)) return [];
@@ -38,7 +55,13 @@ export function sanitizeArkMods(stored: unknown): ArkMod[] {
     const id = (entry as Partial<ArkMod> | null)?.id;
     if (!isModId(id) || seen.has(id)) continue;
     seen.add(id);
-    mods.push({ id, enabled: (entry as ArkMod).enabled !== false });
+    const enabled = (entry as ArkMod).enabled !== false;
+    // `passive` gardé seulement s'il est vrai (absent = actif).
+    mods.push(
+      (entry as ArkMod).passive === true
+        ? { id, enabled, passive: true }
+        : { id, enabled },
+    );
   }
   return mods;
 }
@@ -114,7 +137,7 @@ export function sanitizeArkLaunch(
       merged.saveDirectory,
       "",
     ),
-    mods: sanitizeArkMods(merged.mods),
+    mods: withPassiveOption(sanitizeArkMods(merged.mods), merged.launchOptions),
     launchOptions: sanitizeLaunchOptions(merged.launchOptions),
   };
 }

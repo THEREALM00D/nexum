@@ -528,6 +528,10 @@ const api = {
       ipcRenderer.invoke("ark:mods:takeFromArgs", serverId),
     search: (params: unknown) => ipcRenderer.invoke("ark:mods:search", params),
     categories: () => ipcRenderer.invoke("ark:mods:categories"),
+    cleanupPreview: (serverId: string) =>
+      ipcRenderer.invoke("ark:mods:cleanupPreview", serverId),
+    cleanup: (serverId: string) =>
+      ipcRenderer.invoke("ark:mods:cleanup", serverId),
   },
   // Enshrouded (serveur actif) — arguments de Nexum et groupes d'utilisateurs
   enshrouded: {

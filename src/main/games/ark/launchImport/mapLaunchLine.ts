@@ -9,10 +9,10 @@ import {
   ARK_MAP_NAME,
   ARK_MAX_PLAYERS,
   DEFAULT_ARK_CONFIG,
-  isModId,
   isSaveDirectory,
 } from "../launchConfig";
 import type { ParsedLaunchLine } from "./parseLaunchLine";
+import { parseModIds } from "../mods/argsMods";
 
 export interface IniSetting {
   section: string;
@@ -145,14 +145,25 @@ export function mapLaunchLine(
       winLiveMaxPlayers = numberOf(option.value, ARK_MAX_PLAYERS, option.raw);
     } else if (lower === "nobattleye") {
       launch.battlEye = false;
-    } else if (lower === "mods") {
+    } else if (lower === "mods" || lower === "passivemods") {
       // Découpé aux virgules (`-mods="1, 2"` existe) ; un ID invalide
-      // empêcherait le démarrage : écarté, mais signalé.
-      const parts = (option.value ?? "").split(",").map((part) => part.trim());
-      const ids = [...new Set(parts.filter(Boolean).map(Number))];
-      const valid = ids.filter((id) => isModId(id));
-      launch.mods = valid.map((id): ArkMod => ({ id, enabled: true }));
-      if (valid.length < ids.length) invalid(option.raw);
+      // empêcherait le démarrage : écarté, mais signalé. Actifs d'abord,
+      // passifs ensuite ; un ID présent dans les deux reste actif.
+      const { ids, invalid: hasInvalid } = parseModIds(option.value ?? "");
+      const listed = launch.mods;
+      launch.mods =
+        lower === "mods"
+          ? [
+              ...ids.map((id): ArkMod => ({ id, enabled: true })),
+              ...listed.filter((mod) => !ids.includes(mod.id)),
+            ]
+          : [
+              ...listed,
+              ...ids
+                .filter((id) => !listed.some((mod) => mod.id === id))
+                .map((id): ArkMod => ({ id, enabled: true, passive: true })),
+            ];
+      if (hasInvalid) invalid(option.raw);
     } else if (setting && setting.cliForm !== "query") {
       try {
         launchOptions[setting.key] = normalizeSettingValue(

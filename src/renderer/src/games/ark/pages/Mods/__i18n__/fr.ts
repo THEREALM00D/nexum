@@ -32,18 +32,47 @@ export default {
       fileWithDate: "{{file}}, publié le {{date}}",
       notDownloaded: "Téléchargé au prochain démarrage du serveur",
       premium: "Payant",
-      toggle: "Activer le mod",
-      enabled: "Activé",
-      disabled: "Désactivé : pas chargé par le serveur",
+      countPassive_one: "{{count}} passif",
+      countPassive_other: "{{count}} passifs",
+      countDisabled_one: "{{count}} désactivé",
+      countDisabled_other: "{{count}} désactivés",
+      state: "État du mod",
+      states: { active: "Actif", passive: "Passif", disabled: "Désactivé" },
+      stateHelp: {
+        active: "Chargé par le serveur (-mods).",
+        passive:
+          "Passif (-passivemods) : ses données sont chargées, ses fonctions non. Par exemple, garder dans un cluster les créatures d'un mod sans qu'elles apparaissent sur cette carte, tout en pouvant les transférer.",
+        disabled: "Pas chargé par le serveur. Reste dans la liste.",
+      },
       moveUp: "Monter",
       moveDown: "Descendre",
       open: "Ouvrir sur CurseForge",
       remove: "Retirer de la liste",
     },
     downloaded: {
-      title: "Téléchargés par le serveur, pas dans la liste",
       hint: "Le serveur garde les fichiers d'un mod retiré de la liste, ou installé avant Nexum. Ils ne sont pas chargés.",
       add: "Ajouter",
+      titleWithSize_one:
+        "Téléchargé par le serveur, pas dans la liste · {{count}} mod · {{size}}",
+      titleWithSize_other:
+        "Téléchargés par le serveur, pas dans la liste · {{count}} mods · {{size}}",
+    },
+    cleanup: {
+      open: "Nettoyer le dossier des mods",
+      title: "Nettoyer le dossier des mods ?",
+      notListed_one: "{{count}} mod hors liste",
+      notListed_other: "{{count}} mods hors liste",
+      notListedHint:
+        "{{names}}. Si l'un d'eux revient dans la liste, le serveur le retéléchargera au démarrage.",
+      temp: "Restes de téléchargement",
+      tempHint: "Dossier de travail .temp du serveur.",
+      nothing:
+        "Rien à supprimer : tous les mods téléchargés sont dans la liste.",
+      safe: "Seulement les fichiers téléchargés. Le monde et ce que les mods y ont ajouté ne sont pas touchés. Le serveur supprime lui-même l'ancienne version d'un mod mis à jour.",
+      stopFirst: "Arrêtez le serveur pour nettoyer : il utilise ces fichiers.",
+      cancel: "Annuler",
+      confirm: "Libérer {{size}}",
+      done: "{{size}} libérés",
     },
     tabs: {
       list: "Liste du serveur",

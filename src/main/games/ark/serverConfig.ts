@@ -1,5 +1,6 @@
 import { join } from "path";
-import type { ArkLaunchConfig } from "../../../shared/types";
+import type { ArkLaunchConfig, ArkModState } from "../../../shared/types";
+import { arkModState } from "../../../shared/arkMods";
 import type { StopConfig } from "../../server/ServerManager";
 import type { GamePort } from "../ports";
 import { readRconSettings } from "./gameUserSettingsIni";
@@ -63,14 +64,24 @@ export const arkServerConfig = {
       `-WinLiveMaxPlayers=${launchConfig.maxPlayers}`,
     ];
     if (!launchConfig.battlEye) args.push("-NoBattlEye");
-    // Un seul -mods= : ceux de la liste (activés, dans l'ordre), puis ceux
-    // encore écrits dans les arguments perso (la page Mods propose de les
-    // déplacer dans la liste).
-    const modIds = launchConfig.mods
-      .filter((mod) => mod.enabled)
-      .map((mod) => mod.id);
-    for (const id of custom.ids) if (!modIds.includes(id)) modIds.push(id);
+    // Un seul -mods= (actifs) et un seul -passivemods= (passifs) : ceux de
+    // la liste dans l'ordre, puis ceux encore écrits dans les arguments perso
+    // (la page Mods propose de les déplacer dans la liste). Vérifié : un mod
+    // passif est téléchargé et chargé (`PassivePrimalGameData`) sans -mods.
+    const idsOf = (state: ArkModState, extra: number[]) => {
+      const ids = launchConfig.mods
+        .filter((mod) => arkModState(mod) === state)
+        .map((mod) => mod.id);
+      for (const id of extra) if (!ids.includes(id)) ids.push(id);
+      return ids;
+    };
+    const modIds = idsOf("active", custom.ids);
+    const passiveIds = idsOf("passive", custom.passiveIds).filter(
+      (id) => !modIds.includes(id),
+    );
     if (modIds.length > 0) args.push(`-mods=${modIds.join(",")}`);
+    if (passiveIds.length > 0)
+      args.push(`-passivemods=${passiveIds.join(",")}`);
     // Options de l'onglet Réglages de jeu, puis les arguments perso.
     args.push(...launchOptions.dashArgs, ...custom.rest);
     return args;

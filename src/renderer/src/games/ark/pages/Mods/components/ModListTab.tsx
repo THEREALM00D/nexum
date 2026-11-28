@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { Chip } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import type { ArkModInfo } from "@shared/types";
+import { arkModState } from "@shared/arkMods";
 import ModListPanel from "../../../../../components/mods/ModListPanel";
 import { matchesModSearch } from "../../../../../components/mods/modSearch";
 import type { useArkMods } from "../hooks/useArkMods";
@@ -50,6 +52,20 @@ export default function ModListTab({ mods }: Props) {
   const downloaded = (mods.data?.downloadedNotListed ?? []).filter((info) =>
     matches(info.id, info),
   );
+  // « 13 mods · 1 passif · 1 désactivé » : seulement les états présents.
+  const passiveCount = list.filter(
+    (mod) => arkModState(mod) === "passive",
+  ).length;
+  const disabledCount = list.filter((mod) => !mod.enabled).length;
+  const count = [
+    t("arkMods.list.count", { count: list.length }),
+    passiveCount ? t("arkMods.list.countPassive", { count: passiveCount }) : "",
+    disabledCount
+      ? t("arkMods.list.countDisabled", { count: disabledCount })
+      : "",
+  ]
+    .filter(Boolean)
+    .join(" · ");
 
   return (
     <>
@@ -69,7 +85,7 @@ export default function ModListTab({ mods }: Props) {
                 shown: visible.length,
                 total: list.length,
               })
-            : t("arkMods.list.count", { count: list.length })
+            : count
         }
         loading={mods.loading}
         skeletonRow={
@@ -82,6 +98,7 @@ export default function ModListTab({ mods }: Props) {
             mods={downloaded}
             disabled={mods.busy}
             onAdd={(id) => void mods.add(id)}
+            onCleaned={mods.reload}
           />
         }
       >
@@ -91,14 +108,26 @@ export default function ModListTab({ mods }: Props) {
             id={mod.id}
             info={mod.info}
             dimmed={!mod.enabled}
+            chips={
+              arkModState(mod) === "passive" && (
+                <Chip
+                  label={t("arkMods.list.states.passive")}
+                  size="small"
+                  variant="outlined"
+                  sx={{ typography: "micro", height: 18, px: 0.5 }}
+                />
+              )
+            }
             actions={
               <ListedModActions
-                enabled={mod.enabled}
+                modState={arkModState(mod)}
                 websiteUrl={mod.info?.websiteUrl ?? null}
                 isFirst={index === 0}
                 isLast={index === list.length - 1}
                 disabled={mods.busy}
-                onToggle={(enabled) => void mods.toggle(mod.id, enabled)}
+                onStateChange={(modState) =>
+                  void mods.setState(mod.id, modState)
+                }
                 onMove={(offset) => mods.move(mod.id, offset)}
                 onRemove={() => void mods.remove(mod.id)}
               />

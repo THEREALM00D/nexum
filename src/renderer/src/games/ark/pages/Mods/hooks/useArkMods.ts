@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import type { ArkMod, ArkModsState } from "@shared/types";
+import type { ArkMod, ArkModState, ArkModsState } from "@shared/types";
+import { withArkModState } from "@shared/arkMods";
 import { useServer } from "../../../../../context/ServerContext";
 import { useNotification } from "../../../../../context/NotificationContext";
 import {
@@ -68,10 +69,10 @@ export function useArkMods() {
     [serverId, notify, reload, t],
   );
 
-  const mods: ArkMod[] = (data?.mods ?? []).map(({ id, enabled }) => ({
-    id,
-    enabled,
-  }));
+  // Sans `info` (lu par le main) : seulement ce qui est enregistré.
+  const mods: ArkMod[] = (data?.mods ?? []).map(({ id, enabled, passive }) =>
+    passive ? { id, enabled, passive } : { id, enabled },
+  );
   const save = (next: ArkMod[]) =>
     run((id) => window.api.arkMods.set(id, next));
 
@@ -79,10 +80,15 @@ export function useArkMods() {
     data,
     loading,
     busy,
+    reload,
     add: (modId: number) => run((id) => window.api.arkMods.add(id, modId)),
     remove: (modId: number) => save(mods.filter((mod) => mod.id !== modId)),
-    toggle: (modId: number, enabled: boolean) =>
-      save(mods.map((mod) => (mod.id === modId ? { ...mod, enabled } : mod))),
+    setState: (modId: number, modState: ArkModState) =>
+      save(
+        mods.map((mod) =>
+          mod.id === modId ? withArkModState(mod, modState) : mod,
+        ),
+      ),
     move: (modId: number, offset: -1 | 1) => {
       const index = mods.findIndex((mod) => mod.id === modId);
       const target = index + offset;

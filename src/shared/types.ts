@@ -537,6 +537,8 @@ export type AppErrorCode =
   | "ARK_PROFILE_NOT_FOUND"
   | "ARK_PROFILE_COPY_FAILED"
   | "ARK_PROFILE_READ_FAILED"
+  | "ARK_MODS_SERVER_RUNNING"
+  | "ARK_MODS_CLEAN_FAILED"
   | "CURSEFORGE_UNAVAILABLE"
   | "CURSEFORGE_FORBIDDEN"
   // Réseau / téléchargements (registres de mods, SteamCMD, IP publique)
@@ -857,7 +859,15 @@ export interface ArkSettingChange {
 export interface ArkMod {
   id: number;
   enabled: boolean;
+  /**
+   * Passif (`-passivemods`) : ses données sont chargées, ses fonctions non
+   * (cluster). Absent = actif (`-mods`). Sans effet si `enabled` est faux.
+   */
+  passive?: boolean;
 }
+
+/** État d'un mod de la liste, tel que la page Mods l'affiche. */
+export type ArkModState = "active" | "passive" | "disabled";
 
 /**
  * Ce que Nexum sait d'un mod : library.json du serveur (mod déjà téléchargé)
@@ -879,6 +889,20 @@ export interface ArkModInfo {
 
 export interface ArkModEntry extends ArkMod {
   info: ArkModInfo | null;
+}
+
+export interface ArkDownloadedMod extends ArkModInfo {
+  /** Taille de son dossier dans `Mods/83374` (octets). */
+  size: number;
+}
+
+/** Ce que « Nettoyer le dossier des mods » supprimerait. */
+export interface ArkModsCleanup {
+  /** Mods téléchargés hors liste (ni dans la liste ni dans `-mods=` perso). */
+  mods: { id: number; name: string; size: number }[];
+  /** Restes du dossier de travail `.temp` du serveur (octets). */
+  tempSize: number;
+  total: number;
 }
 
 export type ArkModSort = "popular" | "updated" | "downloads" | "name";
@@ -916,8 +940,11 @@ export interface ArkModCategory {
 
 export interface ArkModsState {
   mods: ArkModEntry[];
-  /** Téléchargés par le serveur (library.json) mais absents de la liste. */
-  downloadedNotListed: ArkModInfo[];
+  /**
+   * Téléchargés par le serveur (library.json, dossier encore sur le disque)
+   * mais absents de la liste.
+   */
+  downloadedNotListed: ArkDownloadedMod[];
   /** ID encore écrits dans les arguments perso (-mods=…). */
   argsMods: number[];
   /** Build avec clé CurseForge : un ID ajouté est vérifié, Parcourir existe. */

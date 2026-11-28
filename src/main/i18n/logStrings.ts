@@ -69,6 +69,8 @@ const FR = {
   arkProfileRestored: (name: string, date: string, previousKept: boolean) =>
     `Profil de ${name} restauré (version du ${date}).${previousKept ? " Le profil d'avant a été sauvegardé." : ""}`,
   arkProfilesAnnounce: "Profils des joueurs sauvegardés.",
+  arkModsCleaned: (mods: number, megabytes: number) =>
+    `Dossier des mods nettoyé, ${megabytes.toLocaleString("fr-FR", { maximumFractionDigits: 1 })} Mo libérés${mods > 0 ? ` (${mods} mod${mods > 1 ? "s" : ""} hors liste : le serveur ${mods > 1 ? "les retéléchargera s'ils reviennent" : "le retéléchargera s'il revient"} dans la liste)` : ""}.`,
   stuckStartKilled: (minutes: number, attempt: number, max: number) =>
     `Le serveur n'a pas fini de démarrer après ${minutes} min (pas de ligne « prêt » dans son log) : arrêt forcé, relance dans 10 s (essai ${attempt} sur ${max}).`,
   stuckStartRestarted: (attempt: number, max: number) =>
@@ -285,6 +287,8 @@ const EN: typeof FR = {
   arkProfileRestored: (name, date, previousKept) =>
     `${name}'s profile restored (version from ${date}).${previousKept ? " The previous profile was backed up." : ""}`,
   arkProfilesAnnounce: "Player profiles backed up.",
+  arkModsCleaned: (mods, megabytes) =>
+    `Mods folder cleaned, ${megabytes.toLocaleString("en-US", { maximumFractionDigits: 1 })} MB freed${mods > 0 ? ` (${mods} mod${mods > 1 ? "s" : ""} not in the list: the server downloads ${mods > 1 ? "them again if they come" : "it again if it comes"} back to the list)` : ""}.`,
   stuckStartKilled: (minutes, attempt, max) =>
     `The server hadn't finished starting after ${minutes} min (no "ready" line in its log): forced stop, restart in 10 s (attempt ${attempt} of ${max}).`,
   stuckStartRestarted: (attempt, max) =>

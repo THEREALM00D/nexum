@@ -48,6 +48,9 @@ export const APP_ERRORS_EN: Record<AppErrorCode, string> = {
   ARK_SETTING_UNKNOWN: "Unknown setting: {{key}}",
   ARK_PROFILE_SERVER_RUNNING: "Stop the server to restore a player profile.",
   ARK_PROFILE_NOT_FOUND: "This profile backup no longer exists.",
+  ARK_MODS_SERVER_RUNNING: "Stop the server to clean the mods folder.",
+  ARK_MODS_CLEAN_FAILED:
+    "Can't delete {{path}} ({{detail}}): a file may be open in another program.",
   ARK_PROFILE_READ_FAILED:
     "Can't read {{path}} ({{detail}}): check that the backup folder is reachable.",
   ARK_PROFILE_COPY_FAILED:

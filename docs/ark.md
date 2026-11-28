@@ -75,7 +75,10 @@ The **Mods** page manages the server's [CurseForge](https://www.curseforge.com/a
 
 - **Browse CurseForge** tab: search mods by name, sort them (popularity, recently updated, downloads, name), filter by category (Maps, Creatures, Structures…) and click **Add**. Mods marked **Cosmetic** are for players only: they don't install on a server and prevent it from starting (tested), so they can't be added. Mods marked **PC only** aren't cross-platform: a server is cross-platform by default and doesn't start with them (tested); they only work with **Accepted platforms** set to `PC` (Configuration page, **Game settings** tab, launch options), and console players then can't join.
 - **Add** a mod with its **Project ID**: the number shown on the mod's CurseForge page, under _About Project_ (the page address doesn't contain it).
-- The **order** of the list is the load order (arrows). A **disabled** mod stays in the list but isn't loaded.
+- The **order** of the list is the load order (arrows). Each mod is **Active**, **Passive** or **Disabled**:
+  - **Active**: loaded normally (`-mods=`).
+  - **Passive** (`-passivemods=`): the server downloads the mod and loads its data, but its features are off. Use it in a cluster to keep a mod's creatures or items transferable between servers without them spawning on this map (tested: the server starts and loads the mod as passive). A **Passive** chip follows the mod's name, and the count says it (`13 mods · 1 passive`).
+  - **Disabled**: stays in the list but isn't loaded.
 - **Search** the list by name, author or ID; the count shows how many mods match. While searching, the arrows still move a mod within the full list.
 - Nexum only writes the list on the command line (`-mods=`): **the server downloads the mods and updates them itself at every start**, in a few seconds for small mods. Changes made while the server runs apply at the next start.
 - Players don't install anything: the game downloads the server's mods when they join.
@@ -83,7 +86,9 @@ The **Mods** page manages the server's [CurseForge](https://www.curseforge.com/a
 
 ⚠️ An unknown mod ID **prevents the server from starting** (`Mods not installed` in the logs). Removing a mod also removes what it added to the world (creatures, structures, items): make a [backup](backups.md) first.
 
-The server keeps the files of a mod removed from the list: it's listed under **Downloaded by the server, not in the list**, at the bottom of the list, where you can add it back. This is also where the mods of an existing server show up after its first start in Nexum. Mods already written in the extra launch arguments (`-mods=…`) are flagged with a button to move them to the list.
+The server keeps the files of a mod removed from the list: it's listed under **Downloaded by the server, not in the list**, at the bottom of the list, where you can add it back. This is also where the mods of an existing server show up after its first start in Nexum. Mods already written in the extra launch arguments (`-mods=…` or `-passivemods=…`) are flagged with a button to move them to the list. The former **Passive mods** launch option (Game settings tab) is now in the list: the mods it held show up there as passive.
+
+**Clean the mods folder** (button of that section, server stopped) deletes the files of these mods, plus the leftovers of the server's download folder (`.temp`), and shows the space freed. Mods in the list, even disabled, are never touched, nor the world. If a deleted mod comes back to the list, the server downloads it again at the next start (tested). There are no old versions to clean: the server already deletes the previous version of a mod when it updates it.
 
 ## RCON
 

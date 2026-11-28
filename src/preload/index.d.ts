@@ -43,6 +43,7 @@ import type {
   ArkModSearchParams,
   ArkModSearchPage,
   ArkModCategory,
+  ArkModsCleanup,
   ArkProfileBackupConfig,
   ArkProfilePlayer,
   ValheimMod,
@@ -514,6 +515,11 @@ interface API {
     ) => Promise<{ success: boolean; error?: string }>;
     search: (params: ArkModSearchParams) => Promise<ArkModSearchPage>;
     categories: () => Promise<ArkModCategory[]>;
+    cleanupPreview: (serverId: string) => Promise<ArkModsCleanup>;
+    /** Serveur arrêté seulement ; `freed` en octets. */
+    cleanup: (
+      serverId: string,
+    ) => Promise<{ success: boolean; freed?: number; error?: string }>;
   };
   arkProfiles: {
     getConfig: (serverId: string) => Promise<ArkProfileBackupConfig>;

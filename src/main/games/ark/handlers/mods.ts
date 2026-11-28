@@ -1,6 +1,7 @@
 import { ipcMain } from "electron/main";
 import type { IpcContext } from "../../../ipc/context";
 import type {
+  ArkDownloadedMod,
   ArkMod,
   ArkModInfo,
   ArkModsState,
@@ -10,6 +11,7 @@ import { appError } from "../../../utils/appError";
 import { isModId, sanitizeArkMods } from "../launchConfig";
 import { splitArgsMods } from "../mods/argsMods";
 import { readModLibrary } from "../mods/modLibrary";
+import { modSize, readModFolders } from "../mods/modFolders";
 import { curseforgeAvailable, fetchArkMods } from "../mods/curseforgeApi";
 import { fetchArkCategories, searchArkMods } from "../mods/curseforgeSearch";
 
@@ -23,7 +25,9 @@ export function registerArkModsHandlers(ctx: IpcContext): void {
     "ark:mods:get",
     async (_, serverId: string): Promise<ArkModsState> => {
       const { mods, customArgs } = ctx.getArkConfig(serverId);
-      const library = readModLibrary(ctx.getServerPath(serverId));
+      const serverPath = ctx.getServerPath(serverId);
+      const library = readModLibrary(serverPath);
+      const folders = await readModFolders(serverPath);
       // Mods pas encore téléchargés par le serveur : fiche CurseForge si le
       // build a une clé. Hors ligne ou API en erreur : les ID seuls.
       const missing = mods
@@ -36,15 +40,25 @@ export function registerArkModsHandlers(ctx: IpcContext): void {
         // Rien à signaler : la liste reste utilisable.
       }
       const listed = new Set(mods.map((mod) => mod.id));
+      // Seulement ceux dont le dossier existe : un mod supprimé du disque
+      // reste dans library.json (`status: "Invalid"`, vérifié).
+      const downloadedNotListed: ArkDownloadedMod[] = [];
+      for (const info of library.values()) {
+        const names = folders.get(info.id);
+        if (listed.has(info.id) || !names) continue;
+        downloadedNotListed.push({
+          ...info,
+          size: await modSize(serverPath, names),
+        });
+      }
+      const args = splitArgsMods(customArgs);
       return {
         mods: mods.map((mod) => ({
           ...mod,
           info: library.get(mod.id) ?? fetched.get(mod.id) ?? null,
         })),
-        downloadedNotListed: [...library.values()].filter(
-          (info) => !listed.has(info.id),
-        ),
-        argsMods: splitArgsMods(customArgs).ids,
+        downloadedNotListed,
+        argsMods: [...args.ids, ...args.passiveIds],
         lookupAvailable: curseforgeAvailable(),
       };
     },
@@ -109,13 +123,18 @@ export function registerArkModsHandlers(ctx: IpcContext): void {
   );
   ipcMain.handle("ark:mods:categories", () => fetchArkCategories());
 
-  // Déplace les -mods= des arguments perso à la fin de la liste.
+  // Déplace les -mods= et -passivemods= des arguments perso à la fin de la
+  // liste (les seconds en passifs).
   ipcMain.handle("ark:mods:takeFromArgs", (_, serverId: string): Result => {
     const { mods, customArgs } = ctx.getArkConfig(serverId);
-    const { ids, rest } = splitArgsMods(customArgs);
-    const added = ids
-      .filter((id) => !mods.some((mod) => mod.id === id))
-      .map((id) => ({ id, enabled: true }));
+    const { ids, passiveIds, rest } = splitArgsMods(customArgs);
+    const isNew = (id: number) => !mods.some((mod) => mod.id === id);
+    const added: ArkMod[] = [
+      ...ids.filter(isNew).map((id) => ({ id, enabled: true })),
+      ...passiveIds
+        .filter(isNew)
+        .map((id) => ({ id, enabled: true, passive: true })),
+    ];
     ctx.updateArkConfig(serverId, {
       mods: [...mods, ...added],
       customArgs: rest.join(" "),

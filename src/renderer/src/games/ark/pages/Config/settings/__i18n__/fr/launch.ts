@@ -119,11 +119,6 @@ export default {
     description:
       "Secondes avant de pouvoir récupérer de nouveau un inventaire après la mort.",
   },
-  passivemods: {
-    label: "Mods passifs",
-    description:
-      "ID de mods chargés sans être actifs (pour les transferts), séparés par des virgules.",
-  },
   TotalConversionMod: {
     label: "Mod de conversion totale",
     description: "ID du mod de conversion totale à charger.",

@@ -1,30 +1,38 @@
-import { IconButton, Switch, Tooltip } from "@mui/material";
+import {
+  IconButton,
+  ToggleButton,
+  ToggleButtonGroup,
+  Tooltip,
+} from "@mui/material";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import DeleteIcon from "@mui/icons-material/Delete";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { useTranslation } from "react-i18next";
+import type { ArkModState } from "@shared/types";
+
+const STATES: ArkModState[] = ["active", "passive", "disabled"];
 
 interface Props {
-  enabled: boolean;
+  modState: ArkModState;
   websiteUrl: string | null;
   isFirst: boolean;
   isLast: boolean;
   disabled: boolean;
-  onToggle: (enabled: boolean) => void;
+  onStateChange: (modState: ArkModState) => void;
   onMove: (offset: -1 | 1) => void;
   onRemove: () => void;
 }
 
-// Actions d'un mod de la liste : activer, ordre de chargement, page
-// CurseForge, retirer.
+// Actions d'un mod de la liste : état (actif, passif, désactivé), ordre de
+// chargement, page CurseForge, retirer.
 export default function ListedModActions({
-  enabled,
+  modState,
   websiteUrl,
   isFirst,
   isLast,
   disabled,
-  onToggle,
+  onStateChange,
   onMove,
   onRemove,
 }: Props) {
@@ -36,17 +44,40 @@ export default function ListedModActions({
 
   return (
     <>
-      <Tooltip
-        title={enabled ? t("arkMods.list.enabled") : t("arkMods.list.disabled")}
+      <ToggleButtonGroup
+        exclusive
+        size="small"
+        value={modState}
+        disabled={disabled}
+        // Un clic sur l'état déjà choisi renvoie null : rien à changer.
+        onChange={(_, value: ArkModState | null) =>
+          value && value !== modState && onStateChange(value)
+        }
+        aria-label={t("arkMods.list.state")}
+        sx={{ mr: 0.5 }}
       >
-        <Switch
-          size="small"
-          checked={enabled}
-          disabled={disabled}
-          onChange={(event) => onToggle(event.target.checked)}
-          slotProps={{ input: { "aria-label": t("arkMods.list.toggle") } }}
-        />
-      </Tooltip>
+        {STATES.map((value) => (
+          <Tooltip
+            key={value}
+            title={t(`arkMods.list.stateHelp.${value}`)}
+            describeChild
+          >
+            <ToggleButton
+              value={value}
+              // Actif en vert, comme les autres états « en marche » de l'app.
+              color={value === "active" ? "primary" : "standard"}
+              sx={{
+                typography: "micro",
+                textTransform: "none",
+                px: 1,
+                py: 0.25,
+              }}
+            >
+              {t(`arkMods.list.states.${value}`)}
+            </ToggleButton>
+          </Tooltip>
+        ))}
+      </ToggleButtonGroup>
       <Tooltip title={moveUp}>
         <span>
           <IconButton

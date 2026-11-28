@@ -53,6 +53,10 @@ export const APP_ERRORS_FR: Record<AppErrorCode, string> = {
   ARK_PROFILE_SERVER_RUNNING:
     "Arrêtez le serveur pour restaurer le profil d'un joueur.",
   ARK_PROFILE_NOT_FOUND: "Cette sauvegarde de profil n'existe plus.",
+  ARK_MODS_SERVER_RUNNING:
+    "Arrêtez le serveur pour nettoyer le dossier des mods.",
+  ARK_MODS_CLEAN_FAILED:
+    "Impossible de supprimer {{path}} ({{detail}}) : un fichier est peut-être ouvert par un autre programme.",
   ARK_PROFILE_READ_FAILED:
     "Impossible de lire {{path}} ({{detail}}) : vérifiez que le dossier de sauvegarde est accessible.",
   ARK_PROFILE_COPY_FAILED:

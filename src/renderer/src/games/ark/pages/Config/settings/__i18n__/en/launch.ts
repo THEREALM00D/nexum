@@ -113,11 +113,6 @@ export default {
     description:
       "Seconds before an inventory can be retrieved again after death.",
   },
-  passivemods: {
-    label: "Passive mods",
-    description:
-      "Mod IDs loaded without being active (for transfers), comma-separated.",
-  },
   TotalConversionMod: {
     label: "Total conversion mod",
     description: "ID of the total conversion mod to load.",

@@ -60,6 +60,7 @@ import { registerDragonwildsWorldHandlers } from "../games/dragonwilds/handlers/
 import { registerEnshroudedHandlers } from "../games/enshrouded/handlers/config";
 import { registerArkHandlers } from "../games/ark/handlers/config";
 import { registerArkModsHandlers } from "../games/ark/handlers/mods";
+import { registerArkModsCleanupHandlers } from "../games/ark/handlers/modsCleanup";
 import { registerArkSettingsHandlers } from "../games/ark/handlers/settings";
 import { registerArkLaunchImportHandlers } from "../games/ark/handlers/launchImport";
 import { arkRconClient } from "../games/ark/rcon";
@@ -427,6 +428,7 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
   registerEnshroudedHandlers(ctx);
   registerArkHandlers(ctx);
   registerArkModsHandlers(ctx);
+  registerArkModsCleanupHandlers(ctx);
   registerArkSettingsHandlers(ctx);
   registerArkLaunchImportHandlers(ctx);
   registerArkProfileHandlers(ctx);
