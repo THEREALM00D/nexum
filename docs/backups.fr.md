@@ -127,6 +127,27 @@ Bouton **Restaurer** sur chaque sauvegarde :
 
 Bouton **Supprimer** sur chaque sauvegarde — confirmation requise.
 
+## ARK : profils des joueurs
+
+Le niveau, l'expérience et les engrammes d'un joueur sont dans son propre fichier de profil (`<EOS ID>.arkprofile`), à côté du monde. Pour réparer un seul joueur (bug, transfert raté) sans faire reculer tout le monde, la page Sauvegardes d'ARK a un onglet **Profils des joueurs**, à côté de **Monde**.
+
+### Réglages
+
+- **Sauvegarde des profils** : intervalle, les mêmes choix que la sauvegarde du monde, **Désactivée** par défaut. Tourne pendant que le serveur est lancé, et aussi quelques secondes après la déconnexion d'un joueur (le jeu écrit alors le profil ; demande RCON, par lequel Nexum voit qui est en ligne).
+- Seuls les profils qui ont **changé** depuis leur dernière sauvegarde sont copiés : un joueur qui n'a pas joué garde ses anciennes versions au lieu de remplir la liste de copies identiques.
+- **Sauvegardes à garder par joueur** : de 1 à 100, 10 par défaut.
+- **Annoncer chaque sauvegarde en jeu** : un court message dans le chat (RCON) après une sauvegarde planifiée ou **Sauvegarder maintenant**, pas après une déconnexion.
+
+Chaque version contient le `.arkprofile` du joueur, son `.arktributetribe` et le fichier `.arktribe` de sa tribu, copiés tels quels dans `<dossier de sauvegarde>\player-profiles\<carte>\<EOS ID>\<date>\`. Les profils sont propres à chaque carte : une autre carte affiche ses propres joueurs.
+
+### Restaurer un joueur
+
+La liste affiche chaque joueur (nom, nom du survivant, EOS ID) avec son nombre de sauvegardes ; recherche par nom ou ID. Dépliez un joueur, puis cliquez sur **Restaurer** sur une version, **serveur arrêté** (il réécrirait le profil sinon).
+
+- Le niveau, l'expérience et les engrammes reviennent à cette version.
+- Le personnage dans le monde, son inventaire, la tribu et les autres joueurs ne changent pas : ils font partie de la sauvegarde du monde. Le fichier de tribu est gardé dans chaque version pour référence mais jamais restauré, car tous les membres le partagent.
+- Le profil actuel est d'abord sauvegardé, pour pouvoir revenir en arrière.
+
 ## Bonnes pratiques
 
 - **Activez la sauvegarde auto** dès le départ (toutes les heures par exemple)

@@ -504,6 +504,19 @@ const api = {
         saveDirectory,
       ),
   },
+  // Profils des joueurs ARK : sauvegarde à part du monde (serverId explicite)
+  arkProfiles: {
+    getConfig: (serverId: string) =>
+      ipcRenderer.invoke("ark:profiles:getConfig", serverId),
+    setConfig: (serverId: string, config: unknown) =>
+      ipcRenderer.invoke("ark:profiles:setConfig", serverId, config),
+    list: (serverId: string) =>
+      ipcRenderer.invoke("ark:profiles:list", serverId),
+    backupNow: (serverId: string) =>
+      ipcRenderer.invoke("ark:profiles:backupNow", serverId),
+    restore: (serverId: string, eosId: string, versionId: string) =>
+      ipcRenderer.invoke("ark:profiles:restore", serverId, eosId, versionId),
+  },
   // Mods CurseForge d'un serveur ARK (serverId explicite)
   arkMods: {
     get: (serverId: string) => ipcRenderer.invoke("ark:mods:get", serverId),

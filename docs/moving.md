@@ -18,7 +18,7 @@ Neither file contains the game itself, SteamCMD, backups, session logs or player
 
 The file contains:
 
-- the server list, and for each server: launch settings (Configuration page), backup settings, scheduled restart, auto-start, auto-restart, watch options and CPU priority (not the chosen cores);
+- the server list, and for each server: launch settings (Configuration page), backup settings (ARK player profiles included), scheduled restart, auto-start, auto-restart, watch options and CPU priority (not the chosen cores);
 - the app settings: language, notification area, beta versions, launch at Windows startup;
 - your custom firewall rules (Network page).
 

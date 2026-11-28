@@ -18,7 +18,7 @@ Aucun des deux fichiers ne contient le jeu lui-même, SteamCMD, les sauvegardes,
 
 Le fichier contient :
 
-- la liste des serveurs et, pour chacun : les réglages de lancement (page Configuration), les réglages de sauvegarde, le redémarrage planifié, le démarrage et la relance automatiques, les options de surveillance et la priorité du processeur (pas les cœurs choisis) ;
+- la liste des serveurs et, pour chacun : les réglages de lancement (page Configuration), les réglages de sauvegarde (profils des joueurs ARK compris), le redémarrage planifié, le démarrage et la relance automatiques, les options de surveillance et la priorité du processeur (pas les cœurs choisis) ;
 - les réglages de l'app : langue, zone de notification, versions bêta, lancement au démarrage de Windows ;
 - vos règles de pare-feu perso (page Réseau).
 

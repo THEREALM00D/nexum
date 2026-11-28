@@ -50,6 +50,11 @@ export const APP_ERRORS_FR: Record<AppErrorCode, string> = {
   ARK_MOD_DUPLICATE: "Le mod {{id}} est déjà dans la liste.",
   ARK_SETTING_INVALID: "Valeur invalide pour {{key}} : {{value}}",
   ARK_SETTING_UNKNOWN: "Réglage inconnu : {{key}}",
+  ARK_PROFILE_SERVER_RUNNING:
+    "Arrêtez le serveur pour restaurer le profil d'un joueur.",
+  ARK_PROFILE_NOT_FOUND: "Cette sauvegarde de profil n'existe plus.",
+  ARK_PROFILE_COPY_FAILED:
+    "Impossible de copier {{path}} ({{detail}}) : vérifiez que le dossier existe et que vous avez le droit d'y écrire.",
   CURSEFORGE_FORBIDDEN:
     "CurseForge refuse la clé de cette version de Nexum pour la recherche de mods.",
   CURSEFORGE_UNAVAILABLE:

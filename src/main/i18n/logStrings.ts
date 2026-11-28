@@ -62,6 +62,13 @@ const FR = {
     `Processeur : priorité Normale et tous les cœurs remis (${processes} processus, réglés avant par Nexum ou un autre outil).`,
   processTuningFailed: (reason: string) =>
     `Priorité et cœurs du processeur non appliqués (serveur lancé en administrateur ou par un autre utilisateur ?) : ${reason}`,
+  arkProfilesSaved: (count: number) =>
+    `Profils des joueurs sauvegardés : ${count} (les profils inchangés ne sont pas recopiés).`,
+  arkProfilesFailed: (reason: string) =>
+    `Sauvegarde des profils des joueurs impossible : ${reason}`,
+  arkProfileRestored: (name: string, date: string) =>
+    `Profil de ${name} restauré (version du ${date}). Le profil d'avant a été sauvegardé.`,
+  arkProfilesAnnounce: "Profils des joueurs sauvegardés.",
   stuckStartKilled: (minutes: number, attempt: number, max: number) =>
     `Le serveur n'a pas fini de démarrer après ${minutes} min (pas de ligne « prêt » dans son log) : arrêt forcé, relance dans 10 s (essai ${attempt} sur ${max}).`,
   stuckStartRestarted: (attempt: number, max: number) =>
@@ -271,6 +278,13 @@ const EN: typeof FR = {
     `Processor: Normal priority and all cores restored (${processes} process${processes > 1 ? "es" : ""}, set earlier by Nexum or another tool).`,
   processTuningFailed: (reason) =>
     `CPU priority and cores not applied (server started as administrator or by another user?): ${reason}`,
+  arkProfilesSaved: (count) =>
+    `Player profiles backed up: ${count} (unchanged profiles aren't copied again).`,
+  arkProfilesFailed: (reason) =>
+    `Couldn't back up the player profiles: ${reason}`,
+  arkProfileRestored: (name, date) =>
+    `${name}'s profile restored (version from ${date}). The previous profile was backed up.`,
+  arkProfilesAnnounce: "Player profiles backed up.",
   stuckStartKilled: (minutes, attempt, max) =>
     `The server hadn't finished starting after ${minutes} min (no "ready" line in its log): forced stop, restart in 10 s (attempt ${attempt} of ${max}).`,
   stuckStartRestarted: (attempt, max) =>

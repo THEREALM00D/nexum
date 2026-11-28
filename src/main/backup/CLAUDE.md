@@ -23,6 +23,10 @@ Intervalle 0 à 1440 min **par serveur**, active seulement serveur lancé. Tick 
 - Renvoie null si l'option est désactivée, si l'exe est absent (1re installation) ou si le dossier des mondes n'existe pas.
 - Échec → `AppError("BACKUP_BEFORE_UPDATE_FAILED")` et **la mise à jour n'est pas lancée**.
 
+## Profils des joueurs ARK
+
+À part du monde, dans `<dossier des sauvegardes>/player-profiles/<Carte>/` : voir `src/main/games/ark/CLAUDE.md`. `BackupManager.list` ne lit que les `.zip` du dossier, ce sous-dossier ne s'y mêle pas.
+
 ## UI
 
-Page partagée `components/backup/BackupPage` : `autoNoteKey` **obligatoire** (ce que contient une sauvegarde serveur lancé pour ce jeu), bouton optionnel « ouvrir le dossier des mondes », `renderExtra(refresh)` pour un bloc du jeu (carte Mondes de Dragonwilds).
+Page partagée `components/backup/BackupPage` : `autoNoteKey` **obligatoire** (ce que contient une sauvegarde serveur lancé pour ce jeu), bouton optionnel « ouvrir le dossier des mondes », `renderExtra(refresh)` pour un bloc du jeu (carte Mondes de Dragonwilds), `tabs` pour des onglets à côté de « Monde » (pas de barre d'onglets sans eux ; ARK : Profils des joueurs). Intervalles de sauvegarde auto : `BACKUP_INTERVALS` (`src/shared/backupIntervals.ts`) et `components/backup/BackupIntervalSelect`, communs au monde et aux profils.

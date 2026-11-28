@@ -127,6 +127,27 @@ Creating a backup can take from a few seconds to several minutes depending on th
 
 **Delete** button on each backup — confirmation required.
 
+## ARK: player profiles
+
+A player's level, experience and engrams are in their own profile file (`<EOS ID>.arkprofile`), next to the world. To fix a single player (bug, failed transfer) without rolling the whole world back for everyone, the ARK Backups page has a **Player profiles** tab, next to **World**.
+
+### Settings
+
+- **Profile backup**: interval, the same choices as the world backup, **Disabled** by default. Runs while the server is running, and also a few seconds after a player disconnects (the game writes the profile then; needs RCON, which Nexum uses to see who is online).
+- Only the profiles that **changed** since their last backup are copied: a player who hasn't played keeps their old versions instead of filling the list with identical copies.
+- **Backups to keep per player**: 1 to 100, 10 by default.
+- **Announce each backup in game**: a short chat message (RCON) after a scheduled backup or **Back up now**, not after a disconnection.
+
+Each version holds the player's `.arkprofile`, their `.arktributetribe` and their tribe's `.arktribe` file, copied as is in `<backup folder>\player-profiles\<map>\<EOS ID>\<date>\`. Profiles are per map: another map shows its own players.
+
+### Restore one player
+
+The list shows each player (name, survivor name, EOS ID) with their number of backups; search by name or ID. Unfold a player, then click **Restore** on a version, **with the server stopped** (it would overwrite the profile otherwise).
+
+- Level, experience and engrams go back to that version.
+- The character in the world, its inventory, the tribe and the other players don't change: they are part of the world save. The tribe file is kept in each version for reference but never restored, since all members share it.
+- The current profile is backed up first, so you can go back.
+
 ## Best practices
 
 - **Enable auto backup** from the start (every hour, for example)

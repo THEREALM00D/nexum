@@ -1,10 +1,6 @@
 import {
-  FormControl,
   IconButton,
-  InputLabel,
-  MenuItem,
   Paper,
-  Select,
   Stack,
   TextField,
   Tooltip,
@@ -17,6 +13,7 @@ import FolderField from "../common/FolderField";
 import { SkeletonChildren } from "../common/LoadingSkeleton";
 import SectionTitle from "../common/SectionTitle";
 import SwitchField from "../common/SwitchField";
+import BackupIntervalSelect from "./BackupIntervalSelect";
 
 interface Props {
   config: BackupConfig;
@@ -81,27 +78,13 @@ export default function BackupConfigPanel({
           />
 
           <Stack spacing={0.5}>
-            <FormControl size="small" sx={{ maxWidth: 280 }}>
-              <InputLabel>{t("backup.config.auto")}</InputLabel>
-              <Select
-                label={t("backup.config.auto")}
-                value={config.backupIntervalMinutes}
-                onChange={(e) =>
-                  onConfigChange({
-                    backupIntervalMinutes: Number(e.target.value),
-                  })
-                }
-              >
-                <MenuItem value={0}>{t("backup.config.autoOff")}</MenuItem>
-                <MenuItem value={15}>{t("backup.config.auto15")}</MenuItem>
-                <MenuItem value={30}>{t("backup.config.auto30")}</MenuItem>
-                <MenuItem value={60}>{t("backup.config.auto60")}</MenuItem>
-                <MenuItem value={180}>{t("backup.config.auto180")}</MenuItem>
-                <MenuItem value={360}>{t("backup.config.auto360")}</MenuItem>
-                <MenuItem value={720}>{t("backup.config.auto720")}</MenuItem>
-                <MenuItem value={1440}>{t("backup.config.auto1440")}</MenuItem>
-              </Select>
-            </FormControl>
+            <BackupIntervalSelect
+              label={t("backup.config.auto")}
+              value={config.backupIntervalMinutes}
+              onChange={(backupIntervalMinutes) =>
+                onConfigChange({ backupIntervalMinutes })
+              }
+            />
             <Typography variant="caption" sx={{ color: "text.secondary" }}>
               {t(autoNoteKey)}
             </Typography>

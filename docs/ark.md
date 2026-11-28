@@ -115,7 +115,7 @@ Use another game port **and** another query port (for example 7787 and 27016), p
 
 Stopping goes through RCON: Nexum asks the server to save, then sends `DoExit`; the server saves the world again and quits within about 20 seconds. Without RCON, the server can't be stopped cleanly (it ignores CTRL+Break, tested): Nexum stops it directly.
 
-The world is in `ShooterGame\Saved\SavedArks\<map>` (for example `TheIsland_WP\TheIsland_WP.ark`), or in `ShooterGame\Saved\<world folder>\<map>` when the **World folder** field (Configuration → General, Advanced) is set. The game also keeps there up to 4 full copies of the world (`.arkrbf` files) and an anti-corruption copy (`.bak`). Nexum's [backups](backups.md) leave these copies out: a backup only contains the world itself, about 6 times smaller.
+The world is in `ShooterGame\Saved\SavedArks\<map>` (for example `TheIsland_WP\TheIsland_WP.ark`), or in `ShooterGame\Saved\<world folder>\<map>` when the **World folder** field (Configuration → General, Advanced) is set. The game also keeps there up to 4 full copies of the world (`.arkrbf` files) and an anti-corruption copy (`.bak`). Nexum's [backups](backups.md) leave these copies out: a backup only contains the world itself, about 6 times smaller. Player profiles (`<EOS ID>.arkprofile`) can also be backed up on their own and restored one player at a time: see [ARK: player profiles](backups.md#ark-player-profiles).
 
 Good to know: a server started by Nexum stops when Nexum quits. Nexum asks first and stops it cleanly (see [Quitting Nexum with servers online](installation.md#quitting-nexum-with-servers-online)).
 

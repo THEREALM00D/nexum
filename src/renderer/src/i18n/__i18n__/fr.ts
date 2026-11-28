@@ -70,6 +70,7 @@ export default {
   },
   backup: {
     title: "Sauvegardes",
+    tabs: { world: "Monde" },
     config: {
       title: "Configuration",
       dir: "Dossier de sauvegarde",

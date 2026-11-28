@@ -50,6 +50,8 @@ export interface ServerConfig {
   arkConfig: ArkLaunchConfig;
   backup: BackupConfig;
   restart: RestartConfig;
+  /** ARK seulement : sauvegarde des profils des joueurs. */
+  arkProfileBackup: ArkProfileBackupConfig;
 }
 
 // Payload émis par le main vers le renderer pour chaque ligne de log
@@ -135,6 +137,36 @@ export interface BackupConfig {
   backupIntervalMinutes: number;
   /** Sauvegarde du monde avant chaque mise à jour du jeu ou des mods. */
   backupBeforeUpdate: boolean;
+}
+
+/**
+ * Sauvegarde des profils des joueurs ARK (`.arkprofile`), à part du monde.
+ * Clé à part de `BackupConfig` : la page Monde renvoie toute sa config.
+ */
+export interface ArkProfileBackupConfig {
+  /** 0 = désactivée. */
+  intervalMinutes: number;
+  /** Versions gardées par joueur. */
+  keep: number;
+  /** Message dans le chat (RCON) après une sauvegarde. */
+  announce: boolean;
+}
+
+export interface ArkProfileVersion {
+  /** Nom du dossier de la version (`YYYY-MM-DD_HH-MM-SS`). */
+  id: string;
+  createdAt: number;
+  size: number;
+}
+
+export interface ArkProfilePlayer {
+  eosId: string;
+  /** Nom du joueur lu dans le profil, null si illisible. */
+  playerName: string | null;
+  /** Nom du survivant. */
+  characterName: string | null;
+  /** Plus récente d'abord. */
+  versions: ArkProfileVersion[];
 }
 
 // --- Commandes du Dashboard (menu « ⋯ ») ---
@@ -501,6 +533,9 @@ export type AppErrorCode =
   | "ARK_MOD_DUPLICATE"
   | "ARK_SETTING_INVALID"
   | "ARK_SETTING_UNKNOWN"
+  | "ARK_PROFILE_SERVER_RUNNING"
+  | "ARK_PROFILE_NOT_FOUND"
+  | "ARK_PROFILE_COPY_FAILED"
   | "CURSEFORGE_UNAVAILABLE"
   | "CURSEFORGE_FORBIDDEN"
   // Réseau / téléchargements (registres de mods, SteamCMD, IP publique)

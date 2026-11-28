@@ -1,20 +1,11 @@
 import type { IpcContext } from "../../ipc/context";
 import { appErrorLogText } from "../../utils/appError";
 import { lt, managerLine } from "../../i18n/logStrings";
-import { ArkRconClient } from "./ArkRconClient";
-import { readRconSettings } from "./gameUserSettingsIni";
+import { arkRconClient as rconClient } from "./rcon";
 
 /** RCON répond lentement, voire pas, tant que le serveur charge le monde. */
 const AFTER_START_RETRY_MS = 20 * 1000;
 const AFTER_START_TIMEOUT_MS = 15 * 60 * 1000;
-
-function rconClient(ctx: IpcContext, serverId: string): ArkRconClient | null {
-  const rcon = readRconSettings(
-    ctx.getServerPath(serverId),
-    ctx.getServerConfig(serverId).arkConfig.rconPort,
-  );
-  return rcon.enabled ? new ArkRconClient(rcon.port, rcon.password) : null;
-}
 
 /**
  * `DestroyWildDinos` par RCON (pendant que le serveur tourne, toutes les

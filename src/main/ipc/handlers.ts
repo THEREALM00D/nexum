@@ -62,6 +62,10 @@ import { registerArkHandlers } from "../games/ark/handlers/config";
 import { registerArkModsHandlers } from "../games/ark/handlers/mods";
 import { registerArkSettingsHandlers } from "../games/ark/handlers/settings";
 import { registerArkLaunchImportHandlers } from "../games/ark/handlers/launchImport";
+import {
+  backupProfileAfterLeave,
+  registerArkProfileHandlers,
+} from "../games/ark/handlers/profiles";
 import { ArkRconClient } from "../games/ark/ArkRconClient";
 import { readRconSettings } from "../games/ark/gameUserSettingsIni";
 import { getGameStopConfig } from "../games/registry";
@@ -308,9 +312,13 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
       const shouldTrack = !!mgr && mgr.getStatus() === "running";
       const isTracked = trackedServers.has(server.id);
       if (shouldTrack && !isTracked) {
+        // ARK : profil du joueur parti sauvegardé (si l'option est active).
         playerHistories
           .getOrCreate(server.id)
-          .start(getApiClientForServer(server.id));
+          .start(getApiClientForServer(server.id), {
+            onLeave: (entry) =>
+              backupProfileAfterLeave(ctx, server.id, entry.userId),
+          });
         trackedServers.add(server.id);
       } else if (!shouldTrack && isTracked) {
         playerHistories.getOrCreate(server.id).stop();
@@ -424,5 +432,6 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
   registerArkModsHandlers(ctx);
   registerArkSettingsHandlers(ctx);
   registerArkLaunchImportHandlers(ctx);
+  registerArkProfileHandlers(ctx);
   return ctx;
 }

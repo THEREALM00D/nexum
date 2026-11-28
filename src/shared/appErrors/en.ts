@@ -46,6 +46,10 @@ export const APP_ERRORS_EN: Record<AppErrorCode, string> = {
   ARK_MOD_DUPLICATE: "Mod {{id}} is already in the list.",
   ARK_SETTING_INVALID: "Invalid value for {{key}}: {{value}}",
   ARK_SETTING_UNKNOWN: "Unknown setting: {{key}}",
+  ARK_PROFILE_SERVER_RUNNING: "Stop the server to restore a player profile.",
+  ARK_PROFILE_NOT_FOUND: "This profile backup no longer exists.",
+  ARK_PROFILE_COPY_FAILED:
+    "Can't copy {{path}} ({{detail}}): check that the folder exists and that you're allowed to write to it.",
   CURSEFORGE_FORBIDDEN:
     "CurseForge rejects this Nexum build's key for mod search.",
   CURSEFORGE_UNAVAILABLE:

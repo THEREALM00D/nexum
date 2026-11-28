@@ -70,6 +70,7 @@ export default {
   },
   backup: {
     title: "Backups",
+    tabs: { world: "World" },
     config: {
       title: "Configuration",
       dir: "Backup folder",

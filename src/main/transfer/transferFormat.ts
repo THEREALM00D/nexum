@@ -10,6 +10,7 @@ import { sanitizeArkLaunch } from "../games/ark/launchConfig";
 import { withRestartDefaults } from "../servers/restartDefaults";
 import { AppError } from "../utils/appError";
 import { CPU_PRIORITIES } from "../../shared/processTuning";
+import { sanitizeArkProfileBackup } from "../../shared/arkProfiles";
 import {
   inWatchdogRange,
   RAM_LIMIT_RANGE,
@@ -96,6 +97,7 @@ export function parseServerEntry(raw: unknown): TransferServerEntry {
   const config: ServerConfig = {
     ...picked,
     restart: withRestartDefaults(isObj(rawRestart) ? rawRestart : undefined),
+    arkProfileBackup: sanitizeArkProfileBackup(picked.arkProfileBackup),
     arkConfig: sanitizeArkLaunch({
       ...picked.arkConfig,
       launchOptions: isObj(rawArkConfig)

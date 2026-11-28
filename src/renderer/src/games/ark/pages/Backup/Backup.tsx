@@ -1,6 +1,16 @@
 import { useServer } from "../../../../context/ServerContext";
 import BackupPage from "../../../../components/backup/BackupPage";
 import { arkConfigService } from "../../services/configService";
+import ProfilesTab from "./components/ProfilesTab";
+
+// Onglet à côté de « Monde » : profils des joueurs, sauvegardés à part.
+const TABS = [
+  {
+    value: "profiles",
+    labelKey: "arkBackup.profiles.tab",
+    render: () => <ProfilesTab />,
+  },
+];
 
 export default function ArkBackup() {
   const { state } = useServer();
@@ -22,6 +32,7 @@ export default function ArkBackup() {
       autoNoteKey="arkBackup.autoNote"
       onOpenSaveFolder={openSaveFolder}
       openFolderTooltipKey="arkBackup.openWorldFolder"
+      tabs={TABS}
     />
   );
 }

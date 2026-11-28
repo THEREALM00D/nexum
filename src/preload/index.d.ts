@@ -43,6 +43,8 @@ import type {
   ArkModSearchParams,
   ArkModSearchPage,
   ArkModCategory,
+  ArkProfileBackupConfig,
+  ArkProfilePlayer,
   ValheimMod,
   ValheimModConfigFile,
   InstallBatch,
@@ -512,6 +514,23 @@ interface API {
     ) => Promise<{ success: boolean; error?: string }>;
     search: (params: ArkModSearchParams) => Promise<ArkModSearchPage>;
     categories: () => Promise<ArkModCategory[]>;
+  };
+  arkProfiles: {
+    getConfig: (serverId: string) => Promise<ArkProfileBackupConfig>;
+    setConfig: (
+      serverId: string,
+      config: ArkProfileBackupConfig,
+    ) => Promise<ArkProfileBackupConfig>;
+    list: (serverId: string) => Promise<ArkProfilePlayer[]>;
+    /** `saved` : nombre de profils copiés (les inchangés ne le sont pas). */
+    backupNow: (
+      serverId: string,
+    ) => Promise<{ success: boolean; saved?: number; error?: string }>;
+    restore: (
+      serverId: string,
+      eosId: string,
+      versionId: string,
+    ) => Promise<{ success: boolean; error?: string }>;
   };
   /** Changer de PC. Les exports renvoient le chemin écrit, null si annulé. */
   transfer: {

@@ -1,6 +1,7 @@
 import type { IpcContext } from "../ipc/context";
 import { backupServer } from "../backup/serverBackup";
 import { destroyWildDinos } from "../games/ark/wildDinos";
+import { backupPlayerProfiles } from "../games/ark/profiles/profileBackups";
 import { appErrorLogText } from "../utils/appError";
 import { lt, managerLine } from "../i18n/logStrings";
 import { nextRestartAt } from "../../shared/restartSchedule";
@@ -13,6 +14,7 @@ export interface IntervalSchedulers {
   backup: IntervalScheduler;
   updateCheck: IntervalScheduler;
   wildDinos: IntervalScheduler;
+  arkProfiles: IntervalScheduler;
 }
 
 export function createIntervalSchedulers(): IntervalSchedulers {
@@ -20,6 +22,7 @@ export function createIntervalSchedulers(): IntervalSchedulers {
     backup: new IntervalScheduler(),
     updateCheck: new IntervalScheduler(),
     wildDinos: new IntervalScheduler(),
+    arkProfiles: new IntervalScheduler(),
   };
 }
 
@@ -113,6 +116,30 @@ export function startSchedulers(
     }),
     async (serverId) => {
       if (isRunning(serverId)) await destroyWildDinos(ctx, serverId);
+    },
+  );
+
+  // ARK : profils des joueurs (seulement ceux qui ont changé), à intervalle.
+  schedulers.arkProfiles.start(
+    schedulesOf((serverId) => {
+      const server = ctx.servers.list().find((item) => item.id === serverId);
+      return server?.gameType === "ark"
+        ? ctx.getServerConfig(serverId).arkProfileBackup.intervalMinutes
+        : 0;
+    }),
+    async (serverId) => {
+      if (!isRunning(serverId)) return;
+      try {
+        await backupPlayerProfiles(ctx, serverId, { announce: true });
+      } catch (error) {
+        ctx.serverManagers
+          .getOrCreate(serverId)
+          .log(
+            managerLine(
+              lt().arkProfilesFailed(appErrorLogText((error as Error).message)),
+            ),
+          );
+      }
     },
   );
 }

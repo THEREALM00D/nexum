@@ -12,6 +12,10 @@ import type { AppStore } from "../ipc/context";
 import { DEFAULT_RESTART } from "../../shared/restartSchedule";
 import { withRestartDefaults } from "./restartDefaults";
 import {
+  DEFAULT_ARK_PROFILE_BACKUP,
+  sanitizeArkProfileBackup,
+} from "../../shared/arkProfiles";
+import {
   DEFAULT_VALHEIM_CONFIG,
   storedValheimConfig,
   withValheimDefaults,
@@ -58,6 +62,7 @@ export const DEFAULT_SERVER_CONFIG: ServerConfig = {
   arkConfig: DEFAULT_ARK_CONFIG,
   backup: DEFAULT_BACKUP,
   restart: DEFAULT_RESTART,
+  arkProfileBackup: DEFAULT_ARK_PROFILE_BACKUP,
 };
 
 export class ServerConfigStore {
@@ -89,6 +94,7 @@ export class ServerConfigStore {
       arkConfig: sanitizeArkLaunch(existing.arkConfig),
       backup: { ...DEFAULT_BACKUP, ...existing.backup },
       restart: withRestartDefaults(existing.restart),
+      arkProfileBackup: sanitizeArkProfileBackup(existing.arkProfileBackup),
     };
   }
 
@@ -112,6 +118,10 @@ export class ServerConfigStore {
       arkConfig: { ...current.arkConfig, ...patch.arkConfig },
       backup: { ...current.backup, ...patch.backup },
       restart: withRestartDefaults(patch.restart, current.restart),
+      arkProfileBackup: sanitizeArkProfileBackup({
+        ...current.arkProfileBackup,
+        ...patch.arkProfileBackup,
+      }),
     };
     const all = this.store.get(
       "serversConfig",
@@ -177,6 +187,7 @@ export class ServerConfigStore {
         backupBeforeUpdate: DEFAULT_BACKUP.backupBeforeUpdate,
       },
       restart: withRestartDefaults(this.store.get("restartSchedule")),
+      arkProfileBackup: DEFAULT_ARK_PROFILE_BACKUP,
     };
     this.store.set("serversConfig", { ...all, [firstServerId]: legacy });
   }

@@ -1,10 +1,17 @@
-import type { ReactNode } from "react";
-import { Stack } from "@mui/material";
+import { useState, type ReactNode } from "react";
+import { Stack, Tab, Tabs } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useBackup } from "../../hooks/useBackup";
 import BackupConfigPanel from "./BackupConfig";
 import BackupList from "./BackupList";
 import PageHeader from "../common/PageHeader";
+
+/** Onglet propre au jeu, à côté de « Monde » (ARK : profils des joueurs). */
+export interface BackupTab {
+  value: string;
+  labelKey: string;
+  render: () => ReactNode;
+}
 
 interface BackupPageProps {
   subtitleKey: string;
@@ -23,7 +30,11 @@ interface BackupPageProps {
    * sauvegardes après une action qui en crée une.
    */
   renderExtra?: (refresh: () => Promise<void>) => ReactNode;
+  /** Onglets du jeu : sans eux, pas de barre d'onglets. */
+  tabs?: BackupTab[];
 }
+
+const WORLD_TAB = "world";
 
 /** Page « Sauvegardes » commune aux jeux : seuls le texte et les extras changent. */
 export default function BackupPage({
@@ -32,9 +43,12 @@ export default function BackupPage({
   onOpenSaveFolder,
   openFolderTooltipKey,
   renderExtra,
+  tabs,
 }: BackupPageProps) {
   const { t } = useTranslation();
   const backup = useBackup();
+  const [tab, setTab] = useState(WORLD_TAB);
+  const gameTab = tabs?.find((candidate) => candidate.value === tab);
 
   return (
     <Stack spacing={3} sx={{ height: "100%" }}>
@@ -45,27 +59,52 @@ export default function BackupPage({
         folderTooltip={openFolderTooltipKey && t(openFolderTooltipKey)}
       />
 
-      <BackupConfigPanel
-        config={backup.config}
-        loading={backup.loading}
-        onSelectDir={backup.handleSelectDir}
-        onConfigChange={backup.handleConfigChange}
-        autoNoteKey={autoNoteKey}
-      />
+      {tabs && (
+        <Tabs
+          value={tab}
+          onChange={(_, value: string) => setTab(value)}
+          variant="scrollable"
+          allowScrollButtonsMobile
+          sx={{ borderBottom: 1, borderColor: "divider", flexShrink: 0 }}
+        >
+          <Tab value={WORLD_TAB} label={t("backup.tabs.world")} />
+          {tabs.map((candidate) => (
+            <Tab
+              key={candidate.value}
+              value={candidate.value}
+              label={t(candidate.labelKey)}
+            />
+          ))}
+        </Tabs>
+      )}
 
-      {renderExtra?.(backup.refresh)}
+      {gameTab ? (
+        gameTab.render()
+      ) : (
+        <>
+          <BackupConfigPanel
+            config={backup.config}
+            loading={backup.loading}
+            onSelectDir={backup.handleSelectDir}
+            onConfigChange={backup.handleConfigChange}
+            autoNoteKey={autoNoteKey}
+          />
 
-      <BackupList
-        backups={backup.backups}
-        loading={backup.loading}
-        creating={backup.creating}
-        restoring={backup.restoring}
-        serverPath={backup.serverPath}
-        status={backup.status}
-        onCreate={backup.handleCreate}
-        onRestore={backup.handleRestore}
-        onDelete={backup.handleDelete}
-      />
+          {renderExtra?.(backup.refresh)}
+
+          <BackupList
+            backups={backup.backups}
+            loading={backup.loading}
+            creating={backup.creating}
+            restoring={backup.restoring}
+            serverPath={backup.serverPath}
+            status={backup.status}
+            onCreate={backup.handleCreate}
+            onRestore={backup.handleRestore}
+            onDelete={backup.handleDelete}
+          />
+        </>
+      )}
     </Stack>
   );
 }
