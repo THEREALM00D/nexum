@@ -43,7 +43,11 @@ export default function CraftingCostCard({
   return (
     <Paper variant="outlined" sx={{ p: 2 }}>
       <Stack spacing={1.5}>
-        <Stack direction="row" sx={{ gap: 1.5, alignItems: "center" }}>
+        <Stack
+          direction="row"
+          useFlexGap
+          sx={{ gap: 1.5, flexWrap: "wrap", alignItems: "center" }}
+        >
           <TextField
             size="small"
             label={t("arkListsUi.craftingItem")}
@@ -51,7 +55,7 @@ export default function CraftingCostCard({
             value={cost.item}
             disabled={disabled}
             onChange={(event) => set({ item: event.target.value })}
-            sx={{ flex: 1 }}
+            sx={{ flex: "1 1 260px" }}
             slotProps={{ htmlInput: { style: { fontFamily: FONT_MONO } } }}
           />
           <Tooltip title={remove}>

@@ -35,21 +35,42 @@ const RESOURCE_FIELDS = [
   "bCraftingRequireExactResourceType",
 ];
 
+/**
+ * Ressource lue, ou null si Nexum ne saurait pas la réécrire à l'identique
+ * (pas une structure, sans classe ni quantité, « type exact » illisible).
+ */
+function parseResource(value: UeValue): ArkCraftingResource | null {
+  if (Array.isArray(value) || value.kind !== "struct") return null;
+  const resource = ueFieldText(value, "ResourceItemTypeString");
+  const quantity = ueFieldText(value, "BaseResourceRequirement");
+  if (!resource || !quantity) return null;
+  const exactText = ueFieldText(value, "bCraftingRequireExactResourceType");
+  const exact = exactText === undefined ? false : ueBool(exactText);
+  if (exact === null) return null;
+  return {
+    resource,
+    quantity,
+    exact,
+    extra: extraFields(value, RESOURCE_FIELDS),
+  };
+}
+
+/**
+ * Entrée lue. ⚠️ Sans ressource ou avec une ressource illisible : null,
+ * donc gardée telle quelle comme entrée illisible (`readEntries`). Sinon
+ * l'enregistrement de la liste l'effaçait (un objet sans ressource n'est
+ * jamais écrit) ou perdait la ressource mal formée.
+ */
 function parseCost(value: UeValue): ArkCraftingCost | null {
   const item = ueFieldText(value, "ItemClassString");
   if (!item) return null;
+  const resources = ueList(ueField(value, "BaseCraftingResourceRequirements"));
+  const parsed = resources.map(parseResource);
+  if (parsed.length === 0 || parsed.some((resource) => resource === null))
+    return null;
   return {
     item,
-    resources: ueList(ueField(value, "BaseCraftingResourceRequirements")).map(
-      (resource): ArkCraftingResource => ({
-        resource: ueFieldText(resource, "ResourceItemTypeString") ?? "",
-        quantity: ueFieldText(resource, "BaseResourceRequirement") ?? "",
-        exact:
-          ueBool(ueFieldText(resource, "bCraftingRequireExactResourceType")) ===
-          true,
-        extra: extraFields(resource, RESOURCE_FIELDS),
-      }),
-    ),
+    resources: parsed as ArkCraftingResource[],
     extra: extraFields(value, COST_FIELDS),
   };
 }
@@ -72,7 +93,18 @@ function quantityText(value: string): string {
 
 function formatCost(cost: ArkCraftingCost): string | null {
   const item = classText(CRAFTING_KEY, cost.item);
-  if (item === undefined) return null;
+  if (item === undefined) {
+    // Ressources remplies sans objet : refusé plutôt qu'abandonné en silence.
+    const filled = (cost.resources ?? []).some(
+      (resource) => (resource.resource ?? "").trim() !== "",
+    );
+    if (filled)
+      throw new AppError("ARK_SETTING_INVALID", {
+        key: CRAFTING_KEY,
+        value: "",
+      });
+    return null;
+  }
   const resources = (cost.resources ?? []).flatMap((resource) => {
     const className = classText(CRAFTING_KEY, resource.resource);
     if (className === undefined) return [];
