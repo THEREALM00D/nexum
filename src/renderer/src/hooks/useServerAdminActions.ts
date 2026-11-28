@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { AdminCapabilities } from "@shared/types";
 import { useNotification } from "../context/NotificationContext";
@@ -15,6 +15,15 @@ export function useServerAdminActions(serverId: string, serverName: string) {
   const [capabilities, setCapabilities] = useState<AdminCapabilities | null>(
     null,
   );
+
+  // Lues dès l'affichage (sinon, à la 1re ouverture, les entrées passaient
+  // de grisées sans raison à actives), puis relues à chaque ouverture.
+  useEffect(() => {
+    window.api.server
+      .getCapabilities(serverId)
+      .then(setCapabilities)
+      .catch(() => setCapabilities(null));
+  }, [serverId]);
 
   const loadCapabilities = async () => {
     try {

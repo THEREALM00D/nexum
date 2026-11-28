@@ -41,7 +41,7 @@ Quand le serveur tourne (ou démarre, ou s'arrête), le bouton **⋯** après **
 
 - **Sauvegarder le monde maintenant** : ARK avec RCON (`SaveWorld`), Palworld avec l'API REST. Une ligne dans les logs le confirme.
 - **Envoyer un message aux joueurs** : affiché dans le chat du jeu (ARK avec RCON, Palworld avec l'API REST). ARK n'affiche pas les accents : Nexum les retire et montre le texte envoyé. La fenêtre donne aussi le nombre de joueurs connectés.
-- **Tuer le processus** : arrête le serveur tout de suite avec `taskkill`, sans prévenir les joueurs ni sauvegarder ; tout ce qui s'est passé depuis la dernière sauvegarde du jeu est perdu. À utiliser seulement quand **Arrêter** ne répond plus. Une confirmation est demandée avant. Un serveur tué n'est pas compté comme un plantage : il n'est pas relancé, même avec **Relancer automatiquement après un plantage**.
+- **Tuer le processus** : arrête le serveur tout de suite avec `taskkill`, sans prévenir les joueurs ni sauvegarder ; tout ce qui s'est passé depuis la dernière sauvegarde du jeu est perdu. À utiliser seulement quand **Arrêter** ne répond plus. Une confirmation est demandée avant. Un serveur tué n'est pas compté comme un plantage : il n'est pas relancé, même avec **Relancer automatiquement après un plantage**. Un redémarrage déjà en cours (bouton, planification, tous les serveurs) continue : Tuer ne fait que débloquer son arrêt.
 
 Quand le jeu n'a pas de commande pour cela, ou que RCON / l'API REST est désactivé, l'entrée est grisée et dit pourquoi.
 

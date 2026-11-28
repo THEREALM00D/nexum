@@ -46,7 +46,7 @@ const FR = {
   waitingGraceful: (s: number) => `Attente de l'arrêt propre (${s} s)...`,
   forceKill: "Arrêt forcé via taskkill...",
   killRequested:
-    "Processus tué depuis le Dashboard, sans annonce ni sauvegarde.",
+    "Arrêt forcé demandé depuis le Dashboard, sans annonce ni sauvegarde.",
   saveNowRequested: "Sauvegarde du monde demandée depuis le Dashboard...",
   saveNowDone: "Monde sauvegardé.",
   gracefulSignal: (signal: ConsoleSignal) =>
@@ -232,7 +232,7 @@ const EN: typeof FR = {
   waitingGraceful: (s) => `Waiting for a clean shutdown (${s} s)...`,
   forceKill: "Forcing the stop (taskkill)...",
   killRequested:
-    "Process killed from the Dashboard, without warning or saving.",
+    "Forced stop requested from the Dashboard, without warning or saving.",
   saveNowRequested: "World save requested from the Dashboard...",
   saveNowDone: "World saved.",
   gracefulSignal: (signal: ConsoleSignal) =>

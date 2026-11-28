@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import {
   Button,
   Divider,
@@ -6,6 +6,7 @@ import {
   ListItemText,
   Menu,
   MenuItem,
+  Tooltip,
 } from "@mui/material";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import SaveIcon from "@mui/icons-material/Save";
@@ -36,6 +37,7 @@ export default function ServerActionsMenu({ server, status }: Props) {
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
   const [messageOpen, setMessageOpen] = useState(false);
   const [killOpen, setKillOpen] = useState(false);
+  const menuId = useId();
   const actions = useServerAdminActions(server.id, server.name);
   const { capabilities } = actions;
   const running = status === "running";
@@ -49,21 +51,25 @@ export default function ServerActionsMenu({ server, status }: Props) {
 
   return (
     <>
-      <Button
-        variant="outlined"
-        color="inherit"
-        aria-label={t("serverMenu.more")}
-        aria-haspopup="menu"
-        aria-expanded={anchor !== null}
-        onClick={(event) => {
-          setAnchor(event.currentTarget);
-          void actions.loadCapabilities();
-        }}
-        sx={{ minWidth: 0, px: 1 }}
-      >
-        <MoreHorizIcon />
-      </Button>
+      <Tooltip title={t("serverMenu.more")}>
+        <Button
+          variant="outlined"
+          color="inherit"
+          aria-label={t("serverMenu.more")}
+          aria-haspopup="menu"
+          aria-expanded={anchor !== null}
+          aria-controls={anchor ? menuId : undefined}
+          onClick={(event) => {
+            setAnchor(event.currentTarget);
+            void actions.loadCapabilities();
+          }}
+          sx={{ minWidth: 0, px: 1 }}
+        >
+          <MoreHorizIcon />
+        </Button>
+      </Tooltip>
       <Menu
+        id={menuId}
         anchorEl={anchor}
         open={anchor !== null}
         onClose={() => setAnchor(null)}

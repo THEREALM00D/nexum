@@ -38,6 +38,10 @@ export default function SendMessageDialog({
   }, [open]);
 
   const players = capabilities?.players;
+  // ARK : un message fait seulement d'émojis arriverait vide.
+  const sendable = capabilities?.asciiChat
+    ? toAsciiChatText(message).trim() !== ""
+    : message.trim() !== "";
   const send = async () => {
     setSending(true);
     try {
@@ -92,7 +96,7 @@ export default function SendMessageDialog({
         <Button
           variant="contained"
           startIcon={<SendIcon />}
-          disabled={!message.trim() || sending}
+          disabled={!sendable || sending}
           onClick={send}
         >
           {t("serverMenu.send")}

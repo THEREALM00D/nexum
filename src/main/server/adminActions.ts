@@ -5,6 +5,7 @@ import type {
 import type { IpcContext } from "../ipc/context";
 import { getGameSaveRequest } from "../games/saveRequests";
 import { createGracefulShutdown } from "./shutdownClient";
+import { toAsciiChatText } from "../../shared/chatText";
 import { AppError, appErrorLogText } from "../utils/appError";
 import { lt, managerLine } from "../i18n/logStrings";
 
@@ -88,6 +89,8 @@ export async function sendMessage(
   if (!text) return;
   const graceful = createGracefulShutdown(ctx.getStopConfig(serverId));
   if (!graceful) throw new AppError("REMOTE_ADMIN_UNAVAILABLE");
+  // Que des caractères que le jeu retire (émojis…) : rien à envoyer.
+  if (graceful.asciiChat && !toAsciiChatText(text).trim()) return;
   try {
     await graceful.client.announce(text);
     manager.log(managerLine(lt().announceSent(text)));
