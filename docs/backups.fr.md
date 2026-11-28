@@ -127,6 +127,34 @@ Bouton **Restaurer** sur chaque sauvegarde :
 
 Bouton **Supprimer** sur chaque sauvegarde — confirmation requise.
 
+## Fichiers de configuration
+
+L'onglet **Configuration** de la page Sauvegardes (tous les jeux) garde des copies des fichiers de config du jeu, à part du monde :
+
+| Jeu                    | Fichiers                                                    |
+| ---------------------- | ----------------------------------------------------------- |
+| Palworld               | `PalWorldSettings.ini`, `GameUserSettings.ini`              |
+| ARK                    | `GameUserSettings.ini`, `Game.ini`                          |
+| Astroneer              | `AstroServerSettings.ini`, `Engine.ini`                     |
+| RuneScape: Dragonwilds | `DedicatedServer.ini`                                       |
+| Enshrouded             | `enshrouded_server.json`                                    |
+| Valheim                | listes admin, bannis et autorisés, dossier `BepInEx/config` |
+
+Une copie n'est faite que si un fichier a changé depuis la dernière : les copies restent petites et chacune correspond à un vrai changement. Activé par défaut :
+
+- **Sauvegarde automatique** : toutes les heures pendant que le serveur tourne (mêmes choix que la sauvegarde du monde).
+- **Sauvegarder avant chaque enregistrement** : quand Nexum écrit un fichier de config (page Configuration, listes, reprise d'une ligne de lancement…). Une copie par enregistrement, même quand plusieurs fichiers sont écrits.
+- **Sauvegarder avant chaque démarrage** : le jeu, une mise à jour ou un mod réécrit souvent sa config au démarrage.
+- **Sauvegardes à conserver** : 20 par défaut (de 1 à 100), toutes raisons confondues.
+
+Chaque copie affiche sa date, sa raison (**Avant enregistrement**, **Avant démarrage**, **Avant restauration**), les fichiers modifiés depuis la copie précédente et sa taille.
+
+- **Voir les différences** : compare une copie aux fichiers d'aujourd'hui, fichier par fichier. En rouge ce que la copie contient, en vert ce qu'il y a aujourd'hui. Les mots de passe sont masqués.
+- **Restaurer** (serveur arrêté) : remet les fichiers de la copie. La configuration actuelle est d'abord sauvegardée, et chaque fichier garde une copie `.backup`. Un fichier absent de la copie est laissé tel quel.
+- **Supprimer** : retire une copie.
+
+Les copies sont dans `<dossier de sauvegarde>\config\`.
+
 ## ARK : profils des joueurs
 
 Le niveau, l'expérience et les engrammes d'un joueur sont dans son propre fichier de profil (`<EOS ID>.arkprofile`), à côté du monde. Pour réparer un seul joueur (bug, transfert raté) sans faire reculer tout le monde, la page Sauvegardes d'ARK a un onglet **Profils des joueurs**, à côté de **Monde**.

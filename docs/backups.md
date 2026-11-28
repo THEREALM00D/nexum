@@ -127,6 +127,34 @@ Creating a backup can take from a few seconds to several minutes depending on th
 
 **Delete** button on each backup — confirmation required.
 
+## Configuration files
+
+The **Configuration** tab of the Backups page (every game) keeps copies of the game's config files, apart from the world:
+
+| Game                   | Files                                                      |
+| ---------------------- | ---------------------------------------------------------- |
+| Palworld               | `PalWorldSettings.ini`, `GameUserSettings.ini`             |
+| ARK                    | `GameUserSettings.ini`, `Game.ini`                         |
+| Astroneer              | `AstroServerSettings.ini`, `Engine.ini`                    |
+| RuneScape: Dragonwilds | `DedicatedServer.ini`                                      |
+| Enshrouded             | `enshrouded_server.json`                                   |
+| Valheim                | admin, banned and permitted lists, `BepInEx/config` folder |
+
+A copy is made only when a file changed since the last one, so the copies stay small and each one is a real change. On by default:
+
+- **Automatic backup**: every hour while the server runs (same choices as the world backup).
+- **Back up before each save**: when Nexum writes a config file (Configuration page, lists, launch line import…). One copy per save, even when several files are written.
+- **Back up before each start**: the game, an update or a mod often rewrites its config at startup.
+- **Backups to keep**: 20 by default (1 to 100), all kinds together.
+
+Each copy shows its date, why it was made (**Before save**, **Before start**, **Before restore**), the files that changed since the previous copy and its size.
+
+- **View differences**: compares a copy with today's files, file by file. In red what the copy holds, in green what's there today. Passwords are hidden.
+- **Restore** (server stopped): puts the files of the copy back. The current configuration is backed up first, and each file keeps a `.backup` copy. A file that didn't exist in the copy is left as it is.
+- **Delete**: removes a copy.
+
+The copies are in `<backup folder>\config\`.
+
 ## ARK: player profiles
 
 A player's level, experience and engrams are in their own profile file (`<EOS ID>.arkprofile`), next to the world. To fix a single player (bug, failed transfer) without rolling the whole world back for everyone, the ARK Backups page has a **Player profiles** tab, next to **World**.

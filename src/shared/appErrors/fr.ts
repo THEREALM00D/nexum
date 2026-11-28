@@ -53,6 +53,11 @@ export const APP_ERRORS_FR: Record<AppErrorCode, string> = {
   ARK_PROFILE_SERVER_RUNNING:
     "Arrêtez le serveur pour restaurer le profil d'un joueur.",
   ARK_PROFILE_NOT_FOUND: "Cette sauvegarde de profil n'existe plus.",
+  CONFIG_BACKUP_SERVER_RUNNING:
+    "Arrêtez le serveur pour restaurer sa configuration.",
+  CONFIG_BACKUP_NOT_FOUND: "Cette sauvegarde de configuration n'existe plus.",
+  CONFIG_BACKUP_FAILED:
+    "Sauvegarde de la configuration impossible : {{path}} ({{detail}}). Vérifiez que le dossier de sauvegarde est accessible.",
   ARK_MODS_SERVER_RUNNING:
     "Arrêtez le serveur, et les autres serveurs installés dans le même dossier, pour nettoyer le dossier des mods.",
   ARK_MODS_CLEAN_FAILED:

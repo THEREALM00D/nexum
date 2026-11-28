@@ -6,6 +6,7 @@ import { appErrorLogText } from "../utils/appError";
 import { lt, managerLine } from "../i18n/logStrings";
 import { nextRestartAt } from "../../shared/restartSchedule";
 import { IntervalScheduler } from "./IntervalScheduler";
+import { configBackupQuietly } from "../backup/config/configBackupQuietly";
 import { runScheduledRestart } from "./scheduledRestart";
 import { checkUpdateWhileRunning } from "./updateWatch";
 
@@ -15,6 +16,7 @@ export interface IntervalSchedulers {
   updateCheck: IntervalScheduler;
   wildDinos: IntervalScheduler;
   arkProfiles: IntervalScheduler;
+  configBackup: IntervalScheduler;
 }
 
 export function createIntervalSchedulers(): IntervalSchedulers {
@@ -23,13 +25,14 @@ export function createIntervalSchedulers(): IntervalSchedulers {
     updateCheck: new IntervalScheduler(),
     wildDinos: new IntervalScheduler(),
     arkProfiles: new IntervalScheduler(),
+    configBackup: new IntervalScheduler(),
   };
 }
 
 /**
  * Démarre les tâches planifiées de tous les serveurs : redémarrage, sauvegarde
- * auto, vérification des mises à jour, créatures sauvages et profils des
- * joueurs d'ARK. Chaque
+ * auto, copie de la config du jeu, vérification des mises à jour, créatures
+ * sauvages et profils des joueurs d'ARK. Chaque
  * tick relit la config : un réglage changé s'applique sans rien réarmer.
  */
 export function startSchedulers(
@@ -117,6 +120,16 @@ export function startSchedulers(
     }),
     async (serverId) => {
       if (isRunning(serverId)) await destroyWildDinos(ctx, serverId);
+    },
+  );
+
+  // Fichiers de config du jeu (copie seulement si un fichier a changé).
+  schedulers.configBackup.start(
+    schedulesOf(
+      (serverId) => ctx.getServerConfig(serverId).configBackup.intervalMinutes,
+    ),
+    async (serverId) => {
+      if (isRunning(serverId)) configBackupQuietly(ctx, serverId, "interval");
     },
   );
 

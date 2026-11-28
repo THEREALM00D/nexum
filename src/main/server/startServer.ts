@@ -12,6 +12,7 @@ import { checkModUpdatesOnStart } from "../games/valheim/modUpdateCheck";
 import { checkGameUpdateOnStart } from "./gameUpdateCheck";
 import { runAfterStartTask } from "../games/afterStart";
 import { scheduleProcessTuning } from "./processTuning";
+import { configBackupQuietly } from "../backup/config/configBackupQuietly";
 import { appError, appErrorLogText } from "../utils/appError";
 import { lt, managerLine } from "../i18n/logStrings";
 import { notifyStartFailed } from "./serverAlerts";
@@ -107,6 +108,10 @@ export async function startServer(
   const spec = getLaunchSpec(gameType, serverPath, ctx.getServerConfig(id));
 
   const manager = ctx.serverManagers.getOrCreate(id);
+  // Avant le lancement (et avant `prepare`) : le jeu ou un mod réécrit
+  // souvent sa config au démarrage.
+  if (ctx.getServerConfig(id).configBackup.beforeStart)
+    configBackupQuietly(ctx, id, "beforeStart");
   const result = await manager.start(serverPath, spec, sendLog);
   // Après start() : le démarrage ouvre une nouvelle session de log (vue vidée,
   // nouveau fichier), la liste des mods doit y figurer.
@@ -143,6 +148,8 @@ export async function restartServer(
   const gameType = server?.gameType ?? "palworld";
   const serverPath = ctx.getServerPath(id);
   const manager = ctx.serverManagers.getOrCreate(id);
+  if (ctx.getServerConfig(id).configBackup.beforeStart)
+    configBackupQuietly(ctx, id, "beforeStart");
   const result = await manager.restart(
     serverPath,
     getLaunchSpec(gameType, serverPath, ctx.getServerConfig(id)),

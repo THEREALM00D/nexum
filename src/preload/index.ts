@@ -504,6 +504,25 @@ const api = {
         saveDirectory,
       ),
   },
+  // Copies des fichiers de config du jeu (onglet Configuration des Sauvegardes)
+  configBackup: {
+    getConfig: (serverId: string) =>
+      ipcRenderer.invoke("configBackup:getConfig", serverId),
+    setConfig: (serverId: string, settings: unknown) =>
+      ipcRenderer.invoke("configBackup:setConfig", serverId, settings),
+    list: (serverId: string) =>
+      ipcRenderer.invoke("configBackup:list", serverId),
+    files: (serverId: string) =>
+      ipcRenderer.invoke("configBackup:files", serverId),
+    create: (serverId: string) =>
+      ipcRenderer.invoke("configBackup:create", serverId),
+    restore: (serverId: string, id: string) =>
+      ipcRenderer.invoke("configBackup:restore", serverId, id),
+    delete: (serverId: string, id: string) =>
+      ipcRenderer.invoke("configBackup:delete", serverId, id),
+    diff: (serverId: string, id: string) =>
+      ipcRenderer.invoke("configBackup:diff", serverId, id),
+  },
   // Profils des joueurs ARK : sauvegarde à part du monde (serverId explicite)
   arkProfiles: {
     getConfig: (serverId: string) =>

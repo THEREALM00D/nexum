@@ -69,6 +69,10 @@ const FR = {
   arkProfileRestored: (name: string, date: string, previousKept: boolean) =>
     `Profil de ${name} restauré (version du ${date}).${previousKept ? " Le profil d'avant a été sauvegardé." : ""}`,
   arkProfilesAnnounce: "Profils des joueurs sauvegardés.",
+  configBackupRestored: (date: string) =>
+    `Configuration du jeu restaurée (sauvegarde du ${date}). La configuration d'avant a été sauvegardée.`,
+  configBackupFailed: (reason: string) =>
+    `Sauvegarde de la configuration du jeu impossible : ${reason}`,
   arkModsCleaned: (mods: number, megabytes: number) =>
     `Dossier des mods nettoyé, ${megabytes.toLocaleString("fr-FR", { maximumFractionDigits: 1 })} Mo libérés${mods > 0 ? ` (${mods} mod${mods > 1 ? "s" : ""} hors liste : le serveur ${mods > 1 ? "les retéléchargera s'ils reviennent" : "le retéléchargera s'il revient"} dans la liste)` : ""}.`,
   stuckStartKilled: (minutes: number, attempt: number, max: number) =>
@@ -287,6 +291,10 @@ const EN: typeof FR = {
   arkProfileRestored: (name, date, previousKept) =>
     `${name}'s profile restored (version from ${date}).${previousKept ? " The previous profile was backed up." : ""}`,
   arkProfilesAnnounce: "Player profiles backed up.",
+  configBackupRestored: (date) =>
+    `Game configuration restored (backup from ${date}). The previous configuration was backed up.`,
+  configBackupFailed: (reason) =>
+    `Couldn't back up the game configuration: ${reason}`,
   arkModsCleaned: (mods, megabytes) =>
     `Mods folder cleaned, ${megabytes.toLocaleString("en-US", { maximumFractionDigits: 1 })} MB freed${mods > 0 ? ` (${mods} mod${mods > 1 ? "s" : ""} not in the list: the server downloads ${mods > 1 ? "them again if they come" : "it again if it comes"} back to the list)` : ""}.`,
   stuckStartKilled: (minutes, attempt, max) =>

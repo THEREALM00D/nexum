@@ -10,11 +10,29 @@ export function parseIniValue(raw: string): string | number | boolean {
   return raw.replace(/^"(.*)"$/, "$1");
 }
 
+let beforeConfigWrite: ((filePath: string) => void) | null = null;
+
+/**
+ * Appelé avant chaque écriture d'un fichier de config par Nexum (toutes
+ * passent par `backupBeforeWrite`) : copie de la config du serveur concerné
+ * (`src/main/backup/config/`). Enregistré une fois par `registerIpcHandlers`.
+ */
+export function onBeforeConfigWrite(
+  listener: (filePath: string) => void,
+): void {
+  beforeConfigWrite = listener;
+}
+
 /**
  * Crée le dossier parent si besoin et sauvegarde le fichier existant en
  * `<path>.backup` avant une écriture destructive.
  */
 export function backupBeforeWrite(filePath: string): void {
+  try {
+    beforeConfigWrite?.(filePath);
+  } catch {
+    // Une copie ratée ne doit jamais empêcher l'enregistrement.
+  }
   mkdirSync(dirname(filePath), { recursive: true });
   if (existsSync(filePath)) {
     copyFileSync(filePath, filePath + ".backup");

@@ -5,6 +5,7 @@ import { useBackup } from "../../hooks/useBackup";
 import BackupConfigPanel from "./BackupConfig";
 import BackupList from "./BackupList";
 import PageHeader from "../common/PageHeader";
+import ConfigBackupTab from "./config/ConfigBackupTab";
 
 /** Onglet propre au jeu, à côté de « Monde » (ARK : profils des joueurs). */
 export interface BackupTab {
@@ -30,11 +31,17 @@ interface BackupPageProps {
    * sauvegardes après une action qui en crée une.
    */
   renderExtra?: (refresh: () => Promise<void>) => ReactNode;
-  /** Onglets du jeu : sans eux, pas de barre d'onglets. */
+  /** Onglets du jeu, entre « Monde » et « Configuration » (commun). */
   tabs?: BackupTab[];
 }
 
 const WORLD_TAB = "world";
+// Copies des fichiers de config du jeu : pour tous les jeux.
+const CONFIG_TAB: BackupTab = {
+  value: "config",
+  labelKey: "backup.tabs.config",
+  render: () => <ConfigBackupTab />,
+};
 
 /** Page « Sauvegardes » commune aux jeux : seuls le texte et les extras changent. */
 export default function BackupPage({
@@ -48,7 +55,8 @@ export default function BackupPage({
   const { t } = useTranslation();
   const backup = useBackup();
   const [tab, setTab] = useState(WORLD_TAB);
-  const gameTab = tabs?.find((candidate) => candidate.value === tab);
+  const allTabs = [...(tabs ?? []), CONFIG_TAB];
+  const gameTab = allTabs.find((candidate) => candidate.value === tab);
 
   return (
     <Stack spacing={3} sx={{ height: "100%" }}>
@@ -59,24 +67,22 @@ export default function BackupPage({
         folderTooltip={openFolderTooltipKey && t(openFolderTooltipKey)}
       />
 
-      {tabs && (
-        <Tabs
-          value={tab}
-          onChange={(_, value: string) => setTab(value)}
-          variant="scrollable"
-          allowScrollButtonsMobile
-          sx={{ borderBottom: 1, borderColor: "divider", flexShrink: 0 }}
-        >
-          <Tab value={WORLD_TAB} label={t("backup.tabs.world")} />
-          {tabs.map((candidate) => (
-            <Tab
-              key={candidate.value}
-              value={candidate.value}
-              label={t(candidate.labelKey)}
-            />
-          ))}
-        </Tabs>
-      )}
+      <Tabs
+        value={tab}
+        onChange={(_, value: string) => setTab(value)}
+        variant="scrollable"
+        allowScrollButtonsMobile
+        sx={{ borderBottom: 1, borderColor: "divider", flexShrink: 0 }}
+      >
+        <Tab value={WORLD_TAB} label={t("backup.tabs.world")} />
+        {allTabs.map((candidate) => (
+          <Tab
+            key={candidate.value}
+            value={candidate.value}
+            label={t(candidate.labelKey)}
+          />
+        ))}
+      </Tabs>
 
       {gameTab ? (
         gameTab.render()

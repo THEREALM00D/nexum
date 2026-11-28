@@ -44,6 +44,9 @@ import type {
   ArkModSearchPage,
   ArkModCategory,
   ArkModsCleanup,
+  ConfigBackupEntry,
+  ConfigBackupSettings,
+  ConfigFileDiff,
   ArkProfileBackupConfig,
   ArkProfilePlayer,
   ValheimMod,
@@ -520,6 +523,29 @@ interface API {
     cleanup: (
       serverId: string,
     ) => Promise<{ success: boolean; freed?: number; error?: string }>;
+  };
+  configBackup: {
+    getConfig: (serverId: string) => Promise<ConfigBackupSettings>;
+    setConfig: (
+      serverId: string,
+      settings: ConfigBackupSettings,
+    ) => Promise<ConfigBackupSettings>;
+    list: (serverId: string) => Promise<ConfigBackupEntry[]>;
+    /** Fichiers sauvegardés pour ce jeu (dossier : nom suivi de « / »). */
+    files: (serverId: string) => Promise<string[]>;
+    /** `id` null : rien n'a changé depuis la dernière copie. */
+    create: (
+      serverId: string,
+    ) => Promise<{ success: boolean; id?: string | null; error?: string }>;
+    restore: (
+      serverId: string,
+      id: string,
+    ) => Promise<{ success: boolean; error?: string }>;
+    delete: (
+      serverId: string,
+      id: string,
+    ) => Promise<{ success: boolean; error?: string }>;
+    diff: (serverId: string, id: string) => Promise<ConfigFileDiff[]>;
   };
   arkProfiles: {
     getConfig: (serverId: string) => Promise<ArkProfileBackupConfig>;

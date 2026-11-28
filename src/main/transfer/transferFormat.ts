@@ -11,6 +11,7 @@ import { withRestartDefaults } from "../servers/restartDefaults";
 import { AppError } from "../utils/appError";
 import { CPU_PRIORITIES } from "../../shared/processTuning";
 import { sanitizeArkProfileBackup } from "../../shared/arkProfiles";
+import { sanitizeConfigBackup } from "../../shared/configBackup";
 import {
   inWatchdogRange,
   RAM_LIMIT_RANGE,
@@ -98,6 +99,7 @@ export function parseServerEntry(raw: unknown): TransferServerEntry {
     ...picked,
     restart: withRestartDefaults(isObj(rawRestart) ? rawRestart : undefined),
     arkProfileBackup: sanitizeArkProfileBackup(picked.arkProfileBackup),
+    configBackup: sanitizeConfigBackup(picked.configBackup),
     arkConfig: sanitizeArkLaunch({
       ...picked.arkConfig,
       launchOptions: isObj(rawArkConfig)

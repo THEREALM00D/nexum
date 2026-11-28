@@ -16,6 +16,10 @@ import {
   sanitizeArkProfileBackup,
 } from "../../shared/arkProfiles";
 import {
+  DEFAULT_CONFIG_BACKUP,
+  sanitizeConfigBackup,
+} from "../../shared/configBackup";
+import {
   DEFAULT_VALHEIM_CONFIG,
   storedValheimConfig,
   withValheimDefaults,
@@ -35,6 +39,7 @@ export const DEFAULT_SERVER_CONFIG: ServerConfig = {
   backup: DEFAULT_BACKUP,
   restart: DEFAULT_RESTART,
   arkProfileBackup: DEFAULT_ARK_PROFILE_BACKUP,
+  configBackup: DEFAULT_CONFIG_BACKUP,
 };
 
 export class ServerConfigStore {
@@ -67,6 +72,7 @@ export class ServerConfigStore {
       backup: { ...DEFAULT_BACKUP, ...existing.backup },
       restart: withRestartDefaults(existing.restart),
       arkProfileBackup: sanitizeArkProfileBackup(existing.arkProfileBackup),
+      configBackup: sanitizeConfigBackup(existing.configBackup),
     };
   }
 
@@ -93,6 +99,10 @@ export class ServerConfigStore {
       arkProfileBackup: sanitizeArkProfileBackup({
         ...current.arkProfileBackup,
         ...patch.arkProfileBackup,
+      }),
+      configBackup: sanitizeConfigBackup({
+        ...current.configBackup,
+        ...patch.configBackup,
       }),
     };
     const all = this.store.get(
@@ -160,6 +170,7 @@ export class ServerConfigStore {
       },
       restart: withRestartDefaults(this.store.get("restartSchedule")),
       arkProfileBackup: DEFAULT_ARK_PROFILE_BACKUP,
+      configBackup: DEFAULT_CONFIG_BACKUP,
     };
     this.store.set("serversConfig", { ...all, [firstServerId]: legacy });
   }

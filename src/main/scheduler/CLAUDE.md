@@ -1,6 +1,6 @@
 # Planification
 
-Tout est démarré par `startSchedulers` (`startSchedulers.ts`, appelé par `registerIpcHandlers` une fois `ctx` construit) : redémarrage planifié, et quatre `IntervalScheduler` (sauvegarde auto : voir `src/main/backup/CLAUDE.md` ; vérification des mises à jour ; créatures sauvages d'ARK ; profils des joueurs d'ARK : voir `src/main/games/ark/CLAUDE.md`). Chaque tick (30 s) relit la config : rien à réarmer après un enregistrement.
+Tout est démarré par `startSchedulers` (`startSchedulers.ts`, appelé par `registerIpcHandlers` une fois `ctx` construit) : redémarrage planifié, et cinq `IntervalScheduler` (sauvegarde auto et copie des fichiers de config : voir `src/main/backup/CLAUDE.md` ; vérification des mises à jour ; créatures sauvages d'ARK ; profils des joueurs d'ARK : voir `src/main/games/ark/CLAUDE.md`). Chaque tick (30 s) relit la config : rien à réarmer après un enregistrement.
 
 ## Config (`RestartConfig`, `src/shared/types.ts`)
 

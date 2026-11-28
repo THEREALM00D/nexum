@@ -64,6 +64,7 @@ import { registerArkModsCleanupHandlers } from "../games/ark/handlers/modsCleanu
 import { registerArkSettingsHandlers } from "../games/ark/handlers/settings";
 import { registerArkLaunchImportHandlers } from "../games/ark/handlers/launchImport";
 import { arkRconClient } from "../games/ark/rcon";
+import { registerConfigBackupHandlers } from "./handlers/configBackup";
 import {
   backupProfileAfterLeave,
   registerArkProfileHandlers,
@@ -432,5 +433,6 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
   registerArkSettingsHandlers(ctx);
   registerArkLaunchImportHandlers(ctx);
   registerArkProfileHandlers(ctx);
+  registerConfigBackupHandlers(ctx);
   return ctx;
 }

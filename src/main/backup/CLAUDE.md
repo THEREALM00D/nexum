@@ -23,10 +23,17 @@ Intervalle 0 à 1440 min **par serveur**, active seulement serveur lancé. Tick 
 - Renvoie null si l'option est désactivée, si l'exe est absent (1re installation) ou si le dossier des mondes n'existe pas.
 - Échec → `AppError("BACKUP_BEFORE_UPDATE_FAILED")` et **la mise à jour n'est pas lancée**.
 
+## Fichiers de config (`config/`, `ServerConfig.configBackup`, onglet Configuration de tous les jeux)
+
+- Fichiers = ceux de « Changer de PC » (`getGameTransferFiles`, `src/main/games/transferFiles.ts`) : une seule liste à tenir pour un nouveau jeu. Copies dans `<dossier des sauvegardes>/config/config-<date UTC>[-interval|-before-save|-before-start|-before-restore]/`, fichiers sous leur `key` (dossier : `key/chemin`), `.tmp` renommé à la fin. ⚠️ Copie **seulement si un fichier a changé** depuis la dernière (sinon la rotation effaçait les vraies versions) ; `*.backup` laissés par `backupBeforeWrite` dans `BepInEx/config` ignorés.
+- Avant enregistrement : `onBeforeConfigWrite` (`src/main/utils/ini.ts`), appelé par `backupBeforeWrite`, par lequel passent **toutes** les écritures de config de Nexum ; l'écouteur (`ipc/handlers/configBackup.ts`) retrouve le serveur par le chemin (`serversOwningConfig`, sans casse, dossiers compris). ⚠️ Une seule copie par serveur en 5 s : ARK écrit `GameUserSettings.ini` puis `Game.ini`. Un échec ne bloque jamais l'enregistrement. Avant démarrage : `startServer` et `restartServer`, avant `prepare`. Intervalle : `IntervalScheduler` `configBackup` (serveur lancé).
+- Restauration (`configRestore.ts`) : serveur arrêté, config actuelle **toujours** copiée avant (`beforeRestore`, même sans l'option), fichiers remis par `backupBeforeWrite` (`.backup`), un fichier absent de la copie n'est pas supprimé. ⚠️ Différences : mots de passe masqués **dans le main** (`maskPasswords.ts` : clés INI et JSON contenant « password », aussi dans `OptionSettings=(…)` de Palworld), jamais envoyés au renderer ; diff de lignes `src/shared/lineDiff.ts` (LCS, sans dépendance).
+- Mesuré (dev, serveur lancé, fenêtre réduite, 150 s) : 0,06 % du CPU du PC avec l'option, 0,09 % sans, aucun PowerShell.
+
 ## Profils des joueurs ARK
 
 À part du monde, dans `<dossier des sauvegardes>/player-profiles/<dossier du monde>/<Carte>/` : voir `src/main/games/ark/CLAUDE.md`. `BackupManager.list` ne lit que les `.zip` du dossier, ce sous-dossier ne s'y mêle pas.
 
 ## UI
 
-Page partagée `components/backup/BackupPage` : `autoNoteKey` **obligatoire** (ce que contient une sauvegarde serveur lancé pour ce jeu), bouton optionnel « ouvrir le dossier des mondes », `renderExtra(refresh)` pour un bloc du jeu (carte Mondes de Dragonwilds), `tabs` pour des onglets à côté de « Monde » (pas de barre d'onglets sans eux ; ARK : Profils des joueurs). Intervalles de sauvegarde auto : `BACKUP_INTERVALS` (`src/shared/backupIntervals.ts`) et `components/backup/BackupIntervalSelect`, communs au monde et aux profils.
+Page partagée `components/backup/BackupPage` : `autoNoteKey` **obligatoire** (ce que contient une sauvegarde serveur lancé pour ce jeu), bouton optionnel « ouvrir le dossier des mondes », `renderExtra(refresh)` pour un bloc du jeu (carte Mondes de Dragonwilds), `tabs` pour des onglets à côté de « Monde » (ARK : Profils des joueurs) ; « Configuration » (`components/backup/config/`) est ajouté pour tous les jeux, donc la barre d'onglets est toujours là. Intervalles de sauvegarde auto : `BACKUP_INTERVALS` (`src/shared/backupIntervals.ts`) et `components/backup/BackupIntervalSelect`, communs au monde et aux profils.

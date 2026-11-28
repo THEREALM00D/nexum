@@ -4,6 +4,7 @@
 
 Validations (conflits de ports tous jeux confondus, règles du jeu), `getLaunchSpec` (exe, args, env, fichier de log suivi, `prepare`, `logNoise`), log des mods Valheim. Utilisé par l'IPC `server:start` **et** le démarrage automatique ; `restartServer` (même fichier) par `server:restart`, le menu du tray et le redémarrage planifié. **Ne jamais redupliquer cette logique.**
 
+- Copie des fichiers de config avant le lancement (`configBackup.beforeStart`, `configBackupQuietly`, dans `startServer` **et** `restartServer`, avant `prepare`) : un échec ne bloque pas le démarrage (voir `src/main/backup/CLAUDE.md`).
 - **`LaunchSpec.prepare`** (`PREPARE` dans `src/main/games/registry.ts`) : exécuté par `ServerManager.start` avant **chaque** lancement, relance après plantage comprise ; un message renvoyé refuse le démarrage. Les préparations propres à un jeu vont là, pas dans `startServer`.
 - **Variables d'environnement** : `env` du `serverConfig.ts` du jeu, lues par `getGameEnv()` et conservées pour la relance. Tout démarrage (manuel, redémarrage, planifié) doit passer `getGameEnv(gameType)` (Valheim en a besoin, voir son CLAUDE.md).
 - Écrire dans la session de log depuis l'extérieur : `ServerManager.log()`, **après** `start()` (sinon la nouvelle session l'efface).

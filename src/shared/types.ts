@@ -52,6 +52,8 @@ export interface ServerConfig {
   restart: RestartConfig;
   /** ARK seulement : sauvegarde des profils des joueurs. */
   arkProfileBackup: ArkProfileBackupConfig;
+  /** Fichiers de config du jeu (onglet Configuration des Sauvegardes). */
+  configBackup: ConfigBackupSettings;
 }
 
 // Payload émis par le main vers le renderer pour chaque ligne de log
@@ -137,6 +139,41 @@ export interface BackupConfig {
   backupIntervalMinutes: number;
   /** Sauvegarde du monde avant chaque mise à jour du jeu ou des mods. */
   backupBeforeUpdate: boolean;
+}
+
+/** Sauvegarde des fichiers de config du jeu (`ServerConfig.configBackup`). */
+export interface ConfigBackupSettings {
+  /** 0 = pas de copie à intervalle. */
+  intervalMinutes: number;
+  keep: number;
+  /** Copie avant que Nexum écrive un fichier de config. */
+  beforeSave: boolean;
+  /** Copie juste avant chaque démarrage du serveur. */
+  beforeStart: boolean;
+}
+
+export type ConfigBackupReason =
+  "manual" | "interval" | "beforeSave" | "beforeStart" | "beforeRestore";
+
+export interface ConfigBackupEntry {
+  /** Nom du dossier de la copie. */
+  id: string;
+  createdAt: number;
+  reason: ConfigBackupReason;
+  /** Fichiers de la copie (clés de `getGameTransferFiles`, chemins relatifs dans un dossier). */
+  files: string[];
+  /** Fichiers différents de la copie précédente (tous pour la plus ancienne). */
+  changed: string[];
+  size: number;
+}
+
+/** Un fichier comparé : texte de la copie et texte actuel, mots de passe masqués. null = absent. */
+export interface ConfigFileDiff {
+  file: string;
+  backup: string | null;
+  current: string | null;
+  /** Trop gros ou binaire : pas de comparaison ligne à ligne. */
+  tooLarge: boolean;
 }
 
 /**
@@ -538,6 +575,9 @@ export type AppErrorCode =
   | "ARK_PROFILE_COPY_FAILED"
   | "ARK_PROFILE_READ_FAILED"
   | "ARK_MODS_SERVER_RUNNING"
+  | "CONFIG_BACKUP_SERVER_RUNNING"
+  | "CONFIG_BACKUP_NOT_FOUND"
+  | "CONFIG_BACKUP_FAILED"
   | "ARK_MODS_CLEAN_FAILED"
   | "CURSEFORGE_UNAVAILABLE"
   | "CURSEFORGE_FORBIDDEN"
