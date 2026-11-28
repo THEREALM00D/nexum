@@ -45,6 +45,10 @@ While the server runs (or is starting or stopping), the **⋯** button after **S
 
 When the game has no command for it, or RCON / the REST API is off, the entry is greyed out and says why.
 
+### Watch warning
+
+When Nexum restarted the server by itself because of a [watch option](servers.md#watch-options-edit-dialog) (startup not finished, RAM above the limit), a warning under the header says what happened and when, with **View logs**. It stays until you dismiss it.
+
 ## Statistics
 
 Real-time data, refreshed every 2 seconds. The server comes first:

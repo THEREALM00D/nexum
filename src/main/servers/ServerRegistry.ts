@@ -100,6 +100,8 @@ export class ServerRegistry {
     color?: string | null;
     autoStart?: boolean;
     autoRestart?: boolean;
+    stuckStartMinutes?: number;
+    ramLimitGb?: number;
   }): Server {
     const servers = this.list();
     const server: Server = {
@@ -112,6 +114,8 @@ export class ServerRegistry {
       createdAt: Date.now(),
       autoStart: input.autoStart ?? false,
       autoRestart: input.autoRestart ?? false,
+      stuckStartMinutes: input.stuckStartMinutes,
+      ramLimitGb: input.ramLimitGb,
     };
     this.store.set("servers", [...servers, server]);
     if (!this.getActiveId()) this.writeActive(server.id);

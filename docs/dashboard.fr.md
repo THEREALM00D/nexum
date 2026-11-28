@@ -45,6 +45,10 @@ Quand le serveur tourne (ou démarre, ou s'arrête), le bouton **⋯** après **
 
 Quand le jeu n'a pas de commande pour cela, ou que RCON / l'API REST est désactivé, l'entrée est grisée et dit pourquoi.
 
+### Avertissement de surveillance
+
+Quand Nexum a redémarré le serveur de lui-même à cause d'une [option de surveillance](servers.fr.md#surveillance-dialogue-modifier) (démarrage pas fini, RAM au-dessus de la limite), un avertissement sous l'en-tête dit ce qui s'est passé et à quelle heure, avec **Voir les logs**. Il reste jusqu'à ce que vous le masquiez.
+
 ## Statistiques
 
 Données en temps réel, rafraîchies toutes les 2 secondes. Le serveur d'abord :

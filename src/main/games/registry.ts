@@ -100,6 +100,21 @@ export interface LaunchSpec {
    * plantage comprise. Renvoie un message pour refuser le démarrage.
    */
   prepare?: () => string | null;
+  /** Ligne du log qui dit que le serveur est joignable (démarrage bloqué). */
+  readyLine?: RegExp;
+}
+
+// Ligne « serveur prêt » vérifiée sur une vraie install (voir le CLAUDE.md
+// du jeu). Un jeu sans ligne connue n'a pas la relance d'un démarrage
+// bloqué : un faux « pas prêt » tuerait un serveur sain.
+const READY_LINES: Partial<Record<GameType, RegExp>> = {
+  ark: /Server has completed startup and is now advertising for join/,
+  enshrouded: /\[Session\] 'HostOnline' \(up\)!/,
+};
+
+/** Le jeu dit-il quand son serveur est prêt ? (option « démarrage bloqué ») */
+export function hasReadyLine(gameType: GameType): boolean {
+  return READY_LINES[gameType] !== undefined;
 }
 
 const PREPARE: Partial<
@@ -128,6 +143,7 @@ export function getLaunchSpec(
     prepare: PREPARE[gameType]
       ? () => PREPARE[gameType]!(serverPath, cfg)
       : undefined,
+    readyLine: READY_LINES[gameType],
   };
 }
 

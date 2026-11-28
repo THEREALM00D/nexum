@@ -8,12 +8,19 @@ La page **Serveurs** liste tous les serveurs dédiés gérés par Nexum, quel qu
 
 Chaque ligne a un bouton **Démarrer** / **Arrêter**, un bouton **Redémarrer** et un menu **⋯** :
 
-- **Modifier** : nom, couleur, démarrage automatique avec Nexum, relance après un plantage.
+- **Modifier** : nom, couleur, démarrage automatique avec Nexum, relance après un plantage, et les options de surveillance ci-dessous.
 - **Ouvrir le dossier**.
 - **Exporter pour un autre PC** (serveur arrêté) : voir [Changer de PC](moving.fr.md).
 - **Supprimer** : retire le serveur de Nexum ; les fichiers du jeu restent sur le disque.
 
 L'en-tête propose **Importer un serveur** (un fichier exporté depuis un autre PC), **Assistant de démarrage** et **Ajouter un serveur** (un nouveau serveur ou un dossier déjà installé).
+
+### Surveillance (dialogue Modifier)
+
+- **Relancer si le démarrage n'est pas fini** (ARK: Survival Ascended et Enshrouded seulement, les jeux qui écrivent une ligne « prêt » dans leur log : `advertising for join` pour ARK, `HostOnline` pour Enshrouded) : si la ligne n'apparaît pas après le nombre de minutes choisi (10 par défaut), Nexum tue le serveur et le redémarre 10 secondes plus tard. Ces relances comptent avec les relances après un plantage : au-delà de 3 en 30 minutes, Nexum laisse le serveur arrêté.
+- **Redémarrer quand la RAM dépasse** (tous les jeux) : quand la RAM du serveur reste au-dessus de la limite pendant 5 minutes d'affilée (vérifiée une fois par minute), Nexum le redémarre, en prévenant les joueurs avec les annonces de sa page **Planification** quand le jeu le permet (API REST, RCON). Sinon, il redémarre tout de suite.
+
+À chaque fois, une ligne va dans les logs du serveur et un avertissement s'affiche sous l'en-tête du Dashboard (avec **Voir les logs**) jusqu'à ce que vous le masquiez. Une notification Windows apparaît si la fenêtre de Nexum n'est pas au premier plan.
 
 ## Tous les serveurs
 

@@ -1,5 +1,7 @@
 export default {
   arkDashboard: {
+    startupReadyHint:
+      'No "advertising for join" line in the log (usually 1 to 2 min). Counts toward the 3 restarts after a crash.',
     noServerPath: "No path configured",
     rconWarning:
       "RCON is off: Nexum stops the server without saving the world (up to 15 min of progress lost), can't warn players before a restart, and can't track them.",

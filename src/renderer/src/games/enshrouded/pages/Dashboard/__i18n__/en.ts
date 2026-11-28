@@ -1,5 +1,7 @@
 export default {
   enshroudedDashboard: {
+    startupReadyHint:
+      'No "HostOnline" line in the log (usually a few seconds). Counts toward the 3 restarts after a crash.',
     noServerPath: "No path configured",
     openGroups:
       "Group(s) without a password: {{groups}}. Anyone can join the server with their permissions. Add a password in the Configuration page.",

@@ -35,6 +35,8 @@ export function registerServersHandlers(
         color?: string | null;
         autoStart?: boolean;
         autoRestart?: boolean;
+        stuckStartMinutes?: number;
+        ramLimitGb?: number;
       },
     ) => registry.create(input),
   );

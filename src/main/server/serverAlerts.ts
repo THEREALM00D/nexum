@@ -3,6 +3,7 @@ import type {
   AutoRestartGaveUpNotice,
   AutoStartFailedNotice,
   Server,
+  WatchdogEvent,
 } from "../../shared/types";
 import { getLanguage } from "../i18n/language";
 import { sendToRenderer } from "../ipc/rendererEvents";
@@ -27,6 +28,28 @@ function alertIfUnwatched(title: string, body: string): void {
   lastNotification = new Notification({ title, body });
   lastNotification.on("click", () => showWindow(windows[0] ?? null));
   lastNotification.show();
+}
+
+/** Ce que la surveillance a fait seule (démarrage bloqué, RAM). */
+export function notifyWatchdog(server: Server, event: WatchdogEvent): void {
+  sendToRenderer("server:watchdog", event);
+  const strings = trayStrings(getLanguage());
+  const minutes = event.minutes ?? 0;
+  if (event.kind === "ramLimit") {
+    alertIfUnwatched(
+      strings.watchdogRamTitle,
+      strings.watchdogRamBody(server.name, event.limitGb ?? 0),
+    );
+    return;
+  }
+  alertIfUnwatched(
+    event.kind === "stuckGaveUp"
+      ? strings.crashGaveUpTitle
+      : strings.watchdogStuckTitle,
+    event.kind === "stuckGaveUp"
+      ? strings.watchdogGaveUpBody(server.name, minutes)
+      : strings.watchdogStuckBody(server.name, minutes),
+  );
 }
 
 /** Relance après plantage abandonnée (`crashRestart.ts`). */

@@ -13,6 +13,7 @@ import type {
   ModRegistry,
   RestartConfig,
   BulkAction,
+  WatchdogEvent,
   BulkRun,
   SelectFolderOptions,
   ServerArchiveImportChoice,
@@ -117,6 +118,16 @@ const api = {
     sendMessage: (serverId: string, message: string) =>
       ipcRenderer.invoke("server:sendMessage", serverId, message),
     kill: (serverId: string) => ipcRenderer.invoke("server:kill", serverId),
+    getWatchdogEvent: (serverId: string) =>
+      ipcRenderer.invoke("server:watchdogEvent", serverId),
+    dismissWatchdogEvent: (serverId: string) =>
+      ipcRenderer.invoke("server:dismissWatchdogEvent", serverId),
+    onWatchdog: (callback: (event: WatchdogEvent) => void) => {
+      const listener = (_event: IpcRendererEvent, event: WatchdogEvent) =>
+        callback(event);
+      ipcRenderer.on("server:watchdog", listener);
+      return () => ipcRenderer.removeListener("server:watchdog", listener);
+    },
     getStatuses: () => ipcRenderer.invoke("server:statuses"),
     getLaunchArgs: (serverId?: string) =>
       ipcRenderer.invoke("server:getLaunchArgs", serverId),

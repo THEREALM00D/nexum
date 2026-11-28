@@ -92,4 +92,5 @@ export const arkPlugin: GamePlugin = {
   },
   // Dossier existant : ligne de lancement de l'ancien outil (carte, mods…).
   existingServer: arkExistingServer,
+  startupReadyHintKey: "arkDashboard.startupReadyHint",
 };

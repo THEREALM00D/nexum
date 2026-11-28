@@ -16,6 +16,12 @@ export interface Server {
   autoStart?: boolean;
   // Relancé automatiquement après un plantage (cf. server/crashRestart.ts)
   autoRestart?: boolean;
+  // Tué et relancé s'il n'est pas prêt après ce nombre de minutes (jeux
+  // avec une ligne « prêt », cf. server/stuckStartWatch.ts). Absent : non.
+  stuckStartMinutes?: number;
+  // Redémarré (avec annonces) quand sa RAM reste au-dessus, en Go
+  // (cf. monitor/ramWatch.ts). Absent : non.
+  ramLimitGb?: number;
 }
 
 // « Lancer Nexum au démarrage de Windows » — `supported` faux en dev
@@ -287,6 +293,24 @@ export interface ModUpdateNotice {
  * Envoyé au renderer (`server:autoRestartGaveUp`) quand la relance après un
  * plantage abandonne (`crashRestart.ts`).
  */
+/**
+ * Ce que la surveillance d'un serveur a fait seule (démarrage bloqué,
+ * RAM), gardé dans le main jusqu'à ce que le Dashboard le masque.
+ */
+export interface WatchdogEvent {
+  serverId: string;
+  kind: "stuckStart" | "stuckGaveUp" | "ramLimit";
+  at: number;
+  /** Minutes sans ligne « prêt » (démarrage bloqué). */
+  minutes?: number;
+  attempt?: number;
+  maxAttempts?: number;
+  ramGb?: number;
+  limitGb?: number;
+  /** RAM : joueurs prévenus avant l'arrêt (le jeu sait annoncer). */
+  playersWarned?: boolean;
+}
+
 export interface AutoRestartGaveUpNotice {
   serverId: string;
   /** Plantages comptés dans la fenêtre. */

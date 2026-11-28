@@ -44,6 +44,14 @@ Ils s'arrêtent avec Nexum : Nexum va d'abord les arrêter proprement (sauvegard
     crashGaveUpTitle: "Relance automatique abandonnée",
     crashGaveUpBody: (name: string, crashes: number, minutes: number) =>
       `« ${name} » a planté ${crashes} fois en moins de ${minutes} min : Nexum ne le relance plus. Consultez ses logs puis démarrez-le à la main.`,
+    watchdogStuckTitle: "Démarrage bloqué",
+    watchdogStuckBody: (name: string, minutes: number) =>
+      `« ${name} » n'avait pas fini de démarrer après ${minutes} min : Nexum l'a tué et relancé.`,
+    watchdogGaveUpBody: (name: string, minutes: number) =>
+      `« ${name} » ne finit pas de démarrer (${minutes} min) : Nexum ne le relance plus. Regardez ses logs.`,
+    watchdogRamTitle: "RAM du serveur dépassée",
+    watchdogRamBody: (name: string, limitGb: number) =>
+      `« ${name} » a dépassé ${limitGb} Go de RAM pendant 5 minutes : Nexum le redémarre (joueurs prévenus).`,
     autoStartFailedTitle: "Démarrage automatique impossible",
     autoRestartFailedTitle: "Relance automatique impossible",
     startFailedBody: (name: string) =>
@@ -92,6 +100,14 @@ They stop with Nexum: Nexum will first stop them cleanly (the world is saved), t
     crashGaveUpTitle: "Auto-restart stopped",
     crashGaveUpBody: (name: string, crashes: number, minutes: number) =>
       `"${name}" crashed ${crashes} times in less than ${minutes} min: Nexum no longer restarts it. Check its logs, then start it manually.`,
+    watchdogStuckTitle: "Stuck start",
+    watchdogStuckBody: (name: string, minutes: number) =>
+      `"${name}" had not finished starting after ${minutes} min: Nexum killed and restarted it.`,
+    watchdogGaveUpBody: (name: string, minutes: number) =>
+      `"${name}" doesn't finish starting (${minutes} min): Nexum no longer restarts it. Check its logs.`,
+    watchdogRamTitle: "Server RAM exceeded",
+    watchdogRamBody: (name: string, limitGb: number) =>
+      `"${name}" used more than ${limitGb} GB of RAM for 5 minutes: Nexum is restarting it (players are warned).`,
     autoStartFailedTitle: "Automatic start failed",
     autoRestartFailedTitle: "Automatic restart failed",
     startFailedBody: (name: string) =>

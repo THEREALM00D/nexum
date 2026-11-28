@@ -7,6 +7,7 @@ import type {
   BackupConfig,
   RestartConfig,
   BulkAction,
+  WatchdogEvent,
   AdminCapabilities,
   BulkRun,
   OnlinePlayers,
@@ -104,6 +105,8 @@ interface API {
       color?: string | null;
       autoStart?: boolean;
       autoRestart?: boolean;
+      stuckStartMinutes?: number;
+      ramLimitGb?: number;
     }) => Promise<Server>;
     update: (
       id: string,
@@ -150,6 +153,10 @@ interface API {
     sendMessage: (serverId: string, message: string) => Promise<void>;
     /** Arrêt forcé, sans annonce ni sauvegarde (pas compté comme un plantage). */
     kill: (serverId: string) => Promise<{ success: boolean; error?: string }>;
+    /** Dernière action de la surveillance (démarrage bloqué, RAM), ou null. */
+    getWatchdogEvent: (serverId: string) => Promise<WatchdogEvent | null>;
+    dismissWatchdogEvent: (serverId: string) => Promise<void>;
+    onWatchdog: (callback: (event: WatchdogEvent) => void) => () => void;
     getLaunchArgs: (serverId?: string) => Promise<LaunchArgsConfig>;
     setLaunchArgs: (cfg: LaunchArgsConfig, serverId?: string) => Promise<void>;
     onLog: (cb: (event: ServerLogEvent) => void) => () => void;

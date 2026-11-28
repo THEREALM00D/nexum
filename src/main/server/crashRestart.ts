@@ -3,14 +3,15 @@ import { notifyGaveUp, notifyStartFailed } from "./serverAlerts";
 import { startServer } from "./startServer";
 import { appErrorLogText } from "../utils/appError";
 import { lt, managerLine } from "../i18n/logStrings";
+import {
+  MAX_RESTARTS,
+  RESTART_WINDOW_MS,
+  recordRestartAttempt,
+} from "./restartAttempts";
 
 // Délai avant la relance : laisse au jeu le temps de libérer ses fichiers et
 // ses ports, et à l'utilisateur celui de voir ce qui s'est passé.
-const RESTART_DELAY_MS = 10_000;
-// Au-delà de MAX_RESTARTS plantages dans la fenêtre, on arrête de relancer :
-// un serveur qui plante au démarrage (monde corrompu, mod cassé) bouclerait.
-const MAX_RESTARTS = 3;
-const WINDOW_MS = 30 * 60_000;
+export const RESTART_DELAY_MS = 10_000;
 
 /**
  * Relance automatique d'un serveur planté (`Server.autoRestart`, case de
@@ -20,26 +21,22 @@ const WINDOW_MS = 30 * 60_000;
  * écrits ; le compte rendu de la relance va dans la nouvelle session.
  */
 export function registerCrashRestart(ctx: IpcContext): void {
-  const crashes = new Map<string, number[]>();
-
   ctx.serverManagers.onCrash((id) => {
-    const server = ctx.servers.list().find((s) => s.id === id);
+    const server = ctx.servers.list().find((candidate) => candidate.id === id);
     if (!server?.autoRestart) return;
     const mgr = ctx.serverManagers.getOrCreate(id);
 
-    const now = Date.now();
-    const recent = (crashes.get(id) ?? []).filter((t) => now - t < WINDOW_MS);
-    if (recent.length >= MAX_RESTARTS) {
-      crashes.set(id, recent);
+    // Compteur partagé avec la relance d'un démarrage bloqué.
+    const { attempt, gaveUp } = recordRestartAttempt(id);
+    if (gaveUp) {
       mgr.log(
-        managerLine(lt().autoRestartGaveUp(MAX_RESTARTS, WINDOW_MS / 60_000)),
+        managerLine(
+          lt().autoRestartGaveUp(MAX_RESTARTS, RESTART_WINDOW_MS / 60_000),
+        ),
       );
-      notifyGaveUp(server, MAX_RESTARTS, WINDOW_MS / 60_000);
+      notifyGaveUp(server, MAX_RESTARTS, RESTART_WINDOW_MS / 60_000);
       return;
     }
-    recent.push(now);
-    crashes.set(id, recent);
-    const attempt = recent.length;
     mgr.log(
       managerLine(
         lt().autoRestarting(RESTART_DELAY_MS / 1000, attempt, MAX_RESTARTS),

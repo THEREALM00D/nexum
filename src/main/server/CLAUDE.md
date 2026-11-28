@@ -22,6 +22,14 @@ Validations (conflits de ports tous jeux confondus, règles du jeu), `getLaunchS
 - Alertes d'un serveur : `serverAlerts.ts` (`notifyGaveUp`, `notifyStartFailed`, `alertIfUnwatched` : textes `trayStrings.ts`, clic → `showWindow`, référence gardée sinon le ramasse-miettes perd le `click`).
 - Compte rendu `autoRestarted` écrit **après** `startServer`, dans la nouvelle session ; `autoRestartFailed` par `logStartFailure` (voir plus haut).
 
+## Surveillance : démarrage bloqué et RAM (`Server.stuckStartMinutes`, `Server.ramLimitGb`)
+
+- Ligne « prêt » par jeu (`READY_LINES`, `src/main/games/registry.ts`, `LaunchSpec.readyLine`), testée dans le `log` de `ServerManager.beginSession` (lignes brutes, avant le filtre de bruit) ; `getStartup()` → `{ startedAt, ready }`. ⚠️ Seulement des lignes vérifiées sur une vraie install (ARK, Enshrouded) : un jeu sans ligne n'a pas l'option (un faux « pas prêt » tuerait un serveur sain). Serveur adopté : prêt d'office. Le renderer sait qu'un jeu a la ligne par `GamePlugin.startupReadyHintKey`.
+- `stuckStartWatch.ts` (30 s) : pas prêt après N min → `kill()` (pas un plantage) puis `startServer` 10 s plus tard ; une seule fois par lancement (`handled`, clé serveur + `startedAt`). Compteur **partagé** avec la relance après plantage (`restartAttempts.ts`, 3 en 30 min) : au-delà, laissé arrêté.
+- RAM : `src/main/monitor/ramWatch.ts` (voir `src/main/monitor/CLAUDE.md`), redémarrage par `runScheduledRestart` (annonces de la Planification si le jeu sait prévenir, sinon tout de suite : sans client, le compte à rebours attendait les 30 min pour rien).
+- Dernier événement par serveur gardé dans le main (`watchdogEvents.ts`, IPC `server:watchdogEvent` / `dismissWatchdogEvent`, poussé par `server:watchdog`) : `components/server/WatchdogAlert.tsx` sous l'en-tête du Dashboard (un toast se perdait au rechargement) ; notification Windows par `notifyWatchdog` (`serverAlerts.ts`).
+- La ligne « Arrêt forcé demandé depuis le Dashboard » est écrite par `adminActions.killServer`, pas par `kill()` (aussi utilisé par la surveillance).
+
 ## Messages de fin (`exitText`, `src/main/i18n/logStrings.ts`)
 
 Code NTSTATUS (≥ `0xC0000000`) affiché en hexadécimal et nommé (`crashNames`) avec « erreur du jeu lui-même, pas de Nexum ». Sauf `0xC000013A` (STATUS_CONTROL_C_EXIT : console fermée ou CTRL+Pause) → `consoleClosed`, pas « planté » (la relance s'applique quand même). Autres codes : « Le serveur s'est arrêté (code N) ».

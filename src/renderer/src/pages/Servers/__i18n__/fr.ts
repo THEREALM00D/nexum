@@ -178,6 +178,12 @@ export default {
       autoStartHelper:
         "Avec « Lancer Nexum au démarrage de Windows » (page Paramètres), le serveur repart tout seul après un redémarrage du PC.",
       autoRestart: "Relancer automatiquement après un plantage",
+      stuckStart: "Relancer si le démarrage n'est pas fini",
+      stuckStartAfter: "Après (minutes)",
+      ramLimit: "Redémarrer quand la RAM dépasse",
+      ramLimitHelper:
+        "Pendant 5 minutes d'affilée. Les joueurs sont prévenus comme pour un redémarrage planifié.",
+      ramLimitValue: "Limite (Go)",
       autoRestartHelper:
         "10 secondes après le plantage. Au plus 3 fois en 30 minutes, pour ne pas boucler sur un serveur qui plante dès le démarrage.",
       addTitle: "Nouveau serveur",

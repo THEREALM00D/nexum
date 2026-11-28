@@ -174,6 +174,12 @@ export default {
       autoStartHelper:
         'With "Launch Nexum when Windows starts" (Settings page), the server comes back on its own after a PC restart.',
       autoRestart: "Restart automatically after a crash",
+      stuckStart: "Restart if startup isn't finished",
+      stuckStartAfter: "After (minutes)",
+      ramLimit: "Restart when RAM goes above",
+      ramLimitHelper:
+        "For 5 minutes in a row. Players are warned as for a scheduled restart.",
+      ramLimitValue: "Limit (GB)",
       autoRestartHelper:
         "10 seconds after the crash. At most 3 times in 30 minutes, so a server that crashes on startup doesn't loop.",
       addTitle: "New server",

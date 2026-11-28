@@ -17,6 +17,22 @@ export default {
       "Démarrez le serveur : les adresses à partager apparaîtront ici.",
     hint: "Pour les amis hors de votre réseau : redirigez le(s) port(s) UDP {{range}} sur votre box vers {{ip}}, et appliquez les règles du pare-feu (page Réseau). La plupart des box ne permettent pas de rejoindre sa propre IP publique depuis chez soi : faites tester un ami.",
   },
+  serverWatchdog: {
+    stuckStart_one:
+      "Le serveur n'avait pas fini de démarrer après {{count}} minute : Nexum l'a tué et relancé à {{time}} (essai {{attempt}} sur {{max}}).",
+    stuckStart_other:
+      "Le serveur n'avait pas fini de démarrer après {{count}} minutes : Nexum l'a tué et relancé à {{time}} (essai {{attempt}} sur {{max}}).",
+    stuckGaveUp_one:
+      "Le serveur ne finit pas de démarrer ({{count}} minute), déjà relancé {{max}} fois en 30 minutes : Nexum l'a arrêté à {{time}} et ne le relance plus. Regardez ses logs.",
+    stuckGaveUp_other:
+      "Le serveur ne finit pas de démarrer ({{count}} minutes), déjà relancé {{max}} fois en 30 minutes : Nexum l'a arrêté à {{time}} et ne le relance plus. Regardez ses logs.",
+    ramLimit:
+      "La RAM du serveur est restée au-dessus de {{limit}} Go pendant 5 minutes ({{ram}} Go) : Nexum l'a redémarré à {{time}}, joueurs prévenus.",
+    ramLimitNoWarning:
+      "La RAM du serveur est restée au-dessus de {{limit}} Go pendant 5 minutes ({{ram}} Go) : Nexum l'a redémarré à {{time}} (le jeu ne permet pas de prévenir les joueurs).",
+    viewLogs: "Voir les logs",
+    dismiss: "Masquer",
+  },
   serverMenu: {
     more: "Plus d'actions",
     saveNow: "Sauvegarder le monde maintenant",

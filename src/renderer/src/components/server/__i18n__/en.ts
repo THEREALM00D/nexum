@@ -16,6 +16,22 @@ export default {
     notRunning: "Start the server: the addresses to share will appear here.",
     hint: "For friends outside your network: forward UDP port(s) {{range}} on your router to {{ip}}, and apply the firewall rules (Network page). Most routers won't let you join your own public IP from inside your network: have a friend test it.",
   },
+  serverWatchdog: {
+    stuckStart_one:
+      "The server had not finished starting after {{count}} minute: Nexum killed and restarted it at {{time}} (attempt {{attempt}} of {{max}}).",
+    stuckStart_other:
+      "The server had not finished starting after {{count}} minutes: Nexum killed and restarted it at {{time}} (attempt {{attempt}} of {{max}}).",
+    stuckGaveUp_one:
+      "The server doesn't finish starting ({{count}} minute) and was already restarted {{max}} times in 30 minutes: Nexum stopped it at {{time}} and no longer restarts it. Check its logs.",
+    stuckGaveUp_other:
+      "The server doesn't finish starting ({{count}} minutes) and was already restarted {{max}} times in 30 minutes: Nexum stopped it at {{time}} and no longer restarts it. Check its logs.",
+    ramLimit:
+      "Server RAM stayed above {{limit}} GB for 5 minutes ({{ram}} GB): Nexum restarted it at {{time}}, players were warned.",
+    ramLimitNoWarning:
+      "Server RAM stayed above {{limit}} GB for 5 minutes ({{ram}} GB): Nexum restarted it at {{time}} (the game can't warn players).",
+    viewLogs: "View logs",
+    dismiss: "Dismiss",
+  },
   serverMenu: {
     more: "More actions",
     saveNow: "Save the world now",

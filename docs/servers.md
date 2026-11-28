@@ -8,12 +8,19 @@ The **Servers** page lists every dedicated server Nexum manages, whatever the ga
 
 Each row has a **Start** / **Stop** button, a **Restart** button and a **⋯** menu:
 
-- **Edit**: name, color, automatic start with Nexum, relaunch after a crash.
+- **Edit**: name, color, automatic start with Nexum, relaunch after a crash, and the watch options below.
 - **Open folder**.
 - **Export for another PC** (server stopped): see [Moving to another PC](moving.md).
 - **Delete**: removes the server from Nexum; the game files stay on the disk.
 
 The header has **Import a server** (a file exported from another PC), **Setup wizard** and **Add a server** (a new server or a folder already installed).
+
+### Watch options (Edit dialog)
+
+- **Restart if startup isn't finished** (ARK: Survival Ascended and Enshrouded only, the games that write a "ready" line in their log: `advertising for join` for ARK, `HostOnline` for Enshrouded): if the line doesn't show up after the set number of minutes (10 by default), Nexum kills the server and starts it again 10 seconds later. These restarts count with the restarts after a crash: after 3 in 30 minutes, Nexum leaves the server stopped.
+- **Restart when RAM goes above** (all games): when the server's RAM stays above the limit for 5 minutes in a row (checked once a minute), Nexum restarts it, warning players with the announcements of its **Schedule** page when the game can (REST API, RCON). Without them, it restarts right away.
+
+Each time, a line goes to the server's logs and a warning shows under the Dashboard header (with **View logs**) until you dismiss it. A Windows notification appears if Nexum's window isn't in front.
 
 ## All servers
 

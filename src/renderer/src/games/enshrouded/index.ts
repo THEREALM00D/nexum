@@ -41,6 +41,7 @@ export const enshroudedPlugin: GamePlugin = {
     schedule: Schedule,
   },
   requirements: { ramGb: 6, diskGb: 30 },
+  startupReadyHintKey: "enshroudedDashboard.startupReadyHint",
   i18n: {
     fr: {
       ...dashboardFr,

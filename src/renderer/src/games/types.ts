@@ -36,4 +36,10 @@ export interface GamePlugin {
   /** Ressources à prévoir, rappelées avant l'installation (GameRequirementsHint). */
   requirements?: { ramGb: number; diskGb: number };
   existingServer?: ExistingServerImport;
+  /**
+   * Le main connaît la ligne « serveur prêt » du jeu (`READY_LINES`,
+   * `src/main/games/registry.ts`) : le dialogue du serveur propose
+   * « Relancer si le démarrage n'est pas fini », avec ce texte d'aide.
+   */
+  startupReadyHintKey?: string;
 }

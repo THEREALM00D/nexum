@@ -6,6 +6,10 @@ import {
   saveNow,
   sendMessage,
 } from "../../server/adminActions";
+import {
+  dismissWatchdogEvent,
+  getWatchdogEvent,
+} from "../../server/watchdogEvents";
 import type { LaunchArgsConfig, ServerStatus } from "../../../shared/types";
 import { restartServer, startServer } from "../../server/startServer";
 import { getJoinInfo, getPublicIp } from "../../server/joinInfo";
@@ -47,6 +51,13 @@ export function registerServerHandlers(ctx: IpcContext): void {
   );
   ipcMain.handle("server:sendMessage", (_, serverId: string, message: string) =>
     sendMessage(ctx, serverId, String(message ?? "")),
+  );
+  // Alerte de la surveillance (démarrage bloqué, RAM) sous l'en-tête du Dashboard.
+  ipcMain.handle("server:watchdogEvent", (_, serverId: string) =>
+    getWatchdogEvent(serverId),
+  );
+  ipcMain.handle("server:dismissWatchdogEvent", (_, serverId: string) =>
+    dismissWatchdogEvent(serverId),
   );
   ipcMain.handle("server:kill", (_, serverId: string) =>
     killServer(ctx, serverId),

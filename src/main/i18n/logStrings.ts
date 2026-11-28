@@ -45,6 +45,12 @@ const FR = {
   notResponding: "Le processus ne répond pas, arrêt forcé via taskkill...",
   waitingGraceful: (s: number) => `Attente de l'arrêt propre (${s} s)...`,
   forceKill: "Arrêt forcé via taskkill...",
+  stuckStartKilled: (minutes: number, attempt: number, max: number) =>
+    `Le serveur n'a pas fini de démarrer après ${minutes} min (pas de ligne « prêt » dans son log) : arrêt forcé, relance dans 10 s (essai ${attempt} sur ${max}).`,
+  stuckStartGaveUp: (minutes: number, max: number) =>
+    `Le serveur n'a pas fini de démarrer après ${minutes} min, déjà relancé ${max} fois en 30 min : arrêt forcé, plus de relance automatique.`,
+  ramLimitExceeded: (ramGb: number, limitGb: number, warned: boolean) =>
+    `RAM du serveur au-dessus de ${limitGb} Go pendant 5 minutes (${ramGb.toLocaleString("fr-FR", { maximumFractionDigits: 1 })} Go) : ${warned ? "redémarrage avec annonces aux joueurs." : "redémarrage."}`,
   killRequested:
     "Arrêt forcé demandé depuis le Dashboard, sans annonce ni sauvegarde.",
   saveNowRequested: "Sauvegarde du monde demandée depuis le Dashboard...",
@@ -231,6 +237,12 @@ const EN: typeof FR = {
     "The process isn't responding, forcing it to stop (taskkill)...",
   waitingGraceful: (s) => `Waiting for a clean shutdown (${s} s)...`,
   forceKill: "Forcing the stop (taskkill)...",
+  stuckStartKilled: (minutes, attempt, max) =>
+    `The server hadn't finished starting after ${minutes} min (no "ready" line in its log): forced stop, restart in 10 s (attempt ${attempt} of ${max}).`,
+  stuckStartGaveUp: (minutes, max) =>
+    `The server hadn't finished starting after ${minutes} min, already restarted ${max} times in 30 min: forced stop, no more automatic restart.`,
+  ramLimitExceeded: (ramGb, limitGb, warned) =>
+    `Server RAM above ${limitGb} GB for 5 minutes (${ramGb.toLocaleString("en-US", { maximumFractionDigits: 1 })} GB): ${warned ? "restarting with player warnings." : "restarting."}`,
   killRequested:
     "Forced stop requested from the Dashboard, without warning or saving.",
   saveNowRequested: "World save requested from the Dashboard...",

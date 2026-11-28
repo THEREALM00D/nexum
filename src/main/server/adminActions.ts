@@ -107,5 +107,9 @@ export async function killServer(
   serverId: string,
 ): Promise<{ success: boolean; error?: string }> {
   serverOf(ctx, serverId);
-  return ctx.serverManagers.getOrCreate(serverId).kill();
+  const manager = ctx.serverManagers.getOrCreate(serverId);
+  // Pas lancé : `stop()` écrit le refus, sans ligne « arrêt forcé ».
+  if (manager.getPid() && manager.getStatus() !== "stopped")
+    manager.log(managerLine(lt().killRequested));
+  return manager.kill();
 }

@@ -43,6 +43,8 @@ import { registerFirewallHandlers } from "./handlers/firewall";
 import { registerBackupHandlers } from "./handlers/backup";
 import { registerScheduleHandlers } from "./handlers/schedule";
 import { registerBulkHandlers } from "./handlers/bulk";
+import { startStuckStartWatch } from "../server/stuckStartWatch";
+import { startRamWatch } from "../monitor/ramWatch";
 import { registerServersHandlers } from "./handlers/servers";
 import { registerTransferHandlers } from "./handlers/transfer";
 import { registerAutoUpdater } from "../update/AutoUpdater";
@@ -382,6 +384,9 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
   // pas relancer un serveur déjà en cours (voir server/startServer.ts).
   adoption.then(() => autoStartServers(ctx, broadcastLog)).catch(() => {});
   registerCrashRestart(ctx);
+  // Surveillance : démarrage bloqué (ligne « prêt » du jeu) et limite de RAM.
+  startStuckStartWatch(ctx);
+  startRamWatch(ctx);
   startSchedulers(ctx, intervalSchedulers);
 
   registerMiscHandlers(ctx);

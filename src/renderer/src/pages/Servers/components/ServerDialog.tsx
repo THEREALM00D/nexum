@@ -18,10 +18,11 @@ import { useExeDetection } from "../../../hooks/useExeDetection";
 import ExeStatusHint from "./ExeStatusHint";
 import ExistingServerPanel from "./ExistingServerPanel";
 import FolderField from "../../../components/common/FolderField";
-import CheckboxField from "../../../components/common/CheckboxField";
 import ColorPicker from "./ColorPicker";
 import { SERVER_COLORS } from "@shared/serverColors";
 import { GAMES } from "../../../games/registry";
+import { watchdogInvalid } from "./WatchdogFields";
+import ServerAutomationFields from "./ServerAutomationFields";
 
 export interface ServerFormValues {
   name: string;
@@ -30,6 +31,10 @@ export interface ServerFormValues {
   color: string | null;
   autoStart: boolean;
   autoRestart: boolean;
+  /** Démarrage bloqué : minutes avant relance, 0 = désactivé. */
+  stuckStartMinutes: number;
+  /** Limite de RAM en Go, 0 = désactivée. */
+  ramLimitGb: number;
 }
 
 interface Props {
@@ -53,6 +58,8 @@ export default function ServerDialog({
     color: SERVER_COLORS[0],
     autoStart: false,
     autoRestart: false,
+    stuckStartMinutes: 0,
+    ramLimitGb: 0,
   });
   const [submitting, setSubmitting] = useState(false);
   const [importState, setImportState] = useState<unknown>(null);
@@ -68,6 +75,8 @@ export default function ServerDialog({
         color: initial?.color ?? SERVER_COLORS[0],
         autoStart: initial?.autoStart ?? false,
         autoRestart: initial?.autoRestart ?? false,
+        stuckStartMinutes: initial?.stuckStartMinutes ?? 0,
+        ramLimitGb: initial?.ramLimitGb ?? 0,
       });
     }
   }, [open, initial]);
@@ -91,7 +100,11 @@ export default function ServerDialog({
   };
 
   const canSubmit =
-    values.name.trim() && values.path.trim() && !submitting && !importPending;
+    values.name.trim() &&
+    values.path.trim() &&
+    !submitting &&
+    !importPending &&
+    !watchdogInvalid(values);
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
@@ -158,22 +171,10 @@ export default function ServerDialog({
             onChange={(color) => setValues((v) => ({ ...v, color }))}
           />
 
-          <Stack spacing={1}>
-            <CheckboxField
-              checked={values.autoStart}
-              onChange={(autoStart) => setValues((v) => ({ ...v, autoStart }))}
-              label={t("servers.dialog.autoStart")}
-              helper={t("servers.dialog.autoStartHelper")}
-            />
-            <CheckboxField
-              checked={values.autoRestart}
-              onChange={(autoRestart) =>
-                setValues((v) => ({ ...v, autoRestart }))
-              }
-              label={t("servers.dialog.autoRestart")}
-              helper={t("servers.dialog.autoRestartHelper")}
-            />
-          </Stack>
+          <ServerAutomationFields
+            values={values}
+            onChange={(patch) => setValues((v) => ({ ...v, ...patch }))}
+          />
         </Stack>
       </DialogContent>
       <DialogActions>

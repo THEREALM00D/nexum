@@ -76,6 +76,16 @@ export class ServerManager {
   // `hurried` couvre un appel arrivé avant le début de l'attente.
   private skipShutdownWait: (() => void) | null = null;
   private hurried = false;
+  /**
+   * Démarrage en cours de suivi (démarrage bloqué, `stuckStartWatch.ts`) :
+   * prêt quand la ligne « prêt » du jeu passe dans le log. Sans ligne
+   * connue, ou serveur adopté : prêt d'office.
+   */
+  private startup: {
+    startedAt: number;
+    ready: boolean;
+    readyLine?: RegExp;
+  } | null = null;
 
   /**
    * `sessionLog` : fichier de log persistant, un par session (démarrage →
@@ -138,6 +148,9 @@ export class ServerManager {
     this.sessionLog?.begin(clearView);
     const hide = createNoiseFilter(noise);
     const log = (line: string) => {
+      const startup = this.startup;
+      if (startup && !startup.ready && startup.readyLine?.test(line))
+        startup.ready = true;
       this.sessionLog?.line(line);
       if (!hide(line)) onLog(line);
     };
@@ -180,6 +193,12 @@ export class ServerManager {
     return this.process !== null;
   }
 
+  /** Heure du lancement et ligne « prêt » vue ou non ; null s'il ne tourne pas. */
+  getStartup(): { startedAt: number; ready: boolean } | null {
+    if (!this.getRunningPid() || !this.startup) return null;
+    return { startedAt: this.startup.startedAt, ready: this.startup.ready };
+  }
+
   /** PID du processus racine du serveur (lancé ou adopté), null s'il ne tourne pas. */
   getPid(): number | null {
     return this.getRunningPid();
@@ -195,6 +214,7 @@ export class ServerManager {
     if (this.process || this.adoptedPid) return false;
     this.adoptedPid = pid;
     this.status = "running";
+    this.startup = { startedAt: Date.now(), ready: true };
     const log = this.beginSession(onLog);
     log(managerLine(lt().adoptedDetected(pid)));
     log(
@@ -268,6 +288,11 @@ export class ServerManager {
     }
 
     this.status = "starting";
+    this.startup = {
+      startedAt: Date.now(),
+      ready: !spec.readyLine,
+      readyLine: spec.readyLine,
+    };
     // Nouvelle session à chaque démarrage (manuel, planifié, relance auto) :
     // un fichier neuf, et la vue de l'app repart de zéro.
     const log = this.beginSession(onLog, logNoise);
@@ -406,9 +431,6 @@ export class ServerManager {
    * mort et s'arrête là.
    */
   async kill(): Promise<{ success: boolean; error?: string }> {
-    // Pas lancé : `stop()` écrit le refus, sans ligne « tué ».
-    if (this.getRunningPid() && this.status !== "stopped")
-      this.onLog(managerLine(lt().killRequested));
     return this.stop({});
   }
 
