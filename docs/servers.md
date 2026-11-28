@@ -8,7 +8,7 @@ The **Servers** page lists every dedicated server Nexum manages, whatever the ga
 
 Each row has a **Start** / **Stop** button, a **Restart** button and a **⋯** menu:
 
-- **Edit**: name, color, automatic start with Nexum, relaunch after a crash, and the watch options below.
+- **Edit**: name, color, automatic start with Nexum, relaunch after a crash, the watch options and the processor settings below.
 - **Open folder**.
 - **Export for another PC** (server stopped): see [Moving to another PC](moving.md).
 - **Delete**: removes the server from Nexum; the game files stay on the disk.
@@ -29,7 +29,7 @@ At the bottom of the Add and Edit dialogs, the collapsed **Advanced · Processor
 - **CPU priority**: Low, Below normal, Normal (default), Above normal, High. **Below normal** lets the game on the same PC go first when the processor is busy. **High** is not recommended (it takes the processor from Windows and your games), and **Low** can freeze the server when the game keeps the processor busy.
 - **Cores used**: **All** (default) or one button per logical core of this PC (up to 64); at least one stays selected. The cores left free go to Windows and your games.
 
-Applied the next time the server starts (button, automatic start, restarts) and when Nexum picks up a server that was already running, to the server process and to the process it starts (Palworld, Astroneer and RuneScape: Dragonwilds run the real server in a child process). A line in the server's logs says what was applied. A server started as administrator, or by another Windows user, can't be changed: the logs say so and the server starts anyway.
+Applied the next time the server starts (button, automatic start, restarts) and when Nexum picks up a server that was already running, to the server process and to the process it starts (Palworld, Astroneer and RuneScape: Dragonwilds run the real server in a child process). A line in the server's logs says what was applied. A server picked up while running is set back to Normal and all cores when its settings are back to the defaults. A server started as administrator, or by another Windows user, can't be changed: the logs say so and the server starts anyway.
 
 **Moving to another PC** keeps the priority but not the cores (the other PC doesn't have the same ones).
 

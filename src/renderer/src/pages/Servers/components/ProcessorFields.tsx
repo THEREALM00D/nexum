@@ -64,12 +64,14 @@ export default function ProcessorFields({ priority, cores, onChange }: Props) {
   };
 
   const free = allCores.filter((core) => !isOn(core));
+  // Résumé d'après le réglage enregistré, pas d'après `count` : 0 tant que
+  // le nombre de cœurs n'est pas lu, il affichait « tous les cœurs ».
   const summary = [
     t(`servers.dialog.processor.priorities.${priority}`),
-    usesAll
+    cores.length === 0
       ? t("servers.dialog.processor.allCores")
       : t("servers.dialog.processor.someCores", {
-          cores: formatCoreList(selected),
+          cores: formatCoreList(cores),
         }),
   ].join(" · ");
 

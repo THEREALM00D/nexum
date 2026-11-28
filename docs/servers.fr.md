@@ -8,7 +8,7 @@ La page **Serveurs** liste tous les serveurs dédiés gérés par Nexum, quel qu
 
 Chaque ligne a un bouton **Démarrer** / **Arrêter**, un bouton **Redémarrer** et un menu **⋯** :
 
-- **Modifier** : nom, couleur, démarrage automatique avec Nexum, relance après un plantage, et les options de surveillance ci-dessous.
+- **Modifier** : nom, couleur, démarrage automatique avec Nexum, relance après un plantage, les options de surveillance et les réglages du processeur ci-dessous.
 - **Ouvrir le dossier**.
 - **Exporter pour un autre PC** (serveur arrêté) : voir [Changer de PC](moving.fr.md).
 - **Supprimer** : retire le serveur de Nexum ; les fichiers du jeu restent sur le disque.
@@ -29,7 +29,7 @@ En bas des dialogues Ajouter et Modifier, la section repliée **Avancé · Proce
 - **Priorité du processeur** : Basse, Sous la normale, Normale (par défaut), Au-dessus de la normale, Haute. **Sous la normale** laisse passer le jeu du même PC en premier quand le processeur est chargé. **Haute** est déconseillée (elle prend le processeur à Windows et à vos jeux), et **Basse** peut figer le serveur quand le jeu occupe le processeur.
 - **Cœurs utilisés** : **Tous** (par défaut) ou un bouton par cœur logique de ce PC (64 au plus) ; au moins un reste coché. Les cœurs laissés libres vont à Windows et à vos jeux.
 
-Appliqué au prochain démarrage du serveur (bouton, démarrage automatique, redémarrages) et quand Nexum reprend un serveur déjà lancé, au processus du serveur et à celui qu'il lance (Palworld, Astroneer et RuneScape: Dragonwilds font tourner le vrai serveur dans un processus enfant). Une ligne dans les logs du serveur dit ce qui a été appliqué. Un serveur lancé en administrateur, ou par un autre utilisateur de Windows, ne peut pas être modifié : les logs le disent et le serveur démarre quand même.
+Appliqué au prochain démarrage du serveur (bouton, démarrage automatique, redémarrages) et quand Nexum reprend un serveur déjà lancé, au processus du serveur et à celui qu'il lance (Palworld, Astroneer et RuneScape: Dragonwilds font tourner le vrai serveur dans un processus enfant). Une ligne dans les logs du serveur dit ce qui a été appliqué. Un serveur repris en cours de route est remis en Normale sur tous les cœurs quand ses réglages sont revenus aux valeurs par défaut. Un serveur lancé en administrateur, ou par un autre utilisateur de Windows, ne peut pas être modifié : les logs le disent et le serveur démarre quand même.
 
 **Changer de PC** garde la priorité mais pas les cœurs (l'autre PC n'a pas les mêmes).
 

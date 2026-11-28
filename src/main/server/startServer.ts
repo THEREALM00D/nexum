@@ -106,17 +106,17 @@ export async function startServer(
   const serverPath = ctx.getServerPath(id);
   const spec = getLaunchSpec(gameType, serverPath, ctx.getServerConfig(id));
 
-  const mgr = ctx.serverManagers.getOrCreate(id);
-  const res = await mgr.start(serverPath, spec, sendLog);
+  const manager = ctx.serverManagers.getOrCreate(id);
+  const result = await manager.start(serverPath, spec, sendLog);
   // Après start() : le démarrage ouvre une nouvelle session de log (vue vidée,
   // nouveau fichier), la liste des mods doit y figurer.
-  if (res.success && gameType === "valheim") {
-    logActiveValheimMods(ctx, id, (line) => mgr.log(line));
+  if (result.success && gameType === "valheim") {
+    logActiveValheimMods(ctx, id, (line) => manager.log(line));
   }
   // Non attendues : SteamCMD peut mettre jusqu'à 30 s à répondre, et la
   // liste des registres de mods est lourde. Best-effort : une vérification
   // ratée ne concerne pas le démarrage.
-  if (res.success) {
+  if (result.success) {
     checkGameUpdateOnStart(ctx, id).catch(() => {});
     runAfterStartTask(ctx, id, gameType);
     scheduleProcessTuning(ctx, id);
@@ -124,7 +124,7 @@ export async function startServer(
       checkModUpdatesOnStart(ctx, id).catch(() => {});
     }
   }
-  return res;
+  return result;
 }
 
 /**
@@ -139,24 +139,24 @@ export async function restartServer(
   sendLog: (line: string) => void,
   stopConfig: StopConfig = ctx.getStopConfig(id),
 ): Promise<{ success: boolean; error?: string }> {
-  const server = ctx.servers.list().find((s) => s.id === id);
+  const server = ctx.servers.list().find((candidate) => candidate.id === id);
   const gameType = server?.gameType ?? "palworld";
   const serverPath = ctx.getServerPath(id);
-  const mgr = ctx.serverManagers.getOrCreate(id);
-  const res = await mgr.restart(
+  const manager = ctx.serverManagers.getOrCreate(id);
+  const result = await manager.restart(
     serverPath,
     getLaunchSpec(gameType, serverPath, ctx.getServerConfig(id)),
     sendLog,
     stopConfig,
   );
-  if (res.success && gameType === "valheim") {
-    logActiveValheimMods(ctx, id, (line) => mgr.log(line));
+  if (result.success && gameType === "valheim") {
+    logActiveValheimMods(ctx, id, (line) => manager.log(line));
   }
-  if (res.success) {
+  if (result.success) {
     runAfterStartTask(ctx, id, gameType);
     scheduleProcessTuning(ctx, id);
   }
-  return res;
+  return result;
 }
 
 /**

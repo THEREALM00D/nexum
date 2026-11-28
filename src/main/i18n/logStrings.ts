@@ -58,6 +58,8 @@ const FR = {
     processes: number,
   ) =>
     `Processeur : priorité ${priority}, ${cores === null ? "tous les cœurs" : `cœurs ${cores}`} (${processes} processus).`,
+  processTuningReset: (processes: number) =>
+    `Processeur : priorité Normale et tous les cœurs remis (${processes} processus, réglés avant par Nexum ou un autre outil).`,
   processTuningFailed: (reason: string) =>
     `Priorité et cœurs du processeur non appliqués (serveur lancé en administrateur ou par un autre utilisateur ?) : ${reason}`,
   stuckStartKilled: (minutes: number, attempt: number, max: number) =>
@@ -265,6 +267,8 @@ const EN: typeof FR = {
   },
   processTuningApplied: (priority, cores, processes) =>
     `Processor: ${priority} priority, ${cores === null ? "all cores" : `cores ${cores}`} (${processes} process${processes > 1 ? "es" : ""}).`,
+  processTuningReset: (processes) =>
+    `Processor: Normal priority and all cores restored (${processes} process${processes > 1 ? "es" : ""}, set earlier by Nexum or another tool).`,
   processTuningFailed: (reason) =>
     `CPU priority and cores not applied (server started as administrator or by another user?): ${reason}`,
   stuckStartKilled: (minutes, attempt, max) =>

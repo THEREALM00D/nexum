@@ -385,12 +385,12 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
   // pas relancer un serveur déjà en cours (voir server/startServer.ts).
   adoption.then(() => autoStartServers(ctx, broadcastLog)).catch(() => {});
   // Serveurs adoptés (Dragonwilds : le `…-Shipping.exe` survit à Nexum) :
-  // priorité et cœurs réappliqués.
+  // priorité et cœurs réappliqués, ou remis par défaut.
   adoption
     .then(() => {
       for (const server of servers.list())
         if (serverManagers.getOrCreate(server.id).getStatus() === "running")
-          scheduleProcessTuning(ctx, server.id);
+          scheduleProcessTuning(ctx, server.id, { adopted: true });
     })
     .catch(() => {});
   registerCrashRestart(ctx);
