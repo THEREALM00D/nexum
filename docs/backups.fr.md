@@ -138,7 +138,7 @@ Le niveau, l'expérience et les engrammes d'un joueur sont dans son propre fichi
 - **Sauvegardes à garder par joueur** : de 1 à 100, 10 par défaut.
 - **Annoncer chaque sauvegarde en jeu** : un court message dans le chat (RCON) après une sauvegarde planifiée ou **Sauvegarder maintenant**, pas après une déconnexion.
 
-Chaque version contient le `.arkprofile` du joueur, son `.arktributetribe` et le fichier `.arktribe` de sa tribu, copiés tels quels dans `<dossier de sauvegarde>\player-profiles\<carte>\<EOS ID>\<date>\`. Les profils sont propres à chaque carte : une autre carte affiche ses propres joueurs.
+Chaque version contient le `.arkprofile` du joueur, son `.arktributetribe` et le fichier `.arktribe` de sa tribu, copiés tels quels dans `<dossier de sauvegarde>\player-profiles\<dossier du monde>\<carte>\<EOS ID>\<date>\` (`SavedArks`, ou le champ **Dossier du monde**). Les profils sont propres à chaque monde : une autre carte ou un autre dossier du monde affiche ses propres joueurs.
 
 ### Restaurer un joueur
 
@@ -146,7 +146,7 @@ La liste affiche chaque joueur (nom, nom du survivant, EOS ID) avec son nombre d
 
 - Le niveau, l'expérience et les engrammes reviennent à cette version.
 - Le personnage dans le monde, son inventaire, la tribu et les autres joueurs ne changent pas : ils font partie de la sauvegarde du monde. Le fichier de tribu est gardé dans chaque version pour référence mais jamais restauré, car tous les membres le partagent.
-- Le profil actuel est d'abord sauvegardé, pour pouvoir revenir en arrière.
+- Le profil actuel est d'abord sauvegardé (même si le jeu vient de l'écrire), pour pouvoir revenir en arrière.
 
 ## Bonnes pratiques
 

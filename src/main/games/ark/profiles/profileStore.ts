@@ -1,4 +1,4 @@
-import { basename, join } from "path";
+import { basename, dirname, join } from "path";
 import {
   existsSync,
   mkdirSync,
@@ -30,15 +30,18 @@ export function worldDir(ctx: IpcContext, serverId: string): string {
 }
 
 /**
- * `<dossier des sauvegardes>/player-profiles/<Carte>/` : un dossier par carte,
- * les profils d'une autre carte sont d'autres personnages.
+ * `<dossier des sauvegardes>/player-profiles/<dossier du monde>/<Carte>/`
+ * (`SavedArks` ou `AltSaveDirectoryName`) : les profils d'un autre monde,
+ * même de la même carte, sont d'autres personnages.
  * `BackupManager.list` ne lit que les `.zip` : ce dossier ne s'y mêle pas.
  */
 export function profilesDir(ctx: IpcContext, serverId: string): string {
+  const world = worldDir(ctx, serverId);
   return join(
     ctx.getBackupDir(serverId),
     "player-profiles",
-    basename(worldDir(ctx, serverId)),
+    basename(dirname(world)),
+    basename(world),
   );
 }
 

@@ -28,7 +28,8 @@ export function createIntervalSchedulers(): IntervalSchedulers {
 
 /**
  * Démarre les tâches planifiées de tous les serveurs : redémarrage, sauvegarde
- * auto, vérification des mises à jour, créatures sauvages d'ARK. Chaque
+ * auto, vérification des mises à jour, créatures sauvages et profils des
+ * joueurs d'ARK. Chaque
  * tick relit la config : un réglage changé s'applique sans rien réarmer.
  */
 export function startSchedulers(

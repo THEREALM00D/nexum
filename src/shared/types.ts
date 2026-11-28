@@ -536,6 +536,7 @@ export type AppErrorCode =
   | "ARK_PROFILE_SERVER_RUNNING"
   | "ARK_PROFILE_NOT_FOUND"
   | "ARK_PROFILE_COPY_FAILED"
+  | "ARK_PROFILE_READ_FAILED"
   | "CURSEFORGE_UNAVAILABLE"
   | "CURSEFORGE_FORBIDDEN"
   // Réseau / téléchargements (registres de mods, SteamCMD, IP publique)

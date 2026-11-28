@@ -66,8 +66,8 @@ const FR = {
     `Profils des joueurs sauvegardés : ${count} (les profils inchangés ne sont pas recopiés).`,
   arkProfilesFailed: (reason: string) =>
     `Sauvegarde des profils des joueurs impossible : ${reason}`,
-  arkProfileRestored: (name: string, date: string) =>
-    `Profil de ${name} restauré (version du ${date}). Le profil d'avant a été sauvegardé.`,
+  arkProfileRestored: (name: string, date: string, previousKept: boolean) =>
+    `Profil de ${name} restauré (version du ${date}).${previousKept ? " Le profil d'avant a été sauvegardé." : ""}`,
   arkProfilesAnnounce: "Profils des joueurs sauvegardés.",
   stuckStartKilled: (minutes: number, attempt: number, max: number) =>
     `Le serveur n'a pas fini de démarrer après ${minutes} min (pas de ligne « prêt » dans son log) : arrêt forcé, relance dans 10 s (essai ${attempt} sur ${max}).`,
@@ -282,8 +282,8 @@ const EN: typeof FR = {
     `Player profiles backed up: ${count} (unchanged profiles aren't copied again).`,
   arkProfilesFailed: (reason) =>
     `Couldn't back up the player profiles: ${reason}`,
-  arkProfileRestored: (name, date) =>
-    `${name}'s profile restored (version from ${date}). The previous profile was backed up.`,
+  arkProfileRestored: (name, date, previousKept) =>
+    `${name}'s profile restored (version from ${date}).${previousKept ? " The previous profile was backed up." : ""}`,
   arkProfilesAnnounce: "Player profiles backed up.",
   stuckStartKilled: (minutes, attempt, max) =>
     `The server hadn't finished starting after ${minutes} min (no "ready" line in its log): forced stop, restart in 10 s (attempt ${attempt} of ${max}).`,

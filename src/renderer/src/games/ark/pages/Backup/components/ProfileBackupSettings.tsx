@@ -16,6 +16,8 @@ import {
 interface Props {
   config: ArkProfileBackupConfig;
   loading: boolean;
+  /** Réglages illisibles : rien n'est modifiable. */
+  disabled: boolean;
   onChange: (patch: Partial<ArkProfileBackupConfig>) => void;
 }
 
@@ -23,10 +25,13 @@ interface Props {
 export default function ProfileBackupSettings({
   config,
   loading,
+  disabled,
   onChange,
 }: Props) {
   const { t } = useTranslation();
-  // Saisie gardée telle quelle (champ vidé = NaN), enregistrée si valide.
+  // Saisie gardée telle quelle (champ vidé = NaN), enregistrée en quittant
+  // le champ ou sur Entrée : à chaque frappe, « 2 » était enregistré en
+  // tapant 25, et une sauvegarde à ce moment supprimait des versions.
   const [keep, setKeep] = useState(config.keep);
   useEffect(() => setKeep(config.keep), [config.keep]);
   const keepValid = isIntegerInRange(
@@ -34,6 +39,9 @@ export default function ProfileBackupSettings({
     PROFILE_KEEP_RANGE.min,
     PROFILE_KEEP_RANGE.max,
   );
+  const saveKeep = () => {
+    if (keepValid && keep !== config.keep) onChange({ keep });
+  };
 
   return (
     <Paper sx={{ p: 2.5 }}>
@@ -46,6 +54,7 @@ export default function ProfileBackupSettings({
             <BackupIntervalSelect
               label={t("arkBackup.profiles.settings.interval")}
               value={config.intervalMinutes}
+              disabled={disabled}
               onChange={(intervalMinutes) => onChange({ intervalMinutes })}
             />
             <Typography variant="caption" sx={{ color: "text.secondary" }}>
@@ -58,17 +67,11 @@ export default function ProfileBackupSettings({
             size="small"
             type="number"
             value={integerInputValue(keep)}
-            onChange={(event) => {
-              const value = parseIntegerInput(event.target.value);
-              setKeep(value);
-              if (
-                isIntegerInRange(
-                  value,
-                  PROFILE_KEEP_RANGE.min,
-                  PROFILE_KEEP_RANGE.max,
-                )
-              )
-                onChange({ keep: value });
+            disabled={disabled}
+            onChange={(event) => setKeep(parseIntegerInput(event.target.value))}
+            onBlur={saveKeep}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") saveKeep();
             }}
             error={!keepValid}
             helperText={t("arkBackup.profiles.settings.keepHelper", {
@@ -86,6 +89,7 @@ export default function ProfileBackupSettings({
 
           <SwitchField
             checked={config.announce}
+            disabled={disabled}
             onChange={(announce) => onChange({ announce })}
             label={t("arkBackup.profiles.settings.announce")}
             helper={t("arkBackup.profiles.settings.announceHelper")}

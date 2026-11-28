@@ -5,12 +5,13 @@ import type {
   ArkProfilePlayer,
 } from "../../../../shared/types";
 import { appErrorLogText } from "../../../utils/appError";
-import { lt, managerLine } from "../../../i18n/logStrings";
+import { lt } from "../../../i18n/logStrings";
 import {
   backupPlayerProfiles,
   listProfilePlayers,
-  restorePlayerProfile,
+  logProfileLine,
 } from "../profiles/profileBackups";
+import { restorePlayerProfile } from "../profiles/profileRestore";
 
 type Result = { success: boolean; saved?: number; error?: string };
 
@@ -37,14 +38,13 @@ export function backupProfileAfterLeave(
   if (ctx.getServerConfig(serverId).arkProfileBackup.intervalMinutes <= 0)
     return;
   setTimeout(() => {
+    // Serveur arrêté pendant l'attente : la ligne va dans une courte session.
     backupPlayerProfiles(ctx, serverId, { eosIds: [eosId] }).catch((error) =>
-      ctx.serverManagers
-        .getOrCreate(serverId)
-        .log(
-          managerLine(
-            lt().arkProfilesFailed(appErrorLogText((error as Error).message)),
-          ),
-        ),
+      logProfileLine(
+        ctx,
+        serverId,
+        lt().arkProfilesFailed(appErrorLogText((error as Error).message)),
+      ),
     );
   }, AFTER_LEAVE_MS);
 }

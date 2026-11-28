@@ -25,7 +25,7 @@ Intervalle 0 à 1440 min **par serveur**, active seulement serveur lancé. Tick 
 
 ## Profils des joueurs ARK
 
-À part du monde, dans `<dossier des sauvegardes>/player-profiles/<Carte>/` : voir `src/main/games/ark/CLAUDE.md`. `BackupManager.list` ne lit que les `.zip` du dossier, ce sous-dossier ne s'y mêle pas.
+À part du monde, dans `<dossier des sauvegardes>/player-profiles/<dossier du monde>/<Carte>/` : voir `src/main/games/ark/CLAUDE.md`. `BackupManager.list` ne lit que les `.zip` du dossier, ce sous-dossier ne s'y mêle pas.
 
 ## UI
 

@@ -1,13 +1,13 @@
 import { existsSync, readdirSync } from "fs";
 import type Store from "electron-store";
-import type {
-  BackupConfig,
-  LaunchArgsConfig,
-  ServerConfig,
-  AstroneerLaunchConfig,
-  DragonwildsLaunchConfig,
-  EnshroudedLaunchConfig,
-} from "../../shared/types";
+import type { ServerConfig } from "../../shared/types";
+import {
+  DEFAULT_ASTRONEER_CONFIG,
+  DEFAULT_BACKUP,
+  DEFAULT_DRAGONWILDS_CONFIG,
+  DEFAULT_ENSHROUDED_CONFIG,
+  DEFAULT_LAUNCH_ARGS,
+} from "./configDefaults";
 import type { AppStore } from "../ipc/context";
 import { DEFAULT_RESTART } from "../../shared/restartSchedule";
 import { withRestartDefaults } from "./restartDefaults";
@@ -24,34 +24,6 @@ import {
   DEFAULT_ARK_CONFIG,
   sanitizeArkLaunch,
 } from "../games/ark/launchConfig";
-
-const DEFAULT_LAUNCH_ARGS: LaunchArgsConfig = {
-  publicLobby: false,
-  performanceFlags: false,
-  customArgs: "",
-};
-
-const DEFAULT_ASTRONEER_CONFIG: AstroneerLaunchConfig = {
-  customArgs: "",
-};
-
-const DEFAULT_DRAGONWILDS_CONFIG: DragonwildsLaunchConfig = {
-  port: 7777,
-  beaconPort: 8888,
-  adminPassword: "",
-  customArgs: "",
-};
-
-const DEFAULT_ENSHROUDED_CONFIG: EnshroudedLaunchConfig = {
-  customArgs: "",
-};
-
-const DEFAULT_BACKUP: BackupConfig = {
-  backupDir: "",
-  backupKeep: 10,
-  backupIntervalMinutes: 0,
-  backupBeforeUpdate: true,
-};
 
 export const DEFAULT_SERVER_CONFIG: ServerConfig = {
   launchArgs: DEFAULT_LAUNCH_ARGS,

@@ -28,6 +28,7 @@ export default function ProfilesTab() {
       <ProfileBackupSettings
         config={profiles.config}
         loading={profiles.loading}
+        disabled={profiles.configFailed}
         onChange={profiles.changeConfig}
       />
       <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>

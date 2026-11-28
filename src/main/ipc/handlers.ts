@@ -62,12 +62,12 @@ import { registerArkHandlers } from "../games/ark/handlers/config";
 import { registerArkModsHandlers } from "../games/ark/handlers/mods";
 import { registerArkSettingsHandlers } from "../games/ark/handlers/settings";
 import { registerArkLaunchImportHandlers } from "../games/ark/handlers/launchImport";
+import { arkRconClient } from "../games/ark/rcon";
 import {
   backupProfileAfterLeave,
   registerArkProfileHandlers,
 } from "../games/ark/handlers/profiles";
-import { ArkRconClient } from "../games/ark/ArkRconClient";
-import { readRconSettings } from "../games/ark/gameUserSettingsIni";
+import type { ArkRconClient } from "../games/ark/ArkRconClient";
 import { getGameStopConfig } from "../games/registry";
 import { autoStartServers } from "../server/startServer";
 import { registerCrashRestart } from "../server/crashRestart";
@@ -270,11 +270,8 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
       const serverPath = getServerPath(serverId);
       if (gameType === "ark") {
         // ListPlayers en RCON, seulement si RCON est activé dans l'INI.
-        if (!serverPath) return null;
-        const { rconPort } = serverConfigs.get(serverId).arkConfig;
-        const rcon = readRconSettings(serverPath, rconPort);
-        if (!rcon.enabled) return null;
-        return new ArkRconClient(rcon.port, rcon.password);
+        // `ctx` est créé plus bas, mais ce client n'est demandé qu'au suivi.
+        return serverPath ? arkRconClient(ctx, serverId) : null;
       }
       if (gameType !== "palworld") return null;
 

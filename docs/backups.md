@@ -138,7 +138,7 @@ A player's level, experience and engrams are in their own profile file (`<EOS ID
 - **Backups to keep per player**: 1 to 100, 10 by default.
 - **Announce each backup in game**: a short chat message (RCON) after a scheduled backup or **Back up now**, not after a disconnection.
 
-Each version holds the player's `.arkprofile`, their `.arktributetribe` and their tribe's `.arktribe` file, copied as is in `<backup folder>\player-profiles\<map>\<EOS ID>\<date>\`. Profiles are per map: another map shows its own players.
+Each version holds the player's `.arkprofile`, their `.arktributetribe` and their tribe's `.arktribe` file, copied as is in `<backup folder>\player-profiles\<world folder>\<map>\<EOS ID>\<date>\` (`SavedArks`, or the **World folder** field). Profiles are per world: another map or world folder shows its own players.
 
 ### Restore one player
 
@@ -146,7 +146,7 @@ The list shows each player (name, survivor name, EOS ID) with their number of ba
 
 - Level, experience and engrams go back to that version.
 - The character in the world, its inventory, the tribe and the other players don't change: they are part of the world save. The tribe file is kept in each version for reference but never restored, since all members share it.
-- The current profile is backed up first, so you can go back.
+- The current profile is backed up first (even if the game wrote it a second ago), so you can go back.
 
 ## Best practices
 

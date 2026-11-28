@@ -31,23 +31,35 @@ export function useArkProfiles() {
   const [players, setPlayers] = useState<ArkProfilePlayer[]>([]);
   // Premier chargement seulement (les rafraîchissements gardent l'affichage).
   const [loading, setLoading] = useState(true);
+  // Réglages illisibles : édition bloquée, sinon les valeurs par défaut
+  // affichées écrasaient les vraies au premier changement.
+  const [configFailed, setConfigFailed] = useState(false);
   const [backingUp, setBackingUp] = useState(false);
   const [restoring, setRestoring] = useState(false);
 
+  // Réglages et liste lus à part : une liste illisible (dossier de
+  // sauvegarde injoignable) ne bloque pas les réglages.
   const refresh = async () => {
     if (!serverId) return;
-    try {
-      const [list, saved] = await Promise.all([
-        window.api.arkProfiles.list(serverId),
-        window.api.arkProfiles.getConfig(serverId),
-      ]);
-      setPlayers(list);
-      setConfig(saved);
-    } catch (error) {
-      notify(errorMessage(t, error, t("arkBackup.profiles.notify.cannotLoad")));
-    } finally {
-      setLoading(false);
-    }
+    const [saved, list] = await Promise.allSettled([
+      window.api.arkProfiles.getConfig(serverId),
+      window.api.arkProfiles.list(serverId),
+    ]);
+    if (saved.status === "fulfilled") setConfig(saved.value);
+    setConfigFailed(saved.status === "rejected");
+    if (list.status === "fulfilled") setPlayers(list.value);
+    const failure = [saved, list].find(
+      (result) => result.status === "rejected",
+    );
+    if (failure?.status === "rejected")
+      notify(
+        errorMessage(
+          t,
+          failure.reason,
+          t("arkBackup.profiles.notify.cannotLoad"),
+        ),
+      );
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -56,12 +68,15 @@ export function useArkProfiles() {
 
   const changeConfig = async (patch: Partial<ArkProfileBackupConfig>) => {
     if (!serverId) return;
+    const previous = config;
     const next = { ...config, ...patch };
     setConfig(next);
     try {
       setConfig(await window.api.arkProfiles.setConfig(serverId, next));
-    } catch {
-      notify(t("backup.notify.configFailed"));
+    } catch (error) {
+      // Pas enregistré : l'écran revient à ce qui l'est.
+      setConfig(previous);
+      notify(errorMessage(t, error, t("backup.notify.configFailed")));
     }
   };
 
@@ -125,6 +140,7 @@ export function useArkProfiles() {
     config,
     players,
     loading,
+    configFailed,
     backingUp,
     restoring,
     // Le jeu réécrirait le profil : restauration serveur arrêté seulement.
