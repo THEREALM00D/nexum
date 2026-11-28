@@ -25,26 +25,29 @@ export function useConfigBackups() {
   // écraseraient les vraies au premier changement).
   const [settingsFailed, setSettingsFailed] = useState(false);
   const [busy, setBusy] = useState(false);
+  // « Créer » à part : le bouton ne tourne pas pendant une suppression.
+  const [creating, setCreating] = useState(false);
+  // Fichiers sauvegardés pour ce jeu (aide de la carte Réglages).
+  const [files, setFiles] = useState<string[]>([]);
 
   const refresh = async () => {
     if (!serverId) return;
-    const [saved, list] = await Promise.allSettled([
+    // Lus à part : une liste illisible ne bloque pas les réglages.
+    const [saved, list, names] = await Promise.allSettled([
       window.api.configBackup.getConfig(serverId),
       window.api.configBackup.list(serverId),
+      window.api.configBackup.files(serverId),
     ]);
     if (saved.status === "fulfilled") setSettings(saved.value);
     setSettingsFailed(saved.status === "rejected");
     if (list.status === "fulfilled") setBackups(list.value);
-    const failure = [saved, list].find(
+    if (names.status === "fulfilled") setFiles(names.value);
+    const failure = [saved, list, names].find(
       (result) => result.status === "rejected",
     );
     if (failure?.status === "rejected")
       notify(
-        errorMessage(
-          t,
-          failure.reason,
-          t("backup.configFiles.notify.cannotLoad"),
-        ),
+        errorMessage(t, failure.reason, t("configBackup.notify.cannotLoad")),
       );
     setLoading(false);
   };
@@ -93,6 +96,7 @@ export function useConfigBackups() {
   const create = async () => {
     if (!serverId) return;
     setBusy(true);
+    setCreating(true);
     try {
       const result = await window.api.configBackup.create(serverId);
       if (!result.success) notify(appErrorMessage(t, result.error));
@@ -100,8 +104,8 @@ export function useConfigBackups() {
         notify(
           t(
             result.id
-              ? "backup.configFiles.notify.created"
-              : "backup.configFiles.notify.unchanged",
+              ? "configBackup.notify.created"
+              : "configBackup.notify.unchanged",
           ),
           "success",
         );
@@ -110,6 +114,7 @@ export function useConfigBackups() {
       notify(errorMessage(t, error));
     } finally {
       setBusy(false);
+      setCreating(false);
     }
   };
 
@@ -120,6 +125,8 @@ export function useConfigBackups() {
     loading,
     settingsFailed,
     busy,
+    creating,
+    files,
     // Le jeu réécrit sa config à l'arrêt : restauration serveur arrêté.
     canRestore: isStopped(state.status),
     changeSettings,
@@ -127,7 +134,7 @@ export function useConfigBackups() {
     restore: (backup: ConfigBackupEntry) =>
       run(
         (id) => window.api.configBackup.restore(id, backup.id),
-        t("backup.configFiles.notify.restored"),
+        t("configBackup.notify.restored"),
       ),
     remove: (backup: ConfigBackupEntry) =>
       run(

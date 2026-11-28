@@ -16,6 +16,8 @@ import setupFr from "../pages/Setup/__i18n__/fr";
 import setupEn from "../pages/Setup/__i18n__/en";
 import transferFr from "../components/transfer/__i18n__/fr";
 import transferEn from "../components/transfer/__i18n__/en";
+import configBackupFr from "../components/backup/config/__i18n__/fr";
+import configBackupEn from "../components/backup/config/__i18n__/en";
 import { GAMES } from "../games/registry";
 
 const fr = {
@@ -26,6 +28,7 @@ const fr = {
   ...settingsFr,
   ...setupFr,
   ...transferFr,
+  ...configBackupFr,
   ...GAMES.reduce((acc, g) => ({ ...acc, ...g.i18n.fr }), {}),
 };
 
@@ -37,6 +40,7 @@ const en = {
   ...settingsEn,
   ...setupEn,
   ...transferEn,
+  ...configBackupEn,
   ...GAMES.reduce((acc, g) => ({ ...acc, ...g.i18n.en }), {}),
 };
 

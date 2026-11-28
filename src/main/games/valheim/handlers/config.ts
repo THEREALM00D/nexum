@@ -12,6 +12,7 @@ import { shell } from "electron";
 import type { IpcContext } from "../../../ipc/context";
 import { OdinEyeApiClient } from "../OdinEyeApiClient";
 import { valheimServerConfig } from "../serverConfig";
+import { notifyBeforeConfigWrite } from "../../../utils/ini";
 import type {
   ValheimLaunchConfig,
   ValheimWorldInfo,
@@ -31,6 +32,9 @@ function readList(filePath: string): string[] {
 function writeList(filePath: string, list: string[]): void {
   const dir = join(filePath, "..");
   if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+  // Copie de la config du serveur avant l'écriture (option « avant chaque
+  // enregistrement »), sans `.backup` dans le dossier de Valheim.
+  notifyBeforeConfigWrite(filePath);
   writeFileSync(filePath, list.join("\r\n"), "utf-8");
 }
 

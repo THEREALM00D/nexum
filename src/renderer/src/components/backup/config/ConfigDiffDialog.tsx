@@ -16,8 +16,8 @@ import { countChanges, diffLines } from "@shared/lineDiff";
 import { formatDate } from "../../../utils/format";
 import { errorMessage } from "../../../utils/appErrorMessage";
 import { useNotification } from "../../../context/NotificationContext";
-import DiffView from "./DiffView";
 import LoadingSkeleton from "../../common/LoadingSkeleton";
+import DiffView from "./DiffView";
 
 // Lignes d'exemple du skeleton (même hauteur qu'un vrai bloc de différences).
 const PLACEHOLDER = diffLines(
@@ -34,7 +34,11 @@ interface Props {
   onRestore: (backup: ConfigBackupEntry) => void;
 }
 
-/** Différences entre une copie et les fichiers d'aujourd'hui, fichier par fichier. */
+/**
+ * Différences entre une copie et les fichiers d'aujourd'hui. Seuls les
+ * fichiers modifiés (ou trop gros pour être comparés) ont un bouton :
+ * Valheim peut avoir des dizaines de `.cfg` de mods inchangés.
+ */
 export default function ConfigDiffDialog({
   serverId,
   backup,
@@ -52,20 +56,24 @@ export default function ConfigDiffDialog({
 
   useEffect(() => {
     if (!backup || !serverId) return;
+    // Réponse d'une copie qui n'est plus affichée : ignorée.
+    let stale = false;
     setShown(backup);
     setFiles(null);
+    setFile("");
     window.api.configBackup
       .diff(serverId, backup.id)
       .then((result) => {
-        setFiles(result);
-        // Premier fichier qui a changé, sinon le premier.
-        const changed = result.find((entry) => entry.backup !== entry.current);
-        setFile((changed ?? result[0])?.file ?? "");
+        if (!stale) setFiles(result);
       })
       .catch((error) => {
+        if (stale) return;
         notify(errorMessage(t, error));
         onClose();
       });
+    return () => {
+      stale = true;
+    };
   }, [backup, serverId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const diffs = useMemo(
@@ -78,16 +86,21 @@ export default function ConfigDiffDialog({
       }),
     [files],
   );
-  const selected = diffs.find((entry) => entry.file === file);
+  const changed = diffs.filter((entry) => entry.tooLarge || entry.changes > 0);
+  const hidden = diffs.length - changed.length;
+  // Premier fichier modifié d'après le diff (pas le texte brut : une fin de
+  // ligne changée n'est pas une différence).
+  const selected =
+    changed.find((entry) => entry.file === file) ?? changed[0] ?? null;
 
   return (
     <Dialog open={!!backup} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle>{t("backup.configFiles.diff.title")}</DialogTitle>
+      <DialogTitle>{t("configBackup.diff.title")}</DialogTitle>
       <DialogContent>
         <Stack spacing={1.5}>
           <Typography variant="body2" sx={{ color: "text.secondary" }}>
             {shown &&
-              t("backup.configFiles.diff.subtitle", {
+              t("configBackup.diff.subtitle", {
                 date: formatDate(
                   shown.createdAt,
                   i18n.resolvedLanguage ?? "fr",
@@ -100,40 +113,51 @@ export default function ConfigDiffDialog({
             </LoadingSkeleton>
           ) : (
             <>
-              <ToggleButtonGroup
-                exclusive
-                size="small"
-                value={file}
-                onChange={(_, next: string | null) => next && setFile(next)}
-                aria-label={t("backup.configFiles.diff.file")}
-                sx={{ flexWrap: "wrap" }}
-              >
-                {diffs.map((entry) => (
-                  <ToggleButton
-                    key={entry.file}
-                    value={entry.file}
-                    sx={{ textTransform: "none" }}
-                  >
-                    {t("backup.configFiles.diff.fileChanges", {
-                      file: entry.file,
-                      count: entry.changes,
-                    })}
-                  </ToggleButton>
-                ))}
-              </ToggleButtonGroup>
-              {selected?.tooLarge ? (
+              {changed.length > 0 && (
+                <ToggleButtonGroup
+                  exclusive
+                  size="small"
+                  value={selected?.file ?? ""}
+                  onChange={(_, next: string | null) => next && setFile(next)}
+                  aria-label={t("configBackup.diff.file")}
+                  sx={{ flexWrap: "wrap" }}
+                >
+                  {changed.map((entry) => (
+                    <ToggleButton
+                      key={entry.file}
+                      value={entry.file}
+                      sx={{ textTransform: "none" }}
+                    >
+                      {entry.tooLarge
+                        ? t("configBackup.diff.fileTooLarge", {
+                            file: entry.file,
+                          })
+                        : t("configBackup.diff.fileChanges", {
+                            file: entry.file,
+                            count: entry.changes,
+                          })}
+                    </ToggleButton>
+                  ))}
+                </ToggleButtonGroup>
+              )}
+              {!selected ? (
                 <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                  {t("backup.configFiles.diff.tooLarge")}
+                  {t("configBackup.diff.identical")}
                 </Typography>
-              ) : selected && selected.changes === 0 ? (
+              ) : selected.tooLarge ? (
                 <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                  {t("backup.configFiles.diff.identical")}
+                  {t("configBackup.diff.tooLarge")}
                 </Typography>
               ) : (
-                selected && <DiffView lines={selected.lines} />
+                <DiffView lines={selected.lines} />
+              )}
+              {hidden > 0 && (
+                <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                  {t("configBackup.diff.hidden", { count: hidden })}
+                </Typography>
               )}
               <Typography variant="caption" sx={{ color: "text.secondary" }}>
-                {t("backup.configFiles.diff.legend")}
+                {t("configBackup.diff.legend")}
               </Typography>
             </>
           )}
@@ -141,14 +165,14 @@ export default function ConfigDiffDialog({
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} color="inherit">
-          {t("backup.configFiles.diff.close")}
+          {t("configBackup.diff.close")}
         </Button>
         <Button
           variant="contained"
-          disabled={!canRestore || busy || !backup}
-          onClick={() => backup && onRestore(backup)}
+          disabled={!canRestore || busy || !shown}
+          onClick={() => shown && onRestore(shown)}
         >
-          {t("backup.configFiles.diff.restore")}
+          {t("configBackup.diff.restore")}
         </Button>
       </DialogActions>
     </Dialog>

@@ -38,10 +38,10 @@ export default function ConfigBackupRow({
   const reasonChip =
     backup.reason === "manual" || backup.reason === "interval"
       ? null
-      : t(`backup.configFiles.reasons.${backup.reason}`);
+      : t(`configBackup.reasons.${backup.reason}`);
   const changed = backup.changed.length > 0 ? backup.changed : backup.files;
-  const diffLabel = t("backup.configFiles.list.diff");
-  const restoreLabel = t("backup.configFiles.list.restore");
+  const diffLabel = t("configBackup.list.diff");
+  const restoreLabel = t("configBackup.list.restore");
   const deleteLabel = t("backup.list.deleteTooltip");
 
   return (
@@ -55,16 +55,19 @@ export default function ConfigBackupRow({
             <Chip size="small" variant="outlined" label={reasonChip} />
           )}
         </Stack>
-        <Typography
-          variant="caption"
-          sx={{ color: "text.secondary", display: "block" }}
-          noWrap
-        >
-          {t("backup.configFiles.list.detail", {
-            files: changed.join(", "),
-            size: formatSize(backup.size),
-          })}
-        </Typography>
+        {/* Liste tronquée : complète dans l'infobulle. */}
+        <Tooltip title={changed.join(", ")} placement="bottom-start">
+          <Typography
+            variant="caption"
+            sx={{ color: "text.secondary", display: "block" }}
+            noWrap
+          >
+            {t("configBackup.list.detail", {
+              files: changed.join(", "),
+              size: formatSize(backup.size),
+            })}
+          </Typography>
+        </Tooltip>
       </Box>
       <Tooltip title={diffLabel}>
         <IconButton size="small" aria-label={diffLabel} onClick={onDiff}>

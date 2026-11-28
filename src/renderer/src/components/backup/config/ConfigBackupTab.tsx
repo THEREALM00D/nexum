@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Box } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import type { ConfigBackupEntry } from "@shared/types";
@@ -12,19 +12,10 @@ export default function ConfigBackupTab() {
   const { t } = useTranslation();
   const backups = useConfigBackups();
   const [diffOf, setDiffOf] = useState<ConfigBackupEntry | null>(null);
-  const [files, setFiles] = useState("");
-
-  useEffect(() => {
-    if (!backups.serverId) return;
-    window.api.configBackup
-      .files(backups.serverId)
-      .then((names) => setFiles(names.join(", ")))
-      .catch(() => setFiles(""));
-  }, [backups.serverId]);
 
   // Même confirmation que les sauvegardes du monde.
   const restore = async (backup: ConfigBackupEntry) => {
-    if (!window.confirm(t("backup.configFiles.list.restoreConfirm"))) return;
+    if (!window.confirm(t("configBackup.list.restoreConfirm"))) return;
     if (await backups.restore(backup)) setDiffOf(null);
   };
 
@@ -47,7 +38,7 @@ export default function ConfigBackupTab() {
         settings={backups.settings}
         loading={backups.loading}
         disabled={backups.settingsFailed}
-        files={files}
+        files={backups.files}
         onChange={backups.changeSettings}
       />
       <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
@@ -55,12 +46,13 @@ export default function ConfigBackupTab() {
           backups={backups.backups}
           loading={backups.loading}
           busy={backups.busy}
+          creating={backups.creating}
           canRestore={backups.canRestore}
           onCreate={() => void backups.create()}
           onDiff={setDiffOf}
           onRestore={(backup) => void restore(backup)}
           onDelete={(backup) => {
-            if (window.confirm(t("backup.configFiles.list.deleteConfirm")))
+            if (window.confirm(t("configBackup.list.deleteConfirm")))
               void backups.remove(backup);
           }}
         />

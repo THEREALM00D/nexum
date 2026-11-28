@@ -48,7 +48,10 @@ export const APP_ERRORS_EN: Record<AppErrorCode, string> = {
   ARK_SETTING_UNKNOWN: "Unknown setting: {{key}}",
   ARK_PROFILE_SERVER_RUNNING: "Stop the server to restore a player profile.",
   ARK_PROFILE_NOT_FOUND: "This profile backup no longer exists.",
-  CONFIG_BACKUP_SERVER_RUNNING: "Stop the server to restore its configuration.",
+  CONFIG_BACKUP_SERVER_RUNNING:
+    "Stop the server, and the other servers that share its config files, to restore it.",
+  CONFIG_RESTORE_FAILED:
+    'Configuration restore interrupted: can\'t write {{path}} ({{detail}}). The previous configuration was backed up: restore the "Before restore" copy to go back.',
   CONFIG_BACKUP_NOT_FOUND: "This configuration backup no longer exists.",
   CONFIG_BACKUP_FAILED:
     "Couldn't back up the configuration: {{path}} ({{detail}}). Check that the backup folder is reachable.",

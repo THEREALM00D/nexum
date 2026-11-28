@@ -1,4 +1,6 @@
 import type { IpcContext } from "../../ipc/context";
+import type { GameType } from "../../../shared/types";
+import { getLaunchSpec, type LaunchSpec } from "../../games/registry";
 import { appErrorLogText } from "../../utils/appError";
 import { lt, managerLine } from "../../i18n/logStrings";
 import { createConfigBackup } from "./configBackups";
@@ -26,4 +28,30 @@ export function configBackupQuietly(
         (line) => ctx.broadcastLog(serverId, line),
       );
   }
+}
+
+/**
+ * Spec de lancement dont le `prepare` est précédé de la copie « avant
+ * démarrage » : exécuté par `ServerManager.start` juste avant le lancement,
+ * donc **après** l'arrêt lors d'un redémarrage (ARK réécrit sa config à
+ * l'arrêt). Jamais bloquant.
+ */
+export function launchSpecWithConfigBackup(
+  ctx: IpcContext,
+  serverId: string,
+  gameType: GameType,
+): LaunchSpec {
+  const spec = getLaunchSpec(
+    gameType,
+    ctx.getServerPath(serverId),
+    ctx.getServerConfig(serverId),
+  );
+  return {
+    ...spec,
+    prepare: () => {
+      if (ctx.getServerConfig(serverId).configBackup.beforeStart)
+        configBackupQuietly(ctx, serverId, "beforeStart");
+      return spec.prepare?.() ?? null;
+    },
+  };
 }

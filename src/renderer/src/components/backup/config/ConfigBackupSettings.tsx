@@ -19,7 +19,7 @@ interface Props {
   /** Réglages illisibles : rien n'est modifiable. */
   disabled: boolean;
   /** Fichiers sauvegardés pour ce jeu, cités dans l'aide. */
-  files: string;
+  files: string[];
   onChange: (patch: Partial<Settings>) => void;
 }
 
@@ -49,23 +49,27 @@ export default function ConfigBackupSettings({
   return (
     <Paper sx={{ p: 2.5 }}>
       <SectionTitle sx={{ mb: 2 }}>
-        {t("backup.configFiles.settings.title")}
+        {t("configBackup.settings.title")}
       </SectionTitle>
       <Stack spacing={2.5}>
         <SkeletonChildren loading={loading}>
           <Stack spacing={0.5}>
             <BackupIntervalSelect
-              label={t("backup.configFiles.settings.interval")}
+              label={t("configBackup.settings.interval")}
               value={settings.intervalMinutes}
               disabled={disabled}
               onChange={(intervalMinutes) => onChange({ intervalMinutes })}
             />
             <Typography variant="caption" sx={{ color: "text.secondary" }}>
-              {t("backup.configFiles.settings.intervalHelper", { files })}
+              {files.length > 0
+                ? t("configBackup.settings.intervalHelper", {
+                    files: files.join(", "),
+                  })
+                : t("configBackup.settings.intervalHelperNoFiles")}
             </Typography>
           </Stack>
           <TextField
-            label={t("backup.configFiles.settings.keep")}
+            label={t("configBackup.settings.keep")}
             size="small"
             type="number"
             value={integerInputValue(keep)}
@@ -76,7 +80,7 @@ export default function ConfigBackupSettings({
               if (event.key === "Enter") saveKeep();
             }}
             error={!keepValid}
-            helperText={t("backup.configFiles.settings.keepHelper", {
+            helperText={t("configBackup.settings.keepHelper", {
               min: CONFIG_KEEP_RANGE.min,
               max: CONFIG_KEEP_RANGE.max,
             })}
@@ -92,15 +96,15 @@ export default function ConfigBackupSettings({
             checked={settings.beforeSave}
             disabled={disabled}
             onChange={(beforeSave) => onChange({ beforeSave })}
-            label={t("backup.configFiles.settings.beforeSave")}
-            helper={t("backup.configFiles.settings.beforeSaveHelper")}
+            label={t("configBackup.settings.beforeSave")}
+            helper={t("configBackup.settings.beforeSaveHelper")}
           />
           <SwitchField
             checked={settings.beforeStart}
             disabled={disabled}
             onChange={(beforeStart) => onChange({ beforeStart })}
-            label={t("backup.configFiles.settings.beforeStart")}
-            helper={t("backup.configFiles.settings.beforeStartHelper")}
+            label={t("configBackup.settings.beforeStart")}
+            helper={t("configBackup.settings.beforeStartHelper")}
           />
         </SkeletonChildren>
       </Stack>

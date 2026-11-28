@@ -27,6 +27,7 @@ interface Props {
   backups: ConfigBackupEntry[];
   loading: boolean;
   busy: boolean;
+  creating: boolean;
   canRestore: boolean;
   onCreate: () => void;
   onDiff: (backup: ConfigBackupEntry) => void;
@@ -39,6 +40,7 @@ export default function ConfigBackupList({
   backups,
   loading,
   busy,
+  creating,
   canRestore,
   onCreate,
   onDiff,
@@ -62,13 +64,15 @@ export default function ConfigBackupList({
           >
             <LoadingSkeleton loading={loading} sx={{ flex: 1 }}>
               <SectionTitle sx={{ flex: 1 }}>
-                {t("backup.configFiles.list.title", { count: backups.length })}
+                {t("configBackup.list.title", { count: backups.length })}
               </SectionTitle>
             </LoadingSkeleton>
             <Button
               variant="contained"
               size="small"
-              startIcon={busy ? <CircularProgress size={14} /> : <BackupIcon />}
+              startIcon={
+                creating ? <CircularProgress size={14} /> : <BackupIcon />
+              }
               disabled={busy || loading}
               onClick={onCreate}
             >
@@ -97,7 +101,7 @@ export default function ConfigBackupList({
           variant="body2"
           sx={{ color: "text.secondary", textAlign: "center", py: 4, px: 1 }}
         >
-          {t("backup.configFiles.list.empty")}
+          {t("configBackup.list.empty")}
         </Typography>
       ) : (
         <Stack divider={<Divider />}>

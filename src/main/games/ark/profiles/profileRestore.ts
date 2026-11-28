@@ -2,7 +2,7 @@ import { join } from "path";
 import { existsSync, readFileSync, renameSync, writeFileSync } from "fs";
 import type { IpcContext } from "../../../ipc/context";
 import { AppError } from "../../../utils/appError";
-import { getLanguage } from "../../../i18n/language";
+import { logDateTime } from "../../../i18n/logDate";
 import { lt } from "../../../i18n/logStrings";
 import { readProfileInfo } from "./profileFile";
 import {
@@ -84,10 +84,7 @@ export function restorePlayerProfile(
     throw diskError(error, "ARK_PROFILE_COPY_FAILED");
   }
 
-  const date = new Date(createdAt ?? Date.now()).toLocaleString(
-    getLanguage() === "fr" ? "fr-FR" : "en-US",
-    { dateStyle: "short", timeStyle: "short" },
-  );
+  const date = logDateTime(createdAt ?? Date.now());
   logProfileLine(
     ctx,
     serverId,

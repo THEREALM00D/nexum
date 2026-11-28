@@ -14,7 +14,8 @@ import type {
 } from "../../../shared/types";
 import { AppError } from "../../utils/appError";
 import {
-  changedFiles,
+  changedBetween,
+  folderIndex,
   readCurrentConfig,
   readSnapshotFolder,
   sameSnapshot,
@@ -22,7 +23,10 @@ import {
 } from "./configSnapshot";
 
 // Copies des fichiers de config du jeu : un dossier par copie, nommé
-// `config-<date UTC>[-<raison>]`, dans `<dossier des sauvegardes>/config/`.
+// `config-<date UTC à la milliseconde>[_<n>][-<raison>]`, dans
+// `<dossier des sauvegardes>/config/`. Millisecondes : deux copies de la
+// même seconde (avant enregistrement puis avant démarrage) restent dans le
+// bon ordre pour la comparaison et la rotation.
 const SUFFIXES: Record<ConfigBackupReason, string> = {
   manual: "",
   interval: "-interval",
@@ -31,7 +35,7 @@ const SUFFIXES: Record<ConfigBackupReason, string> = {
   beforeRestore: "-before-restore",
 };
 const BACKUP_ID =
-  /^config-(\d{4}-\d{2}-\d{2})_(\d{2})-(\d{2})-(\d{2})(?:-\d+)?(-interval|-before-save|-before-start|-before-restore)?$/;
+  /^config-(\d{4}-\d{2}-\d{2})_(\d{2})-(\d{2})-(\d{2})(?:-(\d{3}))?(?:_(\d+))?(-interval|-before-save|-before-start|-before-restore)?$/;
 
 export const configBackupDir = (ctx: IpcContext, serverId: string) =>
   join(ctx.getBackupDir(serverId), "config");
@@ -41,14 +45,19 @@ export const isConfigBackupId = (value: unknown): value is string =>
 
 export function parseConfigBackupId(id: string): {
   createdAt: number;
+  sequence: number;
   reason: ConfigBackupReason;
 } {
-  const [, day, hours, minutes, seconds, suffix] = id.match(BACKUP_ID) ?? [];
+  const [, day, hours, minutes, seconds, millis, sequence, suffix] =
+    id.match(BACKUP_ID) ?? [];
   const reason = (Object.entries(SUFFIXES).find(
     ([, text]) => text === (suffix ?? ""),
   )?.[0] ?? "manual") as ConfigBackupReason;
   return {
-    createdAt: Date.parse(`${day}T${hours}:${minutes}:${seconds}Z`),
+    createdAt: Date.parse(
+      `${day}T${hours}:${minutes}:${seconds}.${millis ?? "000"}Z`,
+    ),
+    sequence: Number(sequence ?? 1),
     reason,
   };
 }
@@ -59,11 +68,12 @@ function backupIds(ctx: IpcContext, serverId: string): string[] {
   if (!existsSync(folder)) return [];
   return readdirSync(folder)
     .filter(isConfigBackupId)
+    .map((id) => ({ id, ...parseConfigBackupId(id) }))
     .sort(
       (first, second) =>
-        parseConfigBackupId(second).createdAt -
-          parseConfigBackupId(first).createdAt || second.localeCompare(first),
-    );
+        second.createdAt - first.createdAt || second.sequence - first.sequence,
+    )
+    .map((backup) => backup.id);
 }
 
 function newId(folder: string, reason: ConfigBackupReason): string {
@@ -71,10 +81,10 @@ function newId(folder: string, reason: ConfigBackupReason): string {
     .toISOString()
     .replace(/[:.]/g, "-")
     .replace("T", "_")
-    .slice(0, 19);
+    .slice(0, 23);
   let id = `config-${stamp}${SUFFIXES[reason]}`;
   for (let index = 2; existsSync(join(folder, id)); index++)
-    id = `config-${stamp}-${index}${SUFFIXES[reason]}`;
+    id = `config-${stamp}_${index}${SUFFIXES[reason]}`;
   return id;
 }
 
@@ -86,11 +96,15 @@ function writeSnapshot(folder: string, snapshot: ConfigSnapshot): void {
   }
 }
 
-/** Erreur du disque → code traduit (chemin + code système). */
-function backupFailed(error: unknown): AppError {
+/** Erreur codée telle quelle, erreur du disque → `code` (chemin + code système). */
+export function configBackupError(
+  error: unknown,
+  code:
+    "CONFIG_BACKUP_FAILED" | "CONFIG_RESTORE_FAILED" = "CONFIG_BACKUP_FAILED",
+): AppError {
   if (error instanceof AppError) return error;
   const fsError = error as NodeJS.ErrnoException;
-  return new AppError("CONFIG_BACKUP_FAILED", {
+  return new AppError(code, {
     path: fsError?.path ?? "",
     detail: fsError?.code ?? String(error),
   });
@@ -126,30 +140,33 @@ export function createConfigBackup(
       rmSync(join(folder, old), { recursive: true, force: true });
     return id;
   } catch (error) {
-    throw backupFailed(error);
+    throw configBackupError(error);
   }
 }
 
-const sizeOf = (snapshot: ConfigSnapshot) =>
-  [...snapshot.values()].reduce((sum, content) => sum + content.length, 0);
-
+/**
+ * Liste sans tout relire : tailles par `stat`, contenu lu seulement pour un
+ * fichier de même taille dans deux copies voisines.
+ */
 export function listConfigBackups(
   ctx: IpcContext,
   serverId: string,
 ): ConfigBackupEntry[] {
   const folder = configBackupDir(ctx, serverId);
   const ids = backupIds(ctx, serverId);
-  const snapshots = ids.map((id) => readSnapshotFolder(join(folder, id)));
-  return ids.map((id, index) => ({
-    id,
-    ...parseConfigBackupId(id),
-    files: [...snapshots[index].keys()].sort(),
-    changed: changedFiles(
-      snapshots[index],
-      snapshots[index + 1] ?? null,
-    ).sort(),
-    size: sizeOf(snapshots[index]),
-  }));
+  const indexes = ids.map((id) => folderIndex(join(folder, id)));
+  return ids.map((id, position) => {
+    const { createdAt, reason } = parseConfigBackupId(id);
+    const index = indexes[position];
+    return {
+      id,
+      createdAt,
+      reason,
+      files: [...index.keys()].sort(),
+      changed: changedBetween(index, indexes[position + 1] ?? null).sort(),
+      size: [...index.values()].reduce((sum, file) => sum + file.size, 0),
+    };
+  });
 }
 
 export function deleteConfigBackup(

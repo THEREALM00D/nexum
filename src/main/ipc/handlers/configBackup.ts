@@ -5,10 +5,10 @@ import type {
   ConfigBackupSettings,
   ConfigFileDiff,
 } from "../../../shared/types";
-import { appError, AppError } from "../../utils/appError";
 import { onBeforeConfigWrite } from "../../utils/ini";
 import { configBackupQuietly } from "../../backup/config/configBackupQuietly";
 import {
+  configBackupError,
   createConfigBackup,
   deleteConfigBackup,
   listConfigBackups,
@@ -25,19 +25,11 @@ type Result = { success: boolean; id?: string | null; error?: string };
 /** Une seule copie par enregistrement (ARK écrit GameUserSettings.ini puis Game.ini). */
 const SAVE_GROUP_MS = 5000;
 
-/** Erreur codée telle quelle, erreur du disque → CONFIG_BACKUP_FAILED. */
-function failure(error: unknown): Result {
-  if (error instanceof AppError)
-    return { success: false, error: error.message };
-  const fsError = error as NodeJS.ErrnoException;
-  return {
-    success: false,
-    error: appError("CONFIG_BACKUP_FAILED", {
-      path: fsError?.path ?? "",
-      detail: fsError?.code ?? String(error),
-    }),
-  };
-}
+// Erreurs codées par le module (restauration : CONFIG_RESTORE_FAILED).
+const failure = (error: unknown): Result => ({
+  success: false,
+  error: configBackupError(error).message,
+});
 
 // Onglet Configuration de la page Sauvegardes (tous les jeux). serverId explicite.
 export function registerConfigBackupHandlers(ctx: IpcContext): void {

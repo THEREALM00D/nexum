@@ -1,5 +1,5 @@
 import { join, relative, sep } from "path";
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync } from "fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "fs";
 import type { IpcContext } from "../../ipc/context";
 import { getGameTransferFiles } from "../../games/transferFiles";
 
@@ -85,16 +85,44 @@ export function sameSnapshot(first: ConfigSnapshot, second: ConfigSnapshot) {
   return true;
 }
 
-/** Noms dont le contenu diffère entre deux copies (ajoutés et retirés compris). */
-export function changedFiles(
-  newer: ConfigSnapshot,
-  older: ConfigSnapshot | null,
+/** Fichiers d'une copie (dossier), par nom : chemin et taille, sans les lire. */
+export function folderIndex(
+  folder: string,
+): Map<string, { path: string; size: number }> {
+  const index = new Map<string, { path: string; size: number }>();
+  if (!existsSync(folder)) return index;
+  const walk = (current: string) => {
+    for (const entry of readdirSync(current, { withFileTypes: true })) {
+      const path = join(current, entry.name);
+      if (entry.isDirectory()) walk(path);
+      else if (entry.isFile())
+        index.set(relative(folder, path).split(sep).join("/"), {
+          path,
+          size: statSync(path).size,
+        });
+    }
+  };
+  walk(folder);
+  return index;
+}
+
+/**
+ * Noms qui diffèrent entre deux copies (ajoutés et retirés compris). Contenu
+ * lu seulement quand les tailles sont égales. Pas de copie plus ancienne :
+ * tous les fichiers.
+ */
+export function changedBetween(
+  newer: Map<string, { path: string; size: number }>,
+  older: Map<string, { path: string; size: number }> | null,
 ): string[] {
   if (!older) return [...newer.keys()];
   const names = new Set([...newer.keys(), ...older.keys()]);
-  return [...names].filter(
-    (name) => !newer.get(name)?.equals(older.get(name) ?? Buffer.alloc(0)),
-  );
+  return [...names].filter((name) => {
+    const first = newer.get(name);
+    const second = older.get(name);
+    if (!first || !second || first.size !== second.size) return true;
+    return !readFileSync(first.path).equals(readFileSync(second.path));
+  });
 }
 
 /**
@@ -114,6 +142,3 @@ export function targetPathOf(
     return null;
   return join(target.path, ...rest);
 }
-
-export const ensureFolder = (folder: string) =>
-  mkdirSync(folder, { recursive: true });

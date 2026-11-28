@@ -71,6 +71,8 @@ const FR = {
   arkProfilesAnnounce: "Profils des joueurs sauvegardés.",
   configBackupRestored: (date: string) =>
     `Configuration du jeu restaurée (sauvegarde du ${date}). La configuration d'avant a été sauvegardée.`,
+  /** Vue des différences : secret masqué qui a changé. */
+  secretChanged: "modifié",
   configBackupFailed: (reason: string) =>
     `Sauvegarde de la configuration du jeu impossible : ${reason}`,
   arkModsCleaned: (mods: number, megabytes: number) =>
@@ -293,6 +295,7 @@ const EN: typeof FR = {
   arkProfilesAnnounce: "Player profiles backed up.",
   configBackupRestored: (date) =>
     `Game configuration restored (backup from ${date}). The previous configuration was backed up.`,
+  secretChanged: "changed",
   configBackupFailed: (reason) =>
     `Couldn't back up the game configuration: ${reason}`,
   arkModsCleaned: (mods, megabytes) =>
