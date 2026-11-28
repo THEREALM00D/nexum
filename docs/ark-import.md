@@ -34,6 +34,7 @@ The summary shows what Nexum will use:
 | `?Port=` or `-port=`, `?QueryPort=`, `?RCONPort=`           | **Configuration → General**, Network (`?Port` wins over `-port`) |
 | `-WinLiveMaxPlayers=`, `-NoBattlEye`                        | **Configuration → General**                                      |
 | `-mods=`                                                    | **Mods** page, in the same order                                 |
+| `-passivemods=`                                             | **Mods** page, as passive mods (active if also in `-mods=`)      |
 | `-clusterid=`, `-ClusterDirOverride=`, `-ServerPlatform=`…  | **Configuration → Game settings**, launch options                |
 | `?SessionName=`, `?ServerAdminPassword=` and other `?` keys | Written to `GameUserSettings.ini`, as the server itself does     |
 | Anything else (`-servergamelogincludetribelogs`…)           | **Configuration → General**, extra arguments                     |

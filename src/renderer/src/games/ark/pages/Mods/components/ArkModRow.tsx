@@ -5,6 +5,13 @@ import type { ArkModInfo } from "@shared/types";
 import { formatDay } from "../../../../../utils/format";
 import ModRow from "../../../../../components/mods/ModRow";
 
+/** Mini-puce d'une ligne de mod (Payant, Passif, Cosmétique…). */
+export const ARK_CHIP_SX = {
+  typography: "micro",
+  height: 18,
+  px: 0.5,
+} as const;
+
 interface Props {
   id: number;
   /** null : mod pas encore téléchargé par le serveur et pas de fiche CurseForge. */
@@ -65,7 +72,7 @@ export default function ArkModRow({
               label={t("arkMods.list.premium")}
               size="small"
               color="warning"
-              sx={{ typography: "micro", height: 18, px: 0.5 }}
+              sx={ARK_CHIP_SX}
             />
           )}
         </>

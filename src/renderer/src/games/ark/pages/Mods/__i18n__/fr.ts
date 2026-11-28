@@ -62,12 +62,14 @@ export default {
       title: "Nettoyer le dossier des mods ?",
       notListed_one: "{{count}} mod hors liste",
       notListed_other: "{{count}} mods hors liste",
-      notListedHint:
+      notListedHint_one:
+        "{{names}}. S'il revient dans la liste, le serveur le retéléchargera au démarrage.",
+      notListedHint_other:
         "{{names}}. Si l'un d'eux revient dans la liste, le serveur le retéléchargera au démarrage.",
       temp: "Restes de téléchargement",
       tempHint: "Dossier de travail .temp du serveur.",
       nothing:
-        "Rien à supprimer : tous les mods téléchargés sont dans la liste.",
+        "Rien à supprimer : tous les mods téléchargés sont utilisés (liste, arguments de lancement, autres serveurs du même dossier).",
       safe: "Seulement les fichiers téléchargés. Le monde et ce que les mods y ont ajouté ne sont pas touchés. Le serveur supprime lui-même l'ancienne version d'un mod mis à jour.",
       stopFirst: "Arrêtez le serveur pour nettoyer : il utilise ces fichiers.",
       cancel: "Annuler",

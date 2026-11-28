@@ -28,15 +28,16 @@ Vous pouvez modifier la ligne avant d'enregistrer.
 
 Le résumé montre ce que Nexum utilisera :
 
-| Sur la ligne de lancement                                   | Dans Nexum                                                          |
-| ----------------------------------------------------------- | ------------------------------------------------------------------- |
-| Carte (`TheIsland_WP`, carte moddée…)                       | **Configuration → Général**, Carte                                  |
-| `?Port=` ou `-port=`, `?QueryPort=`, `?RCONPort=`           | **Configuration → Général**, Réseau (`?Port` l'emporte sur `-port`) |
-| `-WinLiveMaxPlayers=`, `-NoBattlEye`                        | **Configuration → Général**                                         |
-| `-mods=`                                                    | Page **Mods**, dans le même ordre                                   |
-| `-clusterid=`, `-ClusterDirOverride=`, `-ServerPlatform=`…  | **Configuration → Réglages de jeu**, options de lancement           |
-| `?SessionName=`, `?ServerAdminPassword=` et autres clés `?` | Écrits dans `GameUserSettings.ini`, comme le fait le serveur        |
-| Tout le reste (`-servergamelogincludetribelogs`…)           | **Configuration → Général**, arguments supplémentaires              |
+| Sur la ligne de lancement                                   | Dans Nexum                                                             |
+| ----------------------------------------------------------- | ---------------------------------------------------------------------- |
+| Carte (`TheIsland_WP`, carte moddée…)                       | **Configuration → Général**, Carte                                     |
+| `?Port=` ou `-port=`, `?QueryPort=`, `?RCONPort=`           | **Configuration → Général**, Réseau (`?Port` l'emporte sur `-port`)    |
+| `-WinLiveMaxPlayers=`, `-NoBattlEye`                        | **Configuration → Général**                                            |
+| `-mods=`                                                    | Page **Mods**, dans le même ordre                                      |
+| `-passivemods=`                                             | Page **Mods**, en mods passifs (actifs s'ils sont aussi dans `-mods=`) |
+| `-clusterid=`, `-ClusterDirOverride=`, `-ServerPlatform=`…  | **Configuration → Réglages de jeu**, options de lancement              |
+| `?SessionName=`, `?ServerAdminPassword=` et autres clés `?` | Écrits dans `GameUserSettings.ini`, comme le fait le serveur           |
+| Tout le reste (`-servergamelogincludetribelogs`…)           | **Configuration → Général**, arguments supplémentaires                 |
 
 Le port RCON et le nombre de joueurs viennent de `GameUserSettings.ini` quand la ligne ne les donne pas.
 

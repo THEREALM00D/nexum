@@ -1,7 +1,6 @@
 import type {
   ArkImportNotice,
   ArkLaunchConfig,
-  ArkMod,
 } from "../../../../shared/types";
 import { ARK_SETTINGS, GUS_SECTION } from "../../../../shared/arkSettings";
 import { normalizeSettingValue } from "../config/settingValue";
@@ -12,7 +11,7 @@ import {
   isSaveDirectory,
 } from "../launchConfig";
 import type { ParsedLaunchLine } from "./parseLaunchLine";
-import { parseModIds } from "../mods/argsMods";
+import { mergeLineMods, parseModIds } from "../mods/modIds";
 
 export interface IniSetting {
   section: string;
@@ -134,6 +133,10 @@ export function mapLaunchLine(
     }
   }
 
+  // Mods de la ligne, rangés à la fin (actifs puis passifs, un ID dans les
+  // deux reste actif).
+  const lineMods: number[] = [];
+  const linePassiveMods: number[] = [];
   for (const option of parsed.dash) {
     const lower = option.name.toLowerCase();
     const setting = CLI_SETTINGS.get(lower);
@@ -147,23 +150,10 @@ export function mapLaunchLine(
       launch.battlEye = false;
     } else if (lower === "mods" || lower === "passivemods") {
       // Découpé aux virgules (`-mods="1, 2"` existe) ; un ID invalide
-      // empêcherait le démarrage : écarté, mais signalé. Actifs d'abord,
-      // passifs ensuite ; un ID présent dans les deux reste actif.
-      const { ids, invalid: hasInvalid } = parseModIds(option.value ?? "");
-      const listed = launch.mods;
-      launch.mods =
-        lower === "mods"
-          ? [
-              ...ids.map((id): ArkMod => ({ id, enabled: true })),
-              ...listed.filter((mod) => !ids.includes(mod.id)),
-            ]
-          : [
-              ...listed,
-              ...ids
-                .filter((id) => !listed.some((mod) => mod.id === id))
-                .map((id): ArkMod => ({ id, enabled: true, passive: true })),
-            ];
-      if (hasInvalid) invalid(option.raw);
+      // empêcherait le démarrage : écarté, mais signalé.
+      const parsed = parseModIds(option.value ?? "");
+      (lower === "mods" ? lineMods : linePassiveMods).push(...parsed.ids);
+      if (parsed.invalid) invalid(option.raw);
     } else if (setting && setting.cliForm !== "query") {
       try {
         launchOptions[setting.key] = normalizeSettingValue(
@@ -202,5 +192,6 @@ export function mapLaunchLine(
     notices.push({ code: "portsSame", detail: `${launch.port}` });
   launch.launchOptions = launchOptions;
   launch.customArgs = customArgs.join(" ");
+  launch.mods = mergeLineMods([], lineMods, linePassiveMods);
   return { launch, ini, lineSaveDirectory, notices };
 }

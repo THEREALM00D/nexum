@@ -80,7 +80,7 @@ The **Mods** page manages the server's [CurseForge](https://www.curseforge.com/a
   - **Passive** (`-passivemods=`): the server downloads the mod and loads its data, but its features are off. Use it in a cluster to keep a mod's creatures or items transferable between servers without them spawning on this map (tested: the server starts and loads the mod as passive). A **Passive** chip follows the mod's name, and the count says it (`13 mods · 1 passive`).
   - **Disabled**: stays in the list but isn't loaded.
 - **Search** the list by name, author or ID; the count shows how many mods match. While searching, the arrows still move a mod within the full list.
-- Nexum only writes the list on the command line (`-mods=`): **the server downloads the mods and updates them itself at every start**, in a few seconds for small mods. Changes made while the server runs apply at the next start.
+- Nexum only writes the list on the command line (`-mods=` and `-passivemods=`): **the server downloads the mods and updates them itself at every start**, in a few seconds for small mods. Changes made while the server runs apply at the next start.
 - Players don't install anything: the game downloads the server's mods when they join.
 - Once the server has downloaded a mod, the page shows its name, logo, author and installed file. Before that, Nexum asks CurseForge for its name and logo, and checks that an added ID exists.
 
@@ -88,7 +88,7 @@ The **Mods** page manages the server's [CurseForge](https://www.curseforge.com/a
 
 The server keeps the files of a mod removed from the list: it's listed under **Downloaded by the server, not in the list**, at the bottom of the list, where you can add it back. This is also where the mods of an existing server show up after its first start in Nexum. Mods already written in the extra launch arguments (`-mods=…` or `-passivemods=…`) are flagged with a button to move them to the list. The former **Passive mods** launch option (Game settings tab) is now in the list: the mods it held show up there as passive.
 
-**Clean the mods folder** (button of that section, server stopped) deletes the files of these mods, plus the leftovers of the server's download folder (`.temp`), and shows the space freed. Mods in the list, even disabled, are never touched, nor the world. If a deleted mod comes back to the list, the server downloads it again at the next start (tested). There are no old versions to clean: the server already deletes the previous version of a mod when it updates it.
+**Clean the mods folder** (button of that section, server stopped) deletes the files of these mods, plus the leftovers of the server's download folder (`.temp`), and shows the space freed. Mods in the list (even disabled), in the launch arguments, in the **Total conversion mod** option or in the list of another Nexum server installed in the same folder are never touched, nor the world. All the servers of that folder must be stopped. If a deleted mod comes back to the list, the server downloads it again at the next start (tested). There are no old versions to clean: the server already deletes the previous version of a mod when it updates it.
 
 ## RCON
 

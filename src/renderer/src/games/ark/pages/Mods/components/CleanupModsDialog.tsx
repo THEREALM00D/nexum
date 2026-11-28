@@ -6,7 +6,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Skeleton,
   Stack,
   Typography,
 } from "@mui/material";
@@ -14,6 +13,7 @@ import { useTranslation } from "react-i18next";
 import type { ArkModsCleanup } from "@shared/types";
 import { FONT_MONO } from "../../../../../theme";
 import { useFormatSize } from "../../../../../hooks/useFormatSize";
+import LoadingSkeleton from "../../../../../components/common/LoadingSkeleton";
 
 interface Props {
   open: boolean;
@@ -80,7 +80,17 @@ export default function CleanupModsDialog({
       <DialogContent>
         <Stack spacing={2}>
           {!preview ? (
-            <Skeleton variant="rounded" height={48} />
+            // Ligne réelle en skeleton : même hauteur que le contenu final.
+            <LoadingSkeleton loading fullWidth>
+              <CleanupLine
+                title={t("arkMods.cleanup.notListed", { count: 1 })}
+                detail={t("arkMods.cleanup.notListedHint", {
+                  count: 1,
+                  names: "Super Spyglass Plus",
+                })}
+                size="1,8 Go"
+              />
+            </LoadingSkeleton>
           ) : (
             <>
               {preview.mods.length > 0 && (
@@ -88,7 +98,10 @@ export default function CleanupModsDialog({
                   title={t("arkMods.cleanup.notListed", {
                     count: preview.mods.length,
                   })}
-                  detail={t("arkMods.cleanup.notListedHint", { names })}
+                  detail={t("arkMods.cleanup.notListedHint", {
+                    count: preview.mods.length,
+                    names,
+                  })}
                   size={formatSize(modsSize)}
                 />
               )}
@@ -123,9 +136,13 @@ export default function CleanupModsDialog({
           startIcon={cleaning ? <CircularProgress size={14} /> : undefined}
           onClick={onConfirm}
         >
-          {t("arkMods.cleanup.confirm", {
-            size: formatSize(preview?.total ?? 0),
-          })}
+          <LoadingSkeleton loading={!preview} variant="text">
+            <span>
+              {t("arkMods.cleanup.confirm", {
+                size: formatSize(preview?.total ?? 0),
+              })}
+            </span>
+          </LoadingSkeleton>
         </Button>
       </DialogActions>
     </Dialog>

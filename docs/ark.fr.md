@@ -80,7 +80,7 @@ La page **Mods** gère les mods [CurseForge](https://www.curseforge.com/ark-surv
   - **Passif** (`-passivemods=`) : le serveur télécharge le mod et charge ses données, mais ses fonctions sont coupées. À utiliser dans un cluster pour garder les créatures ou objets d'un mod transférables entre serveurs sans qu'ils apparaissent sur cette carte (testé : le serveur démarre et charge le mod en passif). Une puce **Passif** suit le nom du mod, et le compteur l'indique (`13 mods · 1 passif`).
   - **Désactivé** : reste dans la liste mais n'est pas chargé.
 - **Recherchez** dans la liste par nom, auteur ou ID ; le compteur indique combien de mods correspondent. Pendant une recherche, les flèches déplacent toujours le mod dans la liste complète.
-- Nexum écrit seulement la liste sur la ligne de commande (`-mods=`) : **le serveur télécharge les mods et les met à jour lui-même à chaque démarrage**, en quelques secondes pour de petits mods. Une modification faite serveur lancé s'applique au prochain démarrage.
+- Nexum écrit seulement la liste sur la ligne de commande (`-mods=` et `-passivemods=`) : **le serveur télécharge les mods et les met à jour lui-même à chaque démarrage**, en quelques secondes pour de petits mods. Une modification faite serveur lancé s'applique au prochain démarrage.
 - Les joueurs n'installent rien : le jeu télécharge les mods du serveur quand ils le rejoignent.
 - Une fois un mod téléchargé par le serveur, la page affiche son nom, son logo, son auteur et le fichier installé. Avant, Nexum demande son nom et son logo à CurseForge, et vérifie qu'un ID ajouté existe.
 
@@ -88,7 +88,7 @@ La page **Mods** gère les mods [CurseForge](https://www.curseforge.com/ark-surv
 
 Le serveur garde les fichiers d'un mod retiré de la liste : il apparaît dans **Téléchargés par le serveur, pas dans la liste**, en bas de la liste, d'où vous pouvez le rajouter. C'est aussi là qu'apparaissent les mods d'un serveur existant après son premier démarrage dans Nexum. Des mods déjà écrits dans les arguments de lancement supplémentaires (`-mods=…` ou `-passivemods=…`) sont signalés, avec un bouton pour les déplacer dans la liste. L'ancienne option de lancement **Mods passifs** (onglet Réglages de jeu) est maintenant dans la liste : ses mods y apparaissent en passifs.
 
-**Nettoyer le dossier des mods** (bouton de cette section, serveur arrêté) supprime les fichiers de ces mods, plus les restes du dossier de téléchargement du serveur (`.temp`), et affiche la place libérée. Les mods de la liste, même désactivés, ne sont jamais touchés, ni le monde. Si un mod supprimé revient dans la liste, le serveur le retélécharge au démarrage suivant (testé). Il n'y a pas d'anciennes versions à nettoyer : le serveur supprime déjà la version précédente d'un mod quand il le met à jour.
+**Nettoyer le dossier des mods** (bouton de cette section, serveur arrêté) supprime les fichiers de ces mods, plus les restes du dossier de téléchargement du serveur (`.temp`), et affiche la place libérée. Les mods de la liste (même désactivés), des arguments de lancement, de l'option **Mod de conversion totale** ou de la liste d'un autre serveur Nexum installé dans le même dossier ne sont jamais touchés, ni le monde. Tous les serveurs de ce dossier doivent être arrêtés. Si un mod supprimé revient dans la liste, le serveur le retélécharge au démarrage suivant (testé). Il n'y a pas d'anciennes versions à nettoyer : le serveur supprime déjà la version précédente d'un mod quand il le met à jour.
 
 ## RCON
 

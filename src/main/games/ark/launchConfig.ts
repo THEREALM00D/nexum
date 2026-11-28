@@ -1,7 +1,7 @@
 import type { ArkLaunchConfig, ArkMod } from "../../../shared/types";
 import { appError } from "../../utils/appError";
 import { sanitizeLaunchOptions } from "./config/launchOptions";
-import { parseModIds } from "./mods/argsMods";
+import { isModId, mergeLineMods, parseModIds } from "./mods/modIds";
 
 // Nom d'une carte sur la ligne de commande (« TheIsland_WP ») : lettres,
 // chiffres et « _ » seulement. Sinon il casserait la chaîne d'options `?`
@@ -26,13 +26,12 @@ export const DEFAULT_ARK_CONFIG: ArkLaunchConfig = {
   launchOptions: {},
 };
 
-// ID de projet CurseForge : entier positif (int32 côté API).
-export const isModId = (value: unknown): value is number =>
-  Number.isInteger(value) && Number(value) >= 1 && Number(value) <= 2147483647;
+export { isModId };
 
 /**
  * Ancienne option « Mods passifs » (`launchOptions.passivemods`, texte
- * d'ID) : ses mods passent dans la liste en passifs, à la fin, et l'option
+ * d'ID) : ses mods passent dans la liste avec l'état qu'ils avaient sur la
+ * ligne (`mergeLineMods` : un mod désactivé de la liste devient passif), et l'option
  * disparaît (`sanitizeLaunchOptions` ne la connaît plus). Sinon deux
  * `-passivemods=` partaient sur la ligne.
  */
@@ -40,10 +39,7 @@ function withPassiveOption(mods: ArkMod[], launchOptions: unknown): ArkMod[] {
   const raw = (launchOptions as Record<string, unknown> | undefined)
     ?.passivemods;
   if (typeof raw !== "string") return mods;
-  const added = parseModIds(raw)
-    .ids.filter((id) => !mods.some((mod) => mod.id === id))
-    .map((id): ArkMod => ({ id, enabled: true, passive: true }));
-  return [...mods, ...added];
+  return mergeLineMods(mods, [], parseModIds(raw).ids);
 }
 
 /** Mods valides seulement, sans doublon, dans l'ordre. */

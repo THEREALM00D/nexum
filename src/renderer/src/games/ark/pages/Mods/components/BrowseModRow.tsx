@@ -5,7 +5,7 @@ import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { useTranslation } from "react-i18next";
 import type { ArkModSearchResult } from "@shared/types";
 import { formatDay } from "../../../../../utils/format";
-import ArkModRow from "./ArkModRow";
+import ArkModRow, { ARK_CHIP_SX } from "./ArkModRow";
 
 interface Props {
   mod: ArkModSearchResult;
@@ -14,8 +14,6 @@ interface Props {
   disabled: boolean;
   onAdd: (id: number) => void;
 }
-
-const CHIP_SX = { typography: "micro", height: 18, px: 0.5 } as const;
 
 // Un résultat de Parcourir : fiche CurseForge, puces d'avertissement et
 // bouton Ajouter (désactivé pour un mod cosmétique, qui empêcherait le
@@ -64,7 +62,7 @@ export default function BrowseModRow({ mod, added, disabled, onAdd }: Props) {
                 label={t("arkMods.browse.cosmetic")}
                 size="small"
                 color="error"
-                sx={CHIP_SX}
+                sx={ARK_CHIP_SX}
               />
             </Tooltip>
           )}
@@ -74,7 +72,7 @@ export default function BrowseModRow({ mod, added, disabled, onAdd }: Props) {
                 label={t("arkMods.browse.pcOnly")}
                 size="small"
                 color="warning"
-                sx={CHIP_SX}
+                sx={ARK_CHIP_SX}
               />
             </Tooltip>
           )}

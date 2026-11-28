@@ -4,6 +4,7 @@ import type { ArkModsCleanup } from "@shared/types";
 import { useServer } from "../../../../../context/ServerContext";
 import { useNotification } from "../../../../../context/NotificationContext";
 import { useFormatSize } from "../../../../../hooks/useFormatSize";
+import { isStopped } from "../../../../../components/config/useConfigLoad";
 import {
   appErrorMessage,
   errorMessage,
@@ -62,8 +63,9 @@ export function useModsCleanup(onCleaned: () => Promise<void>) {
     open,
     preview,
     cleaning,
-    // Le serveur tient ses fichiers de mods et télécharge au démarrage.
-    canClean: state.status === "stopped" || state.status === "crashed",
+    // Le serveur tient ses fichiers de mods et télécharge au démarrage. Le
+    // main vérifie aussi les autres serveurs du même dossier.
+    canClean: isStopped(state.status),
     show,
     close: () => setOpen(false),
     confirm,

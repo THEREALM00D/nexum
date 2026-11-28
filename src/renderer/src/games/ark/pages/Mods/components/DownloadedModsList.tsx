@@ -6,16 +6,17 @@ import type { ArkDownloadedMod } from "@shared/types";
 import { FONT_MONO } from "../../../../../theme";
 import { useFormatSize } from "../../../../../hooks/useFormatSize";
 import SectionTitle from "../../../../../components/common/SectionTitle";
-import { useModsCleanup } from "../hooks/useModsCleanup";
 import ArkModRow from "./ArkModRow";
-import CleanupModsDialog from "./CleanupModsDialog";
 
 interface Props {
+  /** Lignes affichées (filtrées par la recherche). */
   mods: ArkDownloadedMod[];
+  /** Tous, pour le titre et l'affichage de la section : la recherche ne
+   * change ni le total ni ce que le nettoyage supprime. */
+  allMods: ArkDownloadedMod[];
   disabled: boolean;
   onAdd: (id: number) => void;
-  /** Après un nettoyage : relire la liste. */
-  onCleaned: () => Promise<void>;
+  onClean: () => void;
 }
 
 // Mods que le serveur a téléchargés mais qui ne sont pas dans la liste :
@@ -24,15 +25,15 @@ interface Props {
 // défile), pas une 2e carte : la liste remplit la page comme sur Valheim.
 export default function DownloadedModsList({
   mods,
+  allMods,
   disabled,
   onAdd,
-  onCleaned,
+  onClean,
 }: Props) {
   const { t } = useTranslation();
   const formatSize = useFormatSize();
-  const cleanup = useModsCleanup(onCleaned);
-  if (mods.length === 0) return null;
-  const total = mods.reduce((sum, mod) => sum + mod.size, 0);
+  if (allMods.length === 0) return null;
+  const total = allMods.reduce((sum, mod) => sum + mod.size, 0);
 
   return (
     <Box sx={{ mt: 3 }}>
@@ -45,7 +46,7 @@ export default function DownloadedModsList({
         <Box sx={{ flex: 1, minWidth: 240 }}>
           <SectionTitle>
             {t("arkMods.downloaded.titleWithSize", {
-              count: mods.length,
+              count: allMods.length,
               size: formatSize(total),
             })}
           </SectionTitle>
@@ -59,7 +60,7 @@ export default function DownloadedModsList({
           size="small"
           startIcon={<CleaningServicesIcon />}
           disabled={disabled}
-          onClick={() => void cleanup.show()}
+          onClick={onClean}
         >
           {t("arkMods.cleanup.open")}
         </Button>
@@ -91,14 +92,6 @@ export default function DownloadedModsList({
           />
         ))}
       </Stack>
-      <CleanupModsDialog
-        open={cleanup.open}
-        preview={cleanup.preview}
-        cleaning={cleanup.cleaning}
-        canClean={cleanup.canClean}
-        onClose={cleanup.close}
-        onConfirm={() => void cleanup.confirm()}
-      />
     </Box>
   );
 }

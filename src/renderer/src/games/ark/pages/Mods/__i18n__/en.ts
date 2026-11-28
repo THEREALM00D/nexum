@@ -62,11 +62,14 @@ export default {
       title: "Clean the mods folder?",
       notListed_one: "{{count}} mod not in the list",
       notListed_other: "{{count}} mods not in the list",
-      notListedHint:
+      notListedHint_one:
+        "{{names}}. If it comes back to the list, the server downloads it again at startup.",
+      notListedHint_other:
         "{{names}}. If one comes back to the list, the server downloads it again at startup.",
       temp: "Download leftovers",
       tempHint: "The server's .temp working folder.",
-      nothing: "Nothing to delete: every downloaded mod is in the list.",
+      nothing:
+        "Nothing to delete: every downloaded mod is used (list, launch arguments, other servers in the same folder).",
       safe: "Only downloaded files. The world and what the mods added to it are not touched. The server already deletes the old version of an updated mod.",
       stopFirst: "Stop the server to clean up: it uses these files.",
       cancel: "Cancel",

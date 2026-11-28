@@ -7,7 +7,9 @@ import ModListPanel from "../../../../../components/mods/ModListPanel";
 import { matchesModSearch } from "../../../../../components/mods/modSearch";
 import type { useArkMods } from "../hooks/useArkMods";
 import AddModField from "./AddModField";
-import ArkModRow from "./ArkModRow";
+import ArkModRow, { ARK_CHIP_SX } from "./ArkModRow";
+import CleanupModsDialog from "./CleanupModsDialog";
+import { useModsCleanup } from "../hooks/useModsCleanup";
 import ListedModActions from "./ListedModActions";
 import DownloadedModsList from "./DownloadedModsList";
 
@@ -35,6 +37,8 @@ interface Props {
 export default function ModListTab({ mods }: Props) {
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
+  // Ici et pas dans la section : elle disparaît après un nettoyage réussi.
+  const cleanup = useModsCleanup(mods.reload);
   const list = mods.data?.mods ?? [];
   const query = search.trim();
   // L'ordre de chargement reste celui de la liste complète : monter ou
@@ -49,9 +53,8 @@ export default function ModListTab({ mods }: Props) {
     .map((mod, index) => ({ mod, index }))
     .filter(({ mod }) => matches(mod.id, mod.info));
   // Même recherche pour les mods téléchargés hors liste (section du bas).
-  const downloaded = (mods.data?.downloadedNotListed ?? []).filter((info) =>
-    matches(info.id, info),
-  );
+  const allDownloaded = mods.data?.downloadedNotListed ?? [];
+  const downloaded = allDownloaded.filter((info) => matches(info.id, info));
   // « 13 mods · 1 passif · 1 désactivé » : seulement les états présents.
   const passiveCount = list.filter(
     (mod) => arkModState(mod) === "passive",
@@ -96,9 +99,10 @@ export default function ModListTab({ mods }: Props) {
         after={
           <DownloadedModsList
             mods={downloaded}
+            allMods={allDownloaded}
             disabled={mods.busy}
             onAdd={(id) => void mods.add(id)}
-            onCleaned={mods.reload}
+            onClean={() => void cleanup.show()}
           />
         }
       >
@@ -114,7 +118,7 @@ export default function ModListTab({ mods }: Props) {
                   label={t("arkMods.list.states.passive")}
                   size="small"
                   variant="outlined"
-                  sx={{ typography: "micro", height: 18, px: 0.5 }}
+                  sx={ARK_CHIP_SX}
                 />
               )
             }
@@ -135,6 +139,14 @@ export default function ModListTab({ mods }: Props) {
           />
         ))}
       </ModListPanel>
+      <CleanupModsDialog
+        open={cleanup.open}
+        preview={cleanup.preview}
+        cleaning={cleanup.cleaning}
+        canClean={cleanup.canClean}
+        onClose={cleanup.close}
+        onConfirm={() => void cleanup.confirm()}
+      />
     </>
   );
 }

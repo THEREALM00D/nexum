@@ -1,28 +1,9 @@
-import { isModId } from "../launchConfig";
+import { parseModIds } from "./modIds";
 
 // `-mods=1,2,3` et `-passivemods=4,5` écrits à la main dans les arguments
 // perso (avant la page Mods, ou copiés d'un script). Sans casse, comme le
 // serveur.
 const MODS_ARG = /^-(mods|passivemods)=(.*)$/i;
-
-/** ID valides d'une liste « 1,2,3 », sans doublon. */
-export function parseModIds(value: string): {
-  ids: number[];
-  invalid: boolean;
-} {
-  const parts = value
-    .split(",")
-    .map((part) => part.trim())
-    .filter(Boolean);
-  const ids: number[] = [];
-  let invalid = false;
-  for (const part of parts) {
-    const id = Number(part);
-    if (!isModId(id)) invalid = true;
-    else if (!ids.includes(id)) ids.push(id);
-  }
-  return { ids, invalid };
-}
 
 /**
  * Sépare les `-mods=` et `-passivemods=` des arguments perso du reste. Les ID

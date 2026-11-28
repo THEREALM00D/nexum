@@ -4,8 +4,8 @@ import type { IpcContext } from "../../../ipc/context";
 import type { ArkModsCleanup } from "../../../../shared/types";
 import { appError } from "../../../utils/appError";
 import { lt, managerLine } from "../../../i18n/logStrings";
-import { splitArgsMods } from "../mods/argsMods";
 import { readModLibrary } from "../mods/modLibrary";
+import { folderInUse, usedModIds } from "../mods/usedMods";
 import {
   folderSize,
   modSize,
@@ -18,18 +18,13 @@ import {
 type Result = { success: boolean; freed?: number; error?: string };
 
 /**
- * Dossiers supprimables : mods ni dans la liste (désactivés compris) ni dans
- * un `-mods=` / `-passivemods=` des arguments perso, plus `.temp`.
+ * Dossiers supprimables : mods qu'aucun serveur du même dossier n'utilise
+ * (`usedModIds` : listes, désactivés compris, arguments perso,
+ * `TotalConversionMod`), plus `.temp`.
  */
 async function cleanupTargets(ctx: IpcContext, serverId: string) {
-  const { mods, customArgs } = ctx.getArkConfig(serverId);
   const serverPath = ctx.getServerPath(serverId);
-  const args = splitArgsMods(customArgs);
-  const used = new Set([
-    ...mods.map((mod) => mod.id),
-    ...args.ids,
-    ...args.passiveIds,
-  ]);
+  const used = usedModIds(ctx, serverId);
   const library = readModLibrary(serverPath);
   const folders = await readModFolders(serverPath);
   const preview: ArkModsCleanup = { mods: [], tempSize: 0, total: 0 };
@@ -56,6 +51,11 @@ function cleanFailed(error: unknown): string {
   });
 }
 
+const failure = (code: "NO_SERVER_PATH" | "ARK_MODS_SERVER_RUNNING") => ({
+  success: false,
+  error: appError(code),
+});
+
 // « Nettoyer le dossier des mods » de la page Mods. serverId explicite.
 // Seulement les mods hors liste : CFCore supprime lui-même l'ancienne
 // version d'un mod mis à jour (vérifié), et retélécharge un mod de la liste
@@ -63,38 +63,47 @@ function cleanFailed(error: unknown): string {
 export function registerArkModsCleanupHandlers(ctx: IpcContext): void {
   ipcMain.handle(
     "ark:mods:cleanupPreview",
-    async (_, serverId: string): Promise<ArkModsCleanup> =>
-      (await cleanupTargets(ctx, serverId)).preview,
+    async (_, serverId: string): Promise<ArkModsCleanup> => {
+      // Sans chemin (serveur supprimé), modsDir serait relatif au dossier
+      // courant du processus.
+      if (!ctx.getServerPath(serverId))
+        return { mods: [], tempSize: 0, total: 0 };
+      return (await cleanupTargets(ctx, serverId)).preview;
+    },
   );
 
   ipcMain.handle(
     "ark:mods:cleanup",
     async (_, serverId: string): Promise<Result> => {
-      const manager = ctx.serverManagers.getOrCreate(serverId);
-      const status = manager.getStatus();
-      // Le serveur tient ses fichiers de mods ouverts et télécharge au démarrage.
-      if (status !== "stopped" && status !== "crashed")
-        return { success: false, error: appError("ARK_MODS_SERVER_RUNNING") };
+      if (!ctx.getServerPath(serverId)) return failure("NO_SERVER_PATH");
+      // Un serveur du même dossier qui tourne tient ces fichiers ouverts et
+      // télécharge dans `.temp` au démarrage.
+      if (folderInUse(ctx, serverId)) return failure("ARK_MODS_SERVER_RUNNING");
       const { preview, names, serverPath } = await cleanupTargets(
         ctx,
         serverId,
       );
+      // Revérifié : le calcul des tailles prend du temps, et un serveur
+      // planté est relancé 10 s après (crashRestart.ts).
+      if (folderInUse(ctx, serverId)) return failure("ARK_MODS_SERVER_RUNNING");
       try {
         await removeModFolders(serverPath, names);
       } catch (error) {
         return { success: false, error: cleanFailed(error) };
       }
-      manager.logOutsideSession(
-        [
-          managerLine(
-            lt().arkModsCleaned(
-              preview.mods.length,
-              preview.total / 1024 / 1024,
+      ctx.serverManagers
+        .getOrCreate(serverId)
+        .logOutsideSession(
+          [
+            managerLine(
+              lt().arkModsCleaned(
+                preview.mods.length,
+                preview.total / 1024 / 1024,
+              ),
             ),
-          ),
-        ],
-        (line) => ctx.broadcastLog(serverId, line),
-      );
+          ],
+          (line) => ctx.broadcastLog(serverId, line),
+        );
       return { success: true, freed: preview.total };
     },
   );

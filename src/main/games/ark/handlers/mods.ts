@@ -8,10 +8,12 @@ import type {
   ArkModSearchParams,
 } from "../../../../shared/types";
 import { appError } from "../../../utils/appError";
-import { isModId, sanitizeArkMods } from "../launchConfig";
+import { sanitizeArkMods } from "../launchConfig";
+import { isModId, mergeLineMods } from "../mods/modIds";
 import { splitArgsMods } from "../mods/argsMods";
 import { readModLibrary } from "../mods/modLibrary";
 import { modSize, readModFolders } from "../mods/modFolders";
+import { usedModIds } from "../mods/usedMods";
 import { curseforgeAvailable, fetchArkMods } from "../mods/curseforgeApi";
 import { fetchArkCategories, searchArkMods } from "../mods/curseforgeSearch";
 
@@ -39,13 +41,15 @@ export function registerArkModsHandlers(ctx: IpcContext): void {
       } catch {
         // Rien à signaler : la liste reste utilisable.
       }
-      const listed = new Set(mods.map((mod) => mod.id));
-      // Seulement ceux dont le dossier existe : un mod supprimé du disque
-      // reste dans library.json (`status: "Invalid"`, vérifié).
+      // Ce que le nettoyage supprimerait : dossier encore là (un mod supprimé
+      // reste dans library.json, `status: "Invalid"`, vérifié) et mod
+      // qu'aucun serveur du même dossier n'utilise (liste, arguments perso,
+      // TotalConversionMod : signalés ailleurs).
+      const used = usedModIds(ctx, serverId);
       const downloadedNotListed: ArkDownloadedMod[] = [];
       for (const info of library.values()) {
         const names = folders.get(info.id);
-        if (listed.has(info.id) || !names) continue;
+        if (used.has(info.id) || !names) continue;
         downloadedNotListed.push({
           ...info,
           size: await modSize(serverPath, names),
@@ -123,20 +127,13 @@ export function registerArkModsHandlers(ctx: IpcContext): void {
   );
   ipcMain.handle("ark:mods:categories", () => fetchArkCategories());
 
-  // Déplace les -mods= et -passivemods= des arguments perso à la fin de la
-  // liste (les seconds en passifs).
+  // Déplace les -mods= et -passivemods= des arguments perso dans la liste,
+  // avec l'état qu'ils avaient sur la ligne (`mergeLineMods`).
   ipcMain.handle("ark:mods:takeFromArgs", (_, serverId: string): Result => {
     const { mods, customArgs } = ctx.getArkConfig(serverId);
     const { ids, passiveIds, rest } = splitArgsMods(customArgs);
-    const isNew = (id: number) => !mods.some((mod) => mod.id === id);
-    const added: ArkMod[] = [
-      ...ids.filter(isNew).map((id) => ({ id, enabled: true })),
-      ...passiveIds
-        .filter(isNew)
-        .map((id) => ({ id, enabled: true, passive: true })),
-    ];
     ctx.updateArkConfig(serverId, {
-      mods: [...mods, ...added],
+      mods: mergeLineMods(mods, ids, passiveIds),
       customArgs: rest.join(" "),
     });
     return { success: true };
