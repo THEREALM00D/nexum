@@ -47,6 +47,10 @@ const FR = {
   forceKill: "Arrêt forcé via taskkill...",
   stuckStartKilled: (minutes: number, attempt: number, max: number) =>
     `Le serveur n'a pas fini de démarrer après ${minutes} min (pas de ligne « prêt » dans son log) : arrêt forcé, relance dans 10 s (essai ${attempt} sur ${max}).`,
+  stuckStartRestarted: (attempt: number, max: number) =>
+    `Relancé automatiquement après un démarrage bloqué (tentative ${attempt}/${max}).`,
+  ramLimitGaveUp: (limitGb: number, max: number, hours: number) =>
+    `RAM du serveur encore au-dessus de ${limitGb} Go, déjà redémarré ${max} fois pour ça en ${hours} h : plus de redémarrage automatique pour la RAM pendant quelques heures. Cherchez la cause (mods, fuite de mémoire) ou relevez la limite.`,
   stuckStartGaveUp: (minutes: number, max: number) =>
     `Le serveur n'a pas fini de démarrer après ${minutes} min, déjà relancé ${max} fois en 30 min : arrêt forcé, plus de relance automatique.`,
   ramLimitExceeded: (ramGb: number, limitGb: number, warned: boolean) =>
@@ -78,7 +82,7 @@ const FR = {
     `Relancé automatiquement après un plantage (tentative ${attempt}/${max}).`,
   autoRestartFailed: (err: string) => `Relance automatique impossible : ${err}`,
   autoRestartGaveUp: (max: number, minutes: number) =>
-    `Relance automatique abandonnée : ${max} plantages en moins de ${minutes} min. Consultez les logs des sessions plantées, puis démarrez le serveur à la main.`,
+    `Relance automatique abandonnée : ${max} relances automatiques (plantage ou démarrage bloqué) en moins de ${minutes} min. Consultez les logs des sessions précédentes, puis démarrez le serveur à la main.`,
 
   // Vérifications au démarrage
   gameUpToDate: (build: string) => `Serveur à jour (build ${build}).`,
@@ -239,6 +243,10 @@ const EN: typeof FR = {
   forceKill: "Forcing the stop (taskkill)...",
   stuckStartKilled: (minutes, attempt, max) =>
     `The server hadn't finished starting after ${minutes} min (no "ready" line in its log): forced stop, restart in 10 s (attempt ${attempt} of ${max}).`,
+  stuckStartRestarted: (attempt, max) =>
+    `Restarted automatically after a stuck start (attempt ${attempt}/${max}).`,
+  ramLimitGaveUp: (limitGb, max, hours) =>
+    `Server RAM still above ${limitGb} GB, already restarted ${max} times for it in ${hours} h: no more automatic restart for RAM for a few hours. Look for the cause (mods, memory leak) or raise the limit.`,
   stuckStartGaveUp: (minutes, max) =>
     `The server hadn't finished starting after ${minutes} min, already restarted ${max} times in 30 min: forced stop, no more automatic restart.`,
   ramLimitExceeded: (ramGb, limitGb, warned) =>
@@ -266,7 +274,7 @@ const EN: typeof FR = {
     `Restarted automatically after a crash (attempt ${attempt}/${max}).`,
   autoRestartFailed: (err) => `Automatic restart failed: ${err}`,
   autoRestartGaveUp: (max, minutes) =>
-    `Automatic restart stopped: ${max} crashes in less than ${minutes} min. Check the logs of the crashed sessions, then start the server manually.`,
+    `Automatic restart stopped: ${max} automatic restarts (crash or stuck start) in less than ${minutes} min. Check the logs of the previous sessions, then start the server manually.`,
 
   gameUpToDate: (build) => `Server up to date (build ${build}).`,
   gameUpdateAvailable: (installed, latest) =>

@@ -290,16 +290,12 @@ export interface ModUpdateNotice {
 }
 
 /**
- * Envoyé au renderer (`server:autoRestartGaveUp`) quand la relance après un
- * plantage abandonne (`crashRestart.ts`).
- */
-/**
  * Ce que la surveillance d'un serveur a fait seule (démarrage bloqué,
  * RAM), gardé dans le main jusqu'à ce que le Dashboard le masque.
  */
 export interface WatchdogEvent {
   serverId: string;
-  kind: "stuckStart" | "stuckGaveUp" | "ramLimit";
+  kind: "stuckStart" | "stuckGaveUp" | "ramLimit" | "ramGaveUp";
   at: number;
   /** Minutes sans ligne « prêt » (démarrage bloqué). */
   minutes?: number;
@@ -310,6 +306,11 @@ export interface WatchdogEvent {
   /** RAM : joueurs prévenus avant l'arrêt (le jeu sait annoncer). */
   playersWarned?: boolean;
 }
+
+/**
+ * Envoyé au renderer (`server:autoRestartGaveUp`) quand la relance après un
+ * plantage abandonne (`crashRestart.ts`).
+ */
 
 export interface AutoRestartGaveUpNotice {
   serverId: string;
@@ -326,7 +327,7 @@ export interface AutoRestartGaveUpNotice {
  */
 export interface AutoStartFailedNotice {
   serverId: string;
-  kind: "autoStart" | "crashRestart";
+  kind: "autoStart" | "crashRestart" | "stuckRestart";
   /** Erreur telle que renvoyée par `startServer` (codée, traduite par le renderer). */
   error: string;
 }

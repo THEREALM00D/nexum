@@ -26,7 +26,9 @@ export default {
     stuckGaveUp_other:
       "The server doesn't finish starting ({{count}} minutes) and was already restarted {{max}} times in 30 minutes: Nexum stopped it at {{time}} and no longer restarts it. Check its logs.",
     ramLimit:
-      "Server RAM stayed above {{limit}} GB for 5 minutes ({{ram}} GB): Nexum restarted it at {{time}}, players were warned.",
+      "Server RAM stayed above {{limit}} GB for 5 minutes ({{ram}} GB): restart started at {{time}}, players are warned before the stop.",
+    ramGaveUp:
+      "Server RAM is still above {{limit}} GB ({{ram}} GB) after {{max}} restarts in 6 hours: Nexum no longer restarts it for RAM for a few hours. Look for the cause (mods, memory leak) or raise the limit.",
     ramLimitNoWarning:
       "Server RAM stayed above {{limit}} GB for 5 minutes ({{ram}} GB): Nexum restarted it at {{time}} (the game can't warn players).",
     viewLogs: "View logs",

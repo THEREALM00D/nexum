@@ -21,6 +21,7 @@ interface Props {
  */
 export default function ServerAutomationFields({ values, onChange }: Props) {
   const { t } = useTranslation();
+  const plugin = getGamePlugin(values.gameType);
   return (
     <Stack spacing={1}>
       <CheckboxField
@@ -38,9 +39,8 @@ export default function ServerAutomationFields({ values, onChange }: Props) {
       <WatchdogFields
         values={values}
         onChange={onChange}
-        startupReadyHintKey={
-          getGamePlugin(values.gameType)?.startupReadyHintKey
-        }
+        startupReadyHintKey={plugin?.startupReadyHintKey}
+        recommendedRamGb={plugin?.requirements?.ramGb}
       />
     </Stack>
   );

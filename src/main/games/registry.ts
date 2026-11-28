@@ -112,11 +112,6 @@ const READY_LINES: Partial<Record<GameType, RegExp>> = {
   enshrouded: /\[Session\] 'HostOnline' \(up\)!/,
 };
 
-/** Le jeu dit-il quand son serveur est prêt ? (option « démarrage bloqué ») */
-export function hasReadyLine(gameType: GameType): boolean {
-  return READY_LINES[gameType] !== undefined;
-}
-
 const PREPARE: Partial<
   Record<GameType, (serverPath: string, cfg: ServerConfig) => string | null>
 > = {

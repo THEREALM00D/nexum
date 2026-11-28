@@ -15,12 +15,12 @@ Each row has a **Start** / **Stop** button, a **Restart** button and a **⋯** m
 
 The header has **Import a server** (a file exported from another PC), **Setup wizard** and **Add a server** (a new server or a folder already installed).
 
-### Watch options (Edit dialog)
+### Watch options (Add and Edit dialogs)
 
-- **Restart if startup isn't finished** (ARK: Survival Ascended and Enshrouded only, the games that write a "ready" line in their log: `advertising for join` for ARK, `HostOnline` for Enshrouded): if the line doesn't show up after the set number of minutes (10 by default), Nexum kills the server and starts it again 10 seconds later. These restarts count with the restarts after a crash: after 3 in 30 minutes, Nexum leaves the server stopped.
-- **Restart when RAM goes above** (all games): when the server's RAM stays above the limit for 5 minutes in a row (checked once a minute), Nexum restarts it, warning players with the announcements of its **Schedule** page when the game can (REST API, RCON). Without them, it restarts right away.
+- **Restart if startup isn't finished** (ARK: Survival Ascended and Enshrouded only, the games that write a "ready" line in their log: `advertising for join` for ARK, `HostOnline` for Enshrouded): if the line doesn't show up after the set number of minutes (20 by default: the first start of ARK with new mods, or after an update, takes longer), Nexum kills the server and starts it again 10 seconds later. These restarts count with the restarts after a crash: after 3 in 30 minutes, Nexum leaves the server stopped.
+- **Restart when RAM goes above** (all games): when the server's RAM stays above the limit for 5 minutes in a row (checked once a minute), Nexum restarts it, warning players with the announcements of its **Schedule** page when the game can (REST API, RCON). Without them, it restarts right away. If **Update the game at restart time** is on in the Schedule, the update is installed too. The suggested limit is twice the RAM the game needs (24 GB for ARK, which uses about 10 GB idle): a limit under the game's normal use would restart it over and over. After 3 RAM restarts in 6 hours, Nexum stops restarting it for RAM for a few hours (memory leak, mod): look for the cause or raise the limit.
 
-Each time, a line goes to the server's logs and a warning shows under the Dashboard header (with **View logs**) until you dismiss it. A Windows notification appears if Nexum's window isn't in front.
+Each time, a line goes to the server's logs and a warning shows under the Dashboard header (with **View logs**) until you dismiss it. A Windows notification appears if Nexum's window isn't in front. The warning is kept until Nexum quits.
 
 ## All servers
 

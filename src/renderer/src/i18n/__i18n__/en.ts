@@ -42,8 +42,10 @@ export default {
   },
   autoRestart: {
     gaveUp:
-      "{{name}}: auto-restart stopped after {{crashes}} crashes in less than {{minutes}} min. Check the logs of the crashed sessions, then start the server manually.",
+      "{{name}}: auto-restart stopped after {{crashes}} restarts (crash or stuck start) in less than {{minutes}} min. Check the logs of the previous sessions, then start the server manually.",
     failed: "{{name}} could not be restarted after its crash: {{error}}",
+    failedStuck:
+      "{{name}} could not be restarted after a stuck start: {{error}}",
     viewLogs: "View logs",
   },
   autoStart: {

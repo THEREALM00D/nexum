@@ -35,10 +35,17 @@ export function notifyWatchdog(server: Server, event: WatchdogEvent): void {
   sendToRenderer("server:watchdog", event);
   const strings = trayStrings(getLanguage());
   const minutes = event.minutes ?? 0;
-  if (event.kind === "ramLimit") {
+  if (event.kind === "ramLimit" || event.kind === "ramGaveUp") {
+    const limitGb = event.limitGb ?? 0;
     alertIfUnwatched(
       strings.watchdogRamTitle,
-      strings.watchdogRamBody(server.name, event.limitGb ?? 0),
+      event.kind === "ramGaveUp"
+        ? strings.watchdogRamGaveUpBody(server.name, limitGb)
+        : strings.watchdogRamBody(
+            server.name,
+            limitGb,
+            event.playersWarned === true,
+          ),
     );
     return;
   }

@@ -47,7 +47,7 @@ When the game has no command for it, or RCON / the REST API is off, the entry is
 
 ### Watch warning
 
-When Nexum restarted the server by itself because of a [watch option](servers.md#watch-options-edit-dialog) (startup not finished, RAM above the limit), a warning under the header says what happened and when, with **View logs**. It stays until you dismiss it.
+When Nexum restarted the server by itself because of a [watch option](servers.md#watch-options-add-and-edit-dialogs) (startup not finished, RAM above the limit), a warning under the header says what happened and when, with **View logs**. It stays until you dismiss it, or until Nexum quits.
 
 ## Statistics
 

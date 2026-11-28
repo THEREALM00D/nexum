@@ -47,7 +47,7 @@ Quand le jeu n'a pas de commande pour cela, ou que RCON / l'API REST est désact
 
 ### Avertissement de surveillance
 
-Quand Nexum a redémarré le serveur de lui-même à cause d'une [option de surveillance](servers.fr.md#surveillance-dialogue-modifier) (démarrage pas fini, RAM au-dessus de la limite), un avertissement sous l'en-tête dit ce qui s'est passé et à quelle heure, avec **Voir les logs**. Il reste jusqu'à ce que vous le masquiez.
+Quand Nexum a redémarré le serveur de lui-même à cause d'une [option de surveillance](servers.fr.md#surveillance-dialogues-ajouter-et-modifier) (démarrage pas fini, RAM au-dessus de la limite), un avertissement sous l'en-tête dit ce qui s'est passé et à quelle heure, avec **Voir les logs**. Il reste jusqu'à ce que vous le masquiez, ou jusqu'à la fermeture de Nexum.
 
 ## Statistiques
 

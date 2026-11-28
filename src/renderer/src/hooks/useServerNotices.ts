@@ -94,7 +94,9 @@ export function useServerNotices(pages: {
       notify(
         notice.kind === "autoStart"
           ? t("autoStart.failed", params)
-          : t("autoRestart.failed", params),
+          : notice.kind === "stuckRestart"
+            ? t("autoRestart.failedStuck", params)
+            : t("autoRestart.failed", params),
         "error",
         {
           label: t("autoRestart.viewLogs"),

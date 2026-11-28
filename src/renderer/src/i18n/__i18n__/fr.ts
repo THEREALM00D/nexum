@@ -42,8 +42,10 @@ export default {
   },
   autoRestart: {
     gaveUp:
-      "{{name}} : relance automatique abandonnée après {{crashes}} plantages en moins de {{minutes}} min. Consultez les logs des sessions plantées, puis démarrez le serveur à la main.",
+      "{{name}} : relance automatique abandonnée après {{crashes}} relances (plantage ou démarrage bloqué) en moins de {{minutes}} min. Consultez les logs des sessions précédentes, puis démarrez le serveur à la main.",
     failed: "{{name}} n'a pas pu être relancé après son plantage : {{error}}",
+    failedStuck:
+      "{{name}} n'a pas pu être relancé après un démarrage bloqué : {{error}}",
     viewLogs: "Voir les logs",
   },
   autoStart: {

@@ -44,7 +44,11 @@ export default function WatchdogAlert({ serverId }: { serverId: string }) {
 
   return (
     <Alert
-      severity={event.kind === "stuckGaveUp" ? "error" : "warning"}
+      severity={
+        event.kind === "stuckGaveUp" || event.kind === "ramGaveUp"
+          ? "error"
+          : "warning"
+      }
       // `action` remplace le bouton de fermeture de l'Alert : les deux ici.
       action={
         <Stack direction="row" spacing={0.5} sx={{ alignItems: "center" }}>

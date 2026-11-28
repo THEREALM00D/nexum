@@ -15,12 +15,12 @@ Chaque ligne a un bouton **Démarrer** / **Arrêter**, un bouton **Redémarrer**
 
 L'en-tête propose **Importer un serveur** (un fichier exporté depuis un autre PC), **Assistant de démarrage** et **Ajouter un serveur** (un nouveau serveur ou un dossier déjà installé).
 
-### Surveillance (dialogue Modifier)
+### Surveillance (dialogues Ajouter et Modifier)
 
-- **Relancer si le démarrage n'est pas fini** (ARK: Survival Ascended et Enshrouded seulement, les jeux qui écrivent une ligne « prêt » dans leur log : `advertising for join` pour ARK, `HostOnline` pour Enshrouded) : si la ligne n'apparaît pas après le nombre de minutes choisi (10 par défaut), Nexum tue le serveur et le redémarre 10 secondes plus tard. Ces relances comptent avec les relances après un plantage : au-delà de 3 en 30 minutes, Nexum laisse le serveur arrêté.
-- **Redémarrer quand la RAM dépasse** (tous les jeux) : quand la RAM du serveur reste au-dessus de la limite pendant 5 minutes d'affilée (vérifiée une fois par minute), Nexum le redémarre, en prévenant les joueurs avec les annonces de sa page **Planification** quand le jeu le permet (API REST, RCON). Sinon, il redémarre tout de suite.
+- **Relancer si le démarrage n'est pas fini** (ARK: Survival Ascended et Enshrouded seulement, les jeux qui écrivent une ligne « prêt » dans leur log : `advertising for join` pour ARK, `HostOnline` pour Enshrouded) : si la ligne n'apparaît pas après le nombre de minutes choisi (20 par défaut : le premier démarrage d'ARK avec de nouveaux mods, ou après une mise à jour, est plus long), Nexum tue le serveur et le redémarre 10 secondes plus tard. Ces relances comptent avec les relances après un plantage : au-delà de 3 en 30 minutes, Nexum laisse le serveur arrêté.
+- **Redémarrer quand la RAM dépasse** (tous les jeux) : quand la RAM du serveur reste au-dessus de la limite pendant 5 minutes d'affilée (vérifiée une fois par minute), Nexum le redémarre, en prévenant les joueurs avec les annonces de sa page **Planification** quand le jeu le permet (API REST, RCON). Sinon, il redémarre tout de suite. Si **Mettre à jour le jeu au moment du redémarrage** est coché dans la Planification, la mise à jour est installée aussi. La limite proposée vaut deux fois la RAM conseillée du jeu (24 Go pour ARK, qui en utilise ~10 au repos) : une limite sous sa consommation normale le redémarrerait en boucle. Après 3 redémarrages pour la RAM en 6 heures, Nexum ne le redémarre plus pour la RAM pendant quelques heures (fuite de mémoire, mod) : cherchez la cause ou relevez la limite.
 
-À chaque fois, une ligne va dans les logs du serveur et un avertissement s'affiche sous l'en-tête du Dashboard (avec **Voir les logs**) jusqu'à ce que vous le masquiez. Une notification Windows apparaît si la fenêtre de Nexum n'est pas au premier plan.
+À chaque fois, une ligne va dans les logs du serveur et un avertissement s'affiche sous l'en-tête du Dashboard (avec **Voir les logs**) jusqu'à ce que vous le masquiez. Une notification Windows apparaît si la fenêtre de Nexum n'est pas au premier plan. L'avertissement est gardé jusqu'à la fermeture de Nexum.
 
 ## Tous les serveurs
 

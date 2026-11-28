@@ -2,7 +2,7 @@
 
 Ajouter un jeu : skill **`/new-game`** (procédure complète, tester un vrai serveur d'abord). Chaque jeu a son `CLAUDE.md` dans son dossier (faits vérifiés sur une vraie install).
 
-- `registry.ts` : `Record<GameType, …>` qui dispatchent vers les `serverConfig.ts` de chaque jeu : `getLaunchSpec` (exe, args, `env`, `logFile`, `prepare` via `PREPARE`, `logNoise` via `LOG_NOISE`), `getGamePorts`, `getGameSavePath`, `getGameStopConfig`, `getGameEnv`, `getGameSearchName` (`SEARCH_NAMES`), `GAME_TYPES`.
+- `registry.ts` : `Record<GameType, …>` qui dispatchent vers les `serverConfig.ts` de chaque jeu : `getLaunchSpec` (exe, args, `env`, `logFile`, `prepare` via `PREPARE`, `logNoise` via `LOG_NOISE`, `readyLine` via `READY_LINES` : ligne « prêt » du démarrage bloqué, voir `src/main/server/CLAUDE.md`), `getGamePorts`, `getGameSavePath`, `getGameStopConfig`, `getGameEnv`, `getGameSearchName` (`SEARCH_NAMES`), `GAME_TYPES`.
 - `<jeu>/serverConfig.ts` : `exeName`, `buildArgs`, `getSavePath`, `getStopConfig`, `getPorts`, `env?`, `getLogFilePath?`. Lu aussi par `detectGameType.ts` (import d'un dossier existant).
 - `ports.ts` : `GamePort` (`forward: true` = à rediriger sur la box, affiché dans la carte Rejoindre ; jamais RCON/REST) + `formatPortRange`.
 - `saveRequests.ts` : `SAVE_REQUESTS`, sauvegarde à chaud avant un backup (voir `src/main/backup/CLAUDE.md`).

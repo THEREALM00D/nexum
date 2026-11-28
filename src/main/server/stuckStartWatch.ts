@@ -47,22 +47,31 @@ async function restartStuckServer(
   });
 
   setTimeout(async () => {
-    // Entre-temps : démarré à la main, ou serveur supprimé.
+    // Entre-temps : démarré à la main, serveur supprimé ou option décochée.
     const current = ctx.servers
       .list()
       .find((candidate) => candidate.id === server.id);
-    if (!current || manager.getStatus() !== "stopped") return;
+    if (
+      !current ||
+      (current.stuckStartMinutes ?? 0) <= 0 ||
+      manager.getStatus() !== "stopped"
+    )
+      return;
     const sendLog = (line: string) => ctx.broadcastLog(server.id, line);
     const result = await startServer(ctx, server.id, sendLog).catch(
       (error: Error) => ({ success: false, error: error.message }),
     );
-    if (result.success) return;
+    if (result.success) {
+      // Dans la nouvelle session : « Voir les logs » dit pourquoi il a redémarré.
+      manager.log(managerLine(lt().stuckStartRestarted(attempt, MAX_RESTARTS)));
+      return;
+    }
     const error = result.error ?? "";
     manager.logStartFailure(
       managerLine(lt().autoRestartFailed(appErrorLogText(error))),
       sendLog,
     );
-    notifyStartFailed(current, "crashRestart", error);
+    notifyStartFailed(current, "stuckRestart", error);
   }, RESTART_DELAY_MS);
 }
 

@@ -35,7 +35,7 @@ Actions → **Beta release** → _Run workflow_ sur une branche poussée qui con
 
 ### Lot de fonctions sur une branche d'intégration
 
-Plusieurs fonctions qui sortent ensemble en bêta (ex. #292, branche `feat/292-server-management`) : branche créée depuis `main`, chaque sous-issue en PR **vers elle**, bêta lancée dessus, puis une seule PR vers `main`. ⚠️ `Closes #N` ne ferme l'issue qu'à la fusion dans la branche par défaut : la PR finale vers `main` liste toutes les issues du lot. `ci.yml` ne tourne que sur les PR vers `main` : typecheck et lint en local pour les PR du lot. Ne jamais fusionner la branche du lot dans une sous-branche en local puis pousser : GitHub marquerait la PR de la sous-branche « merged » sans relecture.
+Plusieurs fonctions qui sortent ensemble en bêta (ex. #292, branche `feat/292-server-management`) : branche créée depuis `main`, chaque sous-issue **poussée directement dessus** (choix de l'utilisateur : pas de PR intermédiaire ; typecheck, lint, test isolé et `/revue` en local avant), bêta lancée dessus, puis une seule PR vers `main`. ⚠️ `Closes #N` ne ferme l'issue qu'à la fusion dans la branche par défaut : la PR finale vers `main` liste toutes les issues du lot. `ci.yml` ne tourne que sur les PR vers `main` : typecheck et lint en local pour le lot. Ne jamais fusionner la branche du lot dans une sous-branche en local puis pousser : GitHub marquerait la PR de la sous-branche « merged » sans relecture.
 
 ## Vérification des téléchargements et signature
 

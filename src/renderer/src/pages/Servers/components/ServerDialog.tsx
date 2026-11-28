@@ -20,7 +20,7 @@ import ExistingServerPanel from "./ExistingServerPanel";
 import FolderField from "../../../components/common/FolderField";
 import ColorPicker from "./ColorPicker";
 import { SERVER_COLORS } from "@shared/serverColors";
-import { GAMES } from "../../../games/registry";
+import { GAMES, getGamePlugin } from "../../../games/registry";
 import { watchdogInvalid } from "./WatchdogFields";
 import ServerAutomationFields from "./ServerAutomationFields";
 
@@ -104,7 +104,10 @@ export default function ServerDialog({
     values.path.trim() &&
     !submitting &&
     !importPending &&
-    !watchdogInvalid(values);
+    !watchdogInvalid(
+      values,
+      Boolean(getGamePlugin(values.gameType)?.startupReadyHintKey),
+    );
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
@@ -173,7 +176,9 @@ export default function ServerDialog({
 
           <ServerAutomationFields
             values={values}
-            onChange={(patch) => setValues((v) => ({ ...v, ...patch }))}
+            onChange={(patch) =>
+              setValues((current) => ({ ...current, ...patch }))
+            }
           />
         </Stack>
       </DialogContent>

@@ -32,7 +32,7 @@ Noter les résultats : ils deviennent le `CLAUDE.md` du jeu. Si quelque chose ne
 
 - `src/main/games/<jeu>/serverConfig.ts` : `exeName`, `buildArgs`, `getSavePath`, `getStopConfig` (`gracefulSignal: "ctrlBreak"` si le test l'a validé), `getPorts` (`forward: true` pour les ports à rediriger), `env?`, `getLogFilePath?`.
 - Parser de config (`.backup` avant écriture, encodage et fins de ligne gardés via `readIniText` / `writeIniText`, clés inconnues préservées), `handlers/` pour l'IPC du jeu.
-- Préparation avant chaque démarrage (validations, fichiers à réécrire) → `PREPARE` dans `registry.ts`, pas dans `startServer`. Lignes techniques à masquer → `LOG_NOISE`. Nom à chercher dans le jeu → `SEARCH_NAMES`.
+- Préparation avant chaque démarrage (validations, fichiers à réécrire) → `PREPARE` dans `registry.ts`, pas dans `startServer`. Lignes techniques à masquer → `LOG_NOISE`. Nom à chercher dans le jeu → `SEARCH_NAMES`. Ligne « serveur prêt » **vérifiée sur un vrai serveur** → `READY_LINES` (+ `startupReadyHintKey` dans le manifest) : sans elle, pas de relance d'un démarrage bloqué.
 - `src/main/servers/ServerConfigStore.ts` : valeurs par défaut + fusion dans `get` / `update` / `migrateLegacy`.
 - `src/main/ipc/context.ts` + `ipc/handlers.ts` : accesseurs `get/update<Jeu>Config`, enregistrement des handlers.
 - Secrets du log → `redactLog.ts`. Source de joueurs éventuelle → `getApiClientForServer`.

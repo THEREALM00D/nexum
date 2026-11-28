@@ -8,6 +8,11 @@ import { GAME_TYPES } from "../games/registry";
 import { sanitizeArkLaunch } from "../games/ark/launchConfig";
 import { withRestartDefaults } from "../servers/restartDefaults";
 import { AppError } from "../utils/appError";
+import {
+  inWatchdogRange,
+  RAM_LIMIT_RANGE,
+  STUCK_MINUTES_RANGE,
+} from "../../shared/watchdog";
 
 // Version du format des deux fichiers (réglages et serveur). Un fichier d'une
 // version plus récente est refusé (TRANSFER_FILE_TOO_NEW) : il peut contenir
@@ -104,6 +109,16 @@ export function parseServerEntry(raw: unknown): TransferServerEntry {
       color: typeof server.color === "string" ? server.color : null,
       autoStart: server.autoStart === true,
       autoRestart: server.autoRestart === true,
+      // Valeur hors bornes (fichier modifié à la main) : option désactivée.
+      stuckStartMinutes: inWatchdogRange(
+        server.stuckStartMinutes,
+        STUCK_MINUTES_RANGE,
+      )
+        ? server.stuckStartMinutes
+        : undefined,
+      ramLimitGb: inWatchdogRange(server.ramLimitGb, RAM_LIMIT_RANGE)
+        ? server.ramLimitGb
+        : undefined,
     },
     config,
   };
@@ -123,9 +138,27 @@ export function toServerEntry(
   config: ServerConfig,
   includePasswords: boolean,
 ): TransferServerEntry {
-  const { name, gameType, path, color, autoStart, autoRestart } = server;
+  const {
+    name,
+    gameType,
+    path,
+    color,
+    autoStart,
+    autoRestart,
+    stuckStartMinutes,
+    ramLimitGb,
+  } = server;
   return {
-    server: { name, gameType, path, color, autoStart, autoRestart },
+    server: {
+      name,
+      gameType,
+      path,
+      color,
+      autoStart,
+      autoRestart,
+      stuckStartMinutes,
+      ramLimitGb,
+    },
     config: includePasswords ? config : stripPasswords(config),
   };
 }

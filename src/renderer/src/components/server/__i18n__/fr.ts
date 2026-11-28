@@ -27,7 +27,9 @@ export default {
     stuckGaveUp_other:
       "Le serveur ne finit pas de démarrer ({{count}} minutes), déjà relancé {{max}} fois en 30 minutes : Nexum l'a arrêté à {{time}} et ne le relance plus. Regardez ses logs.",
     ramLimit:
-      "La RAM du serveur est restée au-dessus de {{limit}} Go pendant 5 minutes ({{ram}} Go) : Nexum l'a redémarré à {{time}}, joueurs prévenus.",
+      "La RAM du serveur est restée au-dessus de {{limit}} Go pendant 5 minutes ({{ram}} Go) : redémarrage lancé à {{time}}, les joueurs sont prévenus avant l'arrêt.",
+    ramGaveUp:
+      "La RAM du serveur dépasse encore {{limit}} Go ({{ram}} Go) après {{max}} redémarrages en 6 heures : Nexum ne le redémarre plus pour la RAM pendant quelques heures. Cherchez la cause (mods, fuite de mémoire) ou relevez la limite.",
     ramLimitNoWarning:
       "La RAM du serveur est restée au-dessus de {{limit}} Go pendant 5 minutes ({{ram}} Go) : Nexum l'a redémarré à {{time}} (le jeu ne permet pas de prévenir les joueurs).",
     viewLogs: "Voir les logs",

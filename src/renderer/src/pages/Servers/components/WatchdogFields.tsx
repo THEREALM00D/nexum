@@ -6,6 +6,12 @@ import {
   isIntegerInRange,
   parseIntegerInput,
 } from "../../../components/schedule/integerInput";
+import {
+  DEFAULT_STUCK_MINUTES,
+  defaultRamLimitGb,
+  RAM_LIMIT_RANGE,
+  STUCK_MINUTES_RANGE,
+} from "@shared/watchdog";
 
 /** 0 = option désactivée. */
 export interface WatchdogValues {
@@ -13,18 +19,20 @@ export interface WatchdogValues {
   ramLimitGb: number;
 }
 
-const DEFAULT_STUCK_MINUTES = 10;
-const DEFAULT_RAM_LIMIT_GB = 8;
-
-export const STUCK_MINUTES_RANGE = [1, 120] as const;
-export const RAM_LIMIT_RANGE = [1, 512] as const;
-
-/** Valeurs à corriger avant d'enregistrer (champ vidé ou hors bornes). */
-export function watchdogInvalid(values: WatchdogValues): boolean {
+/**
+ * Valeurs à corriger avant d'enregistrer (champ vidé ou hors bornes).
+ * `hasStartupCheck` faux (jeu sans ligne « prêt ») : le champ du démarrage
+ * est masqué, il ne doit pas bloquer Enregistrer sans rien en rouge.
+ */
+export function watchdogInvalid(
+  values: WatchdogValues,
+  hasStartupCheck: boolean,
+): boolean {
   const invalid = (value: number, [min, max]: readonly [number, number]) =>
     value !== 0 && !isIntegerInRange(value, min, max);
   return (
-    invalid(values.stuckStartMinutes, STUCK_MINUTES_RANGE) ||
+    (hasStartupCheck &&
+      invalid(values.stuckStartMinutes, STUCK_MINUTES_RANGE)) ||
     invalid(values.ramLimitGb, RAM_LIMIT_RANGE)
   );
 }
@@ -34,6 +42,8 @@ interface Props {
   onChange: (patch: Partial<WatchdogValues>) => void;
   /** Texte d'aide du jeu ; absent : le jeu n'a pas de ligne « prêt ». */
   startupReadyHintKey?: string;
+  /** RAM conseillée du jeu (`GamePlugin.requirements`) : limite proposée. */
+  recommendedRamGb?: number;
 }
 
 /**
@@ -44,6 +54,7 @@ export default function WatchdogFields({
   values,
   onChange,
   startupReadyHintKey,
+  recommendedRamGb,
 }: Props) {
   const { t } = useTranslation();
 
@@ -115,7 +126,7 @@ export default function WatchdogFields({
         t("servers.dialog.ramLimit"),
         t("servers.dialog.ramLimitHelper"),
         t("servers.dialog.ramLimitValue"),
-        DEFAULT_RAM_LIMIT_GB,
+        defaultRamLimitGb(recommendedRamGb),
         RAM_LIMIT_RANGE,
       )}
     </Stack>
