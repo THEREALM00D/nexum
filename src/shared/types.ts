@@ -838,16 +838,39 @@ export interface ArkSpawnLists {
   replacements: ArkNpcReplacement[];
 }
 
+/** Une ressource d'un coût de fabrication (BaseCraftingResourceRequirements). */
+export interface ArkCraftingResource {
+  /** Champs que Nexum n'édite pas, réécrits tels quels (structure UE). */
+  extra?: string;
+  /** ResourceItemTypeString. */
+  resource: string;
+  /** BaseResourceRequirement. */
+  quantity: string;
+  /** bCraftingRequireExactResourceType : seule cette ressource compte, pas ses équivalents. */
+  exact: boolean;
+}
+
+/** ConfigOverrideItemCraftingCosts : remplace toutes les ressources d'un objet. */
+export interface ArkCraftingCost {
+  /** Champs que Nexum n'édite pas, réécrits tels quels (structure UE). */
+  extra?: string;
+  /** ItemClassString. */
+  item: string;
+  resources: ArkCraftingResource[];
+}
+
 export interface ArkGameLists {
   stats: ArkPerLevelStats;
   stackSizes: ArkStackSize[];
   engrams: ArkEngramLists;
   spawns: ArkSpawnLists;
+  craftingCosts: ArkCraftingCost[];
   /** Lignes illisibles, gardées telles quelles à l'enregistrement. */
   unreadable: string[];
 }
 
-export type ArkListName = "stats" | "stackSizes" | "engrams" | "spawns";
+export type ArkListName =
+  "stats" | "stackSizes" | "engrams" | "spawns" | "craftingCosts";
 
 /** Modification d'un réglage ; value null = retirer (valeur par défaut du jeu). */
 export interface ArkSettingChange {

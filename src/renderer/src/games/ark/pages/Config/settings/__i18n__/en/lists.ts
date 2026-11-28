@@ -1,7 +1,7 @@
 export default {
   arkListsUi: {
     notice:
-      "Game.ini lists, saved one at a time. An empty cell keeps the game's value. Other lists (crafting costs, supply crates…) are edited in Raw files.",
+      "Game.ini lists, saved one at a time. An empty cell keeps the game's value. Other lists (supply crates…) are edited in Raw files.",
     unreadable:
       "{{count}} Game.ini entry can't be read: it isn't shown here and will be kept as it is.",
     unreadable_other:
@@ -16,6 +16,7 @@ export default {
       stackSizes: "Stack sizes",
       engrams: "Engrams",
       spawns: "Spawns",
+      craftingCosts: "Crafting costs",
     },
     statsHint:
       "Multiplier applied to each level point. Don't use 0 (the game replaces it with 1): 0.01 almost turns the gain off.",
@@ -90,5 +91,15 @@ export default {
     replaceFrom: "Replace",
     replaceTo: "With",
     addReplacement: "Add a replacement",
+    craftingHint:
+      "Replaces every resource needed to craft an item (ConfigOverrideItemCraftingCosts). \"Exact type\": only this resource counts, not its equivalents. The repair cost and the demolish refund don't change. An item without resources isn't saved (it would become free).",
+    craftingEmpty: "No cost changed: items keep the game's costs.",
+    craftingItem: "Item",
+    craftingResource: "Resource",
+    craftingQuantity: "Quantity",
+    craftingExact: "Exact type",
+    addCraftingResource: "Add a resource",
+    addCraftingItem: "Add an item",
+    removeCraftingItem: "Remove the item",
   },
 };

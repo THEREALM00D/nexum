@@ -56,6 +56,7 @@ The lists of `Game.ini`, each saved on its own:
 - **Stack sizes**: stack size per item class (`PrimalItemResource_Stone_C`…), with or without the global multiplier.
 - **Engrams**: hide an engram, change its cost or level, remove its prerequisite; automatic unlocks; engram points per level; "only engrams in the list".
 - **Spawns**: add, remove or replace the creatures of a spawn area (`DinoSpawnEntriesBeach_C`…), spawn weight per creature, replace one creature with another.
+- **Crafting costs**: one card per item (`PrimalItemArmor_MetalHelmet_C`…) with the resources that replace its whole cost: resource class, quantity and **Exact type** (only this resource counts, not its equivalents). The repair cost and the demolish refund don't change (game limit). An item without resources isn't saved, since it would become free. Tested: the server starts with these entries and keeps them when it rewrites `Game.ini`.
 
 Saving a list rewrites its entries: the fields Nexum doesn't edit (spawn chances, colors…) are kept, only the layout may change (`true` becomes `True`). An entry Nexum can't read is kept as it is and stays editable in **Raw files**.
 

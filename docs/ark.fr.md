@@ -56,6 +56,7 @@ Les listes de `Game.ini`, enregistrées chacune à part :
 - **Tailles de pile** : taille de pile par classe d'objet (`PrimalItemResource_Stone_C`…), avec ou sans le multiplicateur général.
 - **Engrammes** : masquer un engramme, changer son coût ou son niveau, retirer son prérequis ; déblocages automatiques ; points d'engramme par niveau ; « seulement les engrammes de la liste ».
 - **Spawns** : ajouter, retirer ou remplacer les créatures d'une zone d'apparition (`DinoSpawnEntriesBeach_C`…), poids d'apparition par créature, remplacer une créature par une autre.
+- **Coûts de fabrication** : une carte par objet (`PrimalItemArmor_MetalHelmet_C`…) avec les ressources qui remplacent tout son coût : classe de la ressource, quantité et **Type exact** (seule cette ressource compte, pas ses équivalents). Le coût de réparation et le remboursement à la démolition ne changent pas (limite du jeu). Un objet sans ressource n'est pas enregistré, car il deviendrait gratuit. Testé : le serveur démarre avec ces entrées et les garde quand il réécrit `Game.ini`.
 
 Enregistrer une liste réécrit ses entrées : les champs que Nexum ne modifie pas (chances d'apparition, couleurs…) sont gardés, seule la présentation peut changer (`true` devient `True`). Une entrée que Nexum ne sait pas lire est gardée telle quelle et reste modifiable dans **Fichiers bruts**.
 

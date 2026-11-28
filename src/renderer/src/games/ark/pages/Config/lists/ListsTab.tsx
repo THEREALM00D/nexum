@@ -15,8 +15,15 @@ import EditableTable, { type TableColumn } from "./components/EditableTable";
 import StatsEditor from "./components/StatsEditor";
 import EngramsEditor from "./components/EngramsEditor";
 import SpawnsEditor from "./components/SpawnsEditor";
+import CraftingCostsEditor from "./components/CraftingCostsEditor";
 
-const LISTS: ArkListName[] = ["stats", "stackSizes", "engrams", "spawns"];
+const LISTS: ArkListName[] = [
+  "stats",
+  "stackSizes",
+  "engrams",
+  "spawns",
+  "craftingCosts",
+];
 const STACK_COLUMNS: TableColumn<ArkStackSize>[] = [
   {
     field: "itemClass",
@@ -123,6 +130,13 @@ function ListsTab() {
               spawns={lists.draft.spawns}
               disabled={disabled}
               onChange={(spawns) => lists.change("spawns", spawns)}
+            />
+          )}
+          {list === "craftingCosts" && (
+            <CraftingCostsEditor
+              costs={lists.draft.craftingCosts}
+              disabled={disabled}
+              onChange={(costs) => lists.change("craftingCosts", costs)}
             />
           )}
         </Stack>

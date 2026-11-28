@@ -1,5 +1,6 @@
 import { join } from "path";
 import type {
+  ArkCraftingCost,
   ArkEngramLists,
   ArkGameLists,
   ArkListName,
@@ -12,6 +13,7 @@ import { readArkIni, writeArkIni } from "../arkIniFile";
 import { readEngrams, writeEngrams } from "./engrams";
 import { writeSpawns } from "./spawns";
 import { readSpawns } from "./spawnsRead";
+import { readCraftingCosts, writeCraftingCosts } from "./craftingCosts";
 import {
   readStackSizes,
   readStats,
@@ -21,21 +23,24 @@ import {
 
 const gameIniPath = (serverPath: string) => join(serverPath, GAME_INI_REL_PATH);
 
-/** Les quatre listes éditables de Game.ini, et les entrées illisibles. */
+/** Les listes éditables de Game.ini, et les entrées illisibles. */
 export function readGameLists(serverPath: string): ArkGameLists {
   const { doc } = readArkIni(gameIniPath(serverPath));
   const stacks = readStackSizes(doc);
   const engrams = readEngrams(doc);
   const spawns = readSpawns(doc);
+  const craftingCosts = readCraftingCosts(doc);
   return {
     stats: readStats(doc),
     stackSizes: stacks.items,
     engrams: engrams.engrams,
     spawns: spawns.spawns,
+    craftingCosts: craftingCosts.items,
     unreadable: [
       ...stacks.unreadable,
       ...engrams.unreadable,
       ...spawns.unreadable,
+      ...craftingCosts.unreadable,
     ],
   };
 }
@@ -69,6 +74,13 @@ export function writeGameList(
       break;
     case "spawns":
       writeSpawns(doc, data as ArkSpawnLists, readSpawns(doc).unreadable);
+      break;
+    case "craftingCosts":
+      writeCraftingCosts(
+        doc,
+        asArray<ArkCraftingCost>(data),
+        readCraftingCosts(doc).unreadable,
+      );
       break;
   }
   writeArkIni(path, file);

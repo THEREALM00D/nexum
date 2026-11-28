@@ -10,7 +10,13 @@ import {
   errorMessage,
 } from "../../../../../../utils/appErrorMessage";
 
-const LIST_NAMES: ArkListName[] = ["stats", "stackSizes", "engrams", "spawns"];
+const LIST_NAMES: ArkListName[] = [
+  "stats",
+  "stackSizes",
+  "engrams",
+  "spawns",
+  "craftingCosts",
+];
 const EMPTY_STATS = {
   Player: [],
   DinoWild: [],
@@ -28,11 +34,12 @@ const EMPTY: ArkGameLists = {
     onlyAllowSpecified: false,
   },
   spawns: { containers: [], weights: [], replacements: [] },
+  craftingCosts: [],
   unreadable: [],
 };
 
 /**
- * Onglet Listes : les quatre listes de Game.ini lues ensemble, modifiées
+ * Onglet Listes : les listes de Game.ini lues ensemble, modifiées
  * et enregistrées une par une (le main réécrit les entrées illisibles telles
  * quelles). Relu à l'arrêt du serveur, qui réécrit Game.ini, sauf
  * modification en cours.

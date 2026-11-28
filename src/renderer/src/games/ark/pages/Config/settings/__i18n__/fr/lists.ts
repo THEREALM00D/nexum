@@ -1,7 +1,7 @@
 export default {
   arkListsUi: {
     notice:
-      "Listes de Game.ini, enregistrées une par une. Une case vide garde la valeur du jeu. Les autres listes (coûts de fabrication, caisses de ravitaillement…) se modifient dans Fichiers bruts.",
+      "Listes de Game.ini, enregistrées une par une. Une case vide garde la valeur du jeu. Les autres listes (caisses de ravitaillement…) se modifient dans Fichiers bruts.",
     unreadable:
       "{{count}} entrée de Game.ini est illisible : elle n'apparaît pas ici et sera gardée telle quelle.",
     unreadable_other:
@@ -16,6 +16,7 @@ export default {
       stackSizes: "Tailles de pile",
       engrams: "Engrammes",
       spawns: "Spawns",
+      craftingCosts: "Coûts de fabrication",
     },
     statsHint:
       "Multiplicateur appliqué à chaque point de niveau. Ne mettez pas 0 (le jeu le remplace par 1) : 0,01 désactive presque le gain.",
@@ -90,5 +91,15 @@ export default {
     replaceFrom: "Remplacer",
     replaceTo: "Par",
     addReplacement: "Ajouter un remplacement",
+    craftingHint:
+      "Remplace toutes les ressources demandées pour fabriquer un objet (ConfigOverrideItemCraftingCosts). « Type exact » : seule cette ressource compte, pas ses équivalents. Le coût de réparation et le remboursement à la démolition ne changent pas. Un objet sans ressource n'est pas enregistré (il deviendrait gratuit).",
+    craftingEmpty: "Aucun coût modifié : les objets gardent les coûts du jeu.",
+    craftingItem: "Objet",
+    craftingResource: "Ressource",
+    craftingQuantity: "Quantité",
+    craftingExact: "Type exact",
+    addCraftingResource: "Ajouter une ressource",
+    addCraftingItem: "Ajouter un objet",
+    removeCraftingItem: "Retirer l'objet",
   },
 };

@@ -17,13 +17,13 @@ export const LIST_EDITOR_KEYS = [
   "ConfigOverrideNPCSpawnEntriesContainer",
   "DinoSpawnWeightMultipliers",
   "NPCReplacements",
+  "ConfigOverrideItemCraftingCosts",
 ];
 
 export const RAW_ONLY_LIST_KEYS = [
   // Engrammes par index : l'onglet Listes n'édite que ceux par nom.
   "OverrideEngramEntries",
   "CheatTeleportLocations",
-  "ConfigOverrideItemCraftingCosts",
   "ConfigOverrideSupplyCrateItems",
   "DinoClassDamageMultipliers",
   "DinoClassResistanceMultipliers",
