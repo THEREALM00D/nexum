@@ -102,6 +102,8 @@ export class ServerRegistry {
     autoRestart?: boolean;
     stuckStartMinutes?: number;
     ramLimitGb?: number;
+    cpuPriority?: Server["cpuPriority"];
+    cpuCores?: number[];
   }): Server {
     const servers = this.list();
     const server: Server = {
@@ -116,6 +118,8 @@ export class ServerRegistry {
       autoRestart: input.autoRestart ?? false,
       stuckStartMinutes: input.stuckStartMinutes,
       ramLimitGb: input.ramLimitGb,
+      cpuPriority: input.cpuPriority,
+      cpuCores: input.cpuCores,
     };
     this.store.set("servers", [...servers, server]);
     if (!this.getActiveId()) this.writeActive(server.id);

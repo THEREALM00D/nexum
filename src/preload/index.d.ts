@@ -107,6 +107,8 @@ interface API {
       autoRestart?: boolean;
       stuckStartMinutes?: number;
       ramLimitGb?: number;
+      cpuPriority?: Server["cpuPriority"];
+      cpuCores?: number[];
     }) => Promise<Server>;
     update: (
       id: string,
@@ -534,6 +536,8 @@ interface API {
   };
   app: {
     getVersion: () => Promise<string>;
+    /** Cœurs logiques de ce PC. */
+    getCpuCount: () => Promise<number>;
     getLaunchAtLogin: () => Promise<LaunchAtLoginState>;
     setLaunchAtLogin: (enabled: boolean) => Promise<LaunchAtLoginState>;
     /** Fermer la fenêtre garde Nexum dans la zone de notification. */

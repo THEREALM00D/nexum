@@ -37,6 +37,8 @@ export function registerServersHandlers(
         autoRestart?: boolean;
         stuckStartMinutes?: number;
         ramLimitGb?: number;
+        cpuPriority?: Server["cpuPriority"];
+        cpuCores?: number[];
       },
     ) => registry.create(input),
   );

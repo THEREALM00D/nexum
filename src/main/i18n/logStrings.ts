@@ -1,6 +1,6 @@
 import { getLanguage } from "./language";
 import type { ConsoleSignal } from "../server/windowsCtrlC";
-import type { BulkAction } from "../../shared/types";
+import type { BulkAction, CpuPriority } from "../../shared/types";
 
 // Textes écrits par le main dans les logs d'un serveur et dans le journal
 // d'installation, dans la langue de l'interface au moment où la ligne est
@@ -45,6 +45,21 @@ const FR = {
   notResponding: "Le processus ne répond pas, arrêt forcé via taskkill...",
   waitingGraceful: (s: number) => `Attente de l'arrêt propre (${s} s)...`,
   forceKill: "Arrêt forcé via taskkill...",
+  cpuPriorityNames: {
+    low: "Basse",
+    belowNormal: "Sous la normale",
+    normal: "Normale",
+    aboveNormal: "Au-dessus de la normale",
+    high: "Haute",
+  } as Record<CpuPriority, string>,
+  processTuningApplied: (
+    priority: string,
+    cores: string | null,
+    processes: number,
+  ) =>
+    `Processeur : priorité ${priority}, ${cores === null ? "tous les cœurs" : `cœurs ${cores}`} (${processes} processus).`,
+  processTuningFailed: (reason: string) =>
+    `Priorité et cœurs du processeur non appliqués (serveur lancé en administrateur ou par un autre utilisateur ?) : ${reason}`,
   stuckStartKilled: (minutes: number, attempt: number, max: number) =>
     `Le serveur n'a pas fini de démarrer après ${minutes} min (pas de ligne « prêt » dans son log) : arrêt forcé, relance dans 10 s (essai ${attempt} sur ${max}).`,
   stuckStartRestarted: (attempt: number, max: number) =>
@@ -241,6 +256,17 @@ const EN: typeof FR = {
     "The process isn't responding, forcing it to stop (taskkill)...",
   waitingGraceful: (s) => `Waiting for a clean shutdown (${s} s)...`,
   forceKill: "Forcing the stop (taskkill)...",
+  cpuPriorityNames: {
+    low: "Low",
+    belowNormal: "Below normal",
+    normal: "Normal",
+    aboveNormal: "Above normal",
+    high: "High",
+  },
+  processTuningApplied: (priority, cores, processes) =>
+    `Processor: ${priority} priority, ${cores === null ? "all cores" : `cores ${cores}`} (${processes} process${processes > 1 ? "es" : ""}).`,
+  processTuningFailed: (reason) =>
+    `CPU priority and cores not applied (server started as administrator or by another user?): ${reason}`,
   stuckStartKilled: (minutes, attempt, max) =>
     `The server hadn't finished starting after ${minutes} min (no "ready" line in its log): forced stop, restart in 10 s (attempt ${attempt} of ${max}).`,
   stuckStartRestarted: (attempt, max) =>

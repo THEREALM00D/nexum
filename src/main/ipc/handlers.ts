@@ -45,6 +45,7 @@ import { registerScheduleHandlers } from "./handlers/schedule";
 import { registerBulkHandlers } from "./handlers/bulk";
 import { startStuckStartWatch } from "../server/stuckStartWatch";
 import { startRamWatch } from "../monitor/ramWatch";
+import { scheduleProcessTuning } from "../server/processTuning";
 import { registerServersHandlers } from "./handlers/servers";
 import { registerTransferHandlers } from "./handlers/transfer";
 import { registerAutoUpdater } from "../update/AutoUpdater";
@@ -383,6 +384,15 @@ export async function registerIpcHandlers(): Promise<IpcContext> {
   // Serveurs marqués « démarrage automatique » : après l'adoption, pour ne
   // pas relancer un serveur déjà en cours (voir server/startServer.ts).
   adoption.then(() => autoStartServers(ctx, broadcastLog)).catch(() => {});
+  // Serveurs adoptés (Dragonwilds : le `…-Shipping.exe` survit à Nexum) :
+  // priorité et cœurs réappliqués.
+  adoption
+    .then(() => {
+      for (const server of servers.list())
+        if (serverManagers.getOrCreate(server.id).getStatus() === "running")
+          scheduleProcessTuning(ctx, server.id);
+    })
+    .catch(() => {});
   registerCrashRestart(ctx);
   // Surveillance : démarrage bloqué (ligne « prêt » du jeu) et limite de RAM.
   startStuckStartWatch(ctx);

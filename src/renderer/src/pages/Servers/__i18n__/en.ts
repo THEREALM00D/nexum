@@ -174,6 +174,28 @@ export default {
       autoStartHelper:
         'With "Launch Nexum when Windows starts" (Settings page), the server comes back on its own after a PC restart.',
       autoRestart: "Restart automatically after a crash",
+      processor: {
+        title: "Advanced · Processor",
+        priority: "CPU priority",
+        priorityHelper:
+          "Lower: the server disturbs a game running on the same PC less. High is not recommended; Low can freeze the server when the game keeps the processor busy.",
+        priorities: {
+          low: "Low",
+          belowNormal: "Below normal",
+          normal: "Normal",
+          aboveNormal: "Above normal",
+          high: "High",
+        },
+        cores_one: "Cores used ({{count}} on this PC)",
+        cores_other: "Cores used ({{count}} on this PC)",
+        all: "All",
+        allCores: "all cores",
+        someCores: "cores {{cores}}",
+        allHelper: "The server can use every core.",
+        freeHelper: "Cores {{cores}} are left free for Windows and your games.",
+        appliedHint:
+          "Applied the next time the server starts (and when Nexum picks up a server already running).",
+      },
       stuckStart: "Restart if startup isn't finished",
       stuckStartAfter: "After (minutes)",
       ramLimit: "Restart when RAM goes above",

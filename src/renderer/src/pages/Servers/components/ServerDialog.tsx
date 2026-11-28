@@ -19,23 +19,13 @@ import ExeStatusHint from "./ExeStatusHint";
 import ExistingServerPanel from "./ExistingServerPanel";
 import FolderField from "../../../components/common/FolderField";
 import ColorPicker from "./ColorPicker";
-import { SERVER_COLORS } from "@shared/serverColors";
 import { GAMES, getGamePlugin } from "../../../games/registry";
 import { watchdogInvalid } from "./WatchdogFields";
 import ServerAutomationFields from "./ServerAutomationFields";
+import ProcessorFields from "./ProcessorFields";
+import { formValuesOf, type ServerFormValues } from "./serverFormValues";
 
-export interface ServerFormValues {
-  name: string;
-  path: string;
-  gameType: GameType;
-  color: string | null;
-  autoStart: boolean;
-  autoRestart: boolean;
-  /** Démarrage bloqué : minutes avant relance, 0 = désactivé. */
-  stuckStartMinutes: number;
-  /** Limite de RAM en Go, 0 = désactivée. */
-  ramLimitGb: number;
-}
+export type { ServerFormValues };
 
 interface Props {
   open: boolean;
@@ -51,16 +41,7 @@ export default function ServerDialog({
   onSubmit,
 }: Props) {
   const { t } = useTranslation();
-  const [values, setValues] = useState<ServerFormValues>({
-    name: "",
-    path: "",
-    gameType: "palworld",
-    color: SERVER_COLORS[0],
-    autoStart: false,
-    autoRestart: false,
-    stuckStartMinutes: 0,
-    ramLimitGb: 0,
-  });
+  const [values, setValues] = useState<ServerFormValues>(formValuesOf(null));
   const [submitting, setSubmitting] = useState(false);
   const [importState, setImportState] = useState<unknown>(null);
   const [importPending, setImportPending] = useState(false);
@@ -68,16 +49,7 @@ export default function ServerDialog({
 
   useEffect(() => {
     if (open) {
-      setValues({
-        name: initial?.name ?? "",
-        path: initial?.path ?? "",
-        gameType: initial?.gameType ?? "palworld",
-        color: initial?.color ?? SERVER_COLORS[0],
-        autoStart: initial?.autoStart ?? false,
-        autoRestart: initial?.autoRestart ?? false,
-        stuckStartMinutes: initial?.stuckStartMinutes ?? 0,
-        ramLimitGb: initial?.ramLimitGb ?? 0,
-      });
+      setValues(formValuesOf(initial));
     }
   }, [open, initial]);
 
@@ -176,6 +148,13 @@ export default function ServerDialog({
 
           <ServerAutomationFields
             values={values}
+            onChange={(patch) =>
+              setValues((current) => ({ ...current, ...patch }))
+            }
+          />
+          <ProcessorFields
+            priority={values.cpuPriority}
+            cores={values.cpuCores}
             onChange={(patch) =>
               setValues((current) => ({ ...current, ...patch }))
             }

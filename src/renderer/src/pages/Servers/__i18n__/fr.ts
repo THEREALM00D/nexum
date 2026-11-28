@@ -178,6 +178,28 @@ export default {
       autoStartHelper:
         "Avec « Lancer Nexum au démarrage de Windows » (page Paramètres), le serveur repart tout seul après un redémarrage du PC.",
       autoRestart: "Relancer automatiquement après un plantage",
+      processor: {
+        title: "Avancé · Processeur",
+        priority: "Priorité du processeur",
+        priorityHelper:
+          "Plus basse : le serveur gêne moins un jeu lancé sur le même PC. Haute est déconseillée ; Basse peut figer le serveur quand le jeu occupe le processeur.",
+        priorities: {
+          low: "Basse",
+          belowNormal: "Sous la normale",
+          normal: "Normale",
+          aboveNormal: "Au-dessus de la normale",
+          high: "Haute",
+        },
+        cores_one: "Cœurs utilisés ({{count}} sur ce PC)",
+        cores_other: "Cœurs utilisés ({{count}} sur ce PC)",
+        all: "Tous",
+        allCores: "tous les cœurs",
+        someCores: "cœurs {{cores}}",
+        allHelper: "Le serveur peut utiliser tous les cœurs.",
+        freeHelper: "Cœurs {{cores}} laissés libres pour Windows et vos jeux.",
+        appliedHint:
+          "Appliqué au prochain démarrage du serveur (et quand Nexum reprend un serveur déjà lancé).",
+      },
       stuckStart: "Relancer si le démarrage n'est pas fini",
       stuckStartAfter: "Après (minutes)",
       ramLimit: "Redémarrer quand la RAM dépasse",

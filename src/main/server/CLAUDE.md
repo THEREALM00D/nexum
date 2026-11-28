@@ -31,6 +31,12 @@ Validations (conflits de ports tous jeux confondus, règles du jeu), `getLaunchS
 - Dernier événement par serveur gardé dans le main (`watchdogEvents.ts`, IPC `server:watchdogEvent` / `dismissWatchdogEvent`, poussé par `server:watchdog`) : `components/server/WatchdogAlert.tsx` sous l'en-tête du Dashboard (un toast se perdait au rechargement) ; notification Windows par `notifyWatchdog` (`serverAlerts.ts`).
 - La ligne « Arrêt forcé demandé depuis le Dashboard » est écrite par `adminActions.killServer`, pas par `kill()` (aussi utilisé par la surveillance).
 
+## Priorité et cœurs du processeur (`processTuning.ts`, `Server.cpuPriority`, `Server.cpuCores`)
+
+- Un seul PowerShell par application (`PriorityClass`, `ProcessorAffinity`), sur le processus racine **et ses enfants directs** sauf `conhost.exe` (sinon compté dans « N processus ») : c'est le `…-Shipping.exe` qui travaille (Palworld, Astroneer, Dragonwilds). Vérifié sur un faux lanceur qui crée son enfant 3 s après : réglages hérités/appliqués aux deux.
+- Appliqué après un démarrage réussi (`startServer` **et** `restartServer`) puis de nouveau 15 s plus tard (⚠️ un enfant déjà créé ne prend pas les réglages appliqués ensuite au parent, et la priorité n'est héritée que pour Basse / Sous la normale) ; après l'adoption (`ipc/handlers.ts`, `adoption.then`). Ligne écrite la 2e fois seulement si un enfant s'est ajouté. Rien avec les réglages par défaut ; abandonné si le PID a changé.
+- Accès refusé (serveur admin, autre utilisateur) : ligne `processTuningFailed`, le démarrage n'est jamais bloqué. Masque limité aux 64 premiers cœurs (un groupe de processeurs). Cœurs pas transférés entre PC (`transferFormat.ts`). Formulaire : `cpuCores: []` = tous (jamais `undefined`, que l'IPC omettrait).
+
 ## Messages de fin (`exitText`, `src/main/i18n/logStrings.ts`)
 
 Code NTSTATUS (≥ `0xC0000000`) affiché en hexadécimal et nommé (`crashNames`) avec « erreur du jeu lui-même, pas de Nexum ». Sauf `0xC000013A` (STATUS_CONTROL_C_EXIT : console fermée ou CTRL+Pause) → `consoleClosed`, pas « planté » (la relance s'applique quand même). Autres codes : « Le serveur s'est arrêté (code N) ».

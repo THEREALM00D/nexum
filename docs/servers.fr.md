@@ -22,6 +22,17 @@ L'en-tête propose **Importer un serveur** (un fichier exporté depuis un autre 
 
 À chaque fois, une ligne va dans les logs du serveur et un avertissement s'affiche sous l'en-tête du Dashboard (avec **Voir les logs**) jusqu'à ce que vous le masquiez. Une notification Windows apparaît si la fenêtre de Nexum n'est pas au premier plan. L'avertissement est gardé jusqu'à la fermeture de Nexum.
 
+### Processeur (Avancé)
+
+En bas des dialogues Ajouter et Modifier, la section repliée **Avancé · Processeur** sert quand le serveur tourne sur le PC où vous jouez :
+
+- **Priorité du processeur** : Basse, Sous la normale, Normale (par défaut), Au-dessus de la normale, Haute. **Sous la normale** laisse passer le jeu du même PC en premier quand le processeur est chargé. **Haute** est déconseillée (elle prend le processeur à Windows et à vos jeux), et **Basse** peut figer le serveur quand le jeu occupe le processeur.
+- **Cœurs utilisés** : **Tous** (par défaut) ou un bouton par cœur logique de ce PC (64 au plus) ; au moins un reste coché. Les cœurs laissés libres vont à Windows et à vos jeux.
+
+Appliqué au prochain démarrage du serveur (bouton, démarrage automatique, redémarrages) et quand Nexum reprend un serveur déjà lancé, au processus du serveur et à celui qu'il lance (Palworld, Astroneer et RuneScape: Dragonwilds font tourner le vrai serveur dans un processus enfant). Une ligne dans les logs du serveur dit ce qui a été appliqué. Un serveur lancé en administrateur, ou par un autre utilisateur de Windows, ne peut pas être modifié : les logs le disent et le serveur démarre quand même.
+
+**Changer de PC** garde la priorité mais pas les cœurs (l'autre PC n'a pas les mêmes).
+
 ## Tous les serveurs
 
 Le menu **Tous les serveurs ▾** agit sur tous les serveurs d'un coup. Le nombre à droite de chaque entrée dit combien de serveurs sont concernés ; une entrée sans serveur est grisée.

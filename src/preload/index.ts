@@ -553,6 +553,7 @@ const api = {
   // App
   app: {
     getVersion: () => ipcRenderer.invoke("app:getVersion"),
+    getCpuCount: () => ipcRenderer.invoke("system:cpuCount"),
     getLaunchAtLogin: () => ipcRenderer.invoke("app:getLaunchAtLogin"),
     getCloseToTray: () => ipcRenderer.invoke("app:getCloseToTray"),
     setCloseToTray: (enabled: boolean) =>

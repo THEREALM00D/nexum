@@ -1,4 +1,5 @@
 import type {
+  CpuPriority,
   Server,
   ServerConfig,
   TransferServerPaths,
@@ -8,6 +9,7 @@ import { GAME_TYPES } from "../games/registry";
 import { sanitizeArkLaunch } from "../games/ark/launchConfig";
 import { withRestartDefaults } from "../servers/restartDefaults";
 import { AppError } from "../utils/appError";
+import { CPU_PRIORITIES } from "../../shared/processTuning";
 import {
   inWatchdogRange,
   RAM_LIMIT_RANGE,
@@ -119,6 +121,10 @@ export function parseServerEntry(raw: unknown): TransferServerEntry {
       ramLimitGb: inWatchdogRange(server.ramLimitGb, RAM_LIMIT_RANGE)
         ? server.ramLimitGb
         : undefined,
+      // Pas les cœurs : propres à la machine (un autre PC n'a pas les mêmes).
+      cpuPriority: CPU_PRIORITIES.includes(server.cpuPriority as CpuPriority)
+        ? (server.cpuPriority as CpuPriority)
+        : undefined,
     },
     config,
   };
@@ -147,6 +153,7 @@ export function toServerEntry(
     autoRestart,
     stuckStartMinutes,
     ramLimitGb,
+    cpuPriority,
   } = server;
   return {
     server: {
@@ -158,6 +165,7 @@ export function toServerEntry(
       autoRestart,
       stuckStartMinutes,
       ramLimitGb,
+      cpuPriority,
     },
     config: includePasswords ? config : stripPasswords(config),
   };

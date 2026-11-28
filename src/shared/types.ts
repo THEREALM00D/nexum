@@ -22,7 +22,15 @@ export interface Server {
   // Redémarré (avec annonces) quand sa RAM reste au-dessus, en Go
   // (cf. monitor/ramWatch.ts). Absent : non.
   ramLimitGb?: number;
+  // Priorité du processeur et cœurs, appliqués au démarrage et à l'adoption
+  // (cf. server/processTuning.ts). Absents : Normale, tous les cœurs.
+  cpuPriority?: CpuPriority;
+  cpuCores?: number[];
 }
+
+/** Priorité du processeur d'un serveur (`PriorityClass` de Windows). */
+export type CpuPriority =
+  "low" | "belowNormal" | "normal" | "aboveNormal" | "high";
 
 // « Lancer Nexum au démarrage de Windows » — `supported` faux en dev
 export interface LaunchAtLoginState {

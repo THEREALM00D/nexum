@@ -9,6 +9,7 @@ import {
 import { setLanguage } from "../../i18n/language";
 import { markRendererReady } from "../rendererEvents";
 import { shell } from "electron";
+import { cpus } from "os";
 import type { IpcContext } from "../context";
 import type { SelectFolderOptions } from "../../../shared/types";
 import { relativeToBase, startFolder } from "../../utils/folderDialog";
@@ -90,6 +91,8 @@ export function registerMiscHandlers(ctx: IpcContext): void {
 
   // App
   ipcMain.handle("app:getVersion", () => ctx.app.getVersion());
+  // Cœurs logiques de ce PC (dialogue du serveur, section Processeur).
+  ipcMain.handle("system:cpuCount", () => cpus().length);
   ipcMain.handle("app:getLaunchAtLogin", () => getLaunchAtLogin());
   // Fermer la fenêtre = rester dans la zone de notification (voir main/index.ts)
   ipcMain.handle("app:getCloseToTray", () =>
