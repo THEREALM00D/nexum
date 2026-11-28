@@ -1,4 +1,8 @@
-import type { GameType, ServerConfig } from "../../shared/types";
+import type {
+  GameType,
+  RemoteAdminUnavailable,
+  ServerConfig,
+} from "../../shared/types";
 import type { PalConfigParser } from "./palworld/PalConfigParser";
 import { palworldServerConfig } from "./palworld/serverConfig";
 import { PalworldApiClient } from "./palworld/PalworldApiClient";
@@ -11,8 +15,7 @@ import { ArkRconClient } from "./ark/ArkRconClient";
  * autosauvegarde du jeu (voir `backupServer`).
  */
 export type GameSaveRequest =
-  | { run: () => Promise<void> }
-  | { unavailable: "noCommand" | "restApiDisabled" | "rconDisabled" };
+  { run: () => Promise<void> } | { unavailable: RemoteAdminUnavailable };
 
 const NO_COMMAND: GameSaveRequest = { unavailable: "noCommand" };
 
@@ -30,7 +33,10 @@ const SAVE_REQUESTS: Record<
   // API REST (POST /v1/api/save), seulement si elle est activée dans l'INI.
   palworld: (p, parser) => {
     const cfg = palworldServerConfig.getStopConfig(p, parser);
-    if (!cfg.restApiEnabled) return { unavailable: "restApiDisabled" };
+    // Sans mot de passe admin, l'API répond 401 : comme désactivée (même
+    // règle que `createGracefulShutdown`).
+    if (!cfg.restApiEnabled || !cfg.adminPassword)
+      return { unavailable: "restApiDisabled" };
     const client = new PalworldApiClient(cfg.restApiPort, cfg.adminPassword);
     return { run: () => client.save() };
   },

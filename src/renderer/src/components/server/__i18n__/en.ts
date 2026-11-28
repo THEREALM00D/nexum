@@ -16,6 +16,38 @@ export default {
     notRunning: "Start the server: the addresses to share will appear here.",
     hint: "For friends outside your network: forward UDP port(s) {{range}} on your router to {{ip}}, and apply the firewall rules (Network page). Most routers won't let you join your own public IP from inside your network: have a friend test it.",
   },
+  serverMenu: {
+    more: "More actions",
+    saveNow: "Save the world now",
+    sendMessage: "Send a message to players",
+    kill: "Kill the process",
+    killHelper: "Without saving, if Stop no longer responds",
+    unavailable: {
+      rconDisabled: "Enable RCON (Configuration page)",
+      restApiDisabled: "Enable the REST API (Configuration page)",
+      noCommand: "No command for this game",
+    },
+    messageTitle: "Send a message to players",
+    messageLabel: "Message",
+    messageHelper: "Shown in the game chat.",
+    messageAscii:
+      "The game can't display accents: Nexum removes them when sending.",
+    messagePreview: "Sent:",
+    playersOnline_one: "{{count}} player online.",
+    playersOnline_other: "{{count}} players online.",
+    send: "Send",
+    cancel: "Cancel",
+    killTitle: 'Kill "{{name}}"?',
+    killWarning:
+      "The server stops right away, without warning players or saving. Everything since the game's last save is lost (up to 15 min for ARK). Use it only if Stop no longer responds.",
+    notify: {
+      saved: 'World of "{{name}}" saved',
+      saveFailed: "Couldn't save the world",
+      messageSent: "Message sent to players",
+      messageFailed: "Couldn't send the message",
+      killed: '"{{name}}" was killed',
+    },
+  },
   serverDashboard: {
     since: "for {{duration}}",
     viewLogs: "View logs",

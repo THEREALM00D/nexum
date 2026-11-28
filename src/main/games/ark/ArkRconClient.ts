@@ -1,4 +1,5 @@
 import { runRconCommands } from "../../utils/sourceRcon";
+import { toAsciiChatText } from "../../../shared/chatText";
 
 // DoExit sauvegarde le monde avant de quitter : ~20 s sur un monde neuf
 // (vérifié), davantage sur un gros monde. Un taskkill pendant cette
@@ -27,15 +28,6 @@ export function parseListPlayers(response: string): ArkPlayer[] {
   return players;
 }
 
-/** Une ligne, accents retirés (« redémarrer » → « redemarrer »), ASCII seul. */
-function toChatText(message: string): string {
-  return message
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .replace(/[\r\n]+/g, " ")
-    .replace(/[^\x20-\x7e]/g, "");
-}
-
 /**
  * Commandes RCON d'un serveur ARK, toujours sur 127.0.0.1. Une connexion par
  * appel : le serveur ne répond qu'à une commande à la fois et le suivi des
@@ -60,7 +52,7 @@ export class ArkRconClient {
    * vérifié) : le message est envoyé sans accents.
    */
   async announce(message: string): Promise<void> {
-    await this.run(`ServerChat ${toChatText(message)}`);
+    await this.run(`ServerChat ${toAsciiChatText(message)}`);
   }
 
   /** Synchrone : la réponse « World Saved » arrive une fois le monde écrit. */

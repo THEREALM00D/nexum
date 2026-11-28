@@ -396,6 +396,22 @@ export class ServerManager {
     this.skipShutdownWait?.();
   }
 
+  /**
+   * « Tuer le processus » (Dashboard) : taskkill tout de suite, sans annonce
+   * ni sauvegarde, même pendant un arrêt qui ne répond plus. Passe par
+   * `stop()` sans config d'arrêt : statut `stopping`, donc la fin n'est pas
+   * lue comme un plantage (pas de relance automatique). ⚠️ Pas de
+   * `hurryStop()` : un arrêt ARK en attente enverrait alors `DoExit` (début
+   * de sauvegarde) juste avant le taskkill ; sans lui, il voit le processus
+   * mort et s'arrête là.
+   */
+  async kill(): Promise<{ success: boolean; error?: string }> {
+    // Pas lancé : `stop()` écrit le refus, sans ligne « tué ».
+    if (this.getRunningPid() && this.status !== "stopped")
+      this.onLog(managerLine(lt().killRequested));
+    return this.stop({});
+  }
+
   private forceKill(pid: number): void {
     if (process.platform === "win32") {
       exec(`taskkill /F /T /PID ${pid}`, (err) => {

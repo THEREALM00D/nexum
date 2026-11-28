@@ -123,6 +123,22 @@ export interface BackupConfig {
   backupBeforeUpdate: boolean;
 }
 
+// --- Commandes du Dashboard (menu « ⋯ ») ---
+/** Pourquoi une commande d'administration n'est pas disponible. */
+export type RemoteAdminUnavailable =
+  "noCommand" | "restApiDisabled" | "rconDisabled";
+
+export interface AdminCapabilities {
+  /** Sauvegarder maintenant : null si disponible, sinon la raison. */
+  save: RemoteAdminUnavailable | null;
+  /** Envoyer un message aux joueurs : null si disponible. */
+  announce: RemoteAdminUnavailable | null;
+  /** Le chat du jeu n'affiche pas les accents : Nexum les retire. */
+  asciiChat: boolean;
+  /** Joueurs connectés, null si le jeu ne les donne pas. */
+  players: number | null;
+}
+
 // --- Actions groupées (page Serveurs) ---
 export type BulkAction =
   | "startAll"
@@ -427,6 +443,7 @@ export type AppErrorCode =
   | "SERVER_EXE_NOT_FOUND"
   | "SERVER_STOP_TIMEOUT"
   | "BULK_ACTION_RUNNING"
+  | "REMOTE_ADMIN_UNAVAILABLE"
   // Sauvegardes
   | "STOP_BEFORE_RESTORE"
   | "BACKUP_SOURCE_NOT_FOUND"

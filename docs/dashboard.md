@@ -35,6 +35,16 @@ Only the actions that make sense for the current status are shown:
 
 > On Palworld, a clean stop is only possible if **REST API** is enabled in the configuration. Otherwise the server is killed abruptly and recent changes may be lost.
 
+### More actions (⋯)
+
+While the server runs (or is starting or stopping), the **⋯** button after **Stop** opens:
+
+- **Save the world now**: ARK with RCON (`SaveWorld`), Palworld with the REST API. A line in the logs confirms it.
+- **Send a message to players**: shown in the game chat (ARK with RCON, Palworld with the REST API). ARK can't display accents: Nexum removes them and shows what will be sent. The window also says how many players are online.
+- **Kill the process**: stops the server right away with `taskkill`, without warning players or saving; everything since the game's last save is lost. Use it only when **Stop** no longer responds. A confirmation is asked first. A killed server is not treated as a crash: it is not relaunched, even with **Restart automatically after a crash**. A restart already in progress (button, schedule, all servers) carries on: Kill only unblocks its stop.
+
+When the game has no command for it, or RCON / the REST API is off, the entry is greyed out and says why.
+
 ## Statistics
 
 Real-time data, refreshed every 2 seconds. The server comes first:

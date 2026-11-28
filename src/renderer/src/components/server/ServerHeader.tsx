@@ -7,6 +7,7 @@ import { useServerControls } from "../../hooks/useServerControls";
 import { FONT_MONO } from "../../theme";
 import ServerTile from "../common/ServerTile";
 import ServerControls from "./ServerControls";
+import ServerActionsMenu from "./ServerActionsMenu";
 
 /** Haut du Dashboard : quel serveur, dans quel état, et quoi faire. */
 export default function ServerHeader({
@@ -99,6 +100,13 @@ export default function ServerHeader({
         onRestart={restart}
         uptime={stats?.serverUptime}
         onViewLogs={() => navigate("logs")}
+        menu={
+          // Aussi pendant un démarrage ou un arrêt : « Tuer » sert quand
+          // Arrêter ne répond plus.
+          server && status !== "stopped" && status !== "crashed" ? (
+            <ServerActionsMenu server={server} status={status} />
+          ) : undefined
+        }
       />
     </Paper>
   );
